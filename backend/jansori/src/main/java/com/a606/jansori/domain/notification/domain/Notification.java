@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Getter
 @Entity
-public class notification {
+public class Notification {
 
     @Id
     @Column(name = "notification_id")

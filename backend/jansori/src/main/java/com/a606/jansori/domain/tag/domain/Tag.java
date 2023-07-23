@@ -1,15 +1,15 @@
-package com.a606.jansori.domain.persona.domain;
+package com.a606.jansori.domain.tag.domain;
 
 import lombok.Getter;
 
 import javax.persistence.*;
 
 @Getter
-@Entity(name = "persona")
-public class Persona {
+@Entity(name = "tag")
+public class Tag {
 
     @Id
-    @Column(name = "persona_id")
+    @Column(name = "tag_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -17,9 +17,5 @@ public class Persona {
     private String name;
 
     @Column
-    private String imageUrl;
-
-    @Column
-    private String bio;
-
+    private Long count;
 }
