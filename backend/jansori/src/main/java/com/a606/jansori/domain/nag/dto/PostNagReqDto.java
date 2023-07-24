@@ -17,5 +17,5 @@ public class PostNagReqDto {
     private String content;
 
     @NotNull
-    private Tag tag;
+    private Long tagId;
 }

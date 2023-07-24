@@ -24,7 +24,7 @@ public class NagService {
     @Transactional
     public void createNag(Long memberId, PostNagReqDto postNagReqDto) {
 
-        Tag tag = tagRepository.findById(postNagReqDto.getTag().getId())
+        Tag tag = tagRepository.findById(postNagReqDto.getTagId())
                 .orElseThrow(() -> new NagNotWriteException("650", "존재하지 않는 해시태그 ID 입니다."));
 
         Nag nag = new Nag(memberId, postNagReqDto);

@@ -50,7 +50,7 @@ class NagServiceTest {
     @Test
     void Given_NotExistHashTag_When_SaveNag_Then_Fail() {
         //given
-        postNagReqDto = new PostNagReqDto("공부 안할래?", tag);
+        postNagReqDto = new PostNagReqDto("공부 안할래?", tag.getId());
         given(tagRepository.findById(tag.getId())).willReturn(Optional.empty());
 
         //when with then
@@ -64,7 +64,7 @@ class NagServiceTest {
     @Test
     void Given_ValidNag_When_SaveNag_Then_Success() {
         //given
-        postNagReqDto = new PostNagReqDto("공부 안할래?", tag);
+        postNagReqDto = new PostNagReqDto("공부 안할래?", tag.getId());
         given(tagRepository.findById(tag.getId())).willReturn(Optional.of(tag));
 
         //when
