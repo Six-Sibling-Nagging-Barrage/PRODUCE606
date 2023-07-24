@@ -17,10 +17,10 @@ public class TodoController {
     private final TodoService todoService;
 
     @PostMapping
-    public EnvelopeResponse postTodo(PostTodoReqDto postTodoReqDto) {
+    public EnvelopeResponse postTodo(PostTodoReqDto postTodoReqDto, Long memberId) {
 
         return EnvelopeResponse.<PostTodoResDto>builder()
-                .data(todoService.postTodo(postTodoReqDto))
+                .data(todoService.postTodo(postTodoReqDto, memberId))
                 .build();
     }
 
