@@ -4,6 +4,7 @@ import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.exception.NagNotWriteException;
 import com.a606.jansori.domain.nag.repository.NagRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
+import com.a606.jansori.domain.tag.repository.TagRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,8 @@ class NagServiceTest {
 
     @Mock
     private NagRepository nagRepository;
+    @Mock
+    private TagRepository tagRepository;
     @InjectMocks
     private NagService nagService;
 
@@ -50,8 +53,14 @@ class NagServiceTest {
     @DisplayName("잔소리 해시태그가 존재하지 않는 ID 라면 잔소리 생성에 실패한다.")
     @Test
     void Given_NotExistHashTag_When_SaveNag_Then_Fail() {
+        //given
         postNagReqDto = new PostNagReqDto("공부 안 할래?", new ArrayList<>(List.of(tag)));
-        
+        given(tagRepository.existsById(tag.getId())).willReturn(Boolean.FALSE);
+
+        //when with then
         assertThrows(NagNotWriteException.class, () -> nagService.createNag(memberId, postNagReqDto));
+
+        //verify
+        verify(tagRepository, times(1)).existsById(tag.getId());
     }
 }
