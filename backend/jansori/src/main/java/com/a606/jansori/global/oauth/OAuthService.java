@@ -38,7 +38,9 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
 
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
-        Member member = OAuthAttributes.
+        Member member = OAuthAttributes.extract(registrationId, attributes);
+        member.builder().oauthIdentifier(registrationId);
+
 
 
 
