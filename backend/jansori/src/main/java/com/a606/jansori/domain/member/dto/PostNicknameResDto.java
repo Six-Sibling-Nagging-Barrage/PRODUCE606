@@ -6,7 +6,6 @@ import lombok.Getter;
 @Builder
 @Getter
 public class PostNicknameResDto {
-
     Boolean isPossible;
 
     public static PostNicknameResDto of(Boolean isPossible){
