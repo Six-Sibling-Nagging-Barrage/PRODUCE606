@@ -17,10 +17,7 @@ public class NagService {
 
     @Transactional
     public void createNag(Long memberId, PostNagReqDto postNagReqDto) {
-        if (postNagReqDto.getTags().size() != 1) {
-            throw new NagNotWriteException("700", "잔소리는 해시태그를 꼭 한 개를 가지고 있어야 합니다.");
-        }
-        if (!tagRepository.existsById(postNagReqDto.getTags().get(0).getId())) {
+        if (!tagRepository.existsById(postNagReqDto.getTag().getId())) {
             throw new NagNotWriteException("701", "존재하지 않는 해시태그 ID 입니다.");
         }
     }

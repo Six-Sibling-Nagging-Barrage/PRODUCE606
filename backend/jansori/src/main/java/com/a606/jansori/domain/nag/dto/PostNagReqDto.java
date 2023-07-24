@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,5 +17,5 @@ public class PostNagReqDto {
     private String content;
 
     @NotNull
-    private List<Tag> tags;
+    private Tag tag;
 }
