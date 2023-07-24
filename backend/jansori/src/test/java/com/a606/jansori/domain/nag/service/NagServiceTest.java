@@ -15,6 +15,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -49,13 +51,13 @@ class NagServiceTest {
     void Given_NotExistHashTag_When_SaveNag_Then_Fail() {
         //given
         postNagReqDto = new PostNagReqDto("공부 안할래?", tag);
-        given(tagRepository.existsById(tag.getId())).willReturn(Boolean.FALSE);
+        given(tagRepository.findById(tag.getId())).willReturn(Optional.empty());
 
         //when with then
         assertThrows(NagNotWriteException.class, () -> nagService.createNag(memberId, postNagReqDto));
 
         //verify
-        verify(tagRepository, times(1)).existsById(tag.getId());
+        verify(tagRepository, times(1)).findById(tag.getId());
     }
 
     @DisplayName("잔소리가 content가 존재하고 해시태그 ID가 존재하면 잔소리 생성에 성공한다.")
@@ -63,7 +65,7 @@ class NagServiceTest {
     void Given_ValidNag_When_SaveNag_Then_Success() {
         //given
         postNagReqDto = new PostNagReqDto("공부 안할래?", tag);
-        given(tagRepository.existsById(tag.getId())).willReturn(Boolean.TRUE);
+        given(tagRepository.findById(tag.getId())).willReturn(Optional.of(tag));
 
         //when
         when(nagRepository.save(any(Nag.class))).thenReturn(null);
@@ -73,6 +75,7 @@ class NagServiceTest {
         nagService.createNag(memberId, postNagReqDto);
 
         //verify
+        verify(tagRepository, times(1)).findById(tag.getId());
         verify(nagRepository, times(1)).save(any(Nag.class));
         verify(nagTagRepository, times(1)).save(any(NagTag.class));
     }
