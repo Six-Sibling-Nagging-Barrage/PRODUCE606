@@ -3,13 +3,19 @@ package com.a606.jansori.domain.todo.domain;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.tag.domain.TodoTag;
 import com.a606.jansori.global.common.BaseTimeEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "todo")
 public class Todo extends BaseTimeEntity {
 
