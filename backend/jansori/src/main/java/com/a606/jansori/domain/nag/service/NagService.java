@@ -27,5 +27,10 @@ public class NagService {
         Tag tag = tagRepository.findById(postNagReqDto.getTag().getId())
                 .orElseThrow(() -> new NagNotWriteException("650", "존재하지 않는 해시태그 ID 입니다."));
 
+        Nag nag = new Nag(memberId, postNagReqDto);
+        NagTag nagTag = new NagTag(nag, tag);
+
+        nagRepository.save(nag);
+        nagTagRepository.save(nagTag);
     }
 }
