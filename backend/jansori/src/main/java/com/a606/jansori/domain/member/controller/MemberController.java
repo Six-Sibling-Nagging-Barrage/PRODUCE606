@@ -9,8 +9,6 @@ import com.a606.jansori.global.common.EnvelopeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 @RestController
 @RequestMapping("/members")
 @RequiredArgsConstructor
