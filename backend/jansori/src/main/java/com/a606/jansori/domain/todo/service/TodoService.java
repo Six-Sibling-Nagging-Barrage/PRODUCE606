@@ -8,15 +8,18 @@ import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.tag.repository.TodoTagRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
-import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
-import com.a606.jansori.domain.todo.dto.PostTodoResDto;
-import com.a606.jansori.domain.todo.dto.TagDto;
+import com.a606.jansori.domain.todo.dto.*;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import com.a606.jansori.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,6 +32,8 @@ public class TodoService {
     private final TagRepository tagRepository;
 
     private final MemberRepository memberRepository;
+
+    private final Clock clock;
 
     @Transactional
     public PostTodoResDto postTodo(PostTodoReqDto postTodoReqDto, Long memberId) {
@@ -56,4 +61,22 @@ public class TodoService {
     }
 
 
+    @Transactional(readOnly = true)
+    public GetTodoListResDto getMyTodayTodo(Long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException("800", "사용자를 찾을 수 없습니다."));
+
+        LocalDate current = LocalDate.now(clock);
+        LocalDateTime today = current.atStartOfDay();
+        LocalDateTime tomorrow = current.plusDays(1).atStartOfDay();
+
+        List<Todo> todoList = todoRepository.findAllByMemberAndCreatedAtBetween(member, today, tomorrow);
+
+        List<TodoDto> todos = todoList.stream().map(todo -> TodoDto.from(todo)).collect(Collectors.toList());
+
+        return GetTodoListResDto.builder()
+                .todos(todos)
+                .build();
+    }
 }
