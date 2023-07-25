@@ -2,12 +2,14 @@ package com.a606.jansori.domain.nag.service;
 
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
+import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.repository.NagRepository;
 import com.a606.jansori.domain.tag.domain.NagTag;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.NagTagRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -68,11 +71,12 @@ class NagServiceTest {
         given(tagRepository.findById(tag.getId())).willReturn(Optional.of(tag));
 
         //when
-        when(nagRepository.save(any(Nag.class))).thenReturn(null);
+        when(nagRepository.save(any(Nag.class))).thenReturn(Nag.builder().id(1L).build());
         when(nagTagRepository.save(any(NagTag.class))).thenReturn(null);
 
         //then
-        nagService.createNag(memberId, postNagReqDto);
+        PostNagResDto postNagResDto = nagService.createNag(memberId, postNagReqDto);
+        assertThat(postNagResDto.getNagId()).isEqualTo(1L);
 
         //verify
         verify(tagRepository, times(1)).findById(tag.getId());
