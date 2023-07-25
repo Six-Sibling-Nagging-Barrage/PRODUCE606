@@ -18,4 +18,5 @@ public class GetUserProfileResDto {
     private String imageUrl;
 
     private Long ticket;
+
 }
