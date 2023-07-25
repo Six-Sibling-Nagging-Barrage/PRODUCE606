@@ -16,7 +16,7 @@ public class KoreanUtil {
             char c = input.charAt(i);
 
             // 한글인 경우만 변환
-            if (isHangul(c)) {
+            if (isKorean(c)) {
                 int code = (int) c;
                 int initialSoundCode = KOREAN_INITIAL_SOUND_START + ((code - KOREAN_SYLLABLES_START) / 28) / 21;
                 char initialSoundChar = (char) initialSoundCode;
@@ -31,7 +31,7 @@ public class KoreanUtil {
     }
 
     // 주어진 문자가 한글인지 판별하는 메서드
-    private static boolean isHangul(char c) {
+    private static boolean isKorean(char c) {
         return c >= KOREAN_SYLLABLES_START && c <= KOREAN_SYLLABLES_END;
     }
 }
