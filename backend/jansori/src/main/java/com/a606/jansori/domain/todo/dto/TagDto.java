@@ -1,0 +1,13 @@
+package com.a606.jansori.domain.todo.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public class TagDto {
+
+    private Long tagId;
+
+    private String tagName;
+}
