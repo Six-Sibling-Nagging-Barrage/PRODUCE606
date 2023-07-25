@@ -7,9 +7,9 @@ import lombok.Getter;
 @Getter
 public class PostNicknameResDto {
 
-    boolean isPossible;
+    Boolean isPossible;
 
-    public static PostNicknameResDto of(boolean isPossible){
+    public static PostNicknameResDto of(Boolean isPossible){
         return PostNicknameResDto.builder()
                 .isPossible(isPossible)
                 .build();

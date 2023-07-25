@@ -16,12 +16,13 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private MemberService memberService;
+    private final MemberService memberService;
 
+    // 닉네임 중복 검사
     @PostMapping("/nickname-check")
-    public EnvelopeResponse<PostNicknameResDto> checkNicknameAvailable(@Valid @RequestBody PostNicknameReqDto postNicknameReqDto){
+    public EnvelopeResponse<PostNicknameResDto> checkNicknameAvailable(@RequestBody PostNicknameReqDto postNicknameReqDto){
         return EnvelopeResponse.<PostNicknameResDto>builder()
-                .data(memberService.checkNicknameAvailable(postNicknameReqDto))
+                .data(memberService.checkNicknameIsAvailable(postNicknameReqDto))
                 .build();
     }
 

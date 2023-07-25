@@ -12,12 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
-    public PostNicknameResDto checkNicknameAvailable(PostNicknameReqDto postNicknameReqDto){
-        Boolean isExist = memberRepository.existsByNickname(postNicknameReqDto.getNickname());
+    public PostNicknameResDto checkNicknameIsAvailable(PostNicknameReqDto postNicknameReqDto){
 
+        Boolean isExist = memberRepository.existsByNickname(postNicknameReqDto.getNickname());
+        System.out.println(isExist);
         if(isExist){
             throw new DuplicatedNicknameException();
         } else {
