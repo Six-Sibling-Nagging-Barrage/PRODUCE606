@@ -27,8 +27,8 @@ public class NagTag {
     @JoinColumn(name = "tag_id")
     private Tag tag;
 
-    public NagTag(Nag nag, Tag tag) {
-        NagTag.builder()
+    public static NagTag of(Nag nag, Tag tag) {
+        return NagTag.builder()
                 .nag(nag)
                 .tag(tag)
                 .build();

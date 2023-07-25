@@ -33,10 +33,11 @@ public class Nag extends BaseTimeEntity {
     @Column
     private String preview;
 
-    public Nag(Long memberId, PostNagReqDto postNagReqDto) {
-        Nag.builder()
+    public static Nag of(Long memberId, PostNagReqDto postNagReqDto, String preview) {
+        return Nag.builder()
                 .writerId(memberId)
                 .nagType(NagType.MEMBER)
+                .preview(preview)
                 .content(postNagReqDto.getContent())
                 .build();
     }
