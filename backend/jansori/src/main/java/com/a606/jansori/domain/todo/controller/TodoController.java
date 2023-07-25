@@ -5,9 +5,7 @@ import com.a606.jansori.domain.todo.dto.PostTodoResDto;
 import com.a606.jansori.domain.todo.service.TodoService;
 import com.a606.jansori.global.common.EnvelopeResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/todo")
@@ -17,7 +15,7 @@ public class TodoController {
     private final TodoService todoService;
 
     @PostMapping
-    public EnvelopeResponse postTodo(PostTodoReqDto postTodoReqDto, Long memberId) {
+    public EnvelopeResponse postTodo(@RequestBody PostTodoReqDto postTodoReqDto, @RequestParam Long memberId) {
 
         return EnvelopeResponse.<PostTodoResDto>builder()
                 .data(todoService.postTodo(postTodoReqDto, memberId))
