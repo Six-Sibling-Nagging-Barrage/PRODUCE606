@@ -1,5 +1,6 @@
 package com.a606.jansori.domain.nag.dto;
 
+import com.a606.jansori.domain.nag.validator.NagContent;
 import com.a606.jansori.domain.tag.domain.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 public class PostNagReqDto {
 
-    @NotBlank
+    @NagContent
     private String content;
 
     @NotNull
