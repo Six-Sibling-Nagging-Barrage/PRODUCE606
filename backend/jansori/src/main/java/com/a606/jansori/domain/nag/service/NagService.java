@@ -1,7 +1,6 @@
 package com.a606.jansori.domain.nag.service;
 
 import com.a606.jansori.domain.nag.domain.Nag;
-import com.a606.jansori.domain.nag.domain.NagType;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.exception.NagNotWriteException;
 import com.a606.jansori.domain.nag.repository.NagRepository;
@@ -27,8 +26,10 @@ public class NagService {
         Tag tag = tagRepository.findById(postNagReqDto.getTagId())
                 .orElseThrow(() -> new NagNotWriteException("650", "존재하지 않는 해시태그 ID 입니다."));
 
-        Nag nag = new Nag(memberId, postNagReqDto);
-        NagTag nagTag = new NagTag(nag, tag);
+        String preview = HangulUtil.convertToInitialSound(postNagReqDto.getContent());
+
+        Nag nag = Nag.of(memberId, postNagReqDto, preview);
+        NagTag nagTag = NagTag.of(nag, tag);
 
         nagRepository.save(nag);
         nagTagRepository.save(nagTag);
