@@ -2,10 +2,10 @@ package com.a606.jansori.domain.nag.service;
 
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
-import com.a606.jansori.domain.nag.exception.NagNotWriteException;
 import com.a606.jansori.domain.nag.repository.NagRepository;
 import com.a606.jansori.domain.tag.domain.NagTag;
 import com.a606.jansori.domain.tag.domain.Tag;
+import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.NagTagRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +54,7 @@ class NagServiceTest {
         given(tagRepository.findById(tag.getId())).willReturn(Optional.empty());
 
         //when with then
-        assertThrows(NagNotWriteException.class, () -> nagService.createNag(memberId, postNagReqDto));
+        assertThrows(TagNotFoundException.class, () -> nagService.createNag(memberId, postNagReqDto));
 
         //verify
         verify(tagRepository, times(1)).findById(tag.getId());
