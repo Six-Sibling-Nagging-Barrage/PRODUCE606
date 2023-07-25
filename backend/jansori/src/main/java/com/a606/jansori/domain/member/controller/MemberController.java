@@ -18,7 +18,7 @@ public class MemberController {
     private final MemberService memberService;
 
     // 닉네임 중복 검사
-    @PostMapping("/nickname-check")
+    @PostMapping("/nickname")
     public EnvelopeResponse<PostNicknameResDto> checkNicknameAvailable(@RequestBody PostNicknameReqDto postNicknameReqDto){
         return EnvelopeResponse.<PostNicknameResDto>builder()
                 .data(memberService.checkNicknameIsAvailable(postNicknameReqDto))
