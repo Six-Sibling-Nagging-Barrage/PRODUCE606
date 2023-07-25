@@ -26,7 +26,7 @@ public class NagService {
         Tag tag = tagRepository.findById(postNagReqDto.getTagId())
                 .orElseThrow(() -> new NagNotWriteException("650", "존재하지 않는 해시태그 ID 입니다."));
 
-        String preview = HangulUtil.convertToInitialSound(postNagReqDto.getContent());
+        String preview = KoreanUtil.convertToInitialSound(postNagReqDto.getContent());
 
         Nag nag = Nag.of(memberId, postNagReqDto, preview);
         NagTag nagTag = NagTag.of(nag, tag);

@@ -12,7 +12,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = NagContentValidator.class)
 public @interface NagContent {
 
-    String message() default "잔소리의 내용은 150자 이내여야 합니다.";
+    String message() default "잔소리의 내용은 2자이상 150자 이내여야 합니다.";
 
     Class<?>[] groups() default { };
 
