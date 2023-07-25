@@ -22,7 +22,7 @@ public class MemberService {
         if(isExist){
             throw new DuplicatedNicknameException();
         } else {
-            return PostNicknameResDto.of(true);
+            return PostNicknameResDto.from(true);
         }
     }
 }
