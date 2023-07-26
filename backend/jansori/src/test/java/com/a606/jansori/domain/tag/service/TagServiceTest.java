@@ -21,32 +21,33 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class TagServiceTest {
 
-    @Mock
-    private TagRepository tagRepository;
+  @Mock
+  private TagRepository tagRepository;
 
-    @Mock
-    private TagFollowRepository tagFollowRepository;
+  @Mock
+  private TagFollowRepository tagFollowRepository;
 
-    @InjectMocks
-    private TagService tagService;
+  @InjectMocks
+  private TagService tagService;
 
-    private Long tagId;
-    private Long memberId;
+  private Long tagId;
+  private Long memberId;
 
-    @BeforeEach
-    void setUp() {
-    }
+  @BeforeEach
+  void setUp() {
+  }
 
-    @DisplayName("tag를 찾을 수 없으면 태그 팔로우를 실패한다.")
-    @Test
-    void Given_Invalid_TagId_When_Following_Tag_Then_Fail() {
-        //given
-        given(tagRepository.findById(tagId)).willReturn(Optional.empty());
+  @DisplayName("tag를 찾을 수 없으면 태그 팔로우를 실패한다.")
+  @Test
+  void Given_Invalid_TagId_When_Following_Tag_Then_Fail() {
+    //given
+    given(tagRepository.findById(tagId)).willReturn(Optional.empty());
 
-        //then
-        assertThrows(TagNotFoundException.class, () -> tagService.followTagByTagWithMember(memberId, tagId));
+    //then
+    assertThrows(TagNotFoundException.class,
+        () -> tagService.followTagByTagWithMember(memberId, tagId));
 
-        //verify
-        verify(tagRepository, times(1)).findById(tagId);
-    }
+    //verify
+    verify(tagRepository, times(1)).findById(tagId);
+  }
 }
