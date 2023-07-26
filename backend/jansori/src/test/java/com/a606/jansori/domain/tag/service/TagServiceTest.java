@@ -40,6 +40,7 @@ class TagServiceTest {
 
   private Tag tag;
   private Member member;
+  private TagFollow tagFollow;
 
   @BeforeEach
   void setUp() {
@@ -49,6 +50,11 @@ class TagServiceTest {
 
     member = Member.builder()
         .id(1L)
+        .build();
+
+    tagFollow = TagFollow.builder()
+        .tag(tag)
+        .member(member)
         .build();
   }
 
@@ -72,6 +78,7 @@ class TagServiceTest {
     //given
     given(tagRepository.findById(tag.getId())).willReturn(Optional.of(tag));
     given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+    given(tagFollowRepository.findTagFollowByTagAndMember(tag, member)).willReturn(Optional.empty());
 
     //when
     when(tagFollowRepository.save(any(TagFollow.class))).thenReturn(null);
@@ -83,5 +90,6 @@ class TagServiceTest {
     verify(tagRepository, times(1)).findById(tag.getId());
     verify(memberRepository, times(1)).findById(member.getId());
     verify(tagFollowRepository, times(1)).save(any(TagFollow.class));
+    verify(tagFollowRepository, times(1)).findTagFollowByTagAndMember(tag, member);
   }
 }
