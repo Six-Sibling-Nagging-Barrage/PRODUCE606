@@ -1,5 +1,6 @@
 package com.a606.jansori.domain.member.controller;
 
+import com.a606.jansori.domain.member.dto.GetMyProfileResDto;
 import com.a606.jansori.domain.member.dto.GetUserProfileResDto;
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameReqDto;
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameResDto;
@@ -30,4 +31,12 @@ public class MemberController {
                 .data(memberService.getUserProfile(memberId))
                 .build();
     }
+
+    @GetMapping("/my/profile")
+    public EnvelopeResponse<GetMyProfileResDto> getMyProfile(@RequestParam Long memberId) {
+        return EnvelopeResponse.<GetMyProfileResDto>builder()
+                .data(memberService.getMyProfile(memberId))
+                .build();
+    }
+
 }
