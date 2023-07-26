@@ -121,11 +121,28 @@ class NagServiceTest {
 
     @DisplayName("잔소리 좋아요 취소에 성공한다.")
     @Test
-    void Given_Valid_MemberIdWithNagId_When_CreateNagLikeOrDelete_Then_Success() {
+    void Given_Valid_MemberIdWithNagId_When_NagLikeDelete_Then_Success() {
         //given
         given(nagRepository.findById(nag.getId())).willReturn(Optional.of(nag));
         given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
         given(nagLikeRepository.findNagLikeByNagAndMember(nag, member)).willReturn(Optional.of(nagLike));
+
+        //then
+        nagService.createNagLikeOrDelete(member.getId(), nag.getId());
+
+        //verify
+        verify(memberRepository, times(1)).findById(member.getId());
+        verify(nagRepository, times(1)).findById(nag.getId());
+        verify(nagLikeRepository, times(1)).findNagLikeByNagAndMember(nag, member);
+    }
+
+    @DisplayName("잔소리 좋아요 생성에 성공한다.")
+    @Test
+    void Given_Valid_MemberIdWithNagId_When_CreateNagLike_Then_Success() {
+        //given
+        given(nagRepository.findById(nag.getId())).willReturn(Optional.of(nag));
+        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+        given(nagLikeRepository.findNagLikeByNagAndMember(nag, member)).willReturn(Optional.empty());
 
         //then
         nagService.createNagLikeOrDelete(member.getId(), nag.getId());
