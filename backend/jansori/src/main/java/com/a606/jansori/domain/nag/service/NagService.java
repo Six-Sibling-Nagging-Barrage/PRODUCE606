@@ -3,6 +3,7 @@ package com.a606.jansori.domain.nag.service;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
+import com.a606.jansori.domain.nag.exception.NagNotFoundException;
 import com.a606.jansori.domain.nag.repository.NagRepository;
 import com.a606.jansori.domain.tag.domain.NagTag;
 import com.a606.jansori.domain.tag.domain.Tag;
@@ -23,7 +24,6 @@ public class NagService {
 
     @Transactional
     public PostNagResDto createNag(Long memberId, PostNagReqDto postNagReqDto) {
-
         Tag tag = tagRepository.findById(postNagReqDto.getTagId())
                 .orElseThrow(TagNotFoundException::new);
 
@@ -36,5 +36,11 @@ public class NagService {
         return PostNagResDto.builder()
                 .nagId(nagRepository.save(nag).getId())
                 .build();
+    }
+
+    @Transactional
+    public void createNagLikeOrDelete(Long memberId, Long nagId) {
+        Nag nag = nagRepository.findById(nagId)
+                .orElseThrow(NagNotFoundException::new);
     }
 }
