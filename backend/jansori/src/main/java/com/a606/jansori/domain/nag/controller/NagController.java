@@ -5,10 +5,7 @@ import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.service.NagService;
 import com.a606.jansori.global.common.EnvelopeResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -26,6 +23,16 @@ public class NagController {
 
         return EnvelopeResponse.<PostNagResDto>builder()
                 .data(nagService.createNag(1L, postNagReqDto))
+                .build();
+    }
+
+    @PostMapping("/{nagId}/like")
+    public EnvelopeResponse toggleNagLike(
+            Long memberId,
+            @PathVariable Long nagId) {
+
+        nagService.toggleNagLike(1L, nagId);
+        return EnvelopeResponse.builder()
                 .build();
     }
 }
