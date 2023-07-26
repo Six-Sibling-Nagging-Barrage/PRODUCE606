@@ -2,6 +2,7 @@ package com.a606.jansori.global.oauth.service;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.MemberRole;
+import com.a606.jansori.domain.member.domain.OauthType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,10 +42,19 @@ public class OAuth2Attributes {
     }
 
     public Member toEntity(){
+        System.out.println("(String) this.getAttributes().get(sub): " + (String) this.getAttributes().get("sub"));
         return Member.builder()
-                .oauthIdentifier(userNameAttributeName)
+                .oauthIdentifier((String) this.getAttributes().get("sub"))
                 .memberRole(MemberRole.USER)
+                .oauthType(OauthType.GOOGLE)
+                .ticket(50L)
                 .build();
     }
+
+    //                    .oauthIdentifier((String) oAuth2User.getAttributes().get("sub"))
+//                    .memberRole(MemberRole.USER)
+//                    .oauthType(OauthType.GOOGLE)
+//                    .ticket(50L)
+//                    .build();
 
 }
