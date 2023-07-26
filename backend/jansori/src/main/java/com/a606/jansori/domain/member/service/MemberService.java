@@ -1,7 +1,7 @@
 package com.a606.jansori.domain.member.service;
 
-import com.a606.jansori.domain.member.dto.PostNicknameReqDto;
-import com.a606.jansori.domain.member.dto.PostNicknameResDto;
+import com.a606.jansori.domain.member.dto.GetDuplicateNicknameReqDto;
+import com.a606.jansori.domain.member.dto.GetDuplicateNicknameResDto;
 import com.a606.jansori.domain.member.exception.DuplicatedNicknameException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 
@@ -16,13 +16,13 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
-    public PostNicknameResDto checkNicknameIsAvailable(PostNicknameReqDto postNicknameReqDto){
+    public GetDuplicateNicknameResDto checkNicknameIsAvailable(GetDuplicateNicknameReqDto getDuplicateNicknameReqDto){
 
-        Boolean isExist = memberRepository.existsByNickname(postNicknameReqDto.getNickname());
+        Boolean isExist = memberRepository.existsByNickname(getDuplicateNicknameReqDto.getNickname());
         if(isExist){
             throw new DuplicatedNicknameException();
         }
 
-        return PostNicknameResDto.from(true);
+        return GetDuplicateNicknameResDto.from(true);
     }
 }

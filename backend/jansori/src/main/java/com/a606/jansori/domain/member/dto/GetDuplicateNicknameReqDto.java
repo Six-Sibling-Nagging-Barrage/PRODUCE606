@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class PostNicknameReqDto {
+public class GetDuplicateNicknameReqDto {
 
     @NotNull
     @Size(min = 1, max = 11)
