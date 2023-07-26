@@ -1,10 +1,16 @@
 package com.a606.jansori.domain.tag.domain;
 
 import com.a606.jansori.domain.member.domain.Member;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
+import lombok.NoArgsConstructor;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Entity(name = "tag_follow")
 public class TagFollow {
