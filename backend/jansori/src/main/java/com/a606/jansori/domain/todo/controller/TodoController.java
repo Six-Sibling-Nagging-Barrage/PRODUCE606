@@ -1,11 +1,11 @@
 package com.a606.jansori.domain.todo.controller;
 
-import com.a606.jansori.domain.todo.dto.GetTodoListResDto;
-import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
-import com.a606.jansori.domain.todo.dto.PostTodoResDto;
+import com.a606.jansori.domain.todo.dto.*;
+import com.a606.jansori.domain.todo.service.TodoFeedService;
 import com.a606.jansori.domain.todo.service.TodoService;
 import com.a606.jansori.global.common.EnvelopeResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,6 +16,8 @@ import javax.validation.Valid;
 public class TodoController {
 
     private final TodoService todoService;
+
+    private final TodoFeedService todoFeedService;
 
     @PostMapping
     public EnvelopeResponse postTodo(@Valid @RequestBody PostTodoReqDto postTodoReqDto, @RequestParam Long memberId) {
@@ -41,6 +43,14 @@ public class TodoController {
                 .data(todoService.getMyAllTodo(memberId))
                 .build();
 
+    }
+
+    @GetMapping("/feed/following")
+    public EnvelopeResponse<GetTodoFeedResDto> getFollowingFeed(Long memberId, Long cursor, Pageable pageable) {
+
+        return EnvelopeResponse.<GetTodoFeedResDto>builder()
+                .data(todoFeedService.getFollowingFeed(memberId, cursor, pageable))
+                .build();
     }
 
 }
