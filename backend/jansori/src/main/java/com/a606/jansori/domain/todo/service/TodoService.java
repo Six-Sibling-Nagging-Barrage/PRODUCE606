@@ -1,6 +1,7 @@
 package com.a606.jansori.domain.todo.service;
 
 import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TodoTag;
@@ -9,7 +10,6 @@ import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.dto.*;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
-import com.a606.jansori.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,12 +36,16 @@ public class TodoService {
     public PostTodoResDto postTodo(PostTodoReqDto postTodoReqDto, Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundException("800", "사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException());
 
         Todo todo = postTodoReqDto.getTodoWith(member);
 
         postTodoReqDto.getTags().stream()
-                .forEach(tagDto -> todo.getTodoTags().add(new TodoTag(getTagIfExistElseSave(tagDto))));
+                .forEach(tagDto -> {
+                    TodoTag todoTag = new TodoTag(getTagIfExistElseSave(tagDto));
+
+                    todoTag.setTodo(todo);
+                });
 
         return new PostTodoResDto(todoRepository.save(todo).getId());
     }
@@ -62,15 +66,15 @@ public class TodoService {
     public GetTodoListResDto getMyTodayTodo(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundException("800", "사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException());
 
         LocalDate current = LocalDate.now(clock);
         LocalDateTime today = current.atStartOfDay();
         LocalDateTime tomorrow = current.plusDays(1).atStartOfDay();
 
-        List<Todo> todoList = todoRepository.findAllByMemberAndCreatedAtBetween(member, today, tomorrow);
-
-        List<TodoDto> todos = todoList.stream().map(todo -> TodoDto.from(todo)).collect(Collectors.toList());
+        List<TodoDto> todos = todoRepository.findAllByMemberAndCreatedAtBetween(member, today, tomorrow).stream()
+                .map(todo -> TodoDto.from(todo))
+                .collect(Collectors.toList());
 
         return GetTodoListResDto.builder()
                 .todos(todos)
