@@ -1,6 +1,7 @@
 package com.a606.jansori.global.oauth.service;
 
 import com.a606.jansori.domain.member.domain.Member;
+
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.member.domain.MemberRole;
 import com.a606.jansori.domain.member.domain.OauthType;
