@@ -72,7 +72,22 @@ public class TodoService {
         LocalDateTime today = current.atStartOfDay();
         LocalDateTime tomorrow = current.plusDays(1).atStartOfDay();
 
-        List<TodoDto> todos = todoRepository.findAllByMemberAndCreatedAtBetween(member, today, tomorrow).stream()
+        List<TodoDto> todos = todoRepository.findAllByMemberAndCreatedAtBetweenOrderByCreatedAtDesc(member, today, tomorrow).stream()
+                .map(todo -> TodoDto.from(todo))
+                .collect(Collectors.toList());
+
+        return GetTodoListResDto.builder()
+                .todos(todos)
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public GetTodoListResDto getMyAllTodo(Long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException());
+
+        List<TodoDto> todos = todoRepository.findAllByMemberOrderByCreatedAtDesc(member).stream()
                 .map(todo -> TodoDto.from(todo))
                 .collect(Collectors.toList());
 

@@ -34,4 +34,13 @@ public class TodoController {
 
     }
 
+    @GetMapping("/my/all")
+    public EnvelopeResponse getMyAllTodo(Long memberId) {
+
+        return EnvelopeResponse.<GetTodoListResDto>builder()
+                .data(todoService.getMyAllTodo(memberId))
+                .build();
+
+    }
+
 }
