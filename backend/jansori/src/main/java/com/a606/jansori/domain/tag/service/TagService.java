@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class TagService {
@@ -25,12 +27,9 @@ public class TagService {
 
     Tag tag = tagRepository.findById(tagId).orElseThrow(TagNotFoundException::new);
     Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+    Optional<TagFollow> tagFollow = tagFollowRepository.findTagFollowByTagAndMember(tag, member);
 
-    TagFollow tagFollow = TagFollow.builder()
-        .tag(tag)
-        .member(member)
-        .build();
-
-    tagFollowRepository.save(tagFollow);
+    tagFollow.ifPresentOrElse(tagFollowRepository::delete,
+            () -> tagFollowRepository.save(TagFollow.builder().tag(tag).member(member).build()));
   }
 }
