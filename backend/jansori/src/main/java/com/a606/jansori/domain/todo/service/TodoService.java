@@ -6,7 +6,6 @@ import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TodoTag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagRepository;
-import com.a606.jansori.domain.tag.repository.TodoTagRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.dto.*;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
@@ -18,9 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +38,7 @@ public class TodoService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException("800", "사용자를 찾을 수 없습니다."));
 
-        Todo todo = Todo.ofMemberAndRequestDto(member, postTodoReqDto);
+        Todo todo = postTodoReqDto.getTodoWith(member);
 
         postTodoReqDto.getTags().stream()
                 .forEach(tagDto -> todo.getTodoTags().add(new TodoTag(getTagIfExistElseSave(tagDto))));

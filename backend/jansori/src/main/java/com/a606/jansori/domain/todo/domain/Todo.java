@@ -25,7 +25,7 @@ public class Todo extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -42,11 +42,4 @@ public class Todo extends BaseTimeEntity {
     @Builder.Default
     private List<TodoTag> todoTags = new ArrayList<>();
 
-    public static Todo ofMemberAndRequestDto(Member member, PostTodoReqDto postTodoReqDto) {
-        return Todo.builder().member(member)
-                .display(postTodoReqDto.getDisplay())
-                .finished(Boolean.FALSE)
-                .content(postTodoReqDto.getContent())
-                .build();
-    }
 }
