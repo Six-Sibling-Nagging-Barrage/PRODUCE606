@@ -1,7 +1,9 @@
 package com.a606.jansori.domain.nag.service;
 
 import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
+import com.a606.jansori.domain.nag.domain.NagLike;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
@@ -33,6 +35,8 @@ class NagServiceTest {
     @Mock
     private TagRepository tagRepository;
     @Mock
+    private MemberRepository memberRepository;
+    @Mock
     private NagTagRepository nagTagRepository;
     @Mock
     private NagLikeRepository nagLikeRepository;
@@ -43,6 +47,7 @@ class NagServiceTest {
     private Member member;
     private Tag tag;
     private Nag nag;
+    private NagLike nagLike;
 
     @BeforeEach
     public void createPostNag() {
@@ -56,6 +61,10 @@ class NagServiceTest {
                 .build();
         nag = Nag.builder()
                 .id(1L)
+                .build();
+        nagLike = NagLike.builder()
+                .nag(nag)
+                .member(member)
                 .build();
     }
 
@@ -107,5 +116,23 @@ class NagServiceTest {
 
         //verify
         verify(nagRepository, times(1)).findById(nag.getId());
+    }
+
+
+    @DisplayName("잔소리 좋아요 취소에 성공한다.")
+    @Test
+    void Given_Valid_MemberIdWithNagId_When_CreateNagLikeOrDelete_Then_Success() {
+        //given
+        given(nagRepository.findById(nag.getId())).willReturn(Optional.of(nag));
+        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+        given(nagLikeRepository.findNagLikeByNagAndMember(nag, member)).willReturn(Optional.of(nagLike));
+
+        //then
+        nagService.createNagLikeOrDelete(member.getId(), nag.getId());
+
+        //verify
+        verify(memberRepository, times(1)).findById(member.getId());
+        verify(nagRepository, times(1)).findById(nag.getId());
+        verify(nagLikeRepository, times(1)).findNagLikeByNagAndMember(nag, member);
     }
 }
