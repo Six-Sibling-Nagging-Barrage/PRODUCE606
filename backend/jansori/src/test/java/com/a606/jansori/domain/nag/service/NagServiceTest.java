@@ -3,13 +3,13 @@ package com.a606.jansori.domain.nag.service;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
+import com.a606.jansori.domain.nag.exception.NagNotFoundException;
 import com.a606.jansori.domain.nag.repository.NagRepository;
 import com.a606.jansori.domain.tag.domain.NagTag;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.NagTagRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +38,7 @@ class NagServiceTest {
     private PostNagReqDto postNagReqDto;
     private Long memberId;
     private Tag tag;
+    private Nag nag;
 
     @BeforeEach
     public void createPostNag() {
@@ -46,6 +47,9 @@ class NagServiceTest {
                 .id(1L)
                 .name("운동")
                 .count(1L)
+                .build();
+        nag = Nag.builder()
+                .id(1L)
                 .build();
     }
 
@@ -82,5 +86,18 @@ class NagServiceTest {
         verify(tagRepository, times(1)).findById(tag.getId());
         verify(nagRepository, times(1)).save(any(Nag.class));
         verify(nagTagRepository, times(1)).save(any(NagTag.class));
+    }
+
+    @DisplayName("잔소리 ID가 존재하지 않다면 잔소리 좋아요 생성 또는 삭제에 실패한다.")
+    @Test
+    void Given_NotExistNag_When_RegisterNagLike_Then_Fail() {
+        //given
+        given(nagRepository.findById(nag.getId())).willReturn(Optional.empty());
+
+        //then
+        assertThrows(NagNotFoundException.class, () -> nagService.createNagLikeOrDelete(memberId, nag.getId()));
+
+        //verify
+        verify(nagRepository, times(1)).findById(nag.getId());
     }
 }
