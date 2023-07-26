@@ -33,12 +33,8 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public GetUserProfileResDto getUserProfile(Long memberId){
-        Optional<Member> member = memberRepository.findById(memberId);
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException());
 
-        if(member.isEmpty()) {
-            throw new MemberNotFoundException();
-        }
-
-        return GetUserProfileResDto.from(member.get());
+        return GetUserProfileResDto.from(member);
     }
 }
