@@ -1,9 +1,9 @@
 package com.a606.jansori.global.oauth.service;
 
 import com.a606.jansori.domain.member.domain.Member;
-import com.a606.jansori.domain.member.domain.MemberRepository;
 import com.a606.jansori.domain.member.domain.MemberRole;
 import com.a606.jansori.domain.member.domain.OauthType;
+import com.a606.jansori.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
