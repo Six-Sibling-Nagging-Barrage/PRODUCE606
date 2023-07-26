@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +25,8 @@ public class TodoDto {
 
     private String content;
 
+    private LocalDateTime createdAt;
+
     private List<TagDto> tags = new ArrayList<>();
 
     public static TodoDto from(Todo todo) {
@@ -33,6 +36,7 @@ public class TodoDto {
                 .display(todo.getDisplay())
                 .finished(todo.getFinished())
                 .content(todo.getContent())
+                .createdAt(todo.getCreatedAt())
                 .tags(todo.getTodoTags().stream()
                         .map(todoTag -> TagDto.from(todoTag))
                         .collect(Collectors.toList()))

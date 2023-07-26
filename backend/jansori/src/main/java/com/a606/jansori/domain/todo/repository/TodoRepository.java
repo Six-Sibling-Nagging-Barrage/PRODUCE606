@@ -9,5 +9,7 @@ import java.util.List;
 
 public interface TodoRepository extends JpaRepository<Todo, Long> {
 
-    List<Todo> findAllByMemberAndCreatedAtBetween(Member member, LocalDateTime today, LocalDateTime tomorrow);
+    List<Todo> findAllByMemberAndCreatedAtBetweenOrderByCreatedAtDesc(Member member, LocalDateTime today, LocalDateTime tomorrow);
+
+    List<Todo> findAllByMemberOrderByCreatedAtDesc(Member member);
 }
