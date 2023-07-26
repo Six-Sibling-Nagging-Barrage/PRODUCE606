@@ -112,7 +112,7 @@ class NagServiceTest {
 
         //then
         assertThrows(NagNotFoundException.class,
-                () -> nagService.createNagLikeOrDelete(member.getId(), nag.getId()));
+                () -> nagService.toggleNagLike(member.getId(), nag.getId()));
 
         //verify
         verify(nagRepository, times(1)).findById(nag.getId());
@@ -128,7 +128,7 @@ class NagServiceTest {
         given(nagLikeRepository.findNagLikeByNagAndMember(nag, member)).willReturn(Optional.of(nagLike));
 
         //then
-        nagService.createNagLikeOrDelete(member.getId(), nag.getId());
+        nagService.toggleNagLike(member.getId(), nag.getId());
 
         //verify
         verify(memberRepository, times(1)).findById(member.getId());
@@ -145,7 +145,7 @@ class NagServiceTest {
         given(nagLikeRepository.findNagLikeByNagAndMember(nag, member)).willReturn(Optional.empty());
 
         //then
-        nagService.createNagLikeOrDelete(member.getId(), nag.getId());
+        nagService.toggleNagLike(member.getId(), nag.getId());
 
         //verify
         verify(memberRepository, times(1)).findById(member.getId());

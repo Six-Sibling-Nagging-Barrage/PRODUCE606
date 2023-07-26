@@ -48,7 +48,7 @@ public class NagService {
     }
 
     @Transactional
-    public void createNagLikeOrDelete(Long memberId, Long nagId) {
+    public void toggleNagLike(Long memberId, Long nagId) {
         Nag nag = nagRepository.findById(nagId)
                 .orElseThrow(NagNotFoundException::new);
         Member member = memberRepository.findById(memberId)
