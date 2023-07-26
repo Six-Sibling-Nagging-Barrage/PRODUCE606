@@ -92,4 +92,21 @@ class TagServiceTest {
     verify(tagFollowRepository, times(1)).save(any(TagFollow.class));
     verify(tagFollowRepository, times(1)).findTagFollowByTagAndMember(tag, member);
   }
+
+  @DisplayName("tag가 존재하고 이미 팔로우한 태그라면 팔로우에 취소한다.")
+  @Test
+  void Given_Valid_Tag_With_Member_When_Exist_Following_Tag_Then_Success() {
+    //given
+    given(tagRepository.findById(tag.getId())).willReturn(Optional.of(tag));
+    given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+    given(tagFollowRepository.findTagFollowByTagAndMember(tag, member)).willReturn(Optional.of(tagFollow));
+
+    //then
+    tagService.followTagByTagWithMember(member.getId(), tag.getId());
+
+    //verify
+    verify(tagRepository, times(1)).findById(tag.getId());
+    verify(memberRepository, times(1)).findById(member.getId());
+    verify(tagFollowRepository, times(1)).findTagFollowByTagAndMember(tag, member);
+  }
 }
