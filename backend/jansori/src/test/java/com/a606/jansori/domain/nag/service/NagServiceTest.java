@@ -1,9 +1,11 @@
 package com.a606.jansori.domain.nag.service;
 
+import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
+import com.a606.jansori.domain.nag.repository.NagLikeRepository;
 import com.a606.jansori.domain.nag.repository.NagRepository;
 import com.a606.jansori.domain.tag.domain.NagTag;
 import com.a606.jansori.domain.tag.domain.Tag;
@@ -32,17 +34,21 @@ class NagServiceTest {
     private TagRepository tagRepository;
     @Mock
     private NagTagRepository nagTagRepository;
+    @Mock
+    private NagLikeRepository nagLikeRepository;
     @InjectMocks
     private NagService nagService;
 
     private PostNagReqDto postNagReqDto;
-    private Long memberId;
+    private Member member;
     private Tag tag;
     private Nag nag;
 
     @BeforeEach
     public void createPostNag() {
-        memberId = 1L;
+        member = Member.builder()
+                .id(1L)
+                .build();
         tag = Tag.builder()
                 .id(1L)
                 .name("운동")
@@ -61,7 +67,8 @@ class NagServiceTest {
         given(tagRepository.findById(tag.getId())).willReturn(Optional.empty());
 
         //when with then
-        assertThrows(TagNotFoundException.class, () -> nagService.createNag(memberId, postNagReqDto));
+        assertThrows(TagNotFoundException.class,
+                () -> nagService.createNag(member.getId(), postNagReqDto));
 
         //verify
         verify(tagRepository, times(1)).findById(tag.getId());
@@ -79,7 +86,7 @@ class NagServiceTest {
         when(nagTagRepository.save(any(NagTag.class))).thenReturn(null);
 
         //then
-        PostNagResDto postNagResDto = nagService.createNag(memberId, postNagReqDto);
+        PostNagResDto postNagResDto = nagService.createNag(member.getId(), postNagReqDto);
         assertThat(postNagResDto.getNagId()).isEqualTo(1L);
 
         //verify
@@ -95,7 +102,8 @@ class NagServiceTest {
         given(nagRepository.findById(nag.getId())).willReturn(Optional.empty());
 
         //then
-        assertThrows(NagNotFoundException.class, () -> nagService.createNagLikeOrDelete(memberId, nag.getId()));
+        assertThrows(NagNotFoundException.class,
+                () -> nagService.createNagLikeOrDelete(member.getId(), nag.getId()));
 
         //verify
         verify(nagRepository, times(1)).findById(nag.getId());
