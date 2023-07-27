@@ -17,6 +17,10 @@ public class TodoMetadata {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne
+    @JoinColumn(name = "todo_id")
+    private Todo todo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "persona_id")
     private Persona persona;

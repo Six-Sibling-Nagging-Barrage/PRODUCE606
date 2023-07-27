@@ -42,4 +42,7 @@ public class Todo extends BaseTimeEntity {
     @Builder.Default
     private List<TodoTag> todoTags = new ArrayList<>();
 
+    @OneToOne
+    @JoinColumn(name = "todo_metadata_id")
+    private TodoMetadata todoMetadata;
 }
