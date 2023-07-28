@@ -1,4 +1,4 @@
-package com.a606.jansori.domain.tag.service;
+package com.a606.jansori.domain.nag.service;
 
 import com.a606.jansori.domain.persona.domain.Persona;
 import com.a606.jansori.domain.tag.domain.TodoTag;
@@ -9,6 +9,6 @@ public class NagRandomGenerator {
   public void getRandomLineOfPersona(Persona persona) {
   }
 
-  public void getRandomNag(List<TodoTag> todoTags) {
+  public void getRandomNagOfUser(List<TodoTag> todoTags) {
   }
 }
