@@ -7,7 +7,6 @@ import com.a606.jansori.domain.persona.domain.Persona;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TodoTag;
 import com.a606.jansori.domain.tag.repository.NagTagRepository;
-import com.a606.jansori.domain.tag.repository.TodoTagRepository;
 import com.a606.jansori.global.util.RandomUtil;
 import java.util.List;
 import java.util.stream.Collectors;
