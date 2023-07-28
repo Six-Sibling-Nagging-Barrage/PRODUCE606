@@ -6,7 +6,9 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.dto.FeedNagDto;
+import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
+import com.a606.jansori.domain.tag.domain.TagFollow;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.dto.FeedDto;
@@ -31,13 +33,15 @@ public class TodoFeedService {
 
     private final TagFollowRepository tagFollowRepository;
 
+    private final NagUnlockRepository nagUnlockRepository;
+
     public GetTodoFeedResDto getFollowingFeed(Long memberId, Long cursor, Pageable pageable) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException());
+                .orElseThrow(MemberNotFoundException::new);
 
         List<Tag> tags = tagFollowRepository.findAllByMember(member).stream()
-                .map(tagFollow -> tagFollow.getTag())
+                .map(TagFollow::getTag)
                 .collect(Collectors.toList());
 
         Slice<Todo> pagedTodos = todoRepository.findFollowingFeed(tags, cursor, pageable);
@@ -51,16 +55,16 @@ public class TodoFeedService {
 
     private List<FeedDto> convertTodosToFeedDtos(List<Todo> todos) {
 
-        todos.stream().map(todo -> {
+        return todos.stream().map(todo -> {
 
             Nag nag = todo.getNag();
-            FeedNagDto feedNagDto = FeedNagDto.ofMemberAndLikeCount(nag.getMember())
+            FeedNagDto feedNagDto = FeedNagDto.ofMemberAndLikeCount(nag.getMember(), nag.getLikeCount());
+            feedNagDto.setNagContentByUnlocked(nagUnlockRepository.existsByNagAndMember(nag, todo.getMember()), nag);
 
             return FeedDto.ofFeedRelatedDto(FeedMemberDto.from(todo.getMember()),
                     TodoDto.from(todo),
-                    FeedNagDto.of)
-        })
+                    feedNagDto);
 
-        return null;
+        }).collect(Collectors.toList());
     }
 }
