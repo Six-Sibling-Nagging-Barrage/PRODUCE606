@@ -40,11 +40,11 @@ public class TodoPersona {
 
   @Column
   @Builder.Default
-  private Long likeCount = 1L;
+  private Long likeCount = 0L;
 
   public void setTodo(Todo todo) {
 
-    if (todo != null) {
+    if (this.todo != null) {
       this.todo.getTodoPersonas().remove(this);
     }
 

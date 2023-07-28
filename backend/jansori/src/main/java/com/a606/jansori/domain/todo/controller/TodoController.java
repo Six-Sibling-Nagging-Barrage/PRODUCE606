@@ -55,10 +55,10 @@ public class TodoController {
 
   @GetMapping("/feed/following")
   public EnvelopeResponse<GetTodoFeedResDto> getFollowingFeed(Long memberId, Long cursor,
-      Pageable pageable) {
+      Integer size) {
 
     return EnvelopeResponse.<GetTodoFeedResDto>builder()
-        .data(todoFeedService.getFollowingFeed(memberId, cursor, pageable))
+        .data(todoFeedService.getFollowingFeed(memberId, cursor, size))
         .build();
   }
 

@@ -1,7 +1,9 @@
 package com.a606.jansori.domain.todo.dto;
 
 import com.a606.jansori.domain.persona.domain.TodoPersona;
+import com.a606.jansori.domain.persona.dto.FeedLineDto;
 import com.a606.jansori.domain.todo.domain.Todo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +31,8 @@ public class TodoDto {
 
   private List<TagDto> tags;
 
-  private List<TodoPersona> todoPersonas;
+  @JsonProperty("persona")
+  private List<FeedLineDto> feedLineDtos;
 
   public static TodoDto from(Todo todo) {
 
@@ -41,6 +44,9 @@ public class TodoDto {
         .createdAt(todo.getCreatedAt())
         .tags(todo.getTodoTags().stream()
             .map(todoTag -> TagDto.from(todoTag))
+            .collect(Collectors.toList()))
+        .feedLineDtos(todo.getTodoPersonas().stream()
+            .map(todoPersona -> FeedLineDto.from(todoPersona))
             .collect(Collectors.toList()))
         .build();
   }

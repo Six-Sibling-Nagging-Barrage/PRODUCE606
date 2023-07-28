@@ -70,7 +70,7 @@ public class TodoService {
       todoPersona.setTodo(todo);
     });
 
-    return new PostTodoResDto(todoRepository.save(todo).getId());
+    return new PostTodoResDto(TodoDto.from(todoRepository.save(todo)));
   }
 
   private Tag getTagIfExistElseSave(TagDto tagDto) {

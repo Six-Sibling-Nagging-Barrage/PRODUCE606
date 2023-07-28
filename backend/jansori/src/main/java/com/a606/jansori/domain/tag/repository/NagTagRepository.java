@@ -10,12 +10,17 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface NagTagRepository extends JpaRepository<NagTag, Long> {
 
+  @Query(value = "select count(distinct nt) from nag_tag nt "
+      + "join nt.nag n "
+      + "join nt.tag t "
+      + "where n.member <> :member "
+      + "and t in :tags ")
   Long countDistinctByNag_MemberNotAndTagIn(Member member, List<Tag> tags);
 
   @Query(value = "select nt from nag_tag nt "
-      + "join fetch nt.nag n "
-      + "join fetch nt.tag t "
-      + "where n.member != :member "
+      + "join nt.nag n "
+      + "join nt.tag t "
+      + "where n.member <> :member "
       + "and t in :tags ")
   List<NagTag> findByNag_MemberNotAndTagIn(Member member, List<Tag> tags, Pageable pageable);
 
