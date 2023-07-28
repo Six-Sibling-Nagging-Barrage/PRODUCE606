@@ -15,7 +15,7 @@ public class TagController {
 
   private final TagService tagService;
 
-  @PostMapping("{tagId}/follow")
+  @PostMapping("/{tagId}/follow")
   public EnvelopeResponse followTagByTagWithMember(Long memberId, @PathVariable Long tagId) {
     tagService.followTagByTagWithMember(memberId, tagId);
     return EnvelopeResponse.builder().build();
