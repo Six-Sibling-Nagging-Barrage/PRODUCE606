@@ -3,6 +3,7 @@ package com.a606.jansori.domain.todo.service;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
+import com.a606.jansori.domain.nag.service.NagRandomGenerator;
 import com.a606.jansori.domain.persona.domain.Persona;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.domain.persona.repository.PersonaRepository;
@@ -38,7 +39,7 @@ public class TodoService {
 
   private final PersonaRepository personaRepository;
 
-//    private final RandomHashtagGenerator randomHashtagGenerator;
+  private final NagRandomGenerator nagRandomGenerator;
 
   private final Clock clock;
 
@@ -57,7 +58,7 @@ public class TodoService {
           todoTag.setTodo(todo);
         });
 
-//        todo.setNag(randomHashtagGenerator.getRandomTag(todo.getTodoTags()));
+    todo.setNag(nagRandomGenerator.getRandomNagWithTags(member, todo.getTodoTags()));
 
     List<Persona> personas = personaRepository.findAll();
 
