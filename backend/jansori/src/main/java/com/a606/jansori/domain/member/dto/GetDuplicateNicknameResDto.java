@@ -6,11 +6,12 @@ import lombok.Getter;
 @Builder
 @Getter
 public class GetDuplicateNicknameResDto {
-    Boolean isPossible;
 
-    public static GetDuplicateNicknameResDto from(Boolean isPossible){
-        return GetDuplicateNicknameResDto.builder()
-                .isPossible(isPossible)
-                .build();
-    }
+  Boolean isPossible;
+
+  public static GetDuplicateNicknameResDto from(Boolean isPossible) {
+    return GetDuplicateNicknameResDto.builder()
+        .isPossible(isPossible)
+        .build();
+  }
 }
