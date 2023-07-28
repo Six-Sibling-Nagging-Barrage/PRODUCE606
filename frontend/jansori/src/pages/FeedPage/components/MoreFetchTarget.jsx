@@ -9,7 +9,7 @@ const MoreFetchTarget = (props) => {
     if (isIntersecting)
       setCursor((prev) => {
         // items.at(-1).id
-        prev + 1; // 임시 데이터
+        return prev + 1; // 임시 데이터
       });
   });
 
