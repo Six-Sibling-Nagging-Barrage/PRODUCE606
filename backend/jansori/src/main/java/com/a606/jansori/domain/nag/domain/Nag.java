@@ -1,13 +1,19 @@
 package com.a606.jansori.domain.nag.domain;
 
+import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.global.common.BaseTimeEntity;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Builder
 @AllArgsConstructor
@@ -16,29 +22,30 @@ import javax.persistence.*;
 @Entity(name = "nag")
 public class Nag extends BaseTimeEntity {
 
-    @Id
-    @Column(name = "nag_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @Column(name = "nag_id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column
-    private String content;
+  @Column
+  private String content;
 
-    @Enumerated(EnumType.STRING)
-    private NagType nagType;
+  @Column
+  private String preview;
 
-    @Column
-    private Long writerId;
+  @Column(name = "like_count")
+  @Builder.Default
+  private Long likeCount = 0L;
 
-    @Column
-    private String preview;
+  @ManyToOne
+  @JoinColumn(name = "member_id")
+  private Member member;
 
-    public static Nag of(Long memberId, PostNagReqDto postNagReqDto, String preview) {
-        return Nag.builder()
-                .writerId(memberId)
-                .nagType(NagType.MEMBER)
-                .preview(preview)
-                .content(postNagReqDto.getContent())
-                .build();
-    }
+  public static Nag of(Member member, PostNagReqDto postNagReqDto, String preview) {
+    return Nag.builder()
+        .member(member)
+        .preview(preview)
+        .content(postNagReqDto.getContent())
+        .build();
+  }
 }

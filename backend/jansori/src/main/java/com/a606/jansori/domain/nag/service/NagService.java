@@ -34,10 +34,11 @@ public class NagService {
   public PostNagResDto createNag(Long memberId, PostNagReqDto postNagReqDto) {
     Tag tag = tagRepository.findById(postNagReqDto.getTagId())
         .orElseThrow(TagNotFoundException::new);
-
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(MemberNotFoundException::new);
     String preview = KoreanUtil.convertToInitialSound(postNagReqDto.getContent());
 
-    Nag nag = Nag.of(memberId, postNagReqDto, preview);
+    Nag nag = Nag.of(member, postNagReqDto, preview);
     NagTag nagTag = NagTag.of(nag, tag);
 
     nagTagRepository.save(nagTag);
