@@ -146,6 +146,7 @@ const NavItems = styled.div`
 items-center
 justify-between
 w-full
+hidden
 md:flex
 md:w-auto
 md:order-1
