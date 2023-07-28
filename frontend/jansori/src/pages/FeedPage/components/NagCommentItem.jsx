@@ -15,9 +15,9 @@ const NagCommentItem = (props) => {
           />
           <div>{comment.writer}</div>
         </div>
-        <div>
+        <CommentContent>
           <div>{comment.content}</div>
-        </div>
+        </CommentContent>
       </CommentContainer>
     </li>
   );
@@ -29,6 +29,10 @@ const CommentContainer = styled.div`
   & .profile-img {
     width: 50px;
   }
+`;
+const CommentContent = styled.div`
+  line-height: 64px;
+  padding-left: 10px;
 `;
 
 export default NagCommentItem;

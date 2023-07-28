@@ -93,8 +93,26 @@ const PersonaProfile = styled.div`
 `;
 
 const PersonaBio = styled.div`
-  height: 50px;
-  border: 1px solid black;
+  margin-top: 5px;
+  position: relative;
+  height: 80px;
+  padding: 15px;
+  background-color: rgb(238, 238, 238);
+  border-radius: 10px;
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 5%;
+    width: 0;
+    height: 0;
+    border: 13px solid transparent;
+    border-bottom-color: rgb(238, 238, 238);
+    border-top: 0;
+    border-right: 0;
+    margin-left: -6.5px;
+    margin-top: -12px;
+  }
 `;
 
 export default PersonaReaction;
