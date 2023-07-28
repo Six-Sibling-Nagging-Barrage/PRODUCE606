@@ -8,19 +8,19 @@ import lombok.Getter;
 @Builder
 public class FeedMemberDto {
 
-    private Long memberId;
+  private Long memberId;
 
-    private String nickname;
+  private String nickname;
 
-    private String imageUrl;
+  private String imageUrl;
 
-    public static FeedMemberDto from(Member member) {
+  public static FeedMemberDto from(Member member) {
 
-        return FeedMemberDto.builder()
-                .memberId(member.getId())
-                .nickname(member.getNickname())
-                .imageUrl(member.getImageUrl())
-                .build();
-    }
+    return FeedMemberDto.builder()
+        .memberId(member.getId())
+        .nickname(member.getNickname())
+        .imageUrl(member.getImageUrl())
+        .build();
+  }
 
 }

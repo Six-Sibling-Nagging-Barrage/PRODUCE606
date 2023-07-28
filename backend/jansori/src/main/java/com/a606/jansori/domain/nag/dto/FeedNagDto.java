@@ -11,26 +11,26 @@ import lombok.Getter;
 @Builder
 public class FeedNagDto {
 
-    @JsonProperty("nagMember")
-    private FeedMemberDto feedMemberDto;
+  @JsonProperty("nagMember")
+  private FeedMemberDto feedMemberDto;
 
-    private Boolean unlocked;
+  private Boolean unlocked;
 
-    private String content;
+  private String content;
 
-    private Long likeCount;
+  private Long likeCount;
 
-    public static FeedNagDto ofMemberAndLikeCount(Member member, Long likeCount) {
+  public static FeedNagDto ofMemberAndLikeCount(Member member, Long likeCount) {
 
-        return FeedNagDto.builder()
-                .feedMemberDto(FeedMemberDto.from(member))
-                .likeCount(likeCount)
-                .build();
-    }
+    return FeedNagDto.builder()
+        .feedMemberDto(FeedMemberDto.from(member))
+        .likeCount(likeCount)
+        .build();
+  }
 
-    public void setNagContentByUnlocked(Boolean unlocked, Nag nag) {
+  public void setNagContentByUnlocked(Boolean unlocked, Nag nag) {
 
-        this.content = unlocked ? nag.getContent() : nag.getPreview();
-    }
+    this.content = unlocked ? nag.getContent() : nag.getPreview();
+  }
 
 }
