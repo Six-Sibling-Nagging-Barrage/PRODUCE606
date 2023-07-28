@@ -15,56 +15,56 @@ import com.a606.jansori.domain.todo.dto.FeedDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
 import com.a606.jansori.domain.todo.dto.TodoDto;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class TodoFeedService {
 
-    private final MemberRepository memberRepository;
+  private final MemberRepository memberRepository;
 
-    private final TodoRepository todoRepository;
+  private final TodoRepository todoRepository;
 
-    private final TagFollowRepository tagFollowRepository;
+  private final TagFollowRepository tagFollowRepository;
 
-    private final NagUnlockRepository nagUnlockRepository;
+  private final NagUnlockRepository nagUnlockRepository;
 
-    public GetTodoFeedResDto getFollowingFeed(Long memberId, Long cursor, Pageable pageable) {
+  public GetTodoFeedResDto getFollowingFeed(Long memberId, Long cursor, Pageable pageable) {
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(MemberNotFoundException::new);
 
-        List<Tag> tags = tagFollowRepository.findAllByMember(member).stream()
-                .map(TagFollow::getTag)
-                .collect(Collectors.toList());
+    List<Tag> tags = tagFollowRepository.findAllByMember(member).stream()
+        .map(TagFollow::getTag)
+        .collect(Collectors.toList());
 
-        Slice<Todo> pagedTodos = todoRepository.findFollowingFeed(tags, cursor, pageable);
+    Slice<Todo> pagedTodos = todoRepository.findFollowingFeed(tags, cursor, pageable);
 
-        return GetTodoFeedResDto.builder()
-                .feed(convertTodosToFeedDtos(pagedTodos.getContent()))
-                .nextCursor(pagedTodos.nextPageable().getOffset())
-                .hasNext(pagedTodos.hasNext())
-                .build();
-    }
+    return GetTodoFeedResDto.builder()
+        .feed(convertTodosToFeedDtos(pagedTodos.getContent()))
+        .nextCursor(pagedTodos.nextPageable().getOffset())
+        .hasNext(pagedTodos.hasNext())
+        .build();
+  }
 
-    private List<FeedDto> convertTodosToFeedDtos(List<Todo> todos) {
+  private List<FeedDto> convertTodosToFeedDtos(List<Todo> todos) {
 
-        return todos.stream().map(todo -> {
+    return todos.stream().map(todo -> {
 
-            Nag nag = todo.getNag();
-            FeedNagDto feedNagDto = FeedNagDto.ofMemberAndLikeCount(nag.getMember(), nag.getLikeCount());
-            feedNagDto.setNagContentByUnlocked(nagUnlockRepository.existsByNagAndMember(nag, todo.getMember()), nag);
+      Nag nag = todo.getNag();
+      FeedNagDto feedNagDto = FeedNagDto.ofMemberAndLikeCount(nag.getMember(), nag.getLikeCount());
+      feedNagDto.setNagContentByUnlocked(
+          nagUnlockRepository.existsByNagAndMember(nag, todo.getMember()), nag);
 
-            return FeedDto.ofFeedRelatedDto(FeedMemberDto.from(todo.getMember()),
-                    TodoDto.from(todo),
-                    feedNagDto);
+      return FeedDto.ofFeedRelatedDto(FeedMemberDto.from(todo.getMember()),
+          TodoDto.from(todo),
+          feedNagDto);
 
-        }).collect(Collectors.toList());
-    }
+    }).collect(Collectors.toList());
+  }
 }

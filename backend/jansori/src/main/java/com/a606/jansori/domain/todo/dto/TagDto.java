@@ -10,15 +10,15 @@ import lombok.Getter;
 @AllArgsConstructor
 public class TagDto {
 
-    private Long tagId;
+  private Long tagId;
 
-    private String tagName;
+  private String tagName;
 
-    public static TagDto from(TodoTag todoTag) {
+  public static TagDto from(TodoTag todoTag) {
 
-        return TagDto.builder()
-                .tagId(todoTag.getTag().getId())
-                .tagName(todoTag.getTag().getName())
-                .build();
-    }
+    return TagDto.builder()
+        .tagId(todoTag.getTag().getId())
+        .tagName(todoTag.getTag().getName())
+        .build();
+  }
 }

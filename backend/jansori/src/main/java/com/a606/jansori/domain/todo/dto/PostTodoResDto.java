@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PostTodoResDto {
 
-    private Long todoId;
+  private Long todoId;
 }

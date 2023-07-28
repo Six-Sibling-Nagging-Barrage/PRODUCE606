@@ -1,17 +1,16 @@
 package com.a606.jansori.domain.todo.dto;
 
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
 
 @Getter
 @Builder
 public class GetTodoFeedResDto {
 
-    private List<FeedDto> feed;
+  private List<FeedDto> feed;
 
-    private Boolean hasNext;
+  private Boolean hasNext;
 
-    private Long nextCursor;
+  private Long nextCursor;
 }
