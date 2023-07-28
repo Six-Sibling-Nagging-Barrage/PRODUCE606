@@ -1,45 +1,71 @@
-import React from 'react';
-import styled from 'styled-components';
-import tw from 'twin.macro';
-import { BiSearch } from 'react-icons/bi';
-import Button from '../UI/Button';
+import React, { useState } from "react";
+import styled from "styled-components";
+import tw from "twin.macro";
+import { BiSearch } from "react-icons/bi";
+import { RxHamburgerMenu } from "react-icons/rx";
+
+// 설치해야 하는 파일
+//npm install react-icons --save
 
 const NavBar = () => {
+  const [isToggleOpen, setIsToggleOpen] = useState(false);
+
+  const handleMenuClick = () => {
+    setIsToggleOpen(!isToggleOpen);
+    console.log(isToggleOpen);
+  };
+
   return (
     <Nav>
       {/* 로고 들어가는 부분 시작 */}
-      <LogoWrap>
-        <Logo href='/'>
+      <NavWrap>
+        <Logo href="/">
           <img
-            className='h-4'
-            src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyy01YZvIVHu61Ocu6oepgHZwHOzzoYHRn8g&usqp=CAU'
-            alt='logo'
+            className="h-4"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyy01YZvIVHu61Ocu6oepgHZwHOzzoYHRn8g&usqp=CAU"
+            alt="logo"
           />
+          <LogoText>육남매 잔소리</LogoText>
         </Logo>
         {/* 오른쪽 로그인 버튼 부분 시작*/}
         <RightButtons>
-          <BiSearch />
-          <Button label={'로그인'} normal />
+          <a href="search">
+            <BiSearch className="mr-6 mt-3" />
+          </a>
+          <LoginButton href="login">Login</LoginButton>
+          {/* 화면 작아졌을 때 햄버거 icon 시작 */}
+          <HamburgerButton
+            type="button"
+            aria-controls="navbar-sticky"
+            aria-expanded={isToggleOpen}
+            onClick={handleMenuClick}
+          >
+            <span className="sr-only">Open</span>
+            <RxHamburgerMenu className="w-5 h-5" aria-hidden="true" />
+          </HamburgerButton>
+          {/* 화면 작아졌을 때 햄버거 icon 끝 */}
         </RightButtons>
         {/* 오른쪽 로그인 버튼 부분 끝*/}
-      </LogoWrap>
+        {/* 네비게이션 리스트 부분 시작 */}
+        <NavItems id="navbar-sticky" isToggleOpen={isToggleOpen}>
+          <NavItemsUl>
+            <li>
+              <NavItem href="feed">Feed</NavItem>
+            </li>
+            <li>
+              <NavItem href="todo">ToDo</NavItem>
+            </li>
+            <li>
+              <NavItem href="nag">잔소리함</NavItem>
+            </li>
+            <li>
+              <NavItem href="aboutus">About Us</NavItem>
+            </li>
+          </NavItemsUl>
+        </NavItems>
+        {/* 네비게이션 리스트 부분 끝 */}
+      </NavWrap>
       {/* 로고 들어가는 부분 끝 */}
-      <NavItems>
-        <NavItemsUl>
-          <li>
-            <NavItem href='feed'>Feed</NavItem>
-          </li>
-          <li>
-            <NavItem href='todo'>ToDo</NavItem>
-          </li>
-          <li>
-            <NavItem href='nag'>잔소리함</NavItem>
-          </li>
-          <li>
-            <NavItem href='aboutus'>About Us</NavItem>
-          </li>
-        </NavItemsUl>
-      </NavItems>
     </Nav>
   );
 };
@@ -59,9 +85,9 @@ const Nav = styled.nav`
   `}
 `;
 
-const LogoWrap = styled.div`
+const NavWrap = styled.div`
   ${tw`
-max-w-screen-xl
+  max-w-screen-2xl
 flex
 flex-wrap
 items-center
@@ -77,16 +103,48 @@ const Logo = styled.a`
   `}
 `;
 
+const LogoText = styled.span`
+  ${tw`
+self-center
+text-2xl
+font-semibold
+whitespace-nowrap
+ml-3`}
+`;
+
 const RightButtons = styled.div`
-  ${`flex
+  ${tw`flex
 md:order-2`}
+`;
+
+const HamburgerButton = styled.button`
+  ${tw`
+    inline-flex
+    items-center
+    p-2
+    w-10
+    h-10
+    ml-3
+    justify-center
+    text-sm
+    text-gray-500
+    rounded-lg
+    md:hidden
+    hover:bg-gray-100
+  `}
+`;
+
+const LoginButton = styled.a`
+  ${tw`text-base
+text-blue-600
+hover:underline
+ mt-2`}
 `;
 
 const NavItems = styled.div`
   ${tw`
 items-center
 justify-between
-hidden
 w-full
 md:flex
 md:w-auto
