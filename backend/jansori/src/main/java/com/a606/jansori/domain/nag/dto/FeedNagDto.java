@@ -1,6 +1,5 @@
 package com.a606.jansori.domain.nag.dto;
 
-import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.dto.FeedMemberDto;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,6 +10,8 @@ import lombok.Getter;
 @Builder
 public class FeedNagDto {
 
+  private Long nagId;
+
   @JsonProperty("nagMember")
   private FeedMemberDto feedMemberDto;
 
@@ -20,17 +21,19 @@ public class FeedNagDto {
 
   private Long likeCount;
 
-  public static FeedNagDto ofMemberAndLikeCount(Member member, Long likeCount) {
+  public static FeedNagDto fromNagAndUnlocked(Nag nag, Boolean isUnlocked) {
 
     return FeedNagDto.builder()
-        .feedMemberDto(FeedMemberDto.from(member))
-        .likeCount(likeCount)
+        .nagId(nag.getId())
+        .feedMemberDto(FeedMemberDto.from(nag.getMember()))
+        .likeCount(nag.getLikeCount())
+        .content(getNagContentByUnlocked(isUnlocked, nag))
         .build();
   }
 
-  public void setNagContentByUnlocked(Boolean unlocked, Nag nag) {
+  private static String getNagContentByUnlocked(Boolean unlocked, Nag nag) {
 
-    this.content = unlocked ? nag.getContent() : nag.getPreview();
+    return unlocked ? nag.getContent() : nag.getPreview();
   }
 
 }

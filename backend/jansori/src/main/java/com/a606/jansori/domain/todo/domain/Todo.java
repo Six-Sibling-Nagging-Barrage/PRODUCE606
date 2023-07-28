@@ -55,7 +55,7 @@ public class Todo extends BaseTimeEntity {
   @Builder.Default
   private List<TodoTag> todoTags = new ArrayList<>();
 
-  @OneToMany(mappedBy = "todo_id", cascade = CascadeType.PERSIST)
+  @OneToMany(mappedBy = "todo", cascade = CascadeType.PERSIST)
   @Builder.Default
   private List<TodoPersona> todoPersonas = new ArrayList<>();
 

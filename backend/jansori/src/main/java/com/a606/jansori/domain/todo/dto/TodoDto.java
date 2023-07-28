@@ -1,5 +1,6 @@
 package com.a606.jansori.domain.todo.dto;
 
+import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.domain.todo.domain.Todo;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,7 +27,9 @@ public class TodoDto {
 
   private LocalDateTime createdAt;
 
-  private List<TagDto> tags = new ArrayList<>();
+  private List<TagDto> tags;
+
+  private List<TodoPersona> todoPersonas;
 
   public static TodoDto from(Todo todo) {
 

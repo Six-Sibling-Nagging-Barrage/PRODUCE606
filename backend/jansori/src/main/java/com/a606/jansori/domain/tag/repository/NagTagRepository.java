@@ -13,9 +13,10 @@ public interface NagTagRepository extends JpaRepository<NagTag, Long> {
   Long countDistinctByNag_MemberNotAndTagIn(Member member, List<Tag> tags);
 
   @Query(value = "select nt from nag_tag nt "
-      + "join fetch nag n "
-      + "join fetch tag t "
-      + "where t in :tags ")
+      + "join fetch nt.nag n "
+      + "join fetch nt.tag t "
+      + "where n.member != :member "
+      + "and t in :tags ")
   List<NagTag> findByNag_MemberNotAndTagIn(Member member, List<Tag> tags, Pageable pageable);
 
 }

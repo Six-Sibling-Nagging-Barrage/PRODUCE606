@@ -1,6 +1,5 @@
 package com.a606.jansori.domain.persona.domain;
 
-import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.todo.domain.Todo;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,8 +35,8 @@ public class TodoPersona {
   private Persona persona;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "nag_id")
-  private Nag nag;
+  @JoinColumn(name = "line_id")
+  private Line line;
 
   @Column
   @Builder.Default

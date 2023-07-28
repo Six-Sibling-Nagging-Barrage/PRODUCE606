@@ -13,7 +13,6 @@ import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.dto.FeedDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
-import com.a606.jansori.domain.todo.dto.TodoDto;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,14 +56,13 @@ public class TodoFeedService {
     return todos.stream().map(todo -> {
 
       Nag nag = todo.getNag();
-      FeedNagDto feedNagDto = FeedNagDto.ofMemberAndLikeCount(nag.getMember(), nag.getLikeCount());
-      feedNagDto.setNagContentByUnlocked(
-          nagUnlockRepository.existsByNagAndMember(nag, todo.getMember()), nag);
 
       return FeedDto.ofFeedRelatedDto(FeedMemberDto.from(todo.getMember()),
-          TodoDto.from(todo),
-          feedNagDto);
-
+          todo,
+          FeedNagDto.fromNagAndUnlocked(
+              nag,
+              nagUnlockRepository.existsByNagAndMember(nag, todo.getMember()))
+      );
     }).collect(Collectors.toList());
   }
 }
