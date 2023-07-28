@@ -34,10 +34,7 @@ public class NagRandomGenerator {
 
     int randomIndex = randomUtil.generate(count);
 
-    return nagTagRepository.findByNag_MemberNotAndTagIn(member,
-            tags,
-            PageRequest.of(randomIndex, 1))
-        .get(0)
-        .getNag();
+    return nagTagRepository.findByNag_MemberNotAndTagIn(member, tags,
+        PageRequest.of(randomIndex, 1)).get(0).getNag();
   }
 }

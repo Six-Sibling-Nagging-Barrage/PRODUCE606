@@ -7,6 +7,6 @@ public class RandomUtil {
 
   public int generate(Long maxIndex){
 
-    return (int) (Math.random() * maxIndex) + 1;
+    return (int) (Math.random() * maxIndex);
   }
 }
