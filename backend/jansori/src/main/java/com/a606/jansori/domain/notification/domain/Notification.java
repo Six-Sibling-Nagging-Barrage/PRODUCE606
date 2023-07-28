@@ -2,33 +2,41 @@ package com.a606.jansori.domain.notification.domain;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.TalkerType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.Getter;
-
-import javax.persistence.*;
 
 @Getter
 @Entity
 public class Notification {
 
-    @Id
-    @Column(name = "notification_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @Column(name = "notification_id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "notification_type_id")
-    private NotificationType notificationType;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "notification_type_id")
+  private NotificationType notificationType;
 
-    @Column
-    private String content;
+  @Column
+  private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member receiver;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_id")
+  private Member receiver;
 
-    @Enumerated(EnumType.STRING)
-    private TalkerType talkerType;
+  @Enumerated(EnumType.STRING)
+  private TalkerType talkerType;
 
-    @Column
-    private Long talkerId;
+  @Column
+  private Long talkerId;
 }

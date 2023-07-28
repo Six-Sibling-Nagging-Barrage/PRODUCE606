@@ -8,41 +8,41 @@ import com.a606.jansori.domain.member.dto.GetUserProfileResDto;
 import com.a606.jansori.domain.member.exception.DuplicatedNicknameException;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberRepository memberRepository;
+  private final MemberRepository memberRepository;
 
-    @Transactional(readOnly = true)
-    public GetDuplicateNicknameResDto checkNicknameIsAvailable(GetDuplicateNicknameReqDto getDuplicateNicknameReqDto) {
+  @Transactional(readOnly = true)
+  public GetDuplicateNicknameResDto checkNicknameIsAvailable(
+      GetDuplicateNicknameReqDto getDuplicateNicknameReqDto) {
 
-        Boolean isExist = memberRepository.existsByNickname(getDuplicateNicknameReqDto.getNickname());
-        if (isExist) {
-            throw new DuplicatedNicknameException();
-        }
-
-        return GetDuplicateNicknameResDto.from(true);
+    Boolean isExist = memberRepository.existsByNickname(getDuplicateNicknameReqDto.getNickname());
+    if (isExist) {
+      throw new DuplicatedNicknameException();
     }
 
-    @Transactional(readOnly = true)
-    public GetUserProfileResDto getUserProfile(Long memberId){
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException());
+    return GetDuplicateNicknameResDto.from(true);
+  }
 
-        return GetUserProfileResDto.from(member);
-    }
+  @Transactional(readOnly = true)
+  public GetUserProfileResDto getUserProfile(Long memberId) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new MemberNotFoundException());
 
-    @Transactional(readOnly = true)
-    public GetMyProfileResDto getMyProfile(Long memberId){
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException());
+    return GetUserProfileResDto.from(member);
+  }
 
-        return GetMyProfileResDto.from(member);
-    }
+  @Transactional(readOnly = true)
+  public GetMyProfileResDto getMyProfile(Long memberId) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new MemberNotFoundException());
+
+    return GetMyProfileResDto.from(member);
+  }
 }
