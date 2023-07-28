@@ -34,7 +34,8 @@ public class TodoPersona {
     private Nag nag;
 
     @Column
-    private Long count;
+    @Builder.Default
+    private Long likeCount = 1L;
 
     public void setTodo(Todo todo) {
 

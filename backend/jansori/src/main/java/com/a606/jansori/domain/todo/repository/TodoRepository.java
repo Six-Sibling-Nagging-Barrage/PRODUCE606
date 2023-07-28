@@ -21,7 +21,9 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
     List<Todo> findAllByMemberOrderByCreatedAtDesc(Member member);
 
     @Query("select distinct td from todo td " +
-            "join fetch td.todoTags tt join tt.tag t " +
+            "join fetch td.todoTags tt " +
+            "join td.todoPersonas tp " +
+            "join tt.tag t " +
             "where t in :tags " +
             "and td.id > :cursor " +
             "order by td.createdAt desc ")

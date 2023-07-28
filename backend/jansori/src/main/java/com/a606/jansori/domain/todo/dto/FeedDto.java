@@ -24,12 +24,12 @@ public class FeedDto {
     @JsonProperty("nag")
     private FeedNagDto nag;
 
-    public static FeedDto fromTodo(Todo todo) {
+    public static FeedDto ofFeedRelatedDto(FeedMemberDto feedMemberDto, TodoDto todoDto, FeedNagDto feedNagDto) {
 
         return FeedDto.builder()
-                .feedMemberDto(FeedMemberDto.from(todo.getMember()))
-                .todoDto(TodoDto.from(todo))
-                .nag()
+                .feedMemberDto(feedMemberDto)
+                .todoDto(todoDto)
+                .nag(feedNagDto)
                 .build();
     }
 

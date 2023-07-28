@@ -3,6 +3,9 @@ package com.a606.jansori.domain.todo.service;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
+import com.a606.jansori.domain.persona.domain.Persona;
+import com.a606.jansori.domain.persona.domain.TodoPersona;
+import com.a606.jansori.domain.persona.repository.PersonaRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TodoTag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
@@ -30,6 +33,10 @@ public class TodoService {
 
     private final MemberRepository memberRepository;
 
+    private final PersonaRepository personaRepository;
+
+//    private final RandomHashtagGenerator randomHashtagGenerator;
+
     private final Clock clock;
 
     @Transactional
@@ -46,6 +53,18 @@ public class TodoService {
 
                     todoTag.setTodo(todo);
                 });
+
+//        todo.setNag(randomHashtagGenerator.getRandomTag(todo.getTodoTags()));
+
+        List<Persona> personas = personaRepository.findAll();
+
+        personas.stream().forEach(persona -> {
+            TodoPersona todoPersona = TodoPersona.builder()
+                    .persona(persona)
+                    .build();
+
+            todoPersona.setTodo(todo);
+        });
 
         return new PostTodoResDto(todoRepository.save(todo).getId());
     }
