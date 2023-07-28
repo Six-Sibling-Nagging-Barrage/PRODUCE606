@@ -1,23 +1,27 @@
-package com.a606.jansori.domain.todo.domain;
+package com.a606.jansori.domain.persona.domain;
 
 import com.a606.jansori.domain.nag.domain.Nag;
-import com.a606.jansori.domain.persona.domain.Persona;
+import com.a606.jansori.domain.todo.domain.Todo;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-public class TodoMetadata {
+public class TodoPersona {
 
     @Id
     @Column(name = "todo_metadata_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todo_id")
     private Todo todo;
 
@@ -31,4 +35,14 @@ public class TodoMetadata {
 
     @Column
     private Long count;
+
+    public void setTodo(Todo todo) {
+
+        if (todo != null) {
+            this.todo.getTodoPersonas().remove(this);
+        }
+
+        this.todo = todo;
+        this.todo.getTodoPersonas().add(this);
+    }
 }
