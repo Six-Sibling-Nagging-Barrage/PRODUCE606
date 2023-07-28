@@ -47,7 +47,7 @@ const NavBar = () => {
         </RightButtons>
         {/* 오른쪽 로그인 버튼 부분 끝*/}
         {/* 네비게이션 리스트 부분 시작 */}
-        <NavItems id="navbar-sticky" isToggleOpen={isToggleOpen}>
+        <NavItems id="navbar-sticky">
           <NavItemsUl>
             <li>
               <NavItem href="feed">Feed</NavItem>
