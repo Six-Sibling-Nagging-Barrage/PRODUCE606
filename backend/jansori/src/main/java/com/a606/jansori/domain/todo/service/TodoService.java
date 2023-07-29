@@ -13,10 +13,13 @@ import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.dto.GetTodoListResDto;
+import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
 import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
 import com.a606.jansori.domain.todo.dto.PostTodoResDto;
 import com.a606.jansori.domain.todo.dto.TagDto;
 import com.a606.jansori.domain.todo.dto.TodoDto;
+import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
+import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import java.time.Clock;
 import java.time.LocalDate;
@@ -46,12 +49,11 @@ public class TodoService {
   @Transactional
   public PostTodoResDto postTodo(PostTodoReqDto postTodoReqDto, Long memberId) {
 
-    Member member = memberRepository.findById(memberId)
-        .orElseThrow(MemberNotFoundException::new);
+    Member member = getMemberByIdOrElseThrowException(memberId);
 
     Todo todo = postTodoReqDto.getTodoWith(member);
 
-    postTodoReqDto.getTags().stream()
+    postTodoReqDto.getTags()
         .forEach(tagDto -> {
           TodoTag todoTag = new TodoTag(getTagIfExistElseSave(tagDto));
 
@@ -62,7 +64,7 @@ public class TodoService {
 
     List<Persona> personas = personaRepository.findAll();
 
-    personas.stream().forEach(persona -> {
+    personas.forEach(persona -> {
       TodoPersona todoPersona = TodoPersona.builder()
           .persona(persona)
           .build();
@@ -73,23 +75,10 @@ public class TodoService {
     return new PostTodoResDto(TodoDto.from(todoRepository.save(todo)));
   }
 
-  private Tag getTagIfExistElseSave(TagDto tagDto) {
-
-    if (tagDto.getTagId() == -1) {
-
-      return tagRepository.save(tagDto.toNewTag());
-    }
-
-    return tagRepository.findById(tagDto.getTagId())
-        .orElseThrow(TagNotFoundException::new);
-  }
-
-
   @Transactional(readOnly = true)
   public GetTodoListResDto getMyTodayTodo(Long memberId) {
 
-    Member member = memberRepository.findById(memberId)
-        .orElseThrow(MemberNotFoundException::new);
+    Member member = getMemberByIdOrElseThrowException(memberId);
 
     LocalDate current = LocalDate.now(clock);
     LocalDateTime today = current.atStartOfDay();
@@ -108,8 +97,7 @@ public class TodoService {
   @Transactional(readOnly = true)
   public GetTodoListResDto getMyAllTodo(Long memberId) {
 
-    Member member = memberRepository.findById(memberId)
-        .orElseThrow(MemberNotFoundException::new);
+    Member member = getMemberByIdOrElseThrowException(memberId);
 
     List<TodoDto> todos = todoRepository.findAllByMemberOrderByCreatedAtDesc(member).stream()
         .map(TodoDto::from)
@@ -118,5 +106,36 @@ public class TodoService {
     return GetTodoListResDto.builder()
         .todos(todos)
         .build();
+  }
+
+  @Transactional
+  public PatchTodoResDto patchTodoAccomplishment(Long memberId, Long todoId) {
+
+    Member member = getMemberByIdOrElseThrowException(memberId);
+
+    Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
+
+    if (todo.getMember() != member) {
+      throw new TodoUnauthorizedException();
+    }
+
+    return PatchTodoResDto.from(todo.toggleFinished());
+  }
+
+  private Member getMemberByIdOrElseThrowException(Long memberId) {
+
+    return memberRepository.findById(memberId)
+        .orElseThrow(MemberNotFoundException::new);
+  }
+
+  private Tag getTagIfExistElseSave(TagDto tagDto) {
+
+    if (tagDto.getTagId() == -1) {
+
+      return tagRepository.save(tagDto.toNewTag());
+    }
+
+    return tagRepository.findById(tagDto.getTagId())
+        .orElseThrow(TagNotFoundException::new);
   }
 }
