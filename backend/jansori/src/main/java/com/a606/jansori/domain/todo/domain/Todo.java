@@ -65,4 +65,11 @@ public class Todo extends BaseTimeEntity {
   public void setNag(Nag nag) {
     this.nag = nag;
   }
+
+  public Boolean toggleFinished() {
+
+    this.finished = !this.finished;
+
+    return this.finished;
+  }
 }

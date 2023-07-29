@@ -1,6 +1,7 @@
 package com.a606.jansori.domain.member.domain;
 
 import com.a606.jansori.global.common.BaseTimeEntity;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -48,5 +49,26 @@ public class Member extends BaseTimeEntity {
 
   @Column
   private Long ticket;
+
+  @Override
+  public boolean equals(Object obj) {
+
+    if (obj == this) {
+      return true;
+    }
+
+    if (obj == null || obj.getClass() != getClass()) {
+      return false;
+    }
+
+    Member member = (Member) obj;
+    return this.getId() == member.getId();
+  }
+
+  @Override
+  public int hashCode() {
+
+    return Objects.hash(getId());
+  }
 
 }
