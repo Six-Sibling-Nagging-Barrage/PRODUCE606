@@ -1,5 +1,6 @@
 package com.a606.jansori.domain.persona.domain;
 
+import com.a606.jansori.global.common.BaseTimeEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,11 +11,11 @@ import javax.persistence.ManyToOne;
 import lombok.Getter;
 
 @Getter
-@Entity(name = "linw")
-public class Line {
+@Entity(name = "line")
+public class Line extends BaseTimeEntity {
 
   @Id
-  @Column(name = "nag_id")
+  @Column(name = "line_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
@@ -23,5 +24,5 @@ public class Line {
 
   @ManyToOne
   @JoinColumn(name = "persona_id")
-  Persona persona;
+  private Persona persona;
 }
