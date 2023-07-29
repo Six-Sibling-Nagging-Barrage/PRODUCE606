@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 
 
-@SpringBootApplication(exclude = { SecurityAutoConfiguration.class})
+@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
 public class JansoriApplication {
 
     public static void main(String[] args) {
