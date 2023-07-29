@@ -9,7 +9,7 @@ const TodoPostList = (props) => {
       <ul>
         {postList &&
           postList.map((post) => {
-            return <TodoPost post={post} key={post} />; // TODO: key값 변경해줘야 함
+            return <TodoPost post={post} key={post.id} />; // TODO: key값 변경해줘야 함
           })}
       </ul>
     </div>
