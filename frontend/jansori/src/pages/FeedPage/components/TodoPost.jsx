@@ -8,11 +8,13 @@ const TodoPost = (props) => {
   const { post } = props;
   const commentList = [
     {
+      id: 1,
       writer: '김민지',
       img: profileImg,
       content: '얼른해!!!',
     },
     {
+      id: 2,
       writer: '강해린',
       img: profileImg,
       content: '얼른해!!!',
@@ -23,8 +25,8 @@ const TodoPost = (props) => {
     <li>
       <PostContainer>
         <PostHeader>
-          <ProfileLink href='#'>
-            <ProfileImage src={post.writer.img} width='48' height='48' />
+          <ProfileLink href="#">
+            <ProfileImage src={post.writer.img} width="48" height="48" />
           </ProfileLink>
           <div>
             <WriterName>{post.writer.nickname}</WriterName>
@@ -32,8 +34,8 @@ const TodoPost = (props) => {
           </div>
         </PostHeader>
         <TodoContent>
-          <div className='finished'>{post.finished ? '❌' : '✅'}</div>
-          <div className='todo'>{post.content}</div>
+          <div className="finished">{post.finished ? '❌' : '✅'}</div>
+          <div className="todo">{post.content}</div>
           <div>해시태그 자리</div>
         </TodoContent>
         <PersonaReaction />

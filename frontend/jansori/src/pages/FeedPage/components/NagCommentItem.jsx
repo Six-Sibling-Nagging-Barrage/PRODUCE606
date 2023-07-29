@@ -5,21 +5,19 @@ const NagCommentItem = (props) => {
   const { comment } = props;
 
   return (
-    <li>
-      <CommentContainer>
-        <div className='profile-img'>
-          <img
-            class='w-10 h-10 rounded-full'
-            src={comment.img}
-            alt='Rounded avatar'
-          />
-          <div>{comment.writer}</div>
-        </div>
-        <CommentContent>
-          <div>{comment.content}</div>
-        </CommentContent>
-      </CommentContainer>
-    </li>
+    <CommentContainer>
+      <div className="profile-img">
+        <img
+          className="w-10 h-10 rounded-full"
+          src={comment.img}
+          alt="Rounded avatar"
+        />
+        <div>{comment.writer}</div>
+      </div>
+      <CommentContent>
+        <div>{comment.content}</div>
+      </CommentContent>
+    </CommentContainer>
   );
 };
 

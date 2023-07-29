@@ -9,7 +9,7 @@ const NagCommentList = (props) => {
     <CommentsContainer>
       {commentList &&
         commentList.map((comment) => {
-          return <NagCommentItem comment={comment} />;
+          return <NagCommentItem key={comment.id} comment={comment} />;
         })}
     </CommentsContainer>
   );
