@@ -57,7 +57,7 @@ class NagServiceTest {
         tag = Tag.builder()
                 .id(1L)
                 .name("운동")
-                .count(1L)
+                .followCount(1)
                 .build();
         nag = Nag.builder()
                 .id(1L)
@@ -89,7 +89,7 @@ class NagServiceTest {
         //given
         postNagReqDto = new PostNagReqDto("공부 안할래?", tag.getId());
         given(tagRepository.findById(tag.getId())).willReturn(Optional.of(tag));
-
+        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
         //when
         when(nagRepository.save(any(Nag.class))).thenReturn(Nag.builder().id(1L).build());
         when(nagTagRepository.save(any(NagTag.class))).thenReturn(null);
