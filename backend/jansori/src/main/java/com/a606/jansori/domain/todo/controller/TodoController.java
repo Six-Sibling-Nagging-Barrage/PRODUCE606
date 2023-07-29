@@ -2,6 +2,7 @@ package com.a606.jansori.domain.todo.controller;
 
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
 import com.a606.jansori.domain.todo.dto.GetTodoListResDto;
+import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
 import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
 import com.a606.jansori.domain.todo.dto.PostTodoResDto;
 import com.a606.jansori.domain.todo.service.TodoFeedService;
@@ -10,6 +11,8 @@ import com.a606.jansori.global.common.EnvelopeResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,6 +70,15 @@ public class TodoController {
 
     return EnvelopeResponse.<GetTodoFeedResDto>builder()
         .data(todoFeedService.getTagFeed(memberId, tagId, cursor, size))
+        .build();
+  }
+
+  @PatchMapping("/{todoId}")
+  public EnvelopeResponse<PatchTodoResDto> patchTodoAccomplishment(Long memberId,
+      @PathVariable Long todoId) {
+
+    return EnvelopeResponse.<PatchTodoResDto>builder()
+        .data(todoService.patchTodoAccomplishment(memberId, todoId))
         .build();
   }
 
