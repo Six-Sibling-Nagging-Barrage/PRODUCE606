@@ -53,7 +53,7 @@ public class TodoService {
 
     Todo todo = postTodoReqDto.getTodoWith(member);
 
-    postTodoReqDto.getTags().stream()
+    postTodoReqDto.getTags()
         .forEach(tagDto -> {
           TodoTag todoTag = new TodoTag(getTagIfExistElseSave(tagDto));
 
@@ -64,7 +64,7 @@ public class TodoService {
 
     List<Persona> personas = personaRepository.findAll();
 
-    personas.stream().forEach(persona -> {
+    personas.forEach(persona -> {
       TodoPersona todoPersona = TodoPersona.builder()
           .persona(persona)
           .build();
@@ -119,7 +119,7 @@ public class TodoService {
       throw new TodoUnauthorizedException();
     }
 
-    return null;
+    return PatchTodoResDto.from(todo.toggleFinished());
   }
 
   private Member getMemberByIdOrElseThrowException(Long memberId) {
