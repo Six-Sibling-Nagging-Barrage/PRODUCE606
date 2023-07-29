@@ -33,7 +33,7 @@ const Feed = () => {
 };
 
 const FeedContainer = tw.div`
-  w-2/5 m-auto
+  w-full m-auto md:w-2/5 
 `;
 
 export default Feed;
