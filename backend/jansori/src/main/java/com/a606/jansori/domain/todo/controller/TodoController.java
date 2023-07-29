@@ -60,4 +60,14 @@ public class TodoController {
         .data(todoFeedService.getFollowingFeed(memberId, cursor, size))
         .build();
   }
+
+  @GetMapping("/feed")
+  public EnvelopeResponse<GetTodoFeedResDto> getTagFeed(Long memberId, Long tagId,
+      Long cursor, Integer size) {
+
+    return EnvelopeResponse.<GetTodoFeedResDto>builder()
+        .data(todoFeedService.getTagFeed(memberId, tagId, cursor, size))
+        .build();
+  }
+
 }
