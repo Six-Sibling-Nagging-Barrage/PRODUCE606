@@ -1,8 +1,10 @@
 package com.a606.jansori.domain.tag.service;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,10 +13,14 @@ import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
+import com.a606.jansori.domain.tag.dto.GetFollowingTagResDto;
+import com.a606.jansori.domain.tag.dto.TagElement;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
+import java.util.List;
 import java.util.Optional;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -78,7 +84,8 @@ class TagServiceTest {
     //given
     given(tagRepository.findById(tag.getId())).willReturn(Optional.of(tag));
     given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
-    given(tagFollowRepository.findTagFollowByTagAndMember(tag, member)).willReturn(Optional.empty());
+    given(tagFollowRepository.findTagFollowByTagAndMember(tag, member)).willReturn(
+        Optional.empty());
 
     //when
     when(tagFollowRepository.save(any(TagFollow.class))).thenReturn(null);
@@ -99,7 +106,8 @@ class TagServiceTest {
     //given
     given(tagRepository.findById(tag.getId())).willReturn(Optional.of(tag));
     given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
-    given(tagFollowRepository.findTagFollowByTagAndMember(tag, member)).willReturn(Optional.of(tagFollow));
+    given(tagFollowRepository.findTagFollowByTagAndMember(tag, member)).willReturn(
+        Optional.of(tagFollow));
 
     //then
     tagService.followTagByTagWithMember(member.getId(), tag.getId());
@@ -108,5 +116,27 @@ class TagServiceTest {
     verify(tagRepository, times(1)).findById(tag.getId());
     verify(memberRepository, times(1)).findById(member.getId());
     verify(tagFollowRepository, times(1)).findTagFollowByTagAndMember(tag, member);
+  }
+
+  @DisplayName("멤버가 팔로우하는 태그들의 리스트를 가져올 수 있다.")
+  @Test
+  void Given_Valid_Member_When_Exist_Following_Tag_Then_Success() {
+    //given
+    GetFollowingTagResDto getFollowingTagResDto = mock(GetFollowingTagResDto.class);
+    given(getFollowingTagResDto.getTags()).willReturn(List.of(new TagElement(tagFollow)));
+    given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+    given(tagFollowRepository.findTagFollowsByMember(member)).willReturn(List.of(tagFollow));
+
+    //when
+    GetFollowingTagResDto result = tagService.getFollowingTagByMemberId(member.getId());
+
+    //then
+    assertThat(result)
+        .usingRecursiveComparison()
+        .isEqualTo(getFollowingTagResDto);
+
+    //verify
+    verify(memberRepository, times(1)).findById(member.getId());
+    verify(tagFollowRepository, times(1)).findTagFollowsByMember(member);
   }
 }
