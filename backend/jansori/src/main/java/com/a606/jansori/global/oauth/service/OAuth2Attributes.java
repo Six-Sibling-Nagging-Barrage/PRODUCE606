@@ -35,7 +35,6 @@ public class OAuth2Attributes {
     }
 
     public Member toEntity(){
-        System.out.println("(String) this.getAttributes().get(sub): " + (String) this.getAttributes().get("sub"));
         return Member.builder()
                 .oauthIdentifier((String) this.getAttributes().get("sub"))
                 .memberRole(MemberRole.USER)
@@ -43,11 +42,5 @@ public class OAuth2Attributes {
                 .ticket(50L)
                 .build();
     }
-
-    //                    .oauthIdentifier((String) oAuth2User.getAttributes().get("sub"))
-//                    .memberRole(MemberRole.USER)
-//                    .oauthType(OauthType.GOOGLE)
-//                    .ticket(50L)
-//                    .build();
 
 }

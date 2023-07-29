@@ -1,59 +1,46 @@
 package com.a606.jansori.global.oauth.controller;
 
-import com.a606.jansori.global.oauth.dto.SessionMember;
+import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Enumeration;
 import java.util.Map;
+import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/oauth")
 public class OAuthController {
     private final HttpSession httpSession;
+    private final MemberRepository memberRepository;
+
+
     @GetMapping("/loginInfo")
-    public String oauthLoginInfo(Authentication authentication){
+    public String oauthLoginInfo(Authentication authentication) {
+        // 방법 1 : 파라미터로 Authentication을 받는 방법
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        String identifier = oAuth2User.getName(); // 로그인한 유저의 식별자
+        Optional<Member> member = memberRepository.findByOauthIdentifier(identifier);
+
+        // 방법 2 : SecurityContextHolder에 접근하는 방법
+        SecurityContext securityContext = (SecurityContext) httpSession.getAttribute("SPRING_SECURITY_CONTEXT");
+        Authentication authentication1 = securityContext.getAuthentication();
+        String principal = authentication1.getName();
+        System.out.println(principal);
+
+        // 인증된 유저 정보 출력
         Map<String, Object> attributes = oAuth2User.getAttributes();
-
-//        ServletRequestAttributes servletRequestAttribute = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-////Request 가지고 오기
-//        HttpServletRequest httpRequest = servletRequestAttribute.getRequest();
-////Session 가지고 오기
-//        HttpSession httpSession = servletRequestAttribute.getRequest().getSession(true);
-
-        System.out.println("here: ~~" + httpSession.getAttributeNames());
-        System.out.println("here: ~~" + httpSession.getAttribute("member"));
-//        System.out.println("httpSession.getServletContext().toString(): ~~" + httpSession);
-        httpSession.setAttribute("test", "test");
-        System.out.println(httpSession.getAttribute("test"));
-        Enumeration enumeration= httpSession.getAttributeNames();
-
-        while(enumeration.hasMoreElements()){
-
-            String sessionName = enumeration.nextElement().toString();
-
-            String sessionValue= httpSession.getAttribute(sessionName).toString();
-
-            System.out.println("Name: "+ sessionName+ "<br/>");
-
-            System.out.println("Value: "+ sessionValue+ "<br/>");
-
-        }
-
-
-
-
-        SessionMember member = (SessionMember) httpSession.getAttribute("member");
         return attributes.toString();
+
     }
 }
