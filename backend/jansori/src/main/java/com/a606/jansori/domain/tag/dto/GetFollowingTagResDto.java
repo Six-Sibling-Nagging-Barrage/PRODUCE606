@@ -1,5 +1,6 @@
 package com.a606.jansori.domain.tag.dto;
 
+import com.a606.jansori.domain.todo.dto.TagDto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,9 +9,9 @@ import lombok.Getter;
 @Getter
 public class GetFollowingTagResDto {
 
-  private List<TagElement> tags;
+  private List<TagDto> tags;
 
-  public static GetFollowingTagResDto from(List<TagElement> tags) {
+  public static GetFollowingTagResDto from(List<TagDto> tags) {
     return GetFollowingTagResDto.builder()
         .tags(tags)
         .build();

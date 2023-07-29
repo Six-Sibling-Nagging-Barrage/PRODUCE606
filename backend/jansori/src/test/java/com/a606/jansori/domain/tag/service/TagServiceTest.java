@@ -1,6 +1,6 @@
 package com.a606.jansori.domain.tag.service;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -14,13 +14,12 @@ import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
 import com.a606.jansori.domain.tag.dto.GetFollowingTagResDto;
-import com.a606.jansori.domain.tag.dto.TagElement;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
+import com.a606.jansori.domain.todo.dto.TagDto;
 import java.util.List;
 import java.util.Optional;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -123,7 +122,7 @@ class TagServiceTest {
   void Given_Valid_Member_When_Exist_Following_Tag_Then_Success() {
     //given
     GetFollowingTagResDto getFollowingTagResDto = mock(GetFollowingTagResDto.class);
-    given(getFollowingTagResDto.getTags()).willReturn(List.of(new TagElement(tagFollow)));
+    given(getFollowingTagResDto.getTags()).willReturn(List.of(TagDto.from(tagFollow)));
     given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
     given(tagFollowRepository.findTagFollowsByMember(member)).willReturn(List.of(tagFollow));
 

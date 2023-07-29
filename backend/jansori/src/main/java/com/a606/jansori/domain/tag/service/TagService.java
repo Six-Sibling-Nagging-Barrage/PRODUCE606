@@ -6,17 +6,15 @@ import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
 import com.a606.jansori.domain.tag.dto.GetFollowingTagResDto;
-import com.a606.jansori.domain.tag.dto.TagElement;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
+import com.a606.jansori.domain.todo.dto.TagDto;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +44,6 @@ public class TagService {
 
     List<TagFollow> tagFollows = tagFollowRepository.findTagFollowsByMember(member);
     return GetFollowingTagResDto.from(
-        tagFollows.stream().map(TagElement::new).collect(Collectors.toList()));
+        tagFollows.stream().map(TagDto::from).collect(Collectors.toList()));
   }
 }
