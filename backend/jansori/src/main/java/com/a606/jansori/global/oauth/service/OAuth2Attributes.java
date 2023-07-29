@@ -16,7 +16,6 @@ public class OAuth2Attributes {
     private Map<String, Object> attributes;
     private String userNameAttributeName;
 
-
     static OAuth2Attributes of(String provider, String userNameAttributeName, Map<String, Object> attributes) {
         switch (provider) {
             case "google":
@@ -34,15 +33,7 @@ public class OAuth2Attributes {
                 .build();
     }
 
-    Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put(userNameAttributeName, this.getUserNameAttributeName());
-        map.put("attributes", this.getAttributes());
-        return map;
-    }
-
-    public Member toEntity(){
-        System.out.println("(String) this.getAttributes().get(sub): " + (String) this.getAttributes().get("sub"));
+    public Member toEntity() {
         return Member.builder()
                 .oauthIdentifier((String) this.getAttributes().get("sub"))
                 .memberRole(MemberRole.USER)
@@ -50,11 +41,5 @@ public class OAuth2Attributes {
                 .ticket(50L)
                 .build();
     }
-
-    //                    .oauthIdentifier((String) oAuth2User.getAttributes().get("sub"))
-//                    .memberRole(MemberRole.USER)
-//                    .oauthType(OauthType.GOOGLE)
-//                    .ticket(50L)
-//                    .build();
 
 }
