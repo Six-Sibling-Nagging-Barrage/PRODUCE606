@@ -1,4 +1,4 @@
-package com.a606.jansori.domain.tag.domain;
+package com.a606.jansori.domain.persona.domain;
 
 import com.a606.jansori.domain.todo.domain.Todo;
 import javax.persistence.Column;
@@ -18,11 +18,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "todo_tag")
-public class TodoTag {
+@Entity(name = "todo_persona")
+public class TodoPersona {
 
   @Id
-  @Column(name = "todo_tag_id")
+  @Column(name = "todo_persona_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
@@ -31,24 +31,24 @@ public class TodoTag {
   private Todo todo;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "tag_id")
-  private Tag tag;
+  @JoinColumn(name = "persona_id")
+  private Persona persona;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "line_id")
+  private Line line;
+
+  @Column
+  @Builder.Default
+  private Integer likeCount = 0;
 
   public void setTodo(Todo todo) {
 
+    if (this.todo != null) {
+      this.todo.getTodoPersonas().remove(this);
+    }
+
     this.todo = todo;
-
-    todo.getTodoTags().add(this);
-  }
-
-  public TodoTag(Tag tag) {
-
-    this.tag = tag;
-  }
-
-  public TodoTag(Tag tag, Todo todo) {
-
-    this.tag = tag;
-    this.setTodo(todo);
+    this.todo.getTodoPersonas().add(this);
   }
 }

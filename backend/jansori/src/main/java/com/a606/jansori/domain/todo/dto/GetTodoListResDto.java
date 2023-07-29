@@ -1,12 +1,11 @@
 package com.a606.jansori.domain.todo.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Builder
@@ -14,5 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 public class GetTodoListResDto {
 
-    List<TodoDto> todos = new ArrayList<>();
+  List<TodoDto> todos = new ArrayList<>();
 }

@@ -5,6 +5,7 @@ import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.global.common.BaseTimeEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,9 +36,9 @@ public class Nag extends BaseTimeEntity {
 
   @Column(name = "like_count")
   @Builder.Default
-  private Long likeCount = 0L;
+  private Integer likeCount = 0;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
 

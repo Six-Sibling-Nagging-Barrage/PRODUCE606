@@ -1,5 +1,6 @@
 package com.a606.jansori.domain.todo.dto;
 
+import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TodoTag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,15 +11,22 @@ import lombok.Getter;
 @AllArgsConstructor
 public class TagDto {
 
-    private Long tagId;
+  private Long tagId;
 
-    private String tagName;
+  private String tagName;
 
-    public static TagDto from(TodoTag todoTag) {
+  public static TagDto from(TodoTag todoTag) {
 
-        return TagDto.builder()
-                .tagId(todoTag.getTag().getId())
-                .tagName(todoTag.getTag().getName())
-                .build();
-    }
+    return TagDto.builder()
+        .tagId(todoTag.getTag().getId())
+        .tagName(todoTag.getTag().getName())
+        .build();
+  }
+
+  public Tag toNewTag() {
+
+    return Tag.builder()
+        .name(this.tagName)
+        .build();
+  }
 }
