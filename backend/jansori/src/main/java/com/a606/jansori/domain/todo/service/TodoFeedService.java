@@ -9,6 +9,7 @@ import com.a606.jansori.domain.nag.dto.FeedNagDto;
 import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
+import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.dto.FeedDto;
@@ -17,7 +18,7 @@ import com.a606.jansori.domain.todo.repository.TodoRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ public class TodoFeedService {
 
   private final NagUnlockRepository nagUnlockRepository;
 
-  public GetTodoFeedResDto getFollowingFeed(Long memberId, Long cursor, Pageable pageable) {
+  public GetTodoFeedResDto getFollowingFeed(Long memberId, Long cursor, Integer size) {
 
     Member member = memberRepository.findById(memberId)
         .orElseThrow(MemberNotFoundException::new);
@@ -42,16 +43,26 @@ public class TodoFeedService {
         .map(TagFollow::getTag)
         .collect(Collectors.toList());
 
-    Slice<Todo> pagedTodos = todoRepository.findFollowingFeed(tags, cursor, pageable);
+    if (tags == null || tags.size() == 0) {
+      throw new TagNotFoundException();
+    }
+
+    Slice<Todo> pagedTodos = cursor == null ?
+        todoRepository.findByFollowingTagsWithoutCursor(tags, PageRequest.of(0, size))
+        : todoRepository.findByFollowingTagsWithCursor(tags, cursor, PageRequest.of(0, size));
+
+    Boolean hasNext = pagedTodos.hasNext();
+    Long nextCursor = hasNext ? pagedTodos.getContent().get(size - 1).getId() : null;
+    List<Todo> todos = pagedTodos.getContent();
 
     return GetTodoFeedResDto.builder()
-        .feed(convertTodosToFeedDtos(pagedTodos.getContent()))
-        .nextCursor(pagedTodos.nextPageable().getOffset())
-        .hasNext(pagedTodos.hasNext())
+        .feed(convertTodosToFeedDtosAndMember(todos, member))
+        .nextCursor(nextCursor)
+        .hasNext(hasNext)
         .build();
   }
 
-  private List<FeedDto> convertTodosToFeedDtos(List<Todo> todos) {
+  private List<FeedDto> convertTodosToFeedDtosAndMember(List<Todo> todos, Member member) {
 
     return todos.stream().map(todo -> {
 
@@ -61,7 +72,7 @@ public class TodoFeedService {
           todo,
           FeedNagDto.fromNagAndUnlocked(
               nag,
-              nagUnlockRepository.existsByNagAndMember(nag, todo.getMember()))
+              nagUnlockRepository.existsByNagAndMember(nag, member))
       );
     }).collect(Collectors.toList());
   }

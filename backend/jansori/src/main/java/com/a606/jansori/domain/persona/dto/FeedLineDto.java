@@ -16,7 +16,7 @@ public class FeedLineDto {
 
   private String content;
 
-  private Long likeCount;
+  private Integer likeCount;
 
   public static FeedLineDto from(TodoPersona todoPersona) {
 

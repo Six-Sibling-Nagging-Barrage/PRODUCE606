@@ -36,7 +36,7 @@ public class Nag extends BaseTimeEntity {
 
   @Column(name = "like_count")
   @Builder.Default
-  private Long likeCount = 0L;
+  private Integer likeCount = 0;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")

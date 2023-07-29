@@ -9,7 +9,6 @@ import com.a606.jansori.domain.todo.service.TodoService;
 import com.a606.jansori.global.common.EnvelopeResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,5 +60,4 @@ public class TodoController {
         .data(todoFeedService.getFollowingFeed(memberId, cursor, size))
         .build();
   }
-
 }

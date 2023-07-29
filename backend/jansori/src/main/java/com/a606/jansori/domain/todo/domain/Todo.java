@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 @Getter
 @Builder
@@ -51,10 +52,12 @@ public class Todo extends BaseTimeEntity {
   @Column
   private String content;
 
+  @BatchSize(size = 100)
   @OneToMany(mappedBy = "todo", cascade = CascadeType.PERSIST)
   @Builder.Default
   private List<TodoTag> todoTags = new ArrayList<>();
 
+  @BatchSize(size = 100)
   @OneToMany(mappedBy = "todo", cascade = CascadeType.PERSIST)
   @Builder.Default
   private List<TodoPersona> todoPersonas = new ArrayList<>();

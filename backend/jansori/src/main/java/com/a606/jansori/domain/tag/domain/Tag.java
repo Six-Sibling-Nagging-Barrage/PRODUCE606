@@ -1,12 +1,14 @@
 package com.a606.jansori.domain.tag.domain;
 
-import com.a606.jansori.domain.todo.dto.TagDto;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Builder
 @AllArgsConstructor
@@ -15,23 +17,16 @@ import javax.persistence.*;
 @Entity(name = "tag")
 public class Tag {
 
-    @Id
-    @Column(name = "tag_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @Column(name = "tag_id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column
-    private String name;
+  @Column
+  private String name;
 
-    @Column
-    private Long count;
-
-    public static Tag from(TagDto tagDto) {
-        return Tag.builder()
-                .name(tagDto.getTagName())
-                .count(1L)
-                .build();
-    }
-
+  @Column
+  @Builder.Default
+  private Integer count = 0;
 
 }

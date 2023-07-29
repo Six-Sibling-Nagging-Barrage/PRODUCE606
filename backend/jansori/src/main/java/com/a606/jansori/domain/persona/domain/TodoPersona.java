@@ -18,11 +18,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Entity(name = "todo_persona")
 public class TodoPersona {
 
   @Id
-  @Column(name = "todo_metadata_id")
+  @Column(name = "todo_persona_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
@@ -40,7 +40,7 @@ public class TodoPersona {
 
   @Column
   @Builder.Default
-  private Long likeCount = 0L;
+  private Integer likeCount = 0;
 
   public void setTodo(Todo todo) {
 

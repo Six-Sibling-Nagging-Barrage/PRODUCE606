@@ -19,7 +19,7 @@ public class FeedNagDto {
 
   private String content;
 
-  private Long likeCount;
+  private Integer likeCount;
 
   public static FeedNagDto fromNagAndUnlocked(Nag nag, Boolean isUnlocked) {
 

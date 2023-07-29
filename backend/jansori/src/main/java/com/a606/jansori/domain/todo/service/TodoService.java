@@ -77,7 +77,7 @@ public class TodoService {
 
     if (tagDto.getTagId() == -1) {
 
-      return tagRepository.save(Tag.from(tagDto));
+      return tagRepository.save(tagDto.toNewTag());
     }
 
     return tagRepository.findById(tagDto.getTagId())
