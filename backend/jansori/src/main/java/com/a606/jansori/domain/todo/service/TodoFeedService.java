@@ -34,6 +34,7 @@ public class TodoFeedService {
 
   private final NagUnlockRepository nagUnlockRepository;
 
+  private static final Integer DEFAULT_PAGE_SIZE = 10;
   public GetTodoFeedResDto getFollowingFeed(Long memberId, Long cursor, Integer size) {
 
     Member member = memberRepository.findById(memberId)
@@ -45,6 +46,10 @@ public class TodoFeedService {
 
     if (tags == null || tags.size() == 0) {
       throw new TagNotFoundException();
+    }
+
+    if (size == null || size < 0) {
+      size = DEFAULT_PAGE_SIZE;
     }
 
     Slice<Todo> pagedTodos = cursor == null ?

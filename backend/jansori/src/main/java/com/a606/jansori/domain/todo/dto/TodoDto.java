@@ -31,9 +31,6 @@ public class TodoDto {
 
   private List<TagDto> tags;
 
-  @JsonProperty("persona")
-  private List<FeedLineDto> feedLineDtos;
-
   public static TodoDto from(Todo todo) {
 
     return TodoDto.builder()
@@ -44,9 +41,6 @@ public class TodoDto {
         .createdAt(todo.getCreatedAt())
         .tags(todo.getTodoTags().stream()
             .map(todoTag -> TagDto.from(todoTag))
-            .collect(Collectors.toList()))
-        .feedLineDtos(todo.getTodoPersonas().stream()
-            .map(todoPersona -> FeedLineDto.from(todoPersona))
             .collect(Collectors.toList()))
         .build();
   }

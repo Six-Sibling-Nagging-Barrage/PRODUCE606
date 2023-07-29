@@ -27,6 +27,6 @@ public class Tag {
 
   @Column
   @Builder.Default
-  private Integer count = 0;
+  private Integer followCount = 0;
 
 }
