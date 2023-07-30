@@ -17,7 +17,6 @@ import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.NagTagRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -65,8 +64,11 @@ public class NagService {
   @Transactional(readOnly = true)
   public GetNagResDto getAllNagsByMember(Long memberId) {
     Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-    List<NagTag> nagTags = nagTagRepository.findByNag(member);
 
-    return GetNagResDto.of(nagTags.stream().map(NagDto::new).collect(Collectors.toList()));
+    return GetNagResDto.of(nagTagRepository
+        .findByNag(member)
+        .stream()
+        .map(NagDto::new)
+        .collect(Collectors.toList()));
   }
 }
