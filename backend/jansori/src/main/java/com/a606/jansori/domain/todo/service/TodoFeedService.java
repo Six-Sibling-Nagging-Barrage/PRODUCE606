@@ -14,6 +14,7 @@ import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.dto.FeedDto;
+import com.a606.jansori.domain.todo.dto.GetLineDetailsResDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import java.util.List;
@@ -85,6 +86,12 @@ public class TodoFeedService {
     return getFeedResDtoFrom(size, member, pagedTodos);
   }
 
+  @Transactional(readOnly = true)
+  public GetLineDetailsResDto getLineDetails(Long todoId) {
+
+    return
+
+  }
 
   private List<FeedDto> convertTodosWithMemberToFeedDto(List<Todo> todos, Member member) {
 
