@@ -25,7 +25,7 @@ public class Tag {
   @Column
   private String name;
 
-  @Column
+  @Column(name = "follow_count")
   @Builder.Default
   private Integer followCount = 0;
 
