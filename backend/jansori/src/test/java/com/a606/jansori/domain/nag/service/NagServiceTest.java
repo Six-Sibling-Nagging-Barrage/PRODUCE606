@@ -14,6 +14,7 @@ import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.NagTagRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -151,5 +152,18 @@ class NagServiceTest {
         verify(memberRepository, times(1)).findById(member.getId());
         verify(nagRepository, times(1)).findById(nag.getId());
         verify(nagLikeRepository, times(1)).findNagLikeByNagAndMember(nag, member);
+    }
+
+    @DisplayName("멤버가 작성한 잔소리들이 존재하지 않아도 빈 LIST 조회에 성공한다.")
+    @Test
+    void Given_Valid_MemberId_When_GetEmptyNagsListByMemberId_Then_Success() {
+        //given
+        List<Nag> nags = List.of();
+        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+
+        //when
+        List<Nag> result = nagService.getAllNagsByMember();
+
+        assertThat(result).isEmpty();
     }
 }
