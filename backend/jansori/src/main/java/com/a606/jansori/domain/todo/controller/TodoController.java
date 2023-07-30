@@ -1,5 +1,6 @@
 package com.a606.jansori.domain.todo.controller;
 
+import com.a606.jansori.domain.todo.dto.GetLineDetailsResDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
 import com.a606.jansori.domain.todo.dto.GetTodoListResDto;
 import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
@@ -79,6 +80,14 @@ public class TodoController {
 
     return EnvelopeResponse.<PatchTodoResDto>builder()
         .data(todoService.patchTodoAccomplishment(memberId, todoId))
+        .build();
+  }
+
+  @GetMapping("/{todoId}/personas")
+  public EnvelopeResponse<GetLineDetailsResDto> getTodoPersonas(@PathVariable Long todoId) {
+
+    return EnvelopeResponse.<GetLineDetailsResDto>builder()
+        .data(todoFeedService.getTodoPersonas(todoId))
         .build();
   }
 

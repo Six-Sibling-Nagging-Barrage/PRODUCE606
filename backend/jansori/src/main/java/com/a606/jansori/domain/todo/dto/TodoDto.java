@@ -1,11 +1,7 @@
 package com.a606.jansori.domain.todo.dto;
 
-import com.a606.jansori.domain.persona.domain.TodoPersona;
-import com.a606.jansori.domain.persona.dto.FeedLineDto;
 import com.a606.jansori.domain.todo.domain.Todo;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
