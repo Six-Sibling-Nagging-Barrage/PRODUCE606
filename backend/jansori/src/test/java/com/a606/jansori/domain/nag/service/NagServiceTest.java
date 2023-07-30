@@ -182,4 +182,27 @@ class NagServiceTest {
         verify(memberRepository, times(1)).findById(member.getId());
         verify(nagTagRepository, times(1)).findByNag(member);
     }
+
+    @DisplayName("멤버가 작성한 잔소리들이 존재한다면 LIST 조회에 성공한다.")
+    @Test
+    void Given_Valid_MemberId_When_GetNagsListByMemberId_Then_Success() {
+        //given
+        Nag nag = Nag.builder().content("test").likeCount(1).build();
+        Tag tag = Tag.builder().name("test").build();
+        List<NagTag> nagTags = List.of(new NagTag(1L, nag, tag));
+        GetNagResDto getNagResDto = GetNagResDto.of(nagTags.stream().map(NagDto::new).collect(
+            Collectors.toList()));
+        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+        given(nagTagRepository.findByNag(member)).willReturn(nagTags);
+
+        //when
+        GetNagResDto result = nagService.getAllNagsByMember(member.getId());
+
+        //then
+        assertThat(result).usingRecursiveComparison().isEqualTo(getNagResDto);
+
+        //verify
+        verify(memberRepository, times(1)).findById(member.getId());
+        verify(nagTagRepository, times(1)).findByNag(member);
+    }
 }
