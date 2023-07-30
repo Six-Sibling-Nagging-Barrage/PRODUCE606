@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LineRepository extends JpaRepository<Line, Long> {
 
-  Long countLineByPersona(Persona persona);
+  Long countByPersona(Persona persona);
 
   List<Line> findLineByPersona(Persona persona, Pageable pageable);
 }
