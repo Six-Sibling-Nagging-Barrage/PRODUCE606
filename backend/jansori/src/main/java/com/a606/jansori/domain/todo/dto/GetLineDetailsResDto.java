@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GetLineDetailsResDto {
 
-  @JsonProperty("lineDetails")
+  @JsonProperty("todoPersonas")
   private List<FeedTodoPersonaDetailDto> feedTodoPersonaDetailDtos;
 
   public static GetLineDetailsResDto fromTodoPersonas(List<TodoPersona> todoPersonas) {
