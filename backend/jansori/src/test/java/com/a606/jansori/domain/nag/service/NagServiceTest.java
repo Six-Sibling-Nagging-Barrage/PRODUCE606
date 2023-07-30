@@ -1,9 +1,19 @@
 package com.a606.jansori.domain.nag.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.times;
+import static org.mockito.BDDMockito.verify;
+import static org.mockito.BDDMockito.when;
+
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagLike;
+import com.a606.jansori.domain.nag.dto.GetNagResDto;
+import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
@@ -14,7 +24,10 @@ import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.NagTagRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,11 +35,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class NagServiceTest {
@@ -53,20 +61,20 @@ class NagServiceTest {
     @BeforeEach
     public void createPostNag() {
         member = Member.builder()
-                .id(1L)
-                .build();
+            .id(1L)
+            .build();
         tag = Tag.builder()
-                .id(1L)
-                .name("운동")
-                .followCount(1)
-                .build();
+            .id(1L)
+            .name("운동")
+            .followCount(1)
+            .build();
         nag = Nag.builder()
-                .id(1L)
-                .build();
+            .id(1L)
+            .build();
         nagLike = NagLike.builder()
-                .nag(nag)
-                .member(member)
-                .build();
+            .nag(nag)
+            .member(member)
+            .build();
     }
 
     @DisplayName("잔소리 해시태그가 존재하지 않는 ID 라면 잔소리 생성에 실패한다.")
@@ -78,7 +86,7 @@ class NagServiceTest {
 
         //when with then
         assertThrows(TagNotFoundException.class,
-                () -> nagService.createNag(member.getId(), postNagReqDto));
+            () -> nagService.createNag(member.getId(), postNagReqDto));
 
         //verify
         verify(tagRepository, times(1)).findById(tag.getId());
@@ -113,7 +121,7 @@ class NagServiceTest {
 
         //then
         assertThrows(NagNotFoundException.class,
-                () -> nagService.toggleNagLike(member.getId(), nag.getId()));
+            () -> nagService.toggleNagLike(member.getId(), nag.getId()));
 
         //verify
         verify(nagRepository, times(1)).findById(nag.getId());
@@ -126,7 +134,8 @@ class NagServiceTest {
         //given
         given(nagRepository.findById(nag.getId())).willReturn(Optional.of(nag));
         given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
-        given(nagLikeRepository.findNagLikeByNagAndMember(nag, member)).willReturn(Optional.of(nagLike));
+        given(nagLikeRepository.findNagLikeByNagAndMember(nag, member)).willReturn(
+            Optional.of(nagLike));
 
         //then
         nagService.toggleNagLike(member.getId(), nag.getId());
@@ -143,7 +152,8 @@ class NagServiceTest {
         //given
         given(nagRepository.findById(nag.getId())).willReturn(Optional.of(nag));
         given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
-        given(nagLikeRepository.findNagLikeByNagAndMember(nag, member)).willReturn(Optional.empty());
+        given(nagLikeRepository.findNagLikeByNagAndMember(nag, member)).willReturn(
+            Optional.empty());
 
         //then
         nagService.toggleNagLike(member.getId(), nag.getId());
@@ -158,12 +168,18 @@ class NagServiceTest {
     @Test
     void Given_Valid_MemberId_When_GetEmptyNagsListByMemberId_Then_Success() {
         //given
-        List<Nag> nags = List.of();
+        List<NagTag> nagTags = Collections.emptyList();
         given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+        given(nagTagRepository.findByNag(member)).willReturn(nagTags);
 
         //when
-        List<Nag> result = nagService.getAllNagsByMember();
+        GetNagResDto result = nagService.getAllNagsByMember(member.getId());
 
-        assertThat(result).isEmpty();
+        //then
+        assertThat(result.getNags()).isEmpty();
+
+        //verify
+        verify(memberRepository, times(1)).findById(member.getId());
+        verify(nagTagRepository, times(1)).findByNag(member);
     }
 }
