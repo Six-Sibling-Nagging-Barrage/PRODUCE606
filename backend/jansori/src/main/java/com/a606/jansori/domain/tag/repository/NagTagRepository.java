@@ -26,8 +26,8 @@ public interface NagTagRepository extends JpaRepository<NagTag, Long> {
   List<NagTag> findByNag_MemberNotAndTagIn(Member member, List<Tag> tags, Pageable pageable);
 
   @Query(value = "select nt from nag_tag nt "
-      + "join nt.nag n "
-      + "join nt.tag t "
+      + "join fetch nt.nag n "
+      + "join fetch nt.tag t "
       + "where n.member = :member")
-  List<NagTag> findByNag(Member member);
+  List<NagTag> findByMember(Member member);
 }

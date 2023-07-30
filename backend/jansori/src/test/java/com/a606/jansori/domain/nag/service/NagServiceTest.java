@@ -170,7 +170,7 @@ class NagServiceTest {
         //given
         List<NagTag> nagTags = Collections.emptyList();
         given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
-        given(nagTagRepository.findByNag(member)).willReturn(nagTags);
+        given(nagTagRepository.findByMember(member)).willReturn(nagTags);
 
         //when
         GetNagResDto result = nagService.getAllNagsByMember(member.getId());
@@ -180,7 +180,7 @@ class NagServiceTest {
 
         //verify
         verify(memberRepository, times(1)).findById(member.getId());
-        verify(nagTagRepository, times(1)).findByNag(member);
+        verify(nagTagRepository, times(1)).findByMember(member);
     }
 
     @DisplayName("멤버가 작성한 잔소리들이 존재한다면 LIST 조회에 성공한다.")
@@ -193,7 +193,7 @@ class NagServiceTest {
         GetNagResDto getNagResDto = GetNagResDto.of(nagTags.stream().map(NagDto::new).collect(
             Collectors.toList()));
         given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
-        given(nagTagRepository.findByNag(member)).willReturn(nagTags);
+        given(nagTagRepository.findByMember(member)).willReturn(nagTags);
 
         //when
         GetNagResDto result = nagService.getAllNagsByMember(member.getId());
@@ -203,6 +203,6 @@ class NagServiceTest {
 
         //verify
         verify(memberRepository, times(1)).findById(member.getId());
-        verify(nagTagRepository, times(1)).findByNag(member);
+        verify(nagTagRepository, times(1)).findByMember(member);
     }
 }

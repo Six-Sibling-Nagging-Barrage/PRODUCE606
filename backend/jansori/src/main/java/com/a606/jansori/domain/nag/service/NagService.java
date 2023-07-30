@@ -66,7 +66,7 @@ public class NagService {
     Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
     return GetNagResDto.of(nagTagRepository
-        .findByNag(member)
+        .findByMember(member)
         .stream()
         .map(NagDto::new)
         .collect(Collectors.toList()));
