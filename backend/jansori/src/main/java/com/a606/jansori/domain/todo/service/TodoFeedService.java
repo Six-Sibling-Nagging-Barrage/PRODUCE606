@@ -95,7 +95,7 @@ public class TodoFeedService {
 
     Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
 
-    return GetLineDetailsResDto.fromTodoPersonas(todo.getTodoPersonas());
+    return GetLineDetailsResDto.fromTodoPersonas(todoPersonaRepository.findAllByTodo(todo));
   }
 
   private List<FeedDto> convertTodosWithMemberToFeedDto(List<Todo> todos, Member member) {
