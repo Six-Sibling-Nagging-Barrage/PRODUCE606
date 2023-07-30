@@ -82,4 +82,9 @@ public class TodoController {
         .build();
   }
 
+  @GetMapping("/{todoId}/lines")
+  public EnvelopeResponse<Void> getMoreLines(Long memberId) {
+
+    return null;
+  }
 }
