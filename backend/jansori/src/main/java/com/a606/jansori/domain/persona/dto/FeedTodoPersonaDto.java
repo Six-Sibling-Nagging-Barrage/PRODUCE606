@@ -2,27 +2,24 @@ package com.a606.jansori.domain.persona.dto;
 
 import com.a606.jansori.domain.persona.domain.TodoPersona;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FeedLineDto {
+public class FeedTodoPersonaDto {
 
   private Long personaId;
 
-  private String content;
-
   private Integer likeCount;
 
-  public static FeedLineDto from(TodoPersona todoPersona) {
+  public static FeedTodoPersonaDto from(TodoPersona todoPersona) {
 
-    return FeedLineDto.builder()
+    return FeedTodoPersonaDto.builder()
         .personaId(todoPersona.getPersona().getId())
-        .content(todoPersona.getLikeCount() > 0 ? todoPersona.getLine().getContent() : null)
         .likeCount(todoPersona.getLikeCount())
         .build();
   }
