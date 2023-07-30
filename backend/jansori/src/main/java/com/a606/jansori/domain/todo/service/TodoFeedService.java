@@ -7,6 +7,7 @@ import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.dto.FeedNagDto;
 import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
+import com.a606.jansori.domain.persona.repository.TodoPersonaRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
@@ -16,6 +17,7 @@ import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.dto.FeedDto;
 import com.a606.jansori.domain.todo.dto.GetLineDetailsResDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
+import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +34,8 @@ public class TodoFeedService {
   private final MemberRepository memberRepository;
 
   private final TodoRepository todoRepository;
+
+  private final TodoPersonaRepository todoPersonaRepository;
 
   private final TagFollowRepository tagFollowRepository;
 
@@ -89,8 +93,9 @@ public class TodoFeedService {
   @Transactional(readOnly = true)
   public GetLineDetailsResDto getLineDetails(Long todoId) {
 
-    return
+    Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
 
+    return GetLineDetailsResDto.fromTodoPersonas(todo.getTodoPersonas());
   }
 
   private List<FeedDto> convertTodosWithMemberToFeedDto(List<Todo> todos, Member member) {
