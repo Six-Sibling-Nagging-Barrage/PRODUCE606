@@ -83,11 +83,11 @@ public class TodoController {
         .build();
   }
 
-  @GetMapping("/{todoId}/lines")
-  public EnvelopeResponse<GetLineDetailsResDto> getLineDetails(@PathVariable Long todoId) {
+  @GetMapping("/{todoId}/personas")
+  public EnvelopeResponse<GetLineDetailsResDto> getTodoPersonas(@PathVariable Long todoId) {
 
     return EnvelopeResponse.<GetLineDetailsResDto>builder()
-        .data(todoFeedService.getLineDetails(todoId))
+        .data(todoFeedService.getTodoPersonas(todoId))
         .build();
   }
 

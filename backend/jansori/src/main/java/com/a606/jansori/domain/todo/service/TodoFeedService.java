@@ -91,7 +91,7 @@ public class TodoFeedService {
   }
 
   @Transactional(readOnly = true)
-  public GetLineDetailsResDto getLineDetails(Long todoId) {
+  public GetLineDetailsResDto getTodoPersonas(Long todoId) {
 
     Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
 
