@@ -3,6 +3,7 @@ package com.a606.jansori.domain.persona.domain;
 import com.a606.jansori.global.common.BaseTimeEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,7 +23,7 @@ public class Line extends BaseTimeEntity {
   @Column
   private String content;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "persona_id")
   private Persona persona;
 }
