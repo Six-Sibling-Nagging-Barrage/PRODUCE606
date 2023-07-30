@@ -22,8 +22,9 @@ const SpeechBubble = styled.div`
   md:w-3/5
   lg:w-2/5
   m-auto
+  z-50
 `}
-  padding-top:50vh
+  padding-top:50vh;
 `;
 
 const BubbleSpeech = styled.div`
