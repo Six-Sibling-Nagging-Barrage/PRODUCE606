@@ -4,6 +4,7 @@ import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.persona.domain.Line;
 import com.a606.jansori.domain.persona.domain.Persona;
+import com.a606.jansori.domain.persona.exception.LineNotFoundException;
 import com.a606.jansori.domain.persona.repository.LineRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TodoTag;
@@ -27,6 +28,11 @@ public class NagRandomGenerator {
 
   public Line getRandomLineOfPersona(Persona persona) {
     Long count = lineRepository.countByPersona(persona);
+
+    if (count == 0) {
+      throw new LineNotFoundException();
+    }
+
     return lineRepository.findLineByPersona(
             persona,
             PageRequest.of(randomUtil.generate(count), 1))
