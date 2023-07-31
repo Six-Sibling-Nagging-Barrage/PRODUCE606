@@ -1,6 +1,8 @@
 package com.a606.jansori.domain.todo.controller;
 
-import com.a606.jansori.domain.todo.dto.GetLineDetailsResDto;
+import com.a606.jansori.domain.todo.dto.GetTodoFeedByFollowingReqDto;
+import com.a606.jansori.domain.todo.dto.GetTodoFeedByTagReqDto;
+import com.a606.jansori.domain.todo.dto.GetTodoPersonaDetailsResDto;
 import com.a606.jansori.domain.todo.dto.GetTodoByDateReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoByDateResDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -36,7 +37,7 @@ public class TodoController {
 
   @PostMapping
   public EnvelopeResponse<PostTodoResDto> postTodo(@Valid @RequestBody PostTodoReqDto postTodoReqDto,
-      @RequestParam Long memberId) {
+      Long memberId) {
 
     return EnvelopeResponse.<PostTodoResDto>builder()
         .data(todoService.postTodo(postTodoReqDto, memberId))
@@ -45,7 +46,7 @@ public class TodoController {
 
   @GetMapping("/my")
   public EnvelopeResponse<GetTodoByDateResDto> getMyTodayTodo(Long memberId,
-      GetTodoByDateReqDto getTodoByDateReqDto) {
+      @Valid GetTodoByDateReqDto getTodoByDateReqDto) {
 
     return EnvelopeResponse.<GetTodoByDateResDto>builder()
         .data(todoService.getMyTodoByDate(memberId, getTodoByDateReqDto))
@@ -54,20 +55,20 @@ public class TodoController {
   }
 
   @GetMapping("/feed/following")
-  public EnvelopeResponse<GetTodoFeedResDto> getFollowingFeed(Long memberId, Long cursor,
-      Integer size) {
+  public EnvelopeResponse<GetTodoFeedResDto> getFollowingFeed(Long memberId,
+      @Valid GetTodoFeedByFollowingReqDto getTodoFeedByFollowingReqDto) {
 
     return EnvelopeResponse.<GetTodoFeedResDto>builder()
-        .data(todoFeedService.getFollowingFeed(memberId, cursor, size))
+        .data(todoFeedService.getFollowingFeed(memberId, getTodoFeedByFollowingReqDto))
         .build();
   }
 
   @GetMapping("/feed")
-  public EnvelopeResponse<GetTodoFeedResDto> getTagFeed(Long memberId, Long tagId,
-      Long cursor, Integer size) {
+  public EnvelopeResponse<GetTodoFeedResDto> getTagFeed(Long memberId,
+      @Valid GetTodoFeedByTagReqDto getTodoFeedByTagReqDto) {
 
     return EnvelopeResponse.<GetTodoFeedResDto>builder()
-        .data(todoFeedService.getTagFeed(memberId, tagId, cursor, size))
+        .data(todoFeedService.getTagFeed(memberId, getTodoFeedByTagReqDto))
         .build();
   }
 
@@ -81,9 +82,9 @@ public class TodoController {
   }
 
   @GetMapping("/{todoId}/personas")
-  public EnvelopeResponse<GetLineDetailsResDto> getTodoPersonas(@PathVariable Long todoId) {
+  public EnvelopeResponse<GetTodoPersonaDetailsResDto> getTodoPersonas(@PathVariable Long todoId) {
 
-    return EnvelopeResponse.<GetLineDetailsResDto>builder()
+    return EnvelopeResponse.<GetTodoPersonaDetailsResDto>builder()
         .data(todoPersonaService.getTodoPersonas(todoId))
         .build();
   }

@@ -4,7 +4,6 @@ import com.a606.jansori.domain.persona.dto.FeedTodoPersonaDto;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -43,7 +42,7 @@ public class TodoDto {
         .content(todo.getContent())
         .todoAt(todo.getTodoAt())
         .tags(todo.getTodoTags().stream()
-            .map(todoTag -> TagDto.from(todoTag))
+            .map(TagDto::from)
             .collect(Collectors.toList()))
         .feedTodoPersonaDtos(todo.getTodoPersonas().stream()
             .map(FeedTodoPersonaDto::from)

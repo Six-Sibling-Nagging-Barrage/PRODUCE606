@@ -13,6 +13,8 @@ import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.dto.FeedDto;
+import com.a606.jansori.domain.todo.dto.GetTodoFeedByFollowingReqDto;
+import com.a606.jansori.domain.todo.dto.GetTodoFeedByTagReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import java.util.List;
@@ -37,10 +39,9 @@ public class TodoFeedService {
 
   private final NagUnlockRepository nagUnlockRepository;
 
-  private static final Integer DEFAULT_PAGE_SIZE = 10;
-
   @Transactional(readOnly = true)
-  public GetTodoFeedResDto getFollowingFeed(Long memberId, Long cursor, Integer size) {
+  public GetTodoFeedResDto getFollowingFeed(Long memberId,
+      GetTodoFeedByFollowingReqDto getTodoFeedByFollowingReqDto) {
 
     Member member = memberRepository.findById(memberId)
         .orElseThrow(MemberNotFoundException::new);
@@ -53,9 +54,8 @@ public class TodoFeedService {
       throw new TagNotFoundException();
     }
 
-    if (size == null || size < 0) {
-      size = DEFAULT_PAGE_SIZE;
-    }
+    Long cursor = getTodoFeedByFollowingReqDto.getCursor();
+    Integer size = getTodoFeedByFollowingReqDto.getSize();
 
     Slice<Todo> pagedTodos = cursor == null ?
         todoRepository.findByFollowingTagsWithoutCursor(tags, PageRequest.of(0, size))
@@ -65,17 +65,16 @@ public class TodoFeedService {
   }
 
   @Transactional(readOnly = true)
-  public GetTodoFeedResDto getTagFeed(Long memberId, Long tagId, Long cursor, Integer size) {
+  public GetTodoFeedResDto getTagFeed(Long memberId, GetTodoFeedByTagReqDto getTodoFeedByTagReqDto) {
 
     Member member = memberRepository.findById(memberId)
         .orElseThrow(MemberNotFoundException::new);
 
-    Tag tag = tagRepository.findById(tagId)
+    Tag tag = tagRepository.findById(getTodoFeedByTagReqDto.getTagId())
         .orElseThrow(TagNotFoundException::new);
 
-    if (size == null || size < 0) {
-      size = DEFAULT_PAGE_SIZE;
-    }
+    Long cursor = getTodoFeedByTagReqDto.getCursor();
+    Integer size = getTodoFeedByTagReqDto.getSize();
 
     Slice<Todo> pagedTodos = cursor == null ?
         todoRepository.findByTagWithoutCursor(tag, PageRequest.of(0, size))

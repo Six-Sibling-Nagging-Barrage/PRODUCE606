@@ -5,7 +5,6 @@ import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.todo.domain.Todo;
 import java.time.LocalDate;
 import java.util.List;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -46,7 +45,7 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
       "WHERE t = :tag " +
       "AND td.display = true " +
       "ORDER BY td.id DESC ")
-  Slice<Todo> findByTagWithoutCursor(Tag tag, PageRequest of);
+  Slice<Todo> findByTagWithoutCursor(Tag tag, Pageable pageable);
 
   @Query(value = "SELECT distinct td FROM todo td " +
       "JOIN td.member m " +
@@ -57,5 +56,5 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
       "AND td.id < :cursor " +
       "AND td.display = true " +
       "ORDER BY td.id DESC ")
-  Slice<Todo> findByTagWithCursor(Tag tag, Long cursor, PageRequest of);
+  Slice<Todo> findByTagWithCursor(Tag tag, Long cursor, Pageable pageable);
 }

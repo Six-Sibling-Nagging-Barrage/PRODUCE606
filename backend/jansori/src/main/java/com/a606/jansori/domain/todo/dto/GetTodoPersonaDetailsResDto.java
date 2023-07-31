@@ -13,14 +13,14 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class GetLineDetailsResDto {
+public class GetTodoPersonaDetailsResDto {
 
   @JsonProperty("todoPersonas")
   private List<FeedTodoPersonaDetailDto> feedTodoPersonaDetailDtos;
 
-  public static GetLineDetailsResDto fromTodoPersonas(List<TodoPersona> todoPersonas) {
+  public static GetTodoPersonaDetailsResDto fromTodoPersonas(List<TodoPersona> todoPersonas) {
 
-    return new GetLineDetailsResDto(todoPersonas.stream()
+    return new GetTodoPersonaDetailsResDto(todoPersonas.stream()
         .map(FeedTodoPersonaDetailDto::from)
         .collect(Collectors.toList()));
   }
