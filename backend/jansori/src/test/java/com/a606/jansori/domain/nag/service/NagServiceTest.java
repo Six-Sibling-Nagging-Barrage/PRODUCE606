@@ -197,7 +197,7 @@ class NagServiceTest {
     Tag tag = Tag.builder().name("test").build();
     List<NagTag> nagTags = List.of(new NagTag(1L, nag, tag));
     GetNagOfProfilePageResDto getNagOfProfilePageResDto = GetNagOfProfilePageResDto
-        .from(nagTags.stream().map(NagDetailDto::from).collect(Collectors.toList()));
+        .from(nagTags.stream().map(nagTag -> NagDetailDto.from(nag, tag)).collect(Collectors.toList()));
     given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
     given(nagTagRepository.findByMember(member)).willReturn(nagTags);
 

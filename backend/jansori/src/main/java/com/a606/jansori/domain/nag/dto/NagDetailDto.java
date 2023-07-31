@@ -1,7 +1,7 @@
 package com.a606.jansori.domain.nag.dto;
 
-import com.a606.jansori.domain.tag.domain.NagTag;
-import java.time.LocalDateTime;
+import com.a606.jansori.domain.nag.domain.Nag;
+import com.a606.jansori.domain.tag.domain.Tag;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -12,12 +12,13 @@ public class NagDetailDto extends NagDto {
   private Integer likeCount;
   private String tagName;
 
-  public static NagDetailDto from(NagTag nagTag) {
+  public static NagDetailDto from(Nag nag, Tag tag) {
     return NagDetailDto.builder()
-        .content(nagTag.getNag().getContent())
-        .createAt(nagTag.getNag().getCreatedAt())
-        .likeCount(nagTag.getNag().getLikeCount())
-        .tagName(nagTag.getTag().getName())
+        .nagId(nag.getId())
+        .content(nag.getContent())
+        .createAt(nag.getCreatedAt())
+        .likeCount(nag.getLikeCount())
+        .tagName(tag.getName())
         .build();
   }
 }

@@ -9,11 +9,13 @@ import lombok.experimental.SuperBuilder;
 @Getter
 public class NagDto {
 
+  private Long nagId;
   private String content;
   private LocalDateTime createAt;
 
   public static NagDto from(Nag nag) {
     return NagDto.builder()
+        .nagId(nag.getId())
         .content(nag.getContent())
         .createAt(nag.getCreatedAt())
         .build();
