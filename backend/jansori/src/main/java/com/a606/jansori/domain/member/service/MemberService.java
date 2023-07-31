@@ -45,4 +45,15 @@ public class MemberService {
 
     return GetMyProfileResDto.from(member);
   }
+
+  @Transactional
+  public PostMemberInfoResDto UpdateMemberInfo(Long memberId, PostMemberInfoReqDto postMemberInfoReqDto){
+    Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new MemberNotFoundException());
+
+    member.builder()
+            .nickname()
+
+
+  }
 }
