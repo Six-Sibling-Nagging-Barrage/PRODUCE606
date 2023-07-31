@@ -2,18 +2,18 @@ import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 
 const Modal = (props) => {
-  const { children, visible, onClose } = props;
+  const { children, setIsModalOpen } = props;
 
-  if (!visible) {
-    return null;
-  }
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <>
-      <Background visible={visible} onClick={onClose} />
-      <ModalSection visible={visible}>
+      <Background onClick={handleClose} />
+      <ModalSection>
         <Title>
-          <CloseButton type='button' onClick={onClose}>
+          <CloseButton type='button' onClick={handleClose}>
             X
           </CloseButton>
         </Title>
@@ -23,11 +23,11 @@ const Modal = (props) => {
   );
 };
 
-const modalSettings = (visible) => css`
-  visibility: ${visible ? 'visible' : 'hidden'};
-  z-index: 99;
-  transition: visibility 0.15s ease-out;
-`;
+// const modalSettings = () => css`
+//   visibility: ${visible ? 'visible' : 'hidden'};
+//   z-index: 99;
+//   transition: visibility 0.15s ease-out;
+// `;
 
 const Background = styled.div`
   top: 0;
@@ -36,8 +36,10 @@ const Background = styled.div`
   left: 0;
   position: fixed;
   background-color: rgba(0, 0, 0, 0.6);
-  ${(props) => modalSettings(props.visible)}
+  z-index: 99;
 `;
+
+// ${(props) => modalSettings(props.visible)}
 
 const ModalSection = styled.div`
   width: 500px;
@@ -47,7 +49,7 @@ const ModalSection = styled.div`
   transform: translate(-50%, -50%);
   background-color: rgba(255, 255, 255, 1);
   padding: 16px;
-  ${(props) => modalSettings(props.visible)}
+  z-index: 99;
 `;
 
 const Title = styled.div`
