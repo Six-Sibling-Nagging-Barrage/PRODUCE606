@@ -6,12 +6,12 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class GetNagResDto {
+public class GetNagOfProfilePageResDto {
 
   private List<NagDetailDto> nags;
 
-  public static GetNagResDto of(List<NagDetailDto> nags) {
-    return GetNagResDto.builder()
+  public static GetNagOfProfilePageResDto from(List<NagDetailDto> nags) {
+    return GetNagOfProfilePageResDto.builder()
         .nags(nags)
         .build();
   }

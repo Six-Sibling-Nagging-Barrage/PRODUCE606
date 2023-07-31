@@ -5,7 +5,7 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagLike;
-import com.a606.jansori.domain.nag.dto.GetNagResDto;
+import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
@@ -62,16 +62,13 @@ public class NagService {
   }
 
   @Transactional(readOnly = true)
-  public GetNagResDto getAllNagsByMember(Long memberId) {
+  public GetNagOfProfilePageResDto getAllNagsByMember(Long memberId) {
     Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
-    return GetNagResDto.of(nagTagRepository
+    return GetNagOfProfilePageResDto.from(nagTagRepository
         .findByMember(member)
         .stream()
         .map(NagDetailDto::from)
         .collect(Collectors.toList()));
   }
-
-  @Transactional(readOnly = true)
-  public
 }
