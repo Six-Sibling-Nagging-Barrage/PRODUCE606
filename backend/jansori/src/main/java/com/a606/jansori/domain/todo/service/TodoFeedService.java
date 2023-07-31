@@ -35,8 +35,6 @@ public class TodoFeedService {
 
   private final TodoRepository todoRepository;
 
-  private final TodoPersonaRepository todoPersonaRepository;
-
   private final TagFollowRepository tagFollowRepository;
 
   private final TagRepository tagRepository;
@@ -88,14 +86,6 @@ public class TodoFeedService {
         : todoRepository.findByTagWithCursor(tag, cursor, PageRequest.of(0, size));
 
     return getFeedResDtoFrom(size, member, pagedTodos);
-  }
-
-  @Transactional(readOnly = true)
-  public GetLineDetailsResDto getTodoPersonas(Long todoId) {
-
-    Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
-
-    return GetLineDetailsResDto.fromTodoPersonas(todoPersonaRepository.findAllByTodo(todo));
   }
 
   private List<FeedDto> convertTodosWithMemberToFeedDto(List<Todo> todos, Member member) {
