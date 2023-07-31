@@ -35,7 +35,7 @@ const Background = styled.div`
   bottom: 0;
   left: 0;
   position: fixed;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 99;
 `;
 
@@ -51,7 +51,7 @@ const ModalSection = styled.div`
   z-index: 99;
   backdrop-filter: blur(10px);
   border-radius: 5px;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 100px rgba(0, 0, 0, 0.4);
 `;
 
 const Title = styled.div`
