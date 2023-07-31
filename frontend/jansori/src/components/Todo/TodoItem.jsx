@@ -1,17 +1,21 @@
-import React from "react";
-import tw, { styled } from "twin.macro";
+import React, { useState, useEffect } from 'react';
+import tw, { styled } from 'twin.macro';
 
 const TodoItem = (props) => {
-  const { currentTodo } = props;
+  const { currentTodo, onTodoStatusChange } = props;
+
+  const TodoClickHandler = () => {
+    onTodoStatusChange(currentTodo.id);
+  };
 
   return (
     <TodoContainer>
-      <TodoDone>
-        <div className="finished">{currentTodo.finished ? "❌" : "✅"}</div>
+      <TodoDone onClick={TodoClickHandler}>
+        <div className='finished'>{currentTodo.finished ? '✅' : '❌'}</div>
       </TodoDone>
       <TodoContent>
-        <div className="todo">{currentTodo.content}</div>
-        <div>해시태그 자리</div>
+        <div className='todo'>{currentTodo.content}</div>
+        <HashTagContent>해시태그</HashTagContent>
       </TodoContent>
     </TodoContainer>
   );
@@ -20,13 +24,28 @@ const TodoItem = (props) => {
 export default TodoItem;
 
 const TodoContainer = styled.div`
-  margin-top: 20px;
+  ${tw`w-96
+grid
+grid-cols-5
+gap-4
+border-2
+rounded
+mt-1
+py-2
+bg-white`}
 `;
 
-const TodoDone = styled.div``;
+const TodoDone = styled.button`
+  ${tw`col-start-1
+  items-center
+  `}
+`;
 
 const TodoContent = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  ${tw`col-span-4
+  text-left`}
+`;
+
+const HashTagContent = styled.div`
+  ${tw`text-xs`}
 `;

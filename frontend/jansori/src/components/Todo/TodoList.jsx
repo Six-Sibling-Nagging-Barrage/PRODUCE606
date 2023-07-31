@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import tw, { styled } from "twin.macro";
-import TodoItem from "./TodoItem";
+import React, { useState, useEffect } from 'react';
+import tw, { styled } from 'twin.macro';
+import TodoItem from './TodoItem';
 
 const TodoList = () => {
   const [todoList, setTodoList] = useState([]);
@@ -11,19 +11,30 @@ const TodoList = () => {
       ...Array.from({ length: 10 }, () => ({
         id: getId(),
         finished: false,
-        date: "2023.07.31",
-        content: "살려주세요!",
+        date: '2023.07.31',
+        content: '살려주세요!',
       })),
     ]);
   }, []);
 
+  const TodoStatusChangeHandler = (todoID) => {
+    setTodoList((prev) =>
+      prev.map((todo) => (todo.id === todoID ? { ...todo, finished: !todo.finished } : todo))
+    );
+  };
+
   return (
     <TodoContainer>
       <ul>
-        {todoList &&
-          todoList.map((post) => {
-            return <TodoItem currentTodo={post} key={post.id} />;
-          })}
+        {todoList.map((todo) => {
+          return (
+            <TodoItem
+              currentTodo={todo}
+              key={todo.id}
+              onTodoStatusChange={TodoStatusChangeHandler}
+            />
+          );
+        })}
       </ul>
     </TodoContainer>
   );
@@ -31,9 +42,19 @@ const TodoList = () => {
 
 export default TodoList;
 
-const TodoContainer = styled.div``;
-
 let id = 0;
 function getId() {
   return id++;
 }
+
+const TodoContainer = styled.div`
+  ${tw`h-fit
+  w-fit
+  p-3
+  border-2
+  rounded`}
+`;
+
+const TodoItemContainer = styled.div`
+  ${tw`border-2`}
+`;
