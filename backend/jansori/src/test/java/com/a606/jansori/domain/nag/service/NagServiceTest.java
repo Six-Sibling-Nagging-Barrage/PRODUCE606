@@ -15,11 +15,13 @@ import com.a606.jansori.domain.nag.domain.NagLike;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
+import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
 import com.a606.jansori.domain.nag.repository.NagLikeRepository;
 import com.a606.jansori.domain.nag.repository.NagRepository;
+import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
 import com.a606.jansori.domain.tag.domain.NagTag;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
@@ -54,6 +56,8 @@ class NagServiceTest {
   @Mock
   private NagLikeRepository nagLikeRepository;
   @Mock
+  private NagUnlockRepository nagUnlockRepository;
+  @Mock
   private NagRandomGenerator nagRandomGenerator;
   @InjectMocks
   private NagService nagService;
@@ -76,6 +80,7 @@ class NagServiceTest {
         .build();
     nag = Nag.builder()
         .id(1L)
+        .content("운동하자")
         .build();
     nagLike = NagLike.builder()
         .nag(nag)
@@ -229,6 +234,25 @@ class NagServiceTest {
     //verify
     verify(nagRandomGenerator, times(1)).getRandomNagsOfMainPage();
   }
+
+  @DisplayName("멤버와 잔소리가 존재하고 멤버의 티켓이 1개이상이라면 초성 풀기에 성공한다.")
+  @Test
+  void Given_Valid_MemberWithNag_When_UnlockNagWIthTicket_Then_Success() {
+    //given
+    given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+    given(nagRepository.findById(nag.getId())).willReturn(Optional.of(nag));
+    given(nagUnlockRepository.existsByNagAndMember(nag, member)).willReturn(Boolean.FALSE);
+    given(any(Member.class).getTicket()).willReturn(1L);
+
+    //when
+    NagDto nagDto = nagService.unlockNagPreviewByMemberTicket(member.getId(), nag.getId());
+
+    //then
+    assertThat(nagDto.getNagId()).isEqualTo(nag.getId());
+    assertThat(nagDto.getContent()).isEqualTo(nag.getContent());
+    assertThat(nagDto.getCreateAt()).isEqualTo(nag.getCreatedAt());
+  }
+
 
   static Stream<List<Nag>> generateNags() {
     return Stream.of(
