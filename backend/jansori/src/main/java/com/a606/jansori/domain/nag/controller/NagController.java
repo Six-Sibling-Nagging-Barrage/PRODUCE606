@@ -42,7 +42,7 @@ public class NagController {
       @Valid @RequestBody PostNagReqDto postNagReqDto) {
 
     return EnvelopeResponse.<PostNagResDto>builder()
-        .data(nagService.createNag(1L, postNagReqDto))
+        .data(nagService.createNag(memberId, postNagReqDto))
         .build();
   }
 
