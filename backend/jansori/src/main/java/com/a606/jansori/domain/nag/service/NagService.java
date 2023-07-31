@@ -5,6 +5,8 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagLike;
+import com.a606.jansori.domain.nag.dto.GetNagResDto;
+import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
@@ -16,10 +18,13 @@ import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.NagTagRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class NagService {
@@ -54,5 +59,16 @@ public class NagService {
 
     nagLike.ifPresentOrElse(nagLikeRepository::delete,
         () -> nagLikeRepository.save(NagLike.builder().nag(nag).member(member).build()));
+  }
+
+  @Transactional(readOnly = true)
+  public GetNagResDto getAllNagsByMember(Long memberId) {
+    Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+
+    return GetNagResDto.of(nagTagRepository
+        .findByMember(member)
+        .stream()
+        .map(NagDto::new)
+        .collect(Collectors.toList()));
   }
 }
