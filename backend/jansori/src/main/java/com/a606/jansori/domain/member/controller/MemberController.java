@@ -38,13 +38,13 @@ public class MemberController {
         .build();
   }
 
-  @PostMapping("/register")
-  public EnvelopeResponse<PostMemberInfoResDto> postMemberInfo(
-          Long memberId, @RequestBody @Valid PostMemberInfoReqDto postMemberInfoReqDto){
-    return EnvelopeResponse.<PostMemberInfoResDto>builder()
-            .data(memberService.UpdateMemberInfo(memberId, postMemberInfoReqDto))
+  @PatchMapping("/update")
+  public EnvelopeResponse<PatchMemberInfoResDto> updateMemberInfo(
+          Long memberId, @RequestBody @Valid PatchMemberInfoReqDto patchMemberInfoReqDto){
+    return EnvelopeResponse.<PatchMemberInfoResDto>builder()
+            .data(memberService.UpdateMemberInfo(memberId, patchMemberInfoReqDto))
             .build();
-
   }
+
 
 }
