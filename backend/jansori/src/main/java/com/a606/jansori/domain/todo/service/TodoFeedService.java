@@ -1,7 +1,6 @@
 package com.a606.jansori.domain.todo.service;
 
 import com.a606.jansori.domain.member.domain.Member;
-import com.a606.jansori.domain.member.dto.FeedMemberDto;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
@@ -91,13 +90,11 @@ public class TodoFeedService {
 
       Nag nag = todo.getNag();
 
-      return FeedDto.ofFeedRelatedDto(FeedMemberDto.from(todo.getMember()),
-          todo,
-          FeedNagDto.fromNagAndUnlocked(
-              nag,
-              nagUnlockRepository.existsByNagAndMember(nag, member))
+      return FeedDto.from(todo,
+          FeedNagDto.fromNagAndUnlocked(nag, nagUnlockRepository.existsByNagAndMember(nag, member))
       );
     }).collect(Collectors.toList());
+
   }
 
   private GetTodoFeedResDto getFeedResDtoFrom(Integer size, Member member, Slice<Todo> pagedTodos) {
