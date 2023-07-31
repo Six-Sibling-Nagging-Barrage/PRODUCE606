@@ -48,6 +48,7 @@ public class MemberController {
     return EnvelopeResponse.<PatchMemberInfoResDto>builder()
             .data(memberService.UpdateMemberInfo(memberId, patchMemberInfoReqDto))
             .build();
+
   }
 
 }
