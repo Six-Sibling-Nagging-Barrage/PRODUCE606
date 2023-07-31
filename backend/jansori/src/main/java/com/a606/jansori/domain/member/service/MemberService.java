@@ -54,4 +54,15 @@ public class MemberService {
     return memberRepository.findById(securityUtil.getSessionMemberId())
         .orElseThrow(MemberNotFoundException::new);
   }
+
+  @Transactional
+  public PostMemberInfoResDto UpdateMemberInfo(Long memberId, PostMemberInfoReqDto postMemberInfoReqDto){
+    Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new MemberNotFoundException());
+
+    member.builder()
+            .nickname()
+
+
+  }
 }
