@@ -6,6 +6,7 @@ import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.persona.domain.PersonaReaction;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.domain.persona.exception.ReactionForbiddenException;
+import com.a606.jansori.domain.persona.exception.TodoPersonaBusinessException;
 import com.a606.jansori.domain.persona.exception.TodoPersonaNotFoundException;
 import com.a606.jansori.domain.persona.repository.PersonaReactionRepository;
 import com.a606.jansori.domain.persona.repository.PersonaRepository;
@@ -51,6 +52,10 @@ public class TodoPersonaService {
 
     TodoPersona todoPersona = todoPersonaRepository.findById(todoPersonaId)
         .orElseThrow(TodoPersonaNotFoundException::new);
+
+    if (todoPersona.getTodo() != todo) {
+      throw new TodoPersonaBusinessException();
+    }
 
     personaReactionRepository
         .findByMemberAndTodoPersona(member, todoPersona)
