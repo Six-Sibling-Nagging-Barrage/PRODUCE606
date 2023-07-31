@@ -7,11 +7,14 @@ import MyTodoPage from './pages/MyTodoPage';
 import NagBoxPage from './pages/NagBoxPage';
 import ProfilePage from './pages/ProfilePage';
 import NavBar from './components/NavBar/NavBar';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 function App() {
   return (
     <div className='App'>
-      <NavBar />
+      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID}>
+        <NavBar />
+      </GoogleOAuthProvider>
       <Routes>
         <Route path='/' element={<MainPage />} />
         <Route path='signup' element={<SignUpPage />} />

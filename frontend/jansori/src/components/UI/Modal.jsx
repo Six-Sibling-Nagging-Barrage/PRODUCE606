@@ -13,9 +13,9 @@ const Modal = (props) => {
       <Background onClick={handleClose} />
       <ModalSection>
         <Title>
-          <CloseButton type='button' onClick={handleClose}>
+          {/* <CloseButton type='button' onClick={handleClose}>
             X
-          </CloseButton>
+          </CloseButton> */}
         </Title>
         <Content>{children}</Content>
       </ModalSection>
@@ -42,7 +42,6 @@ const Background = styled.div`
 // ${(props) => modalSettings(props.visible)}
 
 const ModalSection = styled.div`
-  width: 500px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -50,6 +49,9 @@ const ModalSection = styled.div`
   background-color: rgba(255, 255, 255, 1);
   padding: 16px;
   z-index: 99;
+  backdrop-filter: blur(10px);
+  border-radius: 5px;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
 `;
 
 const Title = styled.div`

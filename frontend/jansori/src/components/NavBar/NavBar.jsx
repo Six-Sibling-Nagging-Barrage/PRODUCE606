@@ -76,9 +76,8 @@ const NavBar = () => {
       </Nav>
       {isLoginModalOpen && (
         <Modal setIsModalOpen={setIsLoginModalOpen}>
-          <div>
-            <GoogleLoginButton />
-          </div>
+          <LoginTitle>로그인</LoginTitle>
+          <GoogleLoginButton />
         </Modal>
       )}
     </>
@@ -200,4 +199,9 @@ md:hover:bg-transparent
 md:hover:text-blue-700
 md:p-0
 `}
+`;
+
+const LoginTitle = styled.div`
+  font-size: 18px;
+  margin-bottom: 20px;
 `;
