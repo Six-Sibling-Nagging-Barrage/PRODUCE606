@@ -70,17 +70,17 @@ public class NagRandomGenerator {
   }
 
   /**
-   * 메인페이지에서 잔소리 좋아요 수의 TOP RANKING 5를 제외한 랜덤 잔소리들을 가져온다.
-   * 랜덤으로 선택된 페이지가 0일 경우 TOP RANKING 이기 때문에 + 1을 해줍니다.
+   * 메인페이지에서 잔소리 좋아요 수의 TOP RANKING 5를 제외한 랜덤 잔소리들을 가져온다. 랜덤으로 선택된 페이지가 0일 경우 TOP RANKING 이기 때문에
+   * random Index를 + 1을 해줍니다.
+   *
    * @return 메인페이지에서 사용될 잔소리 리스트
    * @author 김태용
    */
   public List<Nag> getRandomNagsOfMainPage() {
-    Long count = (nagRepository.count() / MAX_PAGE_SIZE);
+    long count = (nagRepository.count() / MAX_PAGE_SIZE);
+
     int randomIndex = randomUtil.generate(count);
-    if (randomIndex == 0) {
-      randomIndex++;
-    }
+    randomIndex = randomIndex == 0 ? randomIndex + 1 : randomIndex;
 
     return nagRepository.findByRandomNagsNotInTopRank(
         PageRequest.of(randomIndex, MAX_PAGE_SIZE));
