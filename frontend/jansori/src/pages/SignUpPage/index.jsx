@@ -4,11 +4,56 @@ import Background from '../../components/UI/Background';
 import { styled } from 'twin.macro';
 
 const SignUpPage = () => {
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    setError,
+  } = useForm({ mode: 'onBlur' });
+
   return (
     <Background>
       <SignUpContainer>
         <SignUpTitle>회원가입</SignUpTitle>
-        <SignUpForm></SignUpForm>
+        <SignUpForm>
+          <form>
+            <div className='sign-up-input-item'>
+              <label>닉네임</label>
+              <input
+                {...register('nickname', {
+                  required: '닉네임을 입력해주세요.',
+                  maxLength: {
+                    value: 11,
+                    message: '11자 이하로 입력해주세요.',
+                  },
+                  pattern: {
+                    value:
+                      /^(?!.*\s\s)[\u1100-\u1112\u3131-\u314e\u314f-\u3163가-힣\w _]+(?<![\s_])$/,
+                    message: '닉네임 형식을 확인해주세요.',
+                  },
+                })}
+              />
+              <div>{errors?.nickname?.message}</div>
+            </div>
+            <div className='sign-up-input-item'>
+              <label>소개글</label>
+              <input
+                {...register('description', {
+                  maxLength: {
+                    value: 200,
+                    message: '200자 이하로 입력해주세요.',
+                  },
+                  pattern: {
+                    value:
+                      /^(?!.*\s\s)[[\u1100-\u1112\u3131-\u314e\u314f-\u3163가-힣]+$/,
+                    message: '공백 문자를 연속 2개 이상 사용할 수 없어요.',
+                  },
+                })}
+              />
+              <div>{errors?.description?.message}</div>
+            </div>
+          </form>
+        </SignUpForm>
       </SignUpContainer>
     </Background>
   );
