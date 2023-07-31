@@ -3,6 +3,7 @@ package com.a606.jansori.domain.todo.dto;
 import com.a606.jansori.domain.persona.dto.FeedTodoPersonaDto;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public class TodoDto {
 
   private String content;
 
-  private LocalDateTime createdAt;
+  private LocalDate todoAt;
 
   private List<TagDto> tags;
 
@@ -40,7 +41,7 @@ public class TodoDto {
         .display(todo.getDisplay())
         .finished(todo.getFinished())
         .content(todo.getContent())
-        .createdAt(todo.getCreatedAt())
+        .todoAt(todo.getTodoAt())
         .tags(todo.getTodoTags().stream()
             .map(todoTag -> TagDto.from(todoTag))
             .collect(Collectors.toList()))

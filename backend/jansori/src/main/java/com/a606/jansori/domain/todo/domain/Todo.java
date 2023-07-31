@@ -5,6 +5,7 @@ import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.domain.tag.domain.TodoTag;
 import com.a606.jansori.global.common.BaseTimeEntity;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -42,6 +43,9 @@ public class Todo extends BaseTimeEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "nag_id")
   private Nag nag;
+
+  @Column
+  private LocalDate todoAt;
 
   @Column
   private Boolean display;

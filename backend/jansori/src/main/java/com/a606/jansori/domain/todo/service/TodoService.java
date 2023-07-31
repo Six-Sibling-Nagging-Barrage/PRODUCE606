@@ -79,7 +79,7 @@ public class TodoService {
     LocalDate date = getTodoByDateReqDto.getDate();
 
     return GetTodoByDateResDto.from(
-        todoRepository.findAllByMemberAndCreatedAtOrderByCreatedAtDesc(member, date));
+        todoRepository.findAllByMemberAndTodoAtIsOrderByCreatedAtDesc(member, date));
   }
 
   @Transactional
