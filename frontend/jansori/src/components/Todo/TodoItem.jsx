@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import tw, { styled } from 'twin.macro';
 
 const TodoItem = (props) => {
-  const { currentTodo, onTodoStatusChange } = props;
+  const { currentTodo, onTodoStatusChange, index } = props;
 
   const handleTodoClick = () => {
-    onTodoStatusChange(currentTodo.id);
+    onTodoStatusChange(index);
   };
 
   return (
