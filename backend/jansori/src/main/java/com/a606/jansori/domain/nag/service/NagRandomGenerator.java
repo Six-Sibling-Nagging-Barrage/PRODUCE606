@@ -77,7 +77,7 @@ public class NagRandomGenerator {
    * @author 김태용
    */
   public List<Nag> getRandomNagsOfMainPage() {
-    long count = (nagRepository.count() / MAX_PAGE_SIZE);
+    long count = nagRepository.count() / MAX_PAGE_SIZE;
 
     int randomIndex = randomUtil.generate(count);
     randomIndex = randomIndex == 0 ? randomIndex + 1 : randomIndex;
