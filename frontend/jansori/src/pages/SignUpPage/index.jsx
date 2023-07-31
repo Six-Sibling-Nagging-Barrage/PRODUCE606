@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import Background from '../../components/UI/Background';
 import { styled } from 'twin.macro';
+import HashTag from '../../components/HashTag/HashTag';
 
 const SignUpPage = () => {
   const {
@@ -17,7 +18,7 @@ const SignUpPage = () => {
         <SignUpTitle>회원가입</SignUpTitle>
         <SignUpForm>
           <form>
-            <div className='sign-up-input-item'>
+            <div className="sign-up-input-item">
               <label>닉네임</label>
               <input
                 {...register('nickname', {
@@ -35,7 +36,7 @@ const SignUpPage = () => {
               />
               <div>{errors?.nickname?.message}</div>
             </div>
-            <div className='sign-up-input-item'>
+            <div className="sign-up-input-item">
               <label>소개글</label>
               <input
                 {...register('description', {
@@ -53,6 +54,7 @@ const SignUpPage = () => {
               <div>{errors?.description?.message}</div>
             </div>
           </form>
+          <HashTag />
         </SignUpForm>
       </SignUpContainer>
     </Background>
