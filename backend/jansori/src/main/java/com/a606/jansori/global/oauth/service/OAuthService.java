@@ -4,7 +4,8 @@ import com.a606.jansori.domain.member.domain.Member;
 
 import com.a606.jansori.domain.member.repository.MemberRepository;
 
-import com.a606.jansori.global.oauth.dto.OAuth2Attributes;
+
+import com.a606.jansori.global.oauth.dto.OAuthAttributes;
 import com.a606.jansori.global.oauth.dto.PrincipalDetails;
 
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,7 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
 
         String identifier = (String) oAuth2User.getAttributes().get(identifierName);
 
-        OAuth2Attributes oAuthAttributes = OAuth2Attributes
+        OAuthAttributes oAuthAttributes = OAuthAttributes
                 .of(registrationId, identifierName, oAuth2User.getAttributes());
         Optional<Member> memberOptional = memberRepository.findByOauthIdentifier(identifier);
         Member member = saveOrGetMember(memberOptional, oAuthAttributes);
@@ -48,7 +49,7 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
         return new PrincipalDetails(oAuth2User.getAttributes(), member.getId(), member.getMemberRole());
     }
 
-    private Member saveOrGetMember(Optional<Member> member, OAuth2Attributes oAuth2Attributes) {
+    private Member saveOrGetMember(Optional<Member> member, OAuthAttributes oAuth2Attributes) {
         if (member.isEmpty()) {
             Member newMember = oAuth2Attributes.toEntity();
             memberRepository.save(newMember);
