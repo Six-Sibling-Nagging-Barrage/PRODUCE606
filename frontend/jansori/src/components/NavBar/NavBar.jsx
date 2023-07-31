@@ -4,6 +4,7 @@ import tw from 'twin.macro';
 import { BiSearch } from 'react-icons/bi';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import Modal from '../UI/Modal';
+import GoogleLoginButton from '../Login/GoogleLoginButton';
 
 // 설치해야 하는 파일
 //npm install react-icons --save
@@ -73,7 +74,13 @@ const NavBar = () => {
         </NavWrap>
         {/* 로고 들어가는 부분 끝 */}
       </Nav>
-      {isLoginModalOpen && <Modal setIsModalOpen={setIsLoginModalOpen}></Modal>}
+      {isLoginModalOpen && (
+        <Modal setIsModalOpen={setIsLoginModalOpen}>
+          <div>
+            <GoogleLoginButton />
+          </div>
+        </Modal>
+      )}
     </>
   );
 };
