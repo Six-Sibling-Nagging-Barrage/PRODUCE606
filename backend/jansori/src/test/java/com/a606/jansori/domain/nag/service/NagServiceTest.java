@@ -12,7 +12,8 @@ import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagLike;
-import com.a606.jansori.domain.nag.dto.GetNagResDto;
+import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
+import com.a606.jansori.domain.nag.dto.NagDetailDto;
 import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
@@ -164,7 +165,7 @@ class NagServiceTest {
         verify(nagLikeRepository, times(1)).findNagLikeByNagAndMember(nag, member);
     }
 
-    @DisplayName("멤버가 작성한 잔소리들이 존재하지 않아도 빈 LIST 조회에 성공한다.")
+    @DisplayName("마이페이지에서 멤버가 작성한 잔소리들이 존재하지 않아도 빈 LIST 조회에 성공한다.")
     @Test
     void Given_Valid_MemberId_When_GetEmptyNagsListByMemberId_Then_Success() {
         //given
@@ -173,7 +174,7 @@ class NagServiceTest {
         given(nagTagRepository.findByMember(member)).willReturn(nagTags);
 
         //when
-        GetNagResDto result = nagService.getAllNagsByMember(member.getId());
+        GetNagOfProfilePageResDto result = nagService.getAllNagsByMember(member.getId());
 
         //then
         assertThat(result.getNags()).isEmpty();
@@ -183,23 +184,23 @@ class NagServiceTest {
         verify(nagTagRepository, times(1)).findByMember(member);
     }
 
-    @DisplayName("멤버가 작성한 잔소리들이 존재한다면 LIST 조회에 성공한다.")
+    @DisplayName("마이 페이지에서 멤버가 작성한 잔소리들이 존재한다면 LIST 조회에 성공한다.")
     @Test
     void Given_Valid_MemberId_When_GetNagsListByMemberId_Then_Success() {
         //given
         Nag nag = Nag.builder().content("test").likeCount(1).build();
         Tag tag = Tag.builder().name("test").build();
         List<NagTag> nagTags = List.of(new NagTag(1L, nag, tag));
-        GetNagResDto getNagResDto = GetNagResDto.of(nagTags.stream().map(NagDto::new).collect(
-            Collectors.toList()));
+        GetNagOfProfilePageResDto getNagOfProfilePageResDto = GetNagOfProfilePageResDto
+            .from(nagTags.stream().map(NagDetailDto::from).collect(Collectors.toList()));
         given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
         given(nagTagRepository.findByMember(member)).willReturn(nagTags);
 
         //when
-        GetNagResDto result = nagService.getAllNagsByMember(member.getId());
+        GetNagOfProfilePageResDto result = nagService.getAllNagsByMember(member.getId());
 
         //then
-        assertThat(result).usingRecursiveComparison().isEqualTo(getNagResDto);
+        assertThat(result).usingRecursiveComparison().isEqualTo(getNagOfProfilePageResDto);
 
         //verify
         verify(memberRepository, times(1)).findById(member.getId());
