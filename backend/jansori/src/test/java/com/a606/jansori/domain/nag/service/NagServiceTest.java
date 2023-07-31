@@ -12,6 +12,7 @@ import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagLike;
+import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
@@ -28,10 +29,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -49,6 +53,8 @@ class NagServiceTest {
   private NagTagRepository nagTagRepository;
   @Mock
   private NagLikeRepository nagLikeRepository;
+  @Mock
+  private NagRandomGenerator nagRandomGenerator;
   @InjectMocks
   private NagService nagService;
 
@@ -206,13 +212,29 @@ class NagServiceTest {
     verify(nagTagRepository, times(1)).findByMember(member);
   }
 
-
-  @Test
   @DisplayName("메인 페이지에서 보여줄 랜덤 잔소리5개 또는 5개 이하를 가져오는데 성공한다.")
-  void Given_Nags_When_GetRandomNagsOfMainPage_Then_Success() {
+  @ParameterizedTest
+  @MethodSource("generateNags")
+  void Given_Nags_When_GetRandomNagsOfMainPage_Then_Success(List<Nag> nags) {
+    //given
+    given(nagRandomGenerator.getRandomNagsOfMainPage()).willReturn(nags);
+
+    //when
+    GetNagOfMainPageResDto getNagOfMainPageResDto = nagService.getRandomNagsOfMainPage();
 
     //then
-    assertThat(nagService.getRandomNagsOfMainPage().getNags().size())
+    assertThat(getNagOfMainPageResDto.getNags().size())
         .isLessThanOrEqualTo(5);
+
+    //verify
+    verify(nagRandomGenerator, times(1)).getRandomNagsOfMainPage();
+  }
+
+  static Stream<List<Nag>> generateNags() {
+    return Stream.of(
+        Collections.emptyList(),
+        List.of(new Nag(), new Nag()),
+        List.of(new Nag(), new Nag(), new Nag(), new Nag(), new Nag())
+    );
   }
 }
