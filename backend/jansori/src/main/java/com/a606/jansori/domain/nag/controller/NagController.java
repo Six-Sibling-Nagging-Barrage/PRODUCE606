@@ -1,5 +1,6 @@
 package com.a606.jansori.domain.nag.controller;
 
+import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
@@ -25,6 +26,13 @@ public class NagController {
   public EnvelopeResponse<GetNagOfProfilePageResDto> getAllNagsByMember(Long memberId) {
     return EnvelopeResponse.<GetNagOfProfilePageResDto>builder()
         .data(nagService.getAllNagsByMember(memberId))
+        .build();
+  }
+
+  @GetMapping("/main-page")
+  public EnvelopeResponse<GetNagOfMainPageResDto> getRandomNagsOfMainPage() {
+    return EnvelopeResponse.<GetNagOfMainPageResDto>builder()
+        .data(nagService.getRandomNagsOfMainPage())
         .build();
   }
 

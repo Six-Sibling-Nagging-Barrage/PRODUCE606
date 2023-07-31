@@ -205,4 +205,14 @@ class NagServiceTest {
     verify(memberRepository, times(1)).findById(member.getId());
     verify(nagTagRepository, times(1)).findByMember(member);
   }
+
+
+  @Test
+  @DisplayName("메인 페이지에서 보여줄 랜덤 잔소리5개 또는 5개 이하를 가져오는데 성공한다.")
+  void Given_Nags_When_GetRandomNagsOfMainPage_Then_Success() {
+
+    //then
+    assertThat(nagService.getRandomNagsOfMainPage().getNags().size())
+        .isLessThanOrEqualTo(5);
+  }
 }

@@ -5,8 +5,10 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagLike;
+import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
+import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
@@ -34,6 +36,7 @@ public class NagService {
   private final NagTagRepository nagTagRepository;
   private final MemberRepository memberRepository;
   private final NagLikeRepository nagLikeRepository;
+  private final NagRandomGenerator nagRandomGenerator;
 
   @Transactional
   public PostNagResDto createNag(Long memberId, PostNagReqDto postNagReqDto) {
@@ -70,5 +73,15 @@ public class NagService {
         .stream()
         .map(NagDetailDto::from)
         .collect(Collectors.toList()));
+  }
+
+  @Transactional(readOnly = true)
+  public GetNagOfMainPageResDto getRandomNagsOfMainPage() {
+    return GetNagOfMainPageResDto.builder()
+        .nags(nagRandomGenerator.getRandomNagsOfMainPage()
+            .stream()
+            .map(NagDto::from)
+            .collect(Collectors.toList()))
+        .build();
   }
 }
