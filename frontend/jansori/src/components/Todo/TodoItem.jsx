@@ -4,13 +4,13 @@ import tw, { styled } from 'twin.macro';
 const TodoItem = (props) => {
   const { currentTodo, onTodoStatusChange } = props;
 
-  const TodoClickHandler = () => {
+  const handleTodoClick = () => {
     onTodoStatusChange(currentTodo.id);
   };
 
   return (
     <TodoContainer>
-      <TodoDone onClick={TodoClickHandler}>
+      <TodoDone onClick={handleTodoClick}>
         <div className='finished'>{currentTodo.finished ? '✅' : '❌'}</div>
       </TodoDone>
       <TodoContent>
