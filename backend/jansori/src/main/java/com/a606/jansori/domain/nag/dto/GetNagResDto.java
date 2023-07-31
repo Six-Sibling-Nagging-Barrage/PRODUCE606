@@ -1,6 +1,5 @@
 package com.a606.jansori.domain.nag.dto;
 
-import com.a606.jansori.domain.nag.domain.Nag;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,9 +8,9 @@ import lombok.Getter;
 @Getter
 public class GetNagResDto {
 
-  private List<NagDto> nags;
+  private List<NagDetailDto> nags;
 
-  public static GetNagResDto of(List<NagDto> nags) {
+  public static GetNagResDto of(List<NagDetailDto> nags) {
     return GetNagResDto.builder()
         .nags(nags)
         .build();

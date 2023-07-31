@@ -6,7 +6,7 @@ import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagLike;
 import com.a606.jansori.domain.nag.dto.GetNagResDto;
-import com.a606.jansori.domain.nag.dto.NagDto;
+import com.a606.jansori.domain.nag.dto.NagDetailDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
@@ -68,7 +68,10 @@ public class NagService {
     return GetNagResDto.of(nagTagRepository
         .findByMember(member)
         .stream()
-        .map(NagDto::new)
+        .map(NagDetailDto::from)
         .collect(Collectors.toList()));
   }
+
+  @Transactional(readOnly = true)
+  public
 }
