@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import Background from '../../components/UI/Background';
 import { styled } from 'twin.macro';
+import ProfileImg from '../../components/Profile/ProfileImg';
 
 const SignUpPage = () => {
   const {
@@ -17,7 +18,8 @@ const SignUpPage = () => {
         <SignUpTitle>회원가입</SignUpTitle>
         <SignUpForm>
           <form>
-            <div className='sign-up-input-item'>
+            <ProfileImg editable={true} />
+            <div className="sign-up-input-item">
               <label>닉네임</label>
               <input
                 {...register('nickname', {
@@ -35,7 +37,7 @@ const SignUpPage = () => {
               />
               <div>{errors?.nickname?.message}</div>
             </div>
-            <div className='sign-up-input-item'>
+            <div className="sign-up-input-item">
               <label>소개글</label>
               <input
                 {...register('description', {
