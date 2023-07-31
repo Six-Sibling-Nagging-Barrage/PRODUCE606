@@ -51,4 +51,12 @@ public class TodoPersona {
     this.todo = todo;
     this.todo.getTodoPersonas().add(this);
   }
+
+  public Integer increaseLikeCount() {
+    return ++this.likeCount;
+  }
+
+  public void setLine(Line line) {
+    this.line = line;
+  }
 }

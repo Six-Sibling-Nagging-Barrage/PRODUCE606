@@ -11,8 +11,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class FeedTodoPersonaDetailDto extends FeedTodoPersonaDto {
 
-  private Long todoPersonaId;
-
   private String content;
 
   public static FeedTodoPersonaDetailDto from(TodoPersona todoPersona) {

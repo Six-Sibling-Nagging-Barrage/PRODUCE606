@@ -12,6 +12,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class FeedTodoPersonaDto {
 
+  private Long todoPersonaId;
+
   private Long personaId;
 
   private Integer likeCount;
@@ -19,6 +21,7 @@ public class FeedTodoPersonaDto {
   public static FeedTodoPersonaDto from(TodoPersona todoPersona) {
 
     return FeedTodoPersonaDto.builder()
+        .todoPersonaId(todoPersona.getId())
         .personaId(todoPersona.getPersona().getId())
         .likeCount(todoPersona.getLikeCount())
         .build();
