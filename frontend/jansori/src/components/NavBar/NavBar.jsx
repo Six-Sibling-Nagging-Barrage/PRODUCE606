@@ -1,72 +1,80 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import tw from "twin.macro";
-import { BiSearch } from "react-icons/bi";
-import { RxHamburgerMenu } from "react-icons/rx";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import tw from 'twin.macro';
+import { BiSearch } from 'react-icons/bi';
+import { RxHamburgerMenu } from 'react-icons/rx';
+import Modal from '../UI/Modal';
 
 // 설치해야 하는 파일
 //npm install react-icons --save
 
 const NavBar = () => {
   const [isToggleOpen, setIsToggleOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   const handleMenuClick = () => {
     setIsToggleOpen(!isToggleOpen);
-    console.log(isToggleOpen);
+  };
+
+  const handleLoginClick = () => {
+    setIsLoginModalOpen(true);
   };
 
   return (
-    <Nav>
-      {/* 로고 들어가는 부분 시작 */}
-      <NavWrap>
-        <Logo href="/">
-          <img
-            className="h-4"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyy01YZvIVHu61Ocu6oepgHZwHOzzoYHRn8g&usqp=CAU"
-            alt="logo"
-          />
-          <LogoText>육남매 잔소리</LogoText>
-        </Logo>
-        {/* 오른쪽 로그인 버튼 부분 시작*/}
-        <RightButtons>
-          <a href="search">
-            <BiSearch className="mr-6 mt-3" />
-          </a>
-          <LoginButton href="login">Login</LoginButton>
-          {/* 화면 작아졌을 때 햄버거 icon 시작 */}
-          <HamburgerButton
-            type="button"
-            aria-controls="navbar-sticky"
-            aria-expanded={isToggleOpen}
-            onClick={handleMenuClick}
-          >
-            <span className="sr-only">Open</span>
-            <RxHamburgerMenu className="w-5 h-5" aria-hidden="true" />
-          </HamburgerButton>
-          {/* 화면 작아졌을 때 햄버거 icon 끝 */}
-        </RightButtons>
-        {/* 오른쪽 로그인 버튼 부분 끝*/}
-        {/* 네비게이션 리스트 부분 시작 */}
-        <NavItems id="navbar-sticky">
-          <NavItemsUl>
-            <li>
-              <NavItem href="feed">Feed</NavItem>
-            </li>
-            <li>
-              <NavItem href="todo">ToDo</NavItem>
-            </li>
-            <li>
-              <NavItem href="nag">잔소리함</NavItem>
-            </li>
-            <li>
-              <NavItem href="aboutus">About Us</NavItem>
-            </li>
-          </NavItemsUl>
-        </NavItems>
-        {/* 네비게이션 리스트 부분 끝 */}
-      </NavWrap>
-      {/* 로고 들어가는 부분 끝 */}
-    </Nav>
+    <>
+      <Nav>
+        {/* 로고 들어가는 부분 시작 */}
+        <NavWrap>
+          <Logo href='/'>
+            <img
+              className='h-4'
+              src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyy01YZvIVHu61Ocu6oepgHZwHOzzoYHRn8g&usqp=CAU'
+              alt='logo'
+            />
+            <LogoText>육남매 잔소리</LogoText>
+          </Logo>
+          {/* 오른쪽 로그인 버튼 부분 시작*/}
+          <RightButtons>
+            <a href='search'>
+              <BiSearch className='mr-6 mt-3' />
+            </a>
+            <LoginButton onClick={handleLoginClick}>Login</LoginButton>
+            {/* 화면 작아졌을 때 햄버거 icon 시작 */}
+            <HamburgerButton
+              type='button'
+              aria-controls='navbar-sticky'
+              aria-expanded={isToggleOpen}
+              onClick={handleMenuClick}
+            >
+              <span className='sr-only'>Open</span>
+              <RxHamburgerMenu className='w-5 h-5' aria-hidden='true' />
+            </HamburgerButton>
+            {/* 화면 작아졌을 때 햄버거 icon 끝 */}
+          </RightButtons>
+          {/* 오른쪽 로그인 버튼 부분 끝*/}
+          {/* 네비게이션 리스트 부분 시작 */}
+          <NavItems id='navbar-sticky'>
+            <NavItemsUl>
+              <li>
+                <NavItem href='feed'>Feed</NavItem>
+              </li>
+              <li>
+                <NavItem href='todo'>ToDo</NavItem>
+              </li>
+              <li>
+                <NavItem href='nag'>잔소리함</NavItem>
+              </li>
+              <li>
+                <NavItem href='aboutus'>About Us</NavItem>
+              </li>
+            </NavItemsUl>
+          </NavItems>
+          {/* 네비게이션 리스트 부분 끝 */}
+        </NavWrap>
+        {/* 로고 들어가는 부분 끝 */}
+      </Nav>
+      {isLoginModalOpen && <Modal setIsModalOpen={setIsLoginModalOpen}></Modal>}
+    </>
   );
 };
 
@@ -134,10 +142,9 @@ const HamburgerButton = styled.button`
   `}
 `;
 
-const LoginButton = styled.a`
+const LoginButton = styled.button`
   ${tw`text-base
 text-blue-600
-hover:underline
  mt-2`}
 `;
 
