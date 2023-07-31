@@ -3,21 +3,20 @@ package com.a606.jansori.global.oauth.service;
 import com.a606.jansori.domain.member.domain.Member;
 
 import com.a606.jansori.domain.member.repository.MemberRepository;
-import com.a606.jansori.domain.member.domain.MemberRole;
-import com.a606.jansori.domain.member.domain.OauthType;
-import com.a606.jansori.domain.member.repository.MemberRepository;
+
+import com.a606.jansori.global.oauth.dto.OAuth2Attributes;
+import com.a606.jansori.global.oauth.dto.PrincipalDetails;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -34,27 +33,28 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
         String registrationId = userRequest.getClientRegistration()
                 .getRegistrationId(); // OAuth 서비스 이름 (google)
 
-        String userNameAttributeName = userRequest.getClientRegistration()
+        String identifierName = userRequest.getClientRegistration()
                 .getProviderDetails()
                 .getUserInfoEndpoint()
                 .getUserNameAttributeName(); // OAuth 로그인 시 키(PK)가 되는 값
 
-        OAuth2Attributes oAuthAttributes = OAuth2Attributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
-        Optional<Member> memberOptional = memberRepository.findByOauthIdentifier((String) oAuth2User.getAttributes().get("sub"));
+        String identifier = (String) oAuth2User.getAttributes().get(identifierName);
 
-        Optional<Member> member = memberRepository.findByOauthIdentifier(oAuthAttributes.getUserNameAttributeName());
+        OAuth2Attributes oAuthAttributes = OAuth2Attributes
+                .of(registrationId, identifierName, oAuth2User.getAttributes());
+        Optional<Member> memberOptional = memberRepository.findByOauthIdentifier(identifier);
+        Member member = saveOrGetMember(memberOptional, oAuthAttributes);
 
+        return new PrincipalDetails(oAuth2User.getAttributes(), member.getId(), member.getMemberRole());
+    }
 
-        // 멤버 정보가 없을 경우 새 멤버 생성
-        if (memberOptional.isEmpty()) {
-            Member newMember = oAuthAttributes.toEntity();
+    private Member saveOrGetMember(Optional<Member> member, OAuth2Attributes oAuth2Attributes) {
+        if (member.isEmpty()) {
+            Member newMember = oAuth2Attributes.toEntity();
             memberRepository.save(newMember);
-
+            return newMember;
         }
-
-        return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-                oAuthAttributes.getAttributes(), userNameAttributeName);
+        return member.get();
     }
 
 

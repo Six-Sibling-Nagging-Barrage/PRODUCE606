@@ -8,7 +8,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Builder(access = AccessLevel.PRIVATE)
@@ -37,7 +36,7 @@ public class OAuth2Attributes {
     public Member toEntity(){
         return Member.builder()
                 .oauthIdentifier((String) this.getAttributes().get("sub"))
-                .memberRole(MemberRole.USER)
+                .memberRole(MemberRole.ROLE_USER)
                 .oauthType(OauthType.GOOGLE)
                 .ticket(50L)
                 .build();
