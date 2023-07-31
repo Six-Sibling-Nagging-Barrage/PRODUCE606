@@ -16,5 +16,6 @@ px-5
 bg-white
 shadow
 shadow-gray-400
+m-3
 `}
 `;
