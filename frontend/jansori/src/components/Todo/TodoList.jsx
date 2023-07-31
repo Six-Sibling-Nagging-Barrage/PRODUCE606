@@ -17,7 +17,7 @@ const TodoList = () => {
     ]);
   }, []);
 
-  const TodoStatusChangeHandler = (todoID) => {
+  const handlerTodoStatusChange = (todoID) => {
     setTodoList((prev) =>
       prev.map((todo) => (todo.id === todoID ? { ...todo, finished: !todo.finished } : todo))
     );
@@ -31,7 +31,7 @@ const TodoList = () => {
             <TodoItem
               currentTodo={todo}
               key={todo.id}
-              onTodoStatusChange={TodoStatusChangeHandler}
+              onTodoStatusChange={handlerTodoStatusChange}
             />
           );
         })}
