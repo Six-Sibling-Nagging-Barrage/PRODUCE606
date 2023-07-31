@@ -7,6 +7,7 @@ import com.a606.jansori.domain.todo.domain.Todo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,8 +15,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class FeedDto {
 
   @JsonProperty("todoMember")
@@ -28,7 +29,7 @@ public class FeedDto {
   private FeedNagDto feedNagDto;
 
   @JsonProperty("persona")
-  private List<FeedTodoPersonaDto> lines;
+  private List<FeedTodoPersonaDto> todoPersonas;
 
   public static FeedDto ofFeedRelatedDto(FeedMemberDto feedMemberDto, Todo todo,
       FeedNagDto feedNagDto) {
@@ -37,7 +38,7 @@ public class FeedDto {
         .feedMemberDto(feedMemberDto)
         .todoDto(TodoDto.from(todo))
         .feedNagDto(feedNagDto)
-        .lines(todo.getTodoPersonas().stream()
+        .todoPersonas(todo.getTodoPersonas().stream()
             .map(FeedTodoPersonaDto::from)
             .collect(Collectors.toList()))
         .build();

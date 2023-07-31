@@ -1,8 +1,9 @@
 package com.a606.jansori.domain.todo.controller;
 
 import com.a606.jansori.domain.todo.dto.GetLineDetailsResDto;
+import com.a606.jansori.domain.todo.dto.GetTodoByDateReqDto;
+import com.a606.jansori.domain.todo.dto.GetTodoByDateResDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
-import com.a606.jansori.domain.todo.dto.GetTodoListResDto;
 import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
 import com.a606.jansori.domain.todo.dto.PostPersonaReactResDto;
 import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
@@ -34,7 +35,7 @@ public class TodoController {
   private final TodoPersonaService todoPersonaService;
 
   @PostMapping
-  public EnvelopeResponse postTodo(@Valid @RequestBody PostTodoReqDto postTodoReqDto,
+  public EnvelopeResponse<PostTodoResDto> postTodo(@Valid @RequestBody PostTodoReqDto postTodoReqDto,
       @RequestParam Long memberId) {
 
     return EnvelopeResponse.<PostTodoResDto>builder()
@@ -42,20 +43,12 @@ public class TodoController {
         .build();
   }
 
-  @GetMapping("/my/today")
-  public EnvelopeResponse getMyTodayTodo(Long memberId) {
+  @GetMapping("/my")
+  public EnvelopeResponse<GetTodoByDateResDto> getMyTodayTodo(Long memberId,
+      GetTodoByDateReqDto getTodoByDateReqDto) {
 
-    return EnvelopeResponse.<GetTodoListResDto>builder()
-        .data(todoService.getMyTodayTodo(memberId))
-        .build();
-
-  }
-
-  @GetMapping("/my/all")
-  public EnvelopeResponse getMyAllTodo(Long memberId) {
-
-    return EnvelopeResponse.<GetTodoListResDto>builder()
-        .data(todoService.getMyAllTodo(memberId))
+    return EnvelopeResponse.<GetTodoByDateResDto>builder()
+        .data(todoService.getMyTodoByDate(memberId, getTodoByDateReqDto))
         .build();
 
   }

@@ -12,20 +12,17 @@ import com.a606.jansori.domain.tag.domain.TodoTag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
-import com.a606.jansori.domain.todo.dto.GetTodoListResDto;
+import com.a606.jansori.domain.todo.dto.GetTodoByDateReqDto;
+import com.a606.jansori.domain.todo.dto.GetTodoByDateResDto;
 import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
 import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
 import com.a606.jansori.domain.todo.dto.PostTodoResDto;
 import com.a606.jansori.domain.todo.dto.TagDto;
-import com.a606.jansori.domain.todo.dto.TodoDto;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
-import java.time.Clock;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,8 +40,6 @@ public class TodoService {
   private final PersonaRepository personaRepository;
 
   private final NagRandomGenerator nagRandomGenerator;
-
-  private final Clock clock;
 
   @Transactional
   public PostTodoResDto postTodo(PostTodoReqDto postTodoReqDto, Long memberId) {
@@ -72,40 +67,19 @@ public class TodoService {
       todoPersona.setTodo(todo);
     });
 
-    return new PostTodoResDto(TodoDto.from(todoRepository.save(todo)));
+    return PostTodoResDto.from(todoRepository.save(todo));
   }
 
   @Transactional(readOnly = true)
-  public GetTodoListResDto getMyTodayTodo(Long memberId) {
+  public GetTodoByDateResDto getMyTodoByDate(Long memberId,
+      GetTodoByDateReqDto getTodoByDateReqDto) {
 
     Member member = getMemberByIdOrElseThrowException(memberId);
 
-    LocalDate current = LocalDate.now(clock);
-    LocalDateTime today = current.atStartOfDay();
-    LocalDateTime tomorrow = current.plusDays(1).atStartOfDay();
+    LocalDate date = getTodoByDateReqDto.getDate();
 
-    List<TodoDto> todos = todoRepository.findAllByMemberAndCreatedAtBetweenOrderByCreatedAtDesc(
-            member, today, tomorrow).stream()
-        .map(TodoDto::from)
-        .collect(Collectors.toList());
-
-    return GetTodoListResDto.builder()
-        .todos(todos)
-        .build();
-  }
-
-  @Transactional(readOnly = true)
-  public GetTodoListResDto getMyAllTodo(Long memberId) {
-
-    Member member = getMemberByIdOrElseThrowException(memberId);
-
-    List<TodoDto> todos = todoRepository.findAllByMemberOrderByCreatedAtDesc(member).stream()
-        .map(TodoDto::from)
-        .collect(Collectors.toList());
-
-    return GetTodoListResDto.builder()
-        .todos(todos)
-        .build();
+    return GetTodoByDateResDto.from(
+        todoRepository.findAllByMemberAndCreatedAtOrderByCreatedAtDesc(member, date));
   }
 
   @Transactional
