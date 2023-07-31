@@ -3,13 +3,14 @@ package com.a606.jansori.domain.todo.service;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
+import com.a606.jansori.domain.nag.service.NagRandomGenerator;
+import com.a606.jansori.domain.persona.domain.Line;
 import com.a606.jansori.domain.persona.domain.PersonaReaction;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.domain.persona.exception.ReactionForbiddenException;
 import com.a606.jansori.domain.persona.exception.TodoPersonaBusinessException;
 import com.a606.jansori.domain.persona.exception.TodoPersonaNotFoundException;
 import com.a606.jansori.domain.persona.repository.PersonaReactionRepository;
-import com.a606.jansori.domain.persona.repository.PersonaRepository;
 import com.a606.jansori.domain.persona.repository.TodoPersonaRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.dto.GetLineDetailsResDto;
@@ -30,9 +31,9 @@ public class TodoPersonaService {
 
   private final TodoPersonaRepository todoPersonaRepository;
 
-  private final PersonaRepository personaRepository;
-
   private final PersonaReactionRepository personaReactionRepository;
+
+  private final NagRandomGenerator nagRandomGenerator;
 
   @Transactional(readOnly = true)
   public GetLineDetailsResDto getTodoPersonas(Long todoId) {
@@ -69,7 +70,11 @@ public class TodoPersonaService {
         .todo(todo)
         .build());
 
-    todoPersona.increaseLikeCount();
+    Integer likeCount = todoPersona.increaseLikeCount();
+
+    if (likeCount == 1) {
+      todoPersona.setLine(nagRandomGenerator.getRandomLineOfPersona(todoPersona.getPersona()));
+    }
 
     return PostPersonaReactResDto.from(todoPersona);
   }

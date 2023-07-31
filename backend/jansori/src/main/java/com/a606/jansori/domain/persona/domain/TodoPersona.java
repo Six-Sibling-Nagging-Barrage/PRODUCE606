@@ -55,4 +55,8 @@ public class TodoPersona {
   public Integer increaseLikeCount() {
     return ++this.likeCount;
   }
+
+  public void setLine(Line line) {
+    this.line = line;
+  }
 }
