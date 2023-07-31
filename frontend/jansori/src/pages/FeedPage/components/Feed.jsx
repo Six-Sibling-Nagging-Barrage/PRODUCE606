@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import TodoPostList from './TodoPostList';
 import MoreFetchTarget from './MoreFetchTarget';
 import profileImg from '../../../assets/profileImg.png';
@@ -32,8 +32,8 @@ const Feed = () => {
   );
 };
 
-const FeedContainer = tw.div`
-  w-full m-auto md:w-2/5 
+const FeedContainer = styled.div`
+  ${tw`w-full m-auto md:w-2/5`}
 `;
 
 export default Feed;
