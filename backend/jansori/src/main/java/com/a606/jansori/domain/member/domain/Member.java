@@ -48,8 +48,7 @@ public class Member extends BaseTimeEntity {
   private MemberStatus memberState;
 
   @Column
-  @Builder.Default
-  private Long ticket = 0L;
+  private Long ticket;
 
   @Override
   public boolean equals(Object obj) {
@@ -70,6 +69,12 @@ public class Member extends BaseTimeEntity {
   public int hashCode() {
 
     return Objects.hash(getId());
+  }
+
+  public void update(String nickname, String bio, String imageUrl){
+    this.nickname = nickname;
+    this.bio = bio;
+    this.imageUrl = imageUrl;
   }
 
   public void consumeTicketToUnlockNag() {

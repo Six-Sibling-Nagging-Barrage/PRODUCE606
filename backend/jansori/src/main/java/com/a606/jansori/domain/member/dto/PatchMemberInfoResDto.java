@@ -6,8 +6,8 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class PostMemberInfoResDto {
+public class PatchMemberInfoResDto {
 
-    private Member member;
+  private Member member;
 
 }
