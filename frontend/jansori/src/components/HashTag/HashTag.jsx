@@ -32,7 +32,14 @@ const HashTag = () => {
     <>
       <HashTagContainer>
         {hashTagList.map((hashTag, index) => {
-          return <HashTagItem key={index} hashTag={hashTag} />;
+          return (
+            <HashTagItem
+              key={index}
+              hashTag={hashTag}
+              editable={true}
+              setHashTagList={setHashTagList}
+            />
+          );
         })}
         <HashTagInput
           type="text"
@@ -62,13 +69,13 @@ const HashTagContainer = styled.div`
   min-height: 50px;
   padding: 10px;
   margin: 0 auto;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 1);
+  border-radius: 5px;
 `;
 
 const HashTagInput = styled.input`
   display: inline-flex;
-  min-width: 150px;
+  min-width: 100px;
   background: transparent;
   border: none;
   outline: none;
