@@ -4,7 +4,6 @@ import com.a606.jansori.domain.todo.dto.GetLineDetailsResDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
 import com.a606.jansori.domain.todo.dto.GetTodoListResDto;
 import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
-import com.a606.jansori.domain.todo.dto.PostPersonaReactReqDto;
 import com.a606.jansori.domain.todo.dto.PostPersonaReactResDto;
 import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
 import com.a606.jansori.domain.todo.dto.PostTodoResDto;
@@ -96,13 +95,13 @@ public class TodoController {
         .build();
   }
 
-  @PostMapping("/{todoId}/react")
+  @PostMapping("/{todoId}/{todoPersonaId}")
   public EnvelopeResponse<PostPersonaReactResDto> postPersonaReaction(Long memberId,
       @PathVariable Long todoId,
-      PostPersonaReactReqDto postPersonaReactReqDto) {
+      @PathVariable Long todoPersonaId) {
 
     return EnvelopeResponse.<PostPersonaReactResDto>builder()
-        .data(todoPersonaService.postPersonaReaction(memberId, todoId, postPersonaReactReqDto))
+        .data(todoPersonaService.postPersonaReaction(memberId, todoId, todoPersonaId))
         .build();
   }
 
