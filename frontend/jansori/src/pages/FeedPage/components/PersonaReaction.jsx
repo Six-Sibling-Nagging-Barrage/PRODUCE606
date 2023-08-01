@@ -43,7 +43,6 @@ const personaInfo = [
 
 const PersonaReaction = (props) => {
   const { personas, todoId, setShowMore, setPersonaNagList } = props;
-
   const [personaIndex, setPersonaIndex] = useState(-1);
   const [isAdded, setIsAdded] = useState(
     Array.from({ length: 6 }, () => false)
