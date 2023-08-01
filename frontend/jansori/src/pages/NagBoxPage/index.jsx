@@ -4,6 +4,7 @@ import CountBox from './components/CountBox';
 import SpeechBubble from '../../components/UI/SpeechBubble';
 import { Link } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
+import NagRankingList from './components/NagRankingList';
 
 const NagBoxPage = () => {
   const nagSentences = [
@@ -44,9 +45,15 @@ const NagBoxPage = () => {
       {/* 잔소리 버튼 */}
       <SpeechBubbleContainer>
         <Link to='/nag'>
-          <SpeechBubble text={'잔소리 하러 가기'} />
+          <SpeechBubble text='잔소리 하러 가기' normal />
         </Link>
       </SpeechBubbleContainer>
+
+      {/* 잔소리 랭킹 */}
+      <NagRannkingContainer>
+        <NagTitle>현재 잔소리 TOP 5</NagTitle>
+        <NagRankingList />
+      </NagRannkingContainer>
     </Background>
   );
 };
@@ -78,5 +85,15 @@ const SpeechBubbleContainer = styled.div`
   md:w-3/5
   lg:w-2/5
   mx-auto
+  mb-6
 `}
+`;
+
+const NagRannkingContainer = styled.div`
+  ${tw`w-2/3
+  mx-auto`}
+`;
+
+const NagTitle = styled.p`
+  ${tw`font-bold text-2xl my-10`}
 `;
