@@ -1,6 +1,8 @@
 package com.a606.jansori.domain.member.service;
 
 import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.domain.member.domain.MemberRole;
+import com.a606.jansori.domain.member.dto.*;
 import com.a606.jansori.domain.member.dto.*;
 import com.a606.jansori.domain.member.exception.DuplicatedNicknameException;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
@@ -9,7 +11,6 @@ import com.a606.jansori.global.auth.util.SecurityUtil;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
-import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
   private final MemberRepository memberRepository;
-
+  private final TagRepository tagRepository;
   private final SecurityUtil securityUtil;
 
   @Transactional(readOnly = true)
