@@ -43,7 +43,7 @@ public class MemberController {
           @RequestBody @Valid PatchMemberInfoReqDto patchMemberInfoReqDto){
 
     return EnvelopeResponse.<PatchMemberInfoResDto>builder()
-            .data(memberService.UpdateMemberInfo(patchMemberInfoReqDto))
+            .data(memberService.updateMemberInfo(patchMemberInfoReqDto))
             .build();
 
   }

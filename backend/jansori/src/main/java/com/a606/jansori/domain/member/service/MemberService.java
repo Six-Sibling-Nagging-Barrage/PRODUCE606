@@ -63,16 +63,16 @@ public class MemberService {
     }
 
     @Transactional
-    public PatchMemberInfoResDto UpdateMemberInfo(PatchMemberInfoReqDto patchMemberInfoReqDto) {
+    public PatchMemberInfoResDto updateMemberInfo(PatchMemberInfoReqDto patchMemberInfoReqDto) {
         Member member = getMemberFromSecurityUtil();
 
         member.update(patchMemberInfoReqDto.getNickname(), patchMemberInfoReqDto.getBio(),
                 patchMemberInfoReqDto.getImageUrl(), MemberRole.USER);
 
-        List<Long> TagList = patchMemberInfoReqDto.getTags();
+        List<Long> tags = patchMemberInfoReqDto.getTags();
 
-        if (TagList != null) {
-            for (Long tagId : TagList) {
+        if (tags != null) {
+            for (Long tagId : tags) {
                 Tag tag = tagRepository.findTagById(tagId).
                         orElseThrow(TagNotFoundException::new);
                 if (tagFollowRepository.findTagFollowByTagAndMember(tag, member).isEmpty()) {
@@ -84,9 +84,14 @@ public class MemberService {
             }
         }
 
-        return PatchMemberInfoResDto.builder().member(member).build();
+        return PatchMemberInfoResDto.builder()
+                .memberId(member.getId())
+                .nickname(member.getNickname())
+                .bio(member.getBio())
+                .imageUrl(member.getImageUrl())
+                .tags(tags)
+                .build();
 
     }
-
 
 }
