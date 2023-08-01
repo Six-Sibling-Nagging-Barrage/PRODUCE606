@@ -72,26 +72,31 @@ public class MemberService {
         List<Long> tags = patchMemberInfoReqDto.getTags();
 
         if (tags != null) {
+
             for (Long tagId : tags) {
+
                 Tag tag = tagRepository.findTagById(tagId).
                         orElseThrow(TagNotFoundException::new);
-                if (tagFollowRepository.findTagFollowByTagAndMember(tag, member).isEmpty()) {
-                    tagFollowRepository.save(TagFollow.builder()
-                            .member(member)
-                            .tag(tag)
-                            .build());
-                }
+
+                followTags(member, tag);
+
             }
         }
 
-        return PatchMemberInfoResDto.builder()
-                .memberId(member.getId())
-                .nickname(member.getNickname())
-                .bio(member.getBio())
-                .imageUrl(member.getImageUrl())
-                .tags(tags)
-                .build();
+        return PatchMemberInfoResDto.of(member, tags);
 
+    }
+
+    public void followTags(Member member, Tag tag){
+
+        if (tagFollowRepository.findTagFollowByTagAndMember(tag, member).isEmpty()) {
+
+            tagFollowRepository.save(TagFollow.builder()
+                .member(member)
+                .tag(tag)
+                .build());
+
+        }
     }
 
 }
