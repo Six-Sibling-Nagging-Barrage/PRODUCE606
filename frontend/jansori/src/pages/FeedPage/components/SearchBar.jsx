@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import tw, { styled } from 'twin.macro';
+import AutoComplete from '../../../components/AutoComplete/AutoComplete';
 
 const dummyData = [
   '운동',
@@ -15,28 +16,10 @@ const dummyData = [
 const SearchBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const [autoCompleteList, setAutoCompleteList] = useState([]);
-
-  useEffect(() => {
-    if (searchValue === '') {
-      setIsOpen(false);
-      setAutoCompleteList([]);
-    } else {
-      const filteredData = dummyData.filter((item) =>
-        item.includes(searchValue)
-      );
-      setAutoCompleteList(filteredData);
-    }
-  }, [searchValue]);
 
   const handleSearchInputChange = (event) => {
     setSearchValue(event.target.value);
     setIsOpen(true);
-  };
-
-  const handleSelectAutoComplete = (value) => {
-    setSearchValue(value);
-    setIsOpen(false);
   };
 
   return (
@@ -50,22 +33,11 @@ const SearchBar = () => {
         onBlur={() => setIsOpen(false)}
       />
       {isOpen && (
-        <DropDownList>
-          {autoCompleteList.length === 0 ? (
-            <li>일치하는 해시태그가 없어요 ㅠㅠ</li>
-          ) : (
-            autoCompleteList.map((item, index) => (
-              <DropDownItem
-                key={index}
-                onMouseDown={() => {
-                  handleSelectAutoComplete(item);
-                }}
-              >
-                {item}
-              </DropDownItem>
-            ))
-          )}
-        </DropDownList>
+        <AutoComplete
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          setIsOpen={setIsOpen}
+        />
       )}
     </SearchBarContainer>
   );
@@ -79,27 +51,6 @@ const SearchBarContainer = styled.div`
 const SearchInput = styled.input`
   ${tw`p-2 w-full border `}
   &:focus {
-  }
-`;
-const DropDownList = styled.ul`
-  position: absolute;
-  display: block;
-  margin: 0 auto;
-  padding: 8px;
-  background-color: white;
-  border-top: none;
-  border-radius: 0 0 5px 5px;
-  box-shadow: 0 2px 10px rgb(0, 0, 0, 0.3);
-  list-style-type: none;
-  z-index: 3;
-`;
-
-const DropDownItem = styled.li`
-  padding: 5px 10px;
-
-  &:hover {
-    cursor: pointer;
-    background-color: #dfdfdf;
   }
 `;
 
