@@ -71,10 +71,11 @@ public class Member extends BaseTimeEntity {
     return Objects.hash(getId());
   }
 
-  public void update(String nickname, String bio, String imageUrl){
+  public void update(String nickname, String bio, String imageUrl, MemberRole role){
     this.nickname = nickname;
     this.bio = bio;
     this.imageUrl = imageUrl;
+    this.memberRole = role;
   }
 
   public void consumeTicketToUnlockNag() {
