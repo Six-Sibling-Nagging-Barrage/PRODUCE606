@@ -39,7 +39,7 @@ const MainPage = () => {
   // 컴포넌트가 마운트될 때 랜덤한 좌표를 생성하여 상태에 저장
   useEffect(() => {
     const generateRandomPosition = () => {
-      const maxX = window.innerWidth - 30; // 최대 x좌표
+      const maxX = window.innerWidth - 200; // 최대 x좌표
       const maxY = window.innerHeight - 30; // 최대 y좌표
       const RandomX = Math.floor(Math.random() * maxX);
       const RandomY = Math.floor(Math.random() * maxY);
@@ -47,9 +47,44 @@ const MainPage = () => {
       return { x: RandomX, y: RandomY };
     };
 
-    const newPositions = nags.map(() => generateRandomPosition());
+    const newPositions = nags.map((nag, index) => {
+      return index === nags.length - 1 ? generateRandomPosition() : getQuadrantPosition(index);
+    });
+
     setPositions(newPositions);
   }, []);
+
+  // Function to get the position for nag item based on the quadrant
+  const getQuadrantPosition = (index) => {
+    const quadrant = (index % 4) + 1; // Cycle through quadrants: 1, 2, 3, 4
+    const maxX = window.innerWidth - 200;
+    const maxY = window.innerHeight - 200;
+
+    switch (quadrant) {
+      case 1: // First quadrant (top-right)
+        return {
+          x: Math.floor((Math.random() * maxX) / 2) + maxX / 2,
+          y: Math.floor((Math.random() * maxY) / 2),
+        };
+      case 2: // Second quadrant (top-left)
+        return {
+          x: Math.floor((Math.random() * maxX) / 2),
+          y: Math.floor((Math.random() * maxY) / 2),
+        };
+      case 3: // Third quadrant (bottom-left)
+        return {
+          x: Math.floor((Math.random() * maxX) / 2),
+          y: Math.floor((Math.random() * maxY) / 2) + maxY / 2,
+        };
+      case 4: // Fourth quadrant (bottom-right)
+        return {
+          x: Math.floor((Math.random() * maxX) / 2) + maxX / 2,
+          y: Math.floor((Math.random() * maxY) / 2) + maxY / 2,
+        };
+      default:
+        return { x: 100, y: 100 }; // Default random position
+    }
+  };
 
   return (
     <Background>
@@ -87,6 +122,7 @@ const Wrap = styled.div`
 `;
 
 const ContentContainer = styled.div`
+  width: 200px;
   animation: ${motionAnimation} 2s linear 0s infinite alternate;
   margin-top: 0;
   -webkit-animation: ${motionAnimation} 2s linear 0s infinite alternate;
