@@ -10,7 +10,7 @@ public class JansoriApplication {
 
     public static final String APPLICATION_LOCATIONS = "spring.config.location="
             + "/app/config/springboot-jansori/application.yml,"
-            + "/app/config/sroom/real-application-release.yml";
+            + "/app/config/springboot-jansori/real-application-release.yml";
 
     public static void main(String[] args) {
 //        SpringApplication.run(JansoriApplication.class, args);
