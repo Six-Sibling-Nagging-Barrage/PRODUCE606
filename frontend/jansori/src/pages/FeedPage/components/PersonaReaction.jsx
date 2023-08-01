@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from 'twin.macro';
 import profileImg from '../../../assets/profileImg.png';
 
@@ -43,10 +43,18 @@ const personaInfo = [
 
 const PersonaReaction = (props) => {
   const { personas, todoId, setShowMore, setPersonaNagList } = props;
+
   const [personaIndex, setPersonaIndex] = useState(-1);
   const [isAdded, setIsAdded] = useState(
     Array.from({ length: 6 }, () => false)
   ); // 이미 반응한 캐릭터인지 저장하는 배열
+  const [personaLikeCount, setPersonaLikeCount] = useState([]);
+
+  useEffect(() => {
+    personas.map((persona) => {
+      setPersonaLikeCount((prev) => [...prev, persona.likeCount]);
+    });
+  }, []);
 
   const handlePersonaHover = (personaId) => {
     setPersonaIndex(personaId - 1);
@@ -66,6 +74,14 @@ const PersonaReaction = (props) => {
 
     if (!personaNag.isFirstReaction) return;
 
+    setPersonaLikeCount((prev) =>
+      prev.map((item, index) => {
+        if (index === personaId - 1) {
+          return item + 1;
+        }
+        return item;
+      })
+    );
     setIsAdded((prev) =>
       prev.map((item, index) => {
         if (index === personaId - 1) {
@@ -97,6 +113,11 @@ const PersonaReaction = (props) => {
                 src={profileImg} // TODO: 캐릭터 이미지
                 alt="Rounded avatar"
               />
+              <CountBadge>
+                {personaLikeCount[persona.personaId - 1] < 100
+                  ? personaLikeCount[persona.personaId - 1]
+                  : '99+'}
+              </CountBadge>
             </PersonaProfile>
           );
         })}
@@ -115,14 +136,25 @@ const PersonaReaction = (props) => {
 
 const PersonaContainer = styled.div`
   display: flex;
+  justify-content: space-evenly;
 `;
 
 const PersonaProfile = styled.div`
-  height: 50px;
-  width: 50px;
+  height: 40px;
   &:hover {
     cursor: pointer;
   }
+  position: relative;
+`;
+
+const CountBadge = styled.div`
+  position: absolute;
+  top: -10px;
+  left: 30px;
+  background-color: rgb(255, 121, 121);
+  padding: 0 5px;
+  border-radius: 15px;
+  font-size: 13px;
 `;
 
 const PersonaBio = styled.div`

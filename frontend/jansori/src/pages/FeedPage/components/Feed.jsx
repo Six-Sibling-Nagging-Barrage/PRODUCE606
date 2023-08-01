@@ -48,7 +48,7 @@ const Feed = () => {
             {
               todoPersonaId: 63,
               personaId: 3,
-              likeCount: 0,
+              likeCount: 77,
             },
             {
               todoPersonaId: 64,
@@ -63,7 +63,7 @@ const Feed = () => {
             {
               todoPersonaId: 66,
               personaId: 6,
-              likeCount: 0,
+              likeCount: 100,
             },
           ],
         },

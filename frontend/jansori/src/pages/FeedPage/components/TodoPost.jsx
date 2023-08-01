@@ -60,10 +60,9 @@ const TodoPost = (props) => {
   const getPersonaNagList = () => {
     // 캐릭터 잔소리 더보기 api 호출
     // /todo/{todoId}/personas
-    if (personaNagList.length === 0) {
-      console.log('api 호출');
-      setPersonaNagList(personaNagData);
-    }
+    // if (personaNagList.length === 0) {
+    //   setPersonaNagList(personaNagData);
+    // }
   };
 
   return (
@@ -106,7 +105,7 @@ const TodoPost = (props) => {
             personaNagList.map((pesonaNag) => {
               return (
                 <NagCommentItem
-                  key={pesonaNag.todoPersonaId}
+                  key={pesonaNag.personaId}
                   id={pesonaNag.personaId}
                   like={pesonaNag.likeCount}
                   content={pesonaNag.content}
