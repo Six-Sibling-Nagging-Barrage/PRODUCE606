@@ -1,39 +1,39 @@
 import React from 'react';
 import Card from '../../components/UI/Card';
 import tw, { styled } from 'twin.macro';
-import ProfileImg from '../../components/Profile/ProfileImg';
+import profileImg from '../../assets/profileImg.png';
 
 const CharacterInfoPage = () => {
   const characterInfos = [
     {
-      imgSrc: ProfileImg,
       name: '오구',
       desc: '긴 캐릭터 설명1',
+      img: profileImg,
     },
     {
-      imgSrc: ProfileImg,
       name: '오구',
       desc: '긴 캐릭터 설명2',
+      img: profileImg,
     },
     {
-      imgSrc: ProfileImg,
       name: '오구',
       desc: '긴 캐릭터 설명3',
+      img: profileImg,
     },
     {
-      imgSrc: ProfileImg,
       name: '오구',
       desc: '긴 캐릭터 설명4',
+      img: profileImg,
     },
     {
-      imgSrc: ProfileImg,
       name: '오구',
       desc: '긴 캐릭터 설명5',
+      img: profileImg,
     },
     {
-      imgSrc: ProfileImg,
       name: '오구',
       desc: '긴 캐릭터 설명6',
+      img: profileImg,
     },
   ];
 
@@ -44,7 +44,7 @@ const CharacterInfoPage = () => {
           return (
             <Card
               key={index}
-              imgSrc={characterInfo.imgSrc}
+              img={characterInfo.img}
               name={characterInfo.name}
               desc={characterInfo.desc}
             />
@@ -58,9 +58,22 @@ const CharacterInfoPage = () => {
 export default CharacterInfoPage;
 
 const PageContainer = styled.div`
-  ${tw`flex justify-center items-center min-h-screen`}
+  ${tw`
+  flex 
+  justify-center 
+  items-center 
+  min-h-screen 
+  sm:mt-32 
+  md:mt-32 
+  lg:mt-4`}
 `;
 
 const CharacterInfoContainer = styled.div`
-  ${tw`grid grid-cols-3 gap-x-16 gap-y-8 w-fit`}
+  ${tw`grid 
+  gap-x-16 
+  gap-y-8 
+  w-fit
+  sm:grid-cols-1
+  md:grid-cols-2
+  lg:grid-cols-3 `}
 `;
