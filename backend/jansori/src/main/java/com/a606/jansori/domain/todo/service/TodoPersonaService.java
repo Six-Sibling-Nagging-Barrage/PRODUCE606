@@ -16,6 +16,7 @@ import com.a606.jansori.domain.todo.dto.GetTodoPersonaDetailsResDto;
 import com.a606.jansori.domain.todo.dto.PostPersonaReactResDto;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
+import com.a606.jansori.global.auth.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,8 @@ public class TodoPersonaService {
 
   private final NagRandomGenerator nagRandomGenerator;
 
+  private final SecurityUtil securityUtil;
+
   @Transactional(readOnly = true)
   public GetTodoPersonaDetailsResDto getTodoPersonas(Long todoId) {
 
@@ -43,10 +46,9 @@ public class TodoPersonaService {
   }
 
   @Transactional
-  public PostPersonaReactResDto postPersonaReaction(Long memberId, Long todoId,
-      Long todoPersonaId) {
+  public PostPersonaReactResDto postPersonaReaction(Long todoId, Long todoPersonaId) {
 
-    Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+    Member member = getMemberFromSecurityUtil();
 
     Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
 
@@ -76,5 +78,11 @@ public class TodoPersonaService {
     }
 
     return PostPersonaReactResDto.from(todoPersona);
+  }
+
+  private Member getMemberFromSecurityUtil() {
+
+    return memberRepository.findById(securityUtil.getSessionMemberId())
+        .orElseThrow(MemberNotFoundException::new);
   }
 }

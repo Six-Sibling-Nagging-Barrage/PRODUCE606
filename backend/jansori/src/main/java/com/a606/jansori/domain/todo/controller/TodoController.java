@@ -1,11 +1,11 @@
 package com.a606.jansori.domain.todo.controller;
 
-import com.a606.jansori.domain.todo.dto.GetTodoFeedByFollowingReqDto;
-import com.a606.jansori.domain.todo.dto.GetTodoFeedByTagReqDto;
-import com.a606.jansori.domain.todo.dto.GetTodoPersonaDetailsResDto;
 import com.a606.jansori.domain.todo.dto.GetTodoByDateReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoByDateResDto;
+import com.a606.jansori.domain.todo.dto.GetTodoFeedByFollowingReqDto;
+import com.a606.jansori.domain.todo.dto.GetTodoFeedByTagReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
+import com.a606.jansori.domain.todo.dto.GetTodoPersonaDetailsResDto;
 import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
 import com.a606.jansori.domain.todo.dto.PostPersonaReactResDto;
 import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
@@ -36,48 +36,47 @@ public class TodoController {
   private final TodoPersonaService todoPersonaService;
 
   @PostMapping
-  public EnvelopeResponse<PostTodoResDto> postTodo(@Valid @RequestBody PostTodoReqDto postTodoReqDto,
-      Long memberId) {
+  public EnvelopeResponse<PostTodoResDto> postTodo(
+      @Valid @RequestBody PostTodoReqDto postTodoReqDto) {
 
     return EnvelopeResponse.<PostTodoResDto>builder()
-        .data(todoService.postTodo(postTodoReqDto, memberId))
+        .data(todoService.postTodo(postTodoReqDto))
         .build();
   }
 
   @GetMapping("/my")
-  public EnvelopeResponse<GetTodoByDateResDto> getMyTodayTodo(Long memberId,
+  public EnvelopeResponse<GetTodoByDateResDto> getMyTodayTodo(
       @Valid GetTodoByDateReqDto getTodoByDateReqDto) {
 
     return EnvelopeResponse.<GetTodoByDateResDto>builder()
-        .data(todoService.getMyTodoByDate(memberId, getTodoByDateReqDto))
+        .data(todoService.getMyTodoByDate(getTodoByDateReqDto))
         .build();
 
   }
 
   @GetMapping("/feed/following")
-  public EnvelopeResponse<GetTodoFeedResDto> getFollowingFeed(Long memberId,
+  public EnvelopeResponse<GetTodoFeedResDto> getFollowingFeed(
       @Valid GetTodoFeedByFollowingReqDto getTodoFeedByFollowingReqDto) {
 
     return EnvelopeResponse.<GetTodoFeedResDto>builder()
-        .data(todoFeedService.getFollowingFeed(memberId, getTodoFeedByFollowingReqDto))
+        .data(todoFeedService.getFollowingFeed(getTodoFeedByFollowingReqDto))
         .build();
   }
 
   @GetMapping("/feed")
-  public EnvelopeResponse<GetTodoFeedResDto> getTagFeed(Long memberId,
+  public EnvelopeResponse<GetTodoFeedResDto> getTagFeed(
       @Valid GetTodoFeedByTagReqDto getTodoFeedByTagReqDto) {
 
     return EnvelopeResponse.<GetTodoFeedResDto>builder()
-        .data(todoFeedService.getTagFeed(memberId, getTodoFeedByTagReqDto))
+        .data(todoFeedService.getTagFeed(getTodoFeedByTagReqDto))
         .build();
   }
 
   @PatchMapping("/{todoId}")
-  public EnvelopeResponse<PatchTodoResDto> patchTodoAccomplishment(Long memberId,
-      @PathVariable Long todoId) {
+  public EnvelopeResponse<PatchTodoResDto> patchTodoAccomplishment(@PathVariable Long todoId) {
 
     return EnvelopeResponse.<PatchTodoResDto>builder()
-        .data(todoService.patchTodoAccomplishment(memberId, todoId))
+        .data(todoService.patchTodoAccomplishment(todoId))
         .build();
   }
 
@@ -90,12 +89,12 @@ public class TodoController {
   }
 
   @PostMapping("/{todoId}/{todoPersonaId}")
-  public EnvelopeResponse<PostPersonaReactResDto> postPersonaReaction(Long memberId,
+  public EnvelopeResponse<PostPersonaReactResDto> postPersonaReaction(
       @PathVariable Long todoId,
       @PathVariable Long todoPersonaId) {
 
     return EnvelopeResponse.<PostPersonaReactResDto>builder()
-        .data(todoPersonaService.postPersonaReaction(memberId, todoId, todoPersonaId))
+        .data(todoPersonaService.postPersonaReaction(todoId, todoPersonaId))
         .build();
   }
 
