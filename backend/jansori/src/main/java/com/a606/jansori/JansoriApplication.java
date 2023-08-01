@@ -9,8 +9,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 public class JansoriApplication {
 
     public static final String APPLICATION_LOCATIONS = "spring.config.location="
-            + "classpath:/application.yml, "
-            + "/app/config/springboot-jansori/application-release.yml";
+            + "/app/config/springboot-jansori/application.yml,";
+//            + "/app/config/springboot-jansori/application-release.yml";
 
     public static void main(String[] args) {
 //        SpringApplication.run(JansoriApplication.class, args);
