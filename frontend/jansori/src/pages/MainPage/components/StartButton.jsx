@@ -6,7 +6,7 @@ const StartButton = (props) => {
   const { nagCount } = props;
   return (
     <SpeechBubbleContainer>
-      <SpeechBubble text={'잔소리 하러 가기'} />
+      <SpeechBubble text={'잔소리 하러 가기'} normal />
       <p>현재 작성된 잔소리 총 {nagCount}개</p>
     </SpeechBubbleContainer>
   );
