@@ -13,7 +13,7 @@ import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
-import com.a606.jansori.domain.nag.exception.NagUnlockBadRequestException;
+import com.a606.jansori.domain.nag.exception.NagUnlockBusinessException;
 import com.a606.jansori.domain.nag.repository.NagLikeRepository;
 import com.a606.jansori.domain.nag.repository.NagRepository;
 import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
@@ -74,9 +74,9 @@ public class NagService {
     Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
     if (nagUnlockRepository.existsByNagAndMember(nag, member)) {
-      throw new NagUnlockBadRequestException();
+      throw new NagUnlockBusinessException();
     } else if (member.getTicket() <= 0) {
-      throw new NagUnlockBadRequestException();
+      throw new NagUnlockBusinessException();
     }
 
     member.consumeTicketToUnlockNag();
