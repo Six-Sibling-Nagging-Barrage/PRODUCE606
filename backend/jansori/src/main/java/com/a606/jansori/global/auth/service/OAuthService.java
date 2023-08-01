@@ -48,14 +48,4 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
         return new PrincipalDetails(oAuth2User.getAttributes(), member.getId(), member.getMemberRole());
     }
 
-    private Member saveOrGetMember(Optional<Member> member, OAuthAttributes oAuth2Attributes) {
-        if (member.isEmpty()) {
-            Member newMember = oAuth2Attributes.toEntity();
-            memberRepository.save(newMember);
-            return newMember;
-        }
-        return member.get();
-    }
-
-
 }
