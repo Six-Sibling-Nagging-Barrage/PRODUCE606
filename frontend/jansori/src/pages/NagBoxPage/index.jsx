@@ -1,6 +1,7 @@
 import React from 'react';
 import Background from '../../components/UI/Background';
 import CountBox from './components/CountBox';
+import SpeechBubble from '../../components/UI/SpeechBubble';
 import { Link } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
 
@@ -41,13 +42,11 @@ const NagBoxPage = () => {
       </CenteredContainer>
 
       {/* 잔소리 버튼 */}
-      <SpeechBubble>
+      <SpeechBubbleContainer>
         <Link to='/nag'>
-          <BubbleSpeech>
-            <p>잔소리 하러 가기</p>
-          </BubbleSpeech>
+          <SpeechBubble text={'잔소리 하러 가기'} />
         </Link>
-      </SpeechBubble>
+      </SpeechBubbleContainer>
     </Background>
   );
 };
@@ -72,7 +71,7 @@ const CountBoxContainer = styled.div`
   py-20`}
 `;
 
-const SpeechBubble = styled.div`
+const SpeechBubbleContainer = styled.div`
   ${tw`
   w-2/3
   sm:w-1/3
@@ -80,25 +79,4 @@ const SpeechBubble = styled.div`
   lg:w-2/5
   mx-auto
 `}
-`;
-const BubbleSpeech = styled.div`
-  position: relative;
-  background-color: white;
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  &:after {
-    border-top: 0px solid transparent;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 10px solid white;
-    content: '';
-    position: absolute;
-    top: -10px;
-    left: 80px;
-  }
-  &:hover {
-    transform: scale(1.02);
-  }
 `;
