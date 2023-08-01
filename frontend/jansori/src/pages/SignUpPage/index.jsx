@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import Background from '../../components/UI/Background';
 import { styled } from 'twin.macro';
 import ProfileImg from '../../components/Profile/ProfileImg';
+import HashTag from '../../components/HashTag/HashTag';
 
 const SignUpPage = () => {
   const {
@@ -55,6 +56,7 @@ const SignUpPage = () => {
               <div>{errors?.description?.message}</div>
             </div>
           </form>
+          <HashTag />
         </SignUpForm>
       </SignUpContainer>
     </Background>
