@@ -20,10 +20,11 @@ const AutoComplete = (props) => {
 
   useEffect(() => {
     if (searchValue === '') {
-      setIsOpen(false);
       setAutoCompleteList([]);
     } else {
-      setExists(dummyData.includes(searchValue));
+      if (typeof setExists === 'function') {
+        setExists(dummyData.includes(searchValue));
+      }
       const filteredData = dummyData.filter((item) =>
         item.includes(searchValue)
       );
@@ -32,7 +33,10 @@ const AutoComplete = (props) => {
   }, [searchValue]);
 
   const handleSelectAutoComplete = (item) => {
-    addHashTag(item);
+    setSearchValue(item);
+    if (typeof addHashTag === 'function') {
+      addHashTag(item);
+    }
     setIsOpen(false);
   };
 
