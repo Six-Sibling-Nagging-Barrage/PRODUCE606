@@ -4,7 +4,7 @@ import CountBox from './components/CountBox';
 import tw, { styled } from 'twin.macro';
 
 const NagBoxPage = () => {
-  const NagSentences = [
+  const nagSentences = [
     {
       startSentence: '현재 총',
       expression: ' 개',
@@ -28,7 +28,7 @@ const NagBoxPage = () => {
     <Background>
       <CenteredContainer>
         <CountBoxContainer>
-          {NagSentences.map((nagSentence, index) => (
+          {nagSentences.map((nagSentence, index) => (
             <CountBox
               key={index}
               startSentence={nagSentence.startSentence}
