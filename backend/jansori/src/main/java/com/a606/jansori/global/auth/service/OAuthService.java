@@ -1,13 +1,12 @@
-package com.a606.jansori.global.oauth.service;
+package com.a606.jansori.global.auth.service;
 
 import com.a606.jansori.domain.member.domain.Member;
 
 import com.a606.jansori.domain.member.repository.MemberRepository;
 
 
-import com.a606.jansori.global.oauth.dto.OAuthAttributes;
-import com.a606.jansori.global.oauth.dto.PrincipalDetails;
-
+import com.a606.jansori.global.auth.dto.OAuthAttributes;
+import com.a606.jansori.global.auth.dto.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -42,7 +41,7 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
         String identifier = (String) oAuth2User.getAttributes().get(oAuthIdentifier);
 
         OAuthAttributes oAuthAttributes = OAuthAttributes
-                .of(registrationId, oAuthIdentifier, oAuth2User.getAttributes());
+                .getAttributesByProvider(registrationId, oAuthIdentifier, oAuth2User.getAttributes());
         Member member = memberRepository.findByOauthIdentifier(identifier).
                 orElseGet(() -> memberRepository.save(oAuthAttributes.toEntity()));
 

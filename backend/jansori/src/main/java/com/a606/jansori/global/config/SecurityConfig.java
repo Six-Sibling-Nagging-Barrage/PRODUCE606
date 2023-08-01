@@ -1,6 +1,6 @@
 package com.a606.jansori.global.config;
 
-import com.a606.jansori.global.oauth.service.OAuthService;
+import com.a606.jansori.global.auth.service.OAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,10 +1,9 @@
-package com.a606.jansori.global.oauth.dto;
+package com.a606.jansori.global.auth.dto;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.MemberRole;
 import com.a606.jansori.domain.member.domain.OauthType;
 import com.a606.jansori.domain.member.exception.OAuthProviderNotFoundException;
-import com.a606.jansori.global.exception.BadRequestException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,16 +16,17 @@ public class OAuthAttributes {
     private final Map<String, Object> attributes;
     private final String oAuthIdentifier;
 
-    public static OAuthAttributes of(String provider, String oAuthIdentifier, Map<String, Object> attributes) {
+    public static OAuthAttributes getAttributesByProvider(String provider,
+                                                          String oAuthIdentifier, Map<String, Object> attributes) {
         if (provider.equals("google")) {
-            return ofOAuthIdentifierAndAttributes(oAuthIdentifier, attributes);
+            return getAttributesByGoogle(oAuthIdentifier, attributes);
         } else {
             throw new OAuthProviderNotFoundException();
         }
     }
 
-    private static OAuthAttributes ofOAuthIdentifierAndAttributes(String oAuthIdentifier,
-                                                                   Map<String, Object> attributes) {
+    private static OAuthAttributes getAttributesByGoogle(String oAuthIdentifier,
+                                                         Map<String, Object> attributes) {
         return OAuthAttributes.builder()
                 .attributes(attributes)
                 .oAuthIdentifier(oAuthIdentifier)

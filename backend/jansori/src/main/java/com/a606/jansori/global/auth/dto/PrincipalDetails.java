@@ -1,4 +1,4 @@
-package com.a606.jansori.global.oauth.dto;
+package com.a606.jansori.global.auth.dto;
 
 import com.a606.jansori.domain.member.domain.MemberRole;
 import lombok.Data;

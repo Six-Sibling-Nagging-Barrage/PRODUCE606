@@ -1,7 +1,7 @@
 package com.a606.jansori.global.util;
 
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
-import com.a606.jansori.global.oauth.dto.PrincipalDetails;
+import com.a606.jansori.global.auth.dto.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;

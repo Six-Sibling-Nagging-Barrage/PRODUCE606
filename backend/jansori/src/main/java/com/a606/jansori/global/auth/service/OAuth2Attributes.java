@@ -1,4 +1,4 @@
-package com.a606.jansori.global.oauth.service;
+package com.a606.jansori.global.auth.service;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.MemberRole;
@@ -36,7 +36,7 @@ public class OAuth2Attributes {
     public Member toEntity(){
         return Member.builder()
                 .oauthIdentifier((String) this.getAttributes().get("sub"))
-                .memberRole(MemberRole.ROLE_USER)
+                .memberRole(MemberRole.USER)
                 .oauthType(OauthType.GOOGLE)
                 .ticket(50L)
                 .build();
