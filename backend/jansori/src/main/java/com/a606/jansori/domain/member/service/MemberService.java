@@ -8,6 +8,7 @@ import com.a606.jansori.domain.member.dto.GetUserProfileResDto;
 import com.a606.jansori.domain.member.exception.DuplicatedNicknameException;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
+import com.a606.jansori.global.auth.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
   private final MemberRepository memberRepository;
+
+  private final SecurityUtil securityUtil;
 
   @Transactional(readOnly = true)
   public GetDuplicateNicknameResDto checkNicknameIsAvailable(
@@ -32,17 +35,23 @@ public class MemberService {
 
   @Transactional(readOnly = true)
   public GetUserProfileResDto getUserProfile(Long memberId) {
-    Member member = memberRepository.findById(memberId)
-        .orElseThrow(() -> new MemberNotFoundException());
+
+    Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
     return GetUserProfileResDto.from(member);
   }
 
   @Transactional(readOnly = true)
-  public GetMyProfileResDto getMyProfile(Long memberId) {
-    Member member = memberRepository.findById(memberId)
-        .orElseThrow(() -> new MemberNotFoundException());
+  public GetMyProfileResDto getMyProfile() {
+
+    Member member = getMemberFromSecurityUtil();
 
     return GetMyProfileResDto.from(member);
+  }
+
+  private Member getMemberFromSecurityUtil() {
+
+    return memberRepository.findById(securityUtil.getSessionMemberId())
+        .orElseThrow(MemberNotFoundException::new);
   }
 }

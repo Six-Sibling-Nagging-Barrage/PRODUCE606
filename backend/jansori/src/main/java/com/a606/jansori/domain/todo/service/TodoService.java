@@ -74,8 +74,7 @@ public class TodoService {
   }
 
   @Transactional(readOnly = true)
-  public GetTodoByDateResDto getMyTodoByDate(Long memberId,
-      GetTodoByDateReqDto getTodoByDateReqDto) {
+  public GetTodoByDateResDto getMyTodoByDate(GetTodoByDateReqDto getTodoByDateReqDto) {
 
     Member member = getMemberFromSecurityUtil();
 
