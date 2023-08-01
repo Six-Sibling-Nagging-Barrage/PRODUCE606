@@ -2,17 +2,6 @@ import React, { useState, useEffect } from 'react';
 import tw, { styled } from 'twin.macro';
 import AutoComplete from '../../../components/AutoComplete/AutoComplete';
 
-const dummyData = [
-  '운동',
-  '오운완',
-  '운동어쩌구',
-  '공부',
-  '공부하기싫다',
-  '프로젝트',
-  '프론트엔드',
-  '백엔드',
-];
-
 const SearchBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
