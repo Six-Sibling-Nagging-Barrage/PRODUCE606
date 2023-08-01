@@ -1,18 +1,12 @@
 package com.a606.jansori.domain.member.controller;
 
-import com.a606.jansori.domain.member.dto.GetDuplicateNicknameReqDto;
-import com.a606.jansori.domain.member.dto.GetDuplicateNicknameResDto;
-import com.a606.jansori.domain.member.dto.GetMyProfileResDto;
-import com.a606.jansori.domain.member.dto.GetUserProfileResDto;
+import com.a606.jansori.domain.member.dto.*;
 import com.a606.jansori.domain.member.service.MemberService;
 import com.a606.jansori.global.common.EnvelopeResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/members")
@@ -42,6 +36,16 @@ public class MemberController {
     return EnvelopeResponse.<GetMyProfileResDto>builder()
         .data(memberService.getMyProfile())
         .build();
+  }
+
+  @PatchMapping("/update")
+  public EnvelopeResponse<PatchMemberInfoResDto> updateMemberInfo(
+          @RequestBody @Valid PatchMemberInfoReqDto patchMemberInfoReqDto){
+
+    return EnvelopeResponse.<PatchMemberInfoResDto>builder()
+            .data(memberService.updateMemberInfo(patchMemberInfoReqDto))
+            .build();
+
   }
 
 }
