@@ -10,6 +10,7 @@ import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
 import com.a606.jansori.domain.nag.dto.NagDto;
+import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
@@ -60,7 +61,7 @@ public class NagService {
   }
 
   @Transactional
-  public void toggleNagLike(Long memberId, Long nagId) {
+  public PostNagLikeResDto toggleNagLike(Long memberId, Long nagId) {
     Nag nag = nagRepository.findById(nagId).orElseThrow(NagNotFoundException::new);
     Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
@@ -68,6 +69,8 @@ public class NagService {
 
     nagLike.ifPresentOrElse(like -> decreaseNagLike(nag, like),
         () -> increaseNagLike(nag, member));
+
+    return PostNagLikeResDto.ofStatusAboutMemberLikeNag(nagLike.isEmpty());
   }
 
   @Transactional

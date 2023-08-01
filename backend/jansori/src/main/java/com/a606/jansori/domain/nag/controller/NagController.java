@@ -3,6 +3,7 @@ package com.a606.jansori.domain.nag.controller;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
 import com.a606.jansori.domain.nag.dto.NagDto;
+import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.service.NagService;
@@ -42,19 +43,17 @@ public class NagController {
   public EnvelopeResponse<PostNagResDto> postNaggingByMember(
       Long memberId,
       @Valid @RequestBody PostNagReqDto postNagReqDto) {
-
     return EnvelopeResponse.<PostNagResDto>builder()
         .data(nagService.createNag(memberId, postNagReqDto))
         .build();
   }
 
   @PostMapping("/{nagId}/like")
-  public EnvelopeResponse toggleNagLike(
+  public EnvelopeResponse<PostNagLikeResDto> toggleNagLike(
       Long memberId,
       @PathVariable Long nagId) {
-
-    nagService.toggleNagLike(1L, nagId);
-    return EnvelopeResponse.builder()
+    return EnvelopeResponse.<PostNagLikeResDto>builder()
+        .data(nagService.toggleNagLike(memberId, nagId))
         .build();
   }
 
