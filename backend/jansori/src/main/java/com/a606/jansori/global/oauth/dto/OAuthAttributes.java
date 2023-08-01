@@ -15,27 +15,27 @@ import java.util.Map;
 @Getter
 public class OAuthAttributes {
     private final Map<String, Object> attributes;
-    private final String identifierName;
+    private final String oAuthIdentifier;
 
-    public static OAuthAttributes of(String provider, String identifierName, Map<String, Object> attributes) {
+    public static OAuthAttributes of(String provider, String oAuthIdentifier, Map<String, Object> attributes) {
         if (provider.equals("google")) {
-            return ofOAuthIdentifierAndAttributes(identifierName, attributes);
+            return ofOAuthIdentifierAndAttributes(oAuthIdentifier, attributes);
         } else {
             throw new OAuthProviderNotFoundException();
         }
     }
 
-    private static OAuthAttributes ofOAuthIdentifierAndAttributes(String identifierName,
+    private static OAuthAttributes ofOAuthIdentifierAndAttributes(String oAuthIdentifier,
                                                                    Map<String, Object> attributes) {
         return OAuthAttributes.builder()
                 .attributes(attributes)
-                .identifierName(identifierName)
+                .oAuthIdentifier(oAuthIdentifier)
                 .build();
     }
 
     public Member toEntity() {
         return Member.builder()
-                .oauthIdentifier((String) this.getAttributes().get(identifierName))
+                .oauthIdentifier((String) this.getAttributes().get(oAuthIdentifier))
                 .memberRole(MemberRole.GUEST)
                 .oauthType(OauthType.GOOGLE)
                 .ticket(50L)

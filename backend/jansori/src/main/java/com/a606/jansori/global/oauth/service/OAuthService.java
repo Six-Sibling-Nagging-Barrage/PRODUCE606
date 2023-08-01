@@ -29,22 +29,22 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2UserService delegate = new DefaultOAuth2UserService();
 
-        OAuth2User oAuth2User = delegate.loadUser(userRequest); // OAuth 서비스에서 가져온 유저 정보를 담고 있음
+        OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
         String registrationId = userRequest.getClientRegistration()
-                .getRegistrationId(); // OAuth 서비스 이름 (google)
+                .getRegistrationId();
 
-        String identifierName = userRequest.getClientRegistration()
+        String oAuthIdentifier = userRequest.getClientRegistration()
                 .getProviderDetails()
                 .getUserInfoEndpoint()
-                .getUserNameAttributeName(); // OAuth 로그인 시 키(PK)가 되는 값
+                .getUserNameAttributeName();
 
-        String identifier = (String) oAuth2User.getAttributes().get(identifierName);
+        String identifier = (String) oAuth2User.getAttributes().get(oAuthIdentifier);
 
         OAuthAttributes oAuthAttributes = OAuthAttributes
-                .of(registrationId, identifierName, oAuth2User.getAttributes());
-        Optional<Member> memberOptional = memberRepository.findByOauthIdentifier(identifier);
-        Member member = saveOrGetMember(memberOptional, oAuthAttributes);
+                .of(registrationId, oAuthIdentifier, oAuth2User.getAttributes());
+        Member member = memberRepository.findByOauthIdentifier(identifier).
+                orElseGet(() -> memberRepository.save(oAuthAttributes.toEntity()));
 
         return new PrincipalDetails(oAuth2User.getAttributes(), member.getId(), member.getMemberRole());
     }

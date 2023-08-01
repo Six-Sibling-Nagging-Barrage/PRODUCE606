@@ -8,11 +8,10 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class MemberUtil {
+public class SecurityUtil {
 
     private final HttpSession httpSession;
     private static final String SPRING_SECURITY_CONTEXT = "SPRING_SECURITY_CONTEXT";
