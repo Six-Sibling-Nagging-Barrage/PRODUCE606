@@ -47,17 +47,6 @@ const personaNagData = [
 
 const TodoPost = (props) => {
   const { post } = props;
-  const memberNag = {
-    nagId: 7,
-    unlocked: null,
-    content: 'ㄴㅇ ㅈㄱㄱ ㅁㅁㅎㄷ ㄴㄱㄱㄴ ㅋㄷㅎㄷ',
-    likeCount: 5,
-    nagMember: {
-      memberId: 2,
-      nickname: 'User002',
-      imageUrl: profileImg,
-    },
-  };
   const [showMore, setShowMore] = useState(false);
   const [personaNagList, setPersonaNagList] = useState([]);
 
@@ -82,37 +71,46 @@ const TodoPost = (props) => {
       <PostContainer>
         <PostHeader>
           <ProfileLink href="#">
-            <ProfileImage src={post.writer.img} width="48" height="48" />
+            <ProfileImage
+              src={post.todoMember.imageUrl}
+              width="48"
+              height="48"
+            />
           </ProfileLink>
           <div>
-            <WriterName>{post.writer.nickname}</WriterName>
-            <CreateDate>{post.date}</CreateDate>
+            <WriterName>{post.todoMember.nickname}</WriterName>
+            <CreateDate>{post.todo.todoAt}</CreateDate>
           </div>
         </PostHeader>
         <TodoContent>
-          <div className="finished">{post.finished ? '❌' : '✅'}</div>
-          <div className="todo">{post.content}</div>
+          <div className="finished">{post.todo.finished ? '❌' : '✅'}</div>
+          <div className="todo">{post.todo.content}</div>
           <div>해시태그 자리</div>
         </TodoContent>
-        <PersonaReaction />
+        <PersonaReaction
+          personas={post.todo.personas}
+          todoId={post.todo.todoId}
+          setShowMore={setShowMore}
+          setPersonaNagList={setPersonaNagList}
+        />
         <CommentsContainer>
           <NagCommentItem
-            key={memberNag.nagId}
-            id={memberNag.nagId}
-            like={memberNag.likeCount}
-            content={memberNag.content}
-            img={memberNag.nagMember.imageUrl}
+            key={post.nag.nagId}
+            id={post.nag.nagId}
+            like={post.nag.likeCount}
+            content={post.nag.content}
+            img={post.nag.nagMember.imageUrl}
           />
           {showMore &&
             personaNagList &&
             personaNagList.map((pesonaNag) => {
               return (
                 <NagCommentItem
-                  key={pesonaNag.personaId}
+                  key={pesonaNag.todoPersonaId}
                   id={pesonaNag.personaId}
                   like={pesonaNag.likeCount}
                   content={pesonaNag.content}
-                  img={profileImg}
+                  img={profileImg} // 캐릭터 이미지
                 />
               );
             })}
@@ -139,11 +137,6 @@ const TodoContent = styled.div`
   & .todo {
     padding: 20px;
   }
-`;
-const hashTagContainer = styled.div`
-  text-align: center;
-  margin: 0 auto;
-  width: wrap-content;
 `;
 const ShowMoreButton = styled.div`
   cursor: pointer;
