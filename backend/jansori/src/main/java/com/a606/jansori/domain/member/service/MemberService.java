@@ -87,6 +87,7 @@ public class MemberService {
 
     }
 
+    @Transactional
     public void followTags(Member member, Tag tag){
 
         if (tagFollowRepository.findTagFollowByTagAndMember(tag, member).isEmpty()) {
