@@ -22,6 +22,7 @@ import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
 import com.a606.jansori.domain.nag.repository.NagLikeRepository;
 import com.a606.jansori.domain.nag.repository.NagRepository;
+import com.a606.jansori.domain.nag.util.PreviewUtil;
 import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
 import com.a606.jansori.domain.tag.domain.NagTag;
 import com.a606.jansori.domain.tag.domain.Tag;
@@ -57,12 +58,13 @@ class NagServiceTest {
   @Mock
   private NagLikeRepository nagLikeRepository;
   @Mock
+  private PreviewUtil previewUtil;
+  @Mock
   private NagUnlockRepository nagUnlockRepository;
   @Mock
   private NagRandomGenerator nagRandomGenerator;
   @InjectMocks
   private NagService nagService;
-
   private PostNagReqDto postNagReqDto;
   private Member member;
   private Tag tag;
@@ -111,7 +113,9 @@ class NagServiceTest {
     postNagReqDto = new PostNagReqDto("공부 안할래?", tag.getId());
     given(tagRepository.findById(tag.getId())).willReturn(Optional.of(tag));
     given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+
     //when
+    when(previewUtil.convertNagToPreview(postNagReqDto.getContent())).thenReturn("ㄱㅂ ㅇㅎㄹ?");
     when(nagRepository.save(any(Nag.class))).thenReturn(Nag.builder().id(1L).build());
     when(nagTagRepository.save(any(NagTag.class))).thenReturn(null);
 
