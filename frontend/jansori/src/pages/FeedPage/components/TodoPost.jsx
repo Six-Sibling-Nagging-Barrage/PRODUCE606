@@ -5,6 +5,7 @@ import profileImg from '../../../assets/profileImg.png';
 import showMoreImg from '../../../assets/show_more.png';
 import hideImg from '../../../assets/hide.png';
 import NagCommentItem from './NagCommentItem';
+import HashTagItem from '../../../components/HashTag/HashTagItem';
 
 const personaNagData = [
   {
@@ -84,7 +85,17 @@ const TodoPost = (props) => {
         <TodoContent>
           <div className="finished">{post.todo.finished ? '❌' : '✅'}</div>
           <div className="todo">{post.todo.content}</div>
-          <div>해시태그 자리</div>
+          <HashTagContainer>
+            {post.todo.tags.map((tag) => {
+              return (
+                <HashTagItem
+                  key={tag.tagId}
+                  hashTag={tag.tagName}
+                  editable={false}
+                />
+              );
+            })}
+          </HashTagContainer>
         </TodoContent>
         <PersonaReaction
           personas={post.todo.personas}
@@ -128,13 +139,15 @@ const PostContainer = tw.div`
 const PostHeader = tw.header`flex gap-4 mb-4`;
 const ProfileLink = tw.a`relative inline-flex items-center justify-center w-12 h-12 text-white rounded-full`;
 const ProfileImage = tw.img`max-w-full rounded-full`;
-const WriterName = tw.h3`text-base font-medium\ text-slate-700`;
-const CreateDate = tw.p`text-sm text-slate-400`;
+const WriterName = styled.div`
+  text-align: left;
+`;
+const CreateDate = tw.div`text-sm text-slate-400`;
 const TodoContent = styled.div`
   text-align: center;
   padding: 20px 0;
   & .todo {
-    padding: 20px;
+    padding-top: 20px;
   }
 `;
 const ShowMoreButton = styled.div`
@@ -148,6 +161,12 @@ const ShowMoreButton = styled.div`
 
 const CommentsContainer = styled.div`
   margin-top: 20px;
+`;
+
+const HashTagContainer = styled.div`
+  width: fit-content;
+  margin: 10px auto;
+  display: flex;
 `;
 
 export default TodoPost;

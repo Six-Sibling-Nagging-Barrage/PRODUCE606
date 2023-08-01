@@ -137,6 +137,7 @@ const PersonaReaction = (props) => {
 const PersonaContainer = styled.div`
   display: flex;
   justify-content: space-evenly;
+  margin-top: 10px;
 `;
 
 const PersonaProfile = styled.div`
