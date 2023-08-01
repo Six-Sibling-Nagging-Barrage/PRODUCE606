@@ -3,7 +3,6 @@ package com.a606.jansori.domain.member.service;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.MemberRole;
 import com.a606.jansori.domain.member.dto.*;
-import com.a606.jansori.domain.member.dto.*;
 import com.a606.jansori.domain.member.exception.DuplicatedNicknameException;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
@@ -39,16 +38,16 @@ public class MemberService {
 
   @Transactional(readOnly = true)
   public GetUserProfileResDto getUserProfile(Long memberId) {
-
-    Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new MemberNotFoundException());
 
     return GetUserProfileResDto.from(member);
   }
 
   @Transactional(readOnly = true)
-  public GetMyProfileResDto getMyProfile() {
-
-    Member member = getMemberFromSecurityUtil();
+  public GetMyProfileResDto getMyProfile(Long memberId) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new MemberNotFoundException());
 
     return GetMyProfileResDto.from(member);
   }
@@ -78,6 +77,7 @@ public class MemberService {
     return PatchMemberInfoResDto.builder().member(member).build();
 
   }
+
 
   private Member getMemberFromSecurityUtil() {
 
