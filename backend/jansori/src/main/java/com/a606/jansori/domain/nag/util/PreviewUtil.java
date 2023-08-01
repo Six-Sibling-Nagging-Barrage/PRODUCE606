@@ -16,7 +16,7 @@ public class PreviewUtil {
 
   // 잔소리 한글, 영어 상관없이 초성으로 바꿔주는 메서드
   public String convertNagToPreview(String nag) {
-    nag = convertVowelsToUnderscore(nag);
+    nag = convertConsonantsToUnderscore(nag);
     return convertKoreanToInitialSound(nag);
   }
 
@@ -36,7 +36,7 @@ public class PreviewUtil {
           result.append(letter);
         }
       } catch (HangulParserException e) {
-        throw new RuntimeException(e);
+        result.append(letter);
       }
     }
     return result.toString();
@@ -47,8 +47,8 @@ public class PreviewUtil {
     return c >= KOREAN_SYLLABLES_START && c <= KOREAN_SYLLABLES_END;
   }
 
-  //영어가 존재할때, 모은은 언더바로 변경해주는 메서드
-  private String convertVowelsToUnderscore(String nag) {
+  //영어가 존재할때, 자음은 언더바로 변경해주는 메서드
+  private String convertConsonantsToUnderscore(String nag) {
     Pattern pattern = Pattern.compile("[b-df-hj-np-tv-zB-DF-HJ-NP-TV-Z]");
     Matcher matcher = pattern.matcher(nag);
     return matcher.replaceAll("_");

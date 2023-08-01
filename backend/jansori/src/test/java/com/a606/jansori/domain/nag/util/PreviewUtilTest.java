@@ -21,8 +21,10 @@ class PreviewUtilTest {
         Arguments.of("ZZZZZZ", "______"),
         Arguments.of("Hello World!", "_e__o _o___!"),
         Arguments.of("11214!)@", "11214!)@"),
-        Arguments.of("태용아, Hold Up!", "ㅌㅇㅇ, _o__ U_!"),
-        Arguments.of("태용아, 움직여야겠지?", "ㅌㅇㅇ, ㅇㅈㅇㅇㄱㅈ?")
+        Arguments.of("야, Hold Up!", "ㅇ, _o__ U_!"),
+        Arguments.of("아, 움직여야겠지?", "ㅇ, ㅇㅈㅇㅇㄱㅈ?"),
+        Arguments.of("정신 안차릴래?ㅋㅋ", "ㅈㅅ ㅇㅊㄹㄹ?ㅋㅋ"),
+        Arguments.of("아직 안했어?ㅠㅠ", "ㅇㅈ ㅇㅎㅇ?ㅠㅠ")
     );
   }
 }
