@@ -1,16 +1,11 @@
-import React from "react";
-import styled from "styled-components";
-import tw from "twin.macro";
+import React from 'react';
+import tw, { styled } from 'twin.macro';
 
 const Card = (props) => {
-  const { name, desc } = props;
+  const { imgSrc, name, desc } = props;
   return (
     <CardItem>
-      <img
-        className="mx-auto rounded-full h-48 w-48"
-        src="https://i.namu.wiki/i/VxdEKDNZCp9hAW5TU5-3MZTePLGSdlYKzEZUyVLDB-Cyo950Ee19yaOL8ayxgJzEfMYfzfLcRYuwkmKEs2cg0w.webp"
-        alt="character img"
-      />
+      <img className='mx-auto rounded-full h-48 w-48' src={imgSrc} alt='character img' />
       <CharacterInfo>
         <CharacterName>{name}</CharacterName>
         <CharacterDesc>{desc}</CharacterDesc>
