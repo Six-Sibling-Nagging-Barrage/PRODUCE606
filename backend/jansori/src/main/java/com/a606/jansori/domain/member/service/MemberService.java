@@ -6,6 +6,8 @@ import com.a606.jansori.domain.member.dto.*;
 import com.a606.jansori.domain.member.exception.DuplicatedNicknameException;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
+import com.a606.jansori.domain.notification.domain.NotificationSetting;
+import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
 import com.a606.jansori.domain.tag.domain.Tag;
@@ -26,6 +28,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final TagRepository tagRepository;
     private final TagFollowRepository tagFollowRepository;
+    private final NotificationSettingRepository notificationSettingRepository;
     private final SecurityUtil securityUtil;
 
     @Transactional(readOnly = true)
@@ -99,5 +102,34 @@ public class MemberService {
 
         }
     }
+
+    @Transactional
+    public PatchMemberNotificationSettingResDto setNotification(
+
+      PatchMemberNotificationSettingReqDto patchMemberNotificationSettingReqDto) {
+
+      Member member = getMemberFromSecurityUtil();
+
+      List<Boolean> notificationSettings = patchMemberNotificationSettingReqDto
+          .getNotificationSettings();
+
+      for (int notificationTypeId = 0;
+          notificationTypeId <= notificationSettings.size();
+          notificationTypeId++) {
+
+        NotificationSetting notificationSetting =
+            notificationSettingRepository.findNotificationSettingByMemberAndNotificationTypeId(
+                member, (long) notificationTypeId + 1
+            ).orElseThrow();
+
+        notificationSetting.update(notificationSettings.get(notificationTypeId));
+
+        notificationSettingRepository.save(notificationSetting);
+
+      }
+
+      return PatchMemberNotificationSettingResDto.from(notificationSettings);
+
+  }
 
 }

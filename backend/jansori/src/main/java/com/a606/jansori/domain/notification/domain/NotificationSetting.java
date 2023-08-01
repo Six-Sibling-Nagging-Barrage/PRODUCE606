@@ -30,4 +30,8 @@ public class NotificationSetting {
   @Column
   private Boolean activated;
 
+  public void update(Boolean activated){
+    this.activated = activated;
+  }
+
 }

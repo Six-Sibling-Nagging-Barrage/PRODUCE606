@@ -48,4 +48,16 @@ public class MemberController {
 
   }
 
+  @PatchMapping("/notification/setting")
+  public EnvelopeResponse<PatchMemberNotificationSettingResDto> setNotification(
+      @RequestBody PatchMemberNotificationSettingReqDto patchMemberNotificationSettingReqDto){
+
+    return EnvelopeResponse.<PatchMemberNotificationSettingResDto>
+    builder().data(memberService.setNotification(patchMemberNotificationSettingReqDto))
+        .build();
+
+  }
+
+
+
 }
