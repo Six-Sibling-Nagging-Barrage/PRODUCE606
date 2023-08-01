@@ -1,51 +1,97 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from 'twin.macro';
 import profileImg from '../../../assets/profileImg.png';
 
-const PersonaReaction = () => {
+const personaInfo = [
+  {
+    id: 1,
+    name: '캐릭터1',
+    img: profileImg,
+    bio: '캐릭터1의 설명입니다',
+  },
+  {
+    id: 2,
+    name: '캐릭터2',
+    img: profileImg,
+    bio: '캐릭터2의 설명입니다',
+  },
+  {
+    id: 3,
+    name: '캐릭터3',
+    img: profileImg,
+    bio: '캐릭터3의 설명입니다',
+  },
+  {
+    id: 4,
+    name: '캐릭터4',
+    img: profileImg,
+    bio: '캐릭터4의 설명입니다',
+  },
+  {
+    id: 5,
+    name: '캐릭터5',
+    img: profileImg,
+    bio: '캐릭터5의 설명입니다',
+  },
+  {
+    id: 6,
+    name: '캐릭터6',
+    img: profileImg,
+    bio: '캐릭터6의 설명입니다',
+  },
+];
+
+const PersonaReaction = (props) => {
+  const { personas, todoId, setShowMore, setPersonaNagList } = props;
+
   const [personaIndex, setPersonaIndex] = useState(-1);
+  const [isAdded, setIsAdded] = useState(
+    Array.from({ length: 6 }, () => false)
+  ); // 이미 반응한 캐릭터인지 저장하는 배열
+  const [personaLikeCount, setPersonaLikeCount] = useState([]);
 
-  const personas = [
-    {
-      id: 0,
-      name: '캐릭터1',
-      img: profileImg,
-      bio: '캐릭터1의 설명입니다',
-    },
-    {
-      id: 1,
-      name: '캐릭터2',
-      img: profileImg,
-      bio: '캐릭터2의 설명입니다',
-    },
-    {
-      id: 2,
-      name: '캐릭터3',
-      img: profileImg,
-      bio: '캐릭터3의 설명입니다',
-    },
-    {
-      id: 3,
-      name: '캐릭터4',
-      img: profileImg,
-      bio: '캐릭터4의 설명입니다',
-    },
-    {
-      id: 4,
-      name: '캐릭터5',
-      img: profileImg,
-      bio: '캐릭터5의 설명입니다',
-    },
-    {
-      id: 5,
-      name: '캐릭터6',
-      img: profileImg,
-      bio: '캐릭터6의 설명입니다',
-    },
-  ];
+  useEffect(() => {
+    personas.map((persona) => {
+      setPersonaLikeCount((prev) => [...prev, persona.likeCount]);
+    });
+  }, []);
 
-  const handlePersonaHover = (id) => {
-    setPersonaIndex(id);
+  const handlePersonaHover = (personaId) => {
+    setPersonaIndex(personaId - 1);
+  };
+
+  const handleClickPersonaReaction = (personaId) => {
+    if (isAdded[personaId - 1]) return;
+    // 캐릭터 반응 api 호출
+    // axios.post(`http://localhost:8080//todo/${todoId}/${personaId}`, config).then(res => ...);
+    const personaNag = {
+      todoPersonaId: 64,
+      personaId: personaId,
+      likeCount: 1,
+      content: '새로 추가된 캐릭터 잔소리',
+      isFirstReaction: true,
+    };
+
+    if (!personaNag.isFirstReaction) return;
+
+    setPersonaLikeCount((prev) =>
+      prev.map((item, index) => {
+        if (index === personaId - 1) {
+          return item + 1;
+        }
+        return item;
+      })
+    );
+    setIsAdded((prev) =>
+      prev.map((item, index) => {
+        if (index === personaId - 1) {
+          return true;
+        }
+        return item;
+      })
+    );
+    setPersonaNagList((prev) => [...prev, personaNag]);
+    setShowMore(true);
   };
 
   return (
@@ -54,16 +100,24 @@ const PersonaReaction = () => {
         {personas.map((persona) => {
           return (
             <PersonaProfile
-              key={persona.id}
+              key={persona.personaId}
               onMouseEnter={() => {
-                handlePersonaHover(persona.id);
+                handlePersonaHover(persona.personaId);
+              }}
+              onClick={() => {
+                handleClickPersonaReaction(persona.personaId);
               }}
             >
               <img
                 className="w-10 h-10 rounded-full"
-                src={persona.img}
+                src={profileImg} // TODO: 캐릭터 이미지
                 alt="Rounded avatar"
               />
+              <CountBadge>
+                {personaLikeCount[persona.personaId - 1] < 100
+                  ? personaLikeCount[persona.personaId - 1]
+                  : '99+'}
+              </CountBadge>
             </PersonaProfile>
           );
         })}
@@ -72,8 +126,8 @@ const PersonaReaction = () => {
         <PersonaBio>캐릭터를 클릭해 잔소리를 해주세요.</PersonaBio>
       ) : (
         <PersonaBio>
-          <div>{personas[personaIndex].name}</div>
-          <div>{personas[personaIndex].bio}</div>
+          <div>{personaInfo[personaIndex].name}</div>
+          <div>{personaInfo[personaIndex].bio}</div>
         </PersonaBio>
       )}
     </>
@@ -82,14 +136,26 @@ const PersonaReaction = () => {
 
 const PersonaContainer = styled.div`
   display: flex;
+  justify-content: space-evenly;
+  margin-top: 10px;
 `;
 
 const PersonaProfile = styled.div`
-  height: 50px;
-  width: 50px;
+  height: 40px;
   &:hover {
     cursor: pointer;
   }
+  position: relative;
+`;
+
+const CountBadge = styled.div`
+  position: absolute;
+  top: -10px;
+  left: 30px;
+  background-color: rgb(255, 121, 121);
+  padding: 0 5px;
+  border-radius: 15px;
+  font-size: 13px;
 `;
 
 const PersonaBio = styled.div`
