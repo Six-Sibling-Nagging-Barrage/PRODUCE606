@@ -1,7 +1,9 @@
 package com.a606.jansori.domain.todo.dto;
 
 import com.a606.jansori.domain.todo.domain.Todo;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,15 +14,17 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostTodoResDto {
+public class GetTodoByDateResDto {
 
-  @JsonProperty("todo")
-  private TodoDto todoDto;
+  List<TodoDto> todos = new ArrayList<>();
 
-  public static PostTodoResDto from(Todo todo) {
+  public static GetTodoByDateResDto from(List<Todo> todos) {
 
-    return PostTodoResDto.builder()
-        .todoDto(TodoDto.from(todo))
+    return GetTodoByDateResDto.builder()
+        .todos(todos.stream()
+            .map(TodoDto::from)
+            .collect(Collectors.toList()))
         .build();
   }
+
 }

@@ -1,9 +1,12 @@
 package com.a606.jansori.domain.todo.dto;
 
+import com.a606.jansori.domain.persona.dto.FeedTodoPersonaDto;
 import com.a606.jansori.domain.todo.domain.Todo;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,8 +14,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TodoDto {
 
   private Long todoId;
@@ -23,9 +26,12 @@ public class TodoDto {
 
   private String content;
 
-  private LocalDateTime createdAt;
+  private LocalDate todoAt;
 
   private List<TagDto> tags;
+
+  @JsonProperty("personas")
+  private List<FeedTodoPersonaDto> feedTodoPersonaDtos;
 
   public static TodoDto from(Todo todo) {
 
@@ -34,9 +40,12 @@ public class TodoDto {
         .display(todo.getDisplay())
         .finished(todo.getFinished())
         .content(todo.getContent())
-        .createdAt(todo.getCreatedAt())
+        .todoAt(todo.getTodoAt())
         .tags(todo.getTodoTags().stream()
-            .map(todoTag -> TagDto.from(todoTag))
+            .map(TagDto::from)
+            .collect(Collectors.toList()))
+        .feedTodoPersonaDtos(todo.getTodoPersonas().stream()
+            .map(FeedTodoPersonaDto::from)
             .collect(Collectors.toList()))
         .build();
   }
