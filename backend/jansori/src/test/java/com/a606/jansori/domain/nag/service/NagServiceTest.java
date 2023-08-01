@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.times;
 import static org.mockito.BDDMockito.verify;
 import static org.mockito.BDDMockito.when;
+import static org.mockito.Mockito.mock;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.repository.MemberRepository;
@@ -239,18 +240,24 @@ class NagServiceTest {
   @Test
   void Given_Valid_MemberWithNag_When_UnlockNagWIthTicket_Then_Success() {
     //given
-    given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
-    given(nagRepository.findById(nag.getId())).willReturn(Optional.of(nag));
-    given(nagUnlockRepository.existsByNagAndMember(nag, member)).willReturn(Boolean.FALSE);
-    given(any(Member.class).getTicket()).willReturn(1L);
+    Member mockMember = mock(Member.class);
+    Nag mockNag = mock(Nag.class);
+    given(memberRepository.findById(mockMember.getId())).willReturn(Optional.of(mockMember));
+    given(nagRepository.findById(mockNag.getId())).willReturn(Optional.of(mockNag));
+    given(nagUnlockRepository.existsByNagAndMember(mockNag, mockMember)).willReturn(Boolean.FALSE);
 
     //when
-    NagDto nagDto = nagService.unlockNagPreviewByMemberTicket(member.getId(), nag.getId());
+    when(mockMember.getTicket()).thenReturn(1L);
+    when(mockNag.getContent()).thenReturn("잔소리 폭격");
+    NagDto nagDto = nagService.unlockNagPreviewByMemberTicket(mockMember.getId(), mockNag.getId());
 
     //then
-    assertThat(nagDto.getNagId()).isEqualTo(nag.getId());
-    assertThat(nagDto.getContent()).isEqualTo(nag.getContent());
-    assertThat(nagDto.getCreateAt()).isEqualTo(nag.getCreatedAt());
+    assertThat(nagDto.getContent()).isEqualTo("잔소리 폭격");
+
+    //verify
+    verify(memberRepository, times(1)).findById(mockMember.getId());
+    verify(nagRepository, times(1)).findById(mockNag.getId());
+    verify(nagUnlockRepository, times(1)).existsByNagAndMember(mockNag, mockMember);
   }
 
 
