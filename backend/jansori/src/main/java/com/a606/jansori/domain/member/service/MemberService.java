@@ -1,17 +1,14 @@
 package com.a606.jansori.domain.member.service;
 
 import com.a606.jansori.domain.member.domain.Member;
-import com.a606.jansori.domain.member.dto.GetDuplicateNicknameReqDto;
-import com.a606.jansori.domain.member.dto.GetDuplicateNicknameResDto;
-import com.a606.jansori.domain.member.dto.GetMyProfileResDto;
-import com.a606.jansori.domain.member.dto.GetUserProfileResDto;
+import com.a606.jansori.domain.member.domain.MemberRole;
+import com.a606.jansori.domain.member.dto.*;
 import com.a606.jansori.domain.member.exception.DuplicatedNicknameException;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
-import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +52,7 @@ public class MemberService {
 
     @Transactional
   public PatchMemberInfoResDto UpdateMemberInfo(Long memberId,
-        PatchMemberInfoReqDto patchMemberInfoReqDto){
+                                                PatchMemberInfoReqDto patchMemberInfoReqDto){
     Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
