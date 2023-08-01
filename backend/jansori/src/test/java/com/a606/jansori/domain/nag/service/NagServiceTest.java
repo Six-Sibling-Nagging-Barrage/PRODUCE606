@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.times;
 import static org.mockito.BDDMockito.verify;
 import static org.mockito.BDDMockito.when;
+import static org.mockito.Mockito.mock;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.repository.MemberRepository;
@@ -15,11 +16,13 @@ import com.a606.jansori.domain.nag.domain.NagLike;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
+import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
 import com.a606.jansori.domain.nag.repository.NagLikeRepository;
 import com.a606.jansori.domain.nag.repository.NagRepository;
+import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
 import com.a606.jansori.domain.tag.domain.NagTag;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
@@ -54,6 +57,8 @@ class NagServiceTest {
   @Mock
   private NagLikeRepository nagLikeRepository;
   @Mock
+  private NagUnlockRepository nagUnlockRepository;
+  @Mock
   private NagRandomGenerator nagRandomGenerator;
   @InjectMocks
   private NagService nagService;
@@ -76,6 +81,7 @@ class NagServiceTest {
         .build();
     nag = Nag.builder()
         .id(1L)
+        .content("운동하자")
         .build();
     nagLike = NagLike.builder()
         .nag(nag)
@@ -229,6 +235,31 @@ class NagServiceTest {
     //verify
     verify(nagRandomGenerator, times(1)).getRandomNagsOfMainPage();
   }
+
+  @DisplayName("멤버와 잔소리가 존재하고 멤버의 티켓이 1개이상이라면 초성 풀기에 성공한다.")
+  @Test
+  void Given_Valid_MemberWithNag_When_UnlockNagWIthTicket_Then_Success() {
+    //given
+    Member mockMember = mock(Member.class);
+    Nag mockNag = mock(Nag.class);
+    given(memberRepository.findById(mockMember.getId())).willReturn(Optional.of(mockMember));
+    given(nagRepository.findById(mockNag.getId())).willReturn(Optional.of(mockNag));
+    given(nagUnlockRepository.existsByNagAndMember(mockNag, mockMember)).willReturn(Boolean.FALSE);
+
+    //when
+    when(mockMember.getTicket()).thenReturn(1L);
+    when(mockNag.getContent()).thenReturn("잔소리 폭격");
+    NagDto nagDto = nagService.unlockNagPreviewByMemberTicket(mockMember.getId(), mockNag.getId());
+
+    //then
+    assertThat(nagDto.getContent()).isEqualTo("잔소리 폭격");
+
+    //verify
+    verify(memberRepository, times(1)).findById(mockMember.getId());
+    verify(nagRepository, times(1)).findById(mockNag.getId());
+    verify(nagUnlockRepository, times(1)).existsByNagAndMember(mockNag, mockMember);
+  }
+
 
   static Stream<List<Nag>> generateNags() {
     return Stream.of(
