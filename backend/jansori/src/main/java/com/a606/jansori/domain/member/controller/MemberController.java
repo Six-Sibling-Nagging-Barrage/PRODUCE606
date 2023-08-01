@@ -2,6 +2,7 @@ package com.a606.jansori.domain.member.controller;
 
 import com.a606.jansori.domain.member.dto.*;
 import com.a606.jansori.domain.member.service.MemberService;
+import com.a606.jansori.global.auth.util.SecurityUtil;
 import com.a606.jansori.global.common.EnvelopeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import javax.validation.Valid;
 public class MemberController {
 
   private final MemberService memberService;
+  private final SecurityUtil securityUtil;
 
   // 닉네임 중복 검사
   @GetMapping("/nickname")
@@ -41,12 +43,11 @@ public class MemberController {
   @PatchMapping("/update")
   public EnvelopeResponse<PatchMemberInfoResDto> updateMemberInfo(
           @RequestBody @Valid PatchMemberInfoReqDto patchMemberInfoReqDto){
-    SecurityUtil
+    Long memberId = (Long) securityUtil.getSessionMemberId();
 
     return EnvelopeResponse.<PatchMemberInfoResDto>builder()
             .data(memberService.UpdateMemberInfo(memberId, patchMemberInfoReqDto))
             .build();
   }
-
 
 }
