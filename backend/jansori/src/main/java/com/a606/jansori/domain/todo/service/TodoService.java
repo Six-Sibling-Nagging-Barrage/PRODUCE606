@@ -21,6 +21,7 @@ import com.a606.jansori.domain.todo.dto.TagDto;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
+import com.a606.jansori.global.auth.util.SecurityUtil;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -41,10 +42,12 @@ public class TodoService {
 
   private final NagRandomGenerator nagRandomGenerator;
 
-  @Transactional
-  public PostTodoResDto postTodo(PostTodoReqDto postTodoReqDto, Long memberId) {
+  private final SecurityUtil securityUtil;
 
-    Member member = getMemberByIdOrElseThrowException(memberId);
+  @Transactional
+  public PostTodoResDto postTodo(PostTodoReqDto postTodoReqDto) {
+
+    Member member = getMemberFromSecurityUtil();
 
     Todo todo = postTodoReqDto.getTodoWith(member);
 
@@ -74,7 +77,7 @@ public class TodoService {
   public GetTodoByDateResDto getMyTodoByDate(Long memberId,
       GetTodoByDateReqDto getTodoByDateReqDto) {
 
-    Member member = getMemberByIdOrElseThrowException(memberId);
+    Member member = getMemberFromSecurityUtil();
 
     LocalDate date = getTodoByDateReqDto.getDate();
 
@@ -83,9 +86,9 @@ public class TodoService {
   }
 
   @Transactional
-  public PatchTodoResDto patchTodoAccomplishment(Long memberId, Long todoId) {
+  public PatchTodoResDto patchTodoAccomplishment(Long todoId) {
 
-    Member member = getMemberByIdOrElseThrowException(memberId);
+    Member member = getMemberFromSecurityUtil();
 
     Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
 
@@ -96,9 +99,9 @@ public class TodoService {
     return PatchTodoResDto.from(todo.toggleFinished());
   }
 
-  private Member getMemberByIdOrElseThrowException(Long memberId) {
+  private Member getMemberFromSecurityUtil() {
 
-    return memberRepository.findById(memberId)
+    return memberRepository.findById(securityUtil.getSessionMemberId())
         .orElseThrow(MemberNotFoundException::new);
   }
 
