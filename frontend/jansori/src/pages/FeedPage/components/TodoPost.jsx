@@ -105,7 +105,7 @@ const TodoPost = (props) => {
             personaNagList.map((pesonaNag) => {
               return (
                 <NagCommentItem
-                  key={pesonaNag.todoPersonaId}
+                  key={pesonaNag.personaId}
                   id={pesonaNag.personaId}
                   like={pesonaNag.likeCount}
                   content={pesonaNag.content}
