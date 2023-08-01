@@ -114,6 +114,18 @@ public class NagService {
             .collect(Collectors.toList()))
         .build();
   }
+  @Transactional(readOnly = true)
+  public GetNagsOfNagBoxResDto getNagsOfNagBox(Long memberId) {
+    Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+
+    List<Nag> nags = nagRepository.findByNagsOfNagBox(PageRequest.of(0, NAG_BOX_COUNT));
+    List<NagUnlock> nagUnlocks = nagUnlockRepository.findNagUnlocksByNagIsInAndMember(nags, member);
+
+    log.info("nag 개수: " + nags.size());
+    log.info("nagUnlocks 개수: " + nagUnlocks.size());
+    log.info("잔소리 정보: " + nagUnlocks.get(0).getNag().getContent() + "좋아요 개수: " + nagUnlocks.get(0).getNag().getLikeCount());
+    return null;
+  }
 
   @Transactional(readOnly = true)
   public GetNagsOfNagBoxResDto getNagsOfNagBox(Long memberId) {
