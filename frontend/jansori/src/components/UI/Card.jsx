@@ -2,10 +2,10 @@ import React from 'react';
 import tw, { styled } from 'twin.macro';
 
 const Card = (props) => {
-  const { imgSrc, name, desc } = props;
+  const { img, name, desc } = props;
   return (
     <CardItem>
-      <img className='mx-auto rounded-full h-48 w-48' src={imgSrc} alt='character img' />
+      <img className='mx-auto rounded-full h-36 w-36 border-2' src={img} alt='character img' />
       <CharacterInfo>
         <CharacterName>{name}</CharacterName>
         <CharacterDesc>{desc}</CharacterDesc>
@@ -39,12 +39,14 @@ w-full`}
 const CharacterName = styled.div`
   ${tw`
 font-black
-mb-5
+mb-3
 mt-5
 `}
 `;
 
 //캐릭터 설명
 const CharacterDesc = styled.p`
-  ${``}
+  ${tw`
+  text-slate-500
+  `}
 `;
