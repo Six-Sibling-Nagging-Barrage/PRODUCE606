@@ -72,7 +72,7 @@ public class Member extends BaseTimeEntity {
     return Objects.hash(getId());
   }
 
-  public void useTicketByNagUnlock() {
+  public void consumeTicketToUnlockNag() {
     if (ticket > 0) {
       ticket -= 1;
     }

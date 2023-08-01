@@ -79,7 +79,7 @@ public class NagService {
       throw new NagUnlockBadRequestException();
     }
 
-    member.useTicketByNagUnlock();
+    member.consumeTicketToUnlockNag();
     nagUnlockRepository.save(NagUnlock.ofUnlockPreviewByNagAndMember(nag, member));
     return NagDto.from(nag);
   }
