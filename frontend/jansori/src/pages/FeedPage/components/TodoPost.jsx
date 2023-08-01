@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import PersonaReaction from './PersonaReaction';
 import NagCommentList from './NagCommentList';
 import profileImg from '../../../assets/profileImg.png';
+import showMoreImg from '../../../assets/show_more.png';
+import hideImg from '../../../assets/hide.png';
 
 const TodoPost = (props) => {
   const { post } = props;
-  const commentList = [
+  const [showMore, setShowMore] = useState(false);
+  const [commentList, setCommentList] = useState([
     {
       id: 1,
       writer: '김민지',
@@ -19,7 +22,35 @@ const TodoPost = (props) => {
       img: profileImg,
       content: '얼른해!!!',
     },
-  ];
+    {
+      id: 3,
+      writer: '김민지',
+      img: profileImg,
+      content: '얼른해!!!',
+    },
+    {
+      id: 4,
+      writer: '강해린',
+      img: profileImg,
+      content: '얼른해!!!',
+    },
+    {
+      id: 5,
+      writer: '김민지',
+      img: profileImg,
+      content: '얼른해!!!',
+    },
+    {
+      id: 6,
+      writer: '강해린',
+      img: profileImg,
+      content: '얼른해!!!',
+    },
+  ]);
+
+  const handleClickShowMore = () => {
+    setShowMore((prev) => !prev);
+  };
 
   return (
     <li>
@@ -39,7 +70,14 @@ const TodoPost = (props) => {
           <div>해시태그 자리</div>
         </TodoContent>
         <PersonaReaction />
-        <NagCommentList commentList={commentList} />
+        {showMore ? (
+          <NagCommentList commentList={commentList} />
+        ) : (
+          <NagCommentList commentList={[commentList[0]]} />
+        )}
+        <ShowMoreButton onClick={handleClickShowMore}>
+          {showMore ? <img src={hideImg} /> : <img src={showMoreImg} />}
+        </ShowMoreButton>
       </PostContainer>
     </li>
   );
@@ -64,6 +102,14 @@ const hashTagContainer = styled.div`
   text-align: center;
   margin: 0 auto;
   width: wrap-content;
+`;
+const ShowMoreButton = styled.div`
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  & > img {
+    width: 50px;
+  }
 `;
 
 export default TodoPost;
