@@ -4,21 +4,36 @@ import CountBox from './components/CountBox';
 import tw, { styled } from 'twin.macro';
 
 const NagBoxPage = () => {
-  const startSentences = ['현재 총', '지금까지', '현재 총'];
+  const NagSentences = [
+    {
+      startSentence: '현재 총',
+      expression: ' 개',
+      endSentence: '잔소리가 작성되었습니다.',
+    },
+    {
+      startSentence: '지금까지',
+      expression: ' 개',
+      endSentence: 'todo가 달성했습니다.',
+    },
+    {
+      startSentence: '현재 총',
+      expression: ' 명',
+      endSentence: '사용하고 있습니다.',
+    },
+  ];
+
   const counts = ['15698', '157', '586'];
-  const expressions = [' 개', ' 개', ' 명'];
-  const endSentences = ['잔소리가 작성되었습니다.', 'todo가 달성했습니다.', '사용하고 있습니다.'];
 
   return (
     <Background>
       <CenteredContainer>
         <CountBoxContainer>
-          {startSentences.map((startSentence, index) => (
+          {NagSentences.map((nagSentence, index) => (
             <CountBox
               key={index}
-              startSentence={startSentence}
-              count={counts[index] + expressions[index]}
-              endSentence={endSentences[index]}
+              startSentence={nagSentence.startSentence}
+              count={counts[index] + nagSentence.expression}
+              endSentence={nagSentence.endSentence}
             />
           ))}
         </CountBoxContainer>
