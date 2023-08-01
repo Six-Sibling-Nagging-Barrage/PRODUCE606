@@ -66,8 +66,8 @@ public class NagService {
 
     Optional<NagLike> nagLike = nagLikeRepository.findNagLikeByNagAndMember(nag, member);
 
-    nagLike.ifPresentOrElse(nagLikeRepository::delete,
-        () -> nagLikeRepository.save(NagLike.builder().nag(nag).member(member).build()));
+    nagLike.ifPresentOrElse(like -> decreaseNagLike(nag, like),
+        () -> increaseNagLike(nag, member));
   }
 
   @Transactional
@@ -105,5 +105,15 @@ public class NagService {
             .map(NagDto::from)
             .collect(Collectors.toList()))
         .build();
+  }
+
+  private void decreaseNagLike(Nag nag, NagLike nagLike) {
+    nagLikeRepository.delete(nagLike);
+    nag.decreaseLikeCount();
+  }
+
+  private void increaseNagLike(Nag nag, Member member) {
+    nagLikeRepository.save(NagLike.builder().nag(nag).member(member).build());
+    nag.increaseLikeCount();
   }
 }
