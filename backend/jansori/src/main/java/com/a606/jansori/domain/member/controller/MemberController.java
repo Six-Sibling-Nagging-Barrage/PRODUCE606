@@ -38,9 +38,9 @@ public class MemberController {
   }
 
   @GetMapping("/my/profile")
-  public EnvelopeResponse<GetMyProfileResDto> getMyProfile(@RequestParam Long memberId) {
+  public EnvelopeResponse<GetMyProfileResDto> getMyProfile() {
     return EnvelopeResponse.<GetMyProfileResDto>builder()
-        .data(memberService.getMyProfile(memberId))
+        .data(memberService.getMyProfile())
         .build();
   }
 

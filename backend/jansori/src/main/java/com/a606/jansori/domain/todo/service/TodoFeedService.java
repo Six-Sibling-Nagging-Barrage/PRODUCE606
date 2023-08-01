@@ -17,6 +17,7 @@ import com.a606.jansori.domain.todo.dto.GetTodoFeedByFollowingReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedByTagReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
+import com.a606.jansori.global.auth.util.SecurityUtil;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -39,36 +40,36 @@ public class TodoFeedService {
 
   private final NagUnlockRepository nagUnlockRepository;
 
+  private final SecurityUtil securityUtil;
+
   @Transactional(readOnly = true)
-  public GetTodoFeedResDto getFollowingFeed(Long memberId,
+  public GetTodoFeedResDto getFollowingFeed(
       GetTodoFeedByFollowingReqDto getTodoFeedByFollowingReqDto) {
 
-    Member member = memberRepository.findById(memberId)
-        .orElseThrow(MemberNotFoundException::new);
+    Member member = getMemberFromSecurityUtil();
 
     List<Tag> tags = tagFollowRepository.findAllByMember(member).stream()
         .map(TagFollow::getTag)
         .collect(Collectors.toList());
 
-    if (tags == null || tags.size() == 0) {
+    if (tags.isEmpty()) {
       throw new TagNotFoundException();
     }
 
     Long cursor = getTodoFeedByFollowingReqDto.getCursor();
     Integer size = getTodoFeedByFollowingReqDto.getSize();
 
-    Slice<Todo> pagedTodos = cursor == null ?
-        todoRepository.findByFollowingTagsWithoutCursor(tags, PageRequest.of(0, size))
+    Slice<Todo> pagedTodos = cursor == null ? todoRepository.findByFollowingTagsWithoutCursor(tags,
+        PageRequest.of(0, size))
         : todoRepository.findByFollowingTagsWithCursor(tags, cursor, PageRequest.of(0, size));
 
     return getFeedResDtoFrom(size, member, pagedTodos);
   }
 
   @Transactional(readOnly = true)
-  public GetTodoFeedResDto getTagFeed(Long memberId, GetTodoFeedByTagReqDto getTodoFeedByTagReqDto) {
+  public GetTodoFeedResDto getTagFeed(GetTodoFeedByTagReqDto getTodoFeedByTagReqDto) {
 
-    Member member = memberRepository.findById(memberId)
-        .orElseThrow(MemberNotFoundException::new);
+    Member member = getMemberFromSecurityUtil();
 
     Tag tag = tagRepository.findById(getTodoFeedByTagReqDto.getTagId())
         .orElseThrow(TagNotFoundException::new);
@@ -76,9 +77,9 @@ public class TodoFeedService {
     Long cursor = getTodoFeedByTagReqDto.getCursor();
     Integer size = getTodoFeedByTagReqDto.getSize();
 
-    Slice<Todo> pagedTodos = cursor == null ?
-        todoRepository.findByTagWithoutCursor(tag, PageRequest.of(0, size))
-        : todoRepository.findByTagWithCursor(tag, cursor, PageRequest.of(0, size));
+    Slice<Todo> pagedTodos =
+        cursor == null ? todoRepository.findByTagWithoutCursor(tag, PageRequest.of(0, size))
+            : todoRepository.findByTagWithCursor(tag, cursor, PageRequest.of(0, size));
 
     return getFeedResDtoFrom(size, member, pagedTodos);
   }
@@ -107,5 +108,11 @@ public class TodoFeedService {
         .nextCursor(nextCursor)
         .hasNext(hasNext)
         .build();
+  }
+
+  private Member getMemberFromSecurityUtil() {
+
+    return memberRepository.findById(securityUtil.getSessionMemberId())
+        .orElseThrow(MemberNotFoundException::new);
   }
 }
