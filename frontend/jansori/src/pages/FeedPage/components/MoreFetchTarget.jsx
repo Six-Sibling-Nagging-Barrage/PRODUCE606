@@ -2,31 +2,30 @@ import React, { useRef, useEffect } from 'react';
 import { styled } from 'twin.macro';
 
 const MoreFetchTarget = (props) => {
-  const { items, setCursor } = props;
+  const { items, setCursor, pageSize } = props;
 
-  const fetchTrigger = useRef(null);
+  const fetchTriggerRef = useRef(null);
   const fetchObserver = new IntersectionObserver(([{ isIntersecting }]) => {
-    if (isIntersecting)
+    if (isIntersecting) {
       setCursor((prev) => {
-        // items.at(-1).id
-        return prev + 1; // 임시 데이터
+        // 타겟이 관측되면 커서를 갱신
+        return prev + pageSize;
       });
+    }
   });
 
   useEffect(() => {
     let observerRef = null;
-    fetchObserver.observe(fetchTrigger.current);
-    observerRef = fetchTrigger.current;
+    fetchObserver.observe(fetchTriggerRef.current);
+    observerRef = fetchTriggerRef.current;
     return () => {
       if (observerRef) {
-        console.log('관측됨');
-        console.log(items);
         fetchObserver.unobserve(observerRef);
       }
     };
   }, [items]);
 
-  return <TargetBox ref={fetchTrigger} />;
+  return <TargetBox ref={fetchTriggerRef} />;
 };
 
 const TargetBox = styled.div`
