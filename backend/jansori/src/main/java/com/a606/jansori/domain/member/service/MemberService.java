@@ -3,7 +3,6 @@ package com.a606.jansori.domain.member.service;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.MemberRole;
 import com.a606.jansori.domain.member.dto.*;
-import com.a606.jansori.domain.member.dto.*;
 import com.a606.jansori.domain.member.exception.DuplicatedNicknameException;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
