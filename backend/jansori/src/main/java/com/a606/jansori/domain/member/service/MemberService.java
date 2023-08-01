@@ -60,7 +60,7 @@ public class MemberService {
             .orElseThrow(MemberNotFoundException::new);
 
     member.update(patchMemberInfoReqDto.getNickname(), patchMemberInfoReqDto.getBio(),
-        patchMemberInfoReqDto.getImageUrl(), new MemberRole().);
+        patchMemberInfoReqDto.getImageUrl(), MemberRole.USER);
 
     List<Long> TagList = patchMemberInfoReqDto.getTags();
 
