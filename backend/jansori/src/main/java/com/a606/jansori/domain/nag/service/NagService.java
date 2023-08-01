@@ -17,6 +17,7 @@ import com.a606.jansori.domain.nag.exception.NagUnlockBusinessException;
 import com.a606.jansori.domain.nag.repository.NagLikeRepository;
 import com.a606.jansori.domain.nag.repository.NagRepository;
 import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
+import com.a606.jansori.domain.nag.util.PreviewUtil;
 import com.a606.jansori.domain.tag.domain.NagTag;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
@@ -41,6 +42,7 @@ public class NagService {
   private final NagLikeRepository nagLikeRepository;
   private final NagUnlockRepository nagUnlockRepository;
   private final NagRandomGenerator nagRandomGenerator;
+  private final PreviewUtil previewUtil;
 
   @Transactional
   public PostNagResDto createNag(Long memberId, PostNagReqDto postNagReqDto) {
@@ -48,7 +50,7 @@ public class NagService {
         .orElseThrow(TagNotFoundException::new);
     Member member = memberRepository.findById(memberId)
         .orElseThrow(MemberNotFoundException::new);
-    String preview = KoreanUtil.convertToInitialSound(postNagReqDto.getContent());
+    String preview = previewUtil.convertNagToPreview(postNagReqDto.getContent());
 
     Nag nag = Nag.of(member, postNagReqDto, preview);
     NagTag nagTag = NagTag.of(nag, tag);
