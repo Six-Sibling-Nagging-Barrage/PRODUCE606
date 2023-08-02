@@ -11,10 +11,13 @@ import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
+import com.a606.jansori.domain.todo.dto.GetTodoDetailResDto;
 import com.a606.jansori.domain.todo.dto.TodoFeedDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedByFollowingReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedByTagReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
+import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
+import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
 import java.time.Clock;
@@ -89,6 +92,23 @@ public class TodoFeedService {
     return getFeedResDtoFrom(size, member, pagedTodos);
   }
 
+  @Transactional(readOnly = true)
+  public GetTodoDetailResDto getTodoDetail(Long todoId) {
+
+    Member member = getMemberFromSecurityUtil();
+
+    Todo todo = todoRepository.findById(todoId)
+        .orElseThrow(TodoNotFoundException::new);
+
+    if (!todo.getMember().equals(member) && !todo.getDisplay()) {
+      throw new TodoUnauthorizedException();
+    }
+
+    return GetTodoDetailResDto.from(todo,
+        nagUnlockRepository.existsByNagAndMember(todo.getNag(), member),
+        nagLikeRepository.existsByNagAndMember(todo.getNag(), member));
+  }
+
   private List<TodoFeedDto> convertTodosWithMemberToFeedTodoDto(List<Todo> todos, Member member) {
 
     return todos.stream().map(todo ->
@@ -115,10 +135,7 @@ public class TodoFeedService {
 
   private Member getMemberFromSecurityUtil() {
 
-    return memberRepository.findById(1L)
+    return memberRepository.findById(securityUtil.getSessionMemberId())
         .orElseThrow(MemberNotFoundException::new);
-
-//    return memberRepository.findById(securityUtil.getSessionMemberId())
-//        .orElseThrow(MemberNotFoundException::new);
   }
 }

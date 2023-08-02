@@ -8,17 +8,22 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 
 @Getter
-public class TodoDetailDto extends TodoFeedDto {
+public class GetTodoDetailResDto extends TodoFeedDto {
 
   @JsonProperty("personas")
   private List<FeedTodoPersonaDto> feedTodoPersonaDtos;
 
-  protected TodoDetailDto(Todo todo, Boolean unlocked, Boolean isLiked) {
+  private GetTodoDetailResDto(Todo todo, Boolean unlocked, Boolean isLiked) {
 
     super(todo, unlocked, isLiked);
 
     this.feedTodoPersonaDtos = todo.getTodoPersonas().stream()
         .map(FeedTodoPersonaDto::from)
         .collect(Collectors.toList());
+  }
+
+  public static GetTodoDetailResDto from(Todo todo, Boolean unlocked, Boolean isLiked) {
+
+    return new GetTodoDetailResDto(todo, unlocked, isLiked);
   }
 }
