@@ -10,5 +10,5 @@ import lombok.Setter;
 public class GetTagReqDto {
 
   @TagName
-  private String keyword;
+  private String name;
 }
