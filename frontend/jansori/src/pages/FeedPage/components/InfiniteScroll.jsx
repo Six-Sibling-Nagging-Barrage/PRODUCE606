@@ -10,7 +10,7 @@ const InfiniteScroll = (props) => {
   const [cursor, setCursor] = useState(null);
   const [hasMore, setHasMore] = useState(true);
 
-  const pageSize = 1;
+  const pageSize = 10;
 
   const fetchMoreTodoPosts = async () => {
     if (!hasMore) return;
