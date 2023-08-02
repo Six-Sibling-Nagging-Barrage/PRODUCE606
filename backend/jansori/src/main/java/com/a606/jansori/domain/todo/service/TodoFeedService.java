@@ -5,6 +5,7 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.dto.FeedNagDto;
+import com.a606.jansori.domain.nag.repository.NagLikeRepository;
 import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
@@ -18,6 +19,8 @@ import com.a606.jansori.domain.todo.dto.GetTodoFeedByTagReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
+import java.time.Clock;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +43,11 @@ public class TodoFeedService {
 
   private final NagUnlockRepository nagUnlockRepository;
 
+  private final NagLikeRepository nagLikeRepository;
+
   private final SecurityUtil securityUtil;
+
+  private final Clock clock;
 
   @Transactional(readOnly = true)
   public GetTodoFeedResDto getFollowingFeed(
@@ -58,10 +65,10 @@ public class TodoFeedService {
 
     Long cursor = getTodoFeedByFollowingReqDto.getCursor();
     Integer size = getTodoFeedByFollowingReqDto.getSize();
+    LocalDate today = LocalDate.now(clock);
 
-    Slice<Todo> pagedTodos = cursor == null ? todoRepository.findByFollowingTagsWithoutCursor(tags,
-        PageRequest.of(0, size))
-        : todoRepository.findByFollowingTagsWithCursor(tags, cursor, PageRequest.of(0, size));
+    Slice<Todo> pagedTodos = todoRepository.findTodoByTagsAndPages(tags, cursor,
+        PageRequest.of(0, size), today);
 
     return getFeedResDtoFrom(size, member, pagedTodos);
   }
@@ -76,10 +83,10 @@ public class TodoFeedService {
 
     Long cursor = getTodoFeedByTagReqDto.getCursor();
     Integer size = getTodoFeedByTagReqDto.getSize();
+    LocalDate today = LocalDate.now(clock);
 
-    Slice<Todo> pagedTodos =
-        cursor == null ? todoRepository.findByTagWithoutCursor(tag, PageRequest.of(0, size))
-            : todoRepository.findByTagWithCursor(tag, cursor, PageRequest.of(0, size));
+    Slice<Todo> pagedTodos = todoRepository.findTodoByTagsAndPages(List.of(tag), cursor,
+        PageRequest.of(0, size), today);
 
     return getFeedResDtoFrom(size, member, pagedTodos);
   }
@@ -91,7 +98,9 @@ public class TodoFeedService {
       Nag nag = todo.getNag();
 
       return FeedDto.from(todo,
-          FeedNagDto.fromNagAndUnlocked(nag, nagUnlockRepository.existsByNagAndMember(nag, member))
+          FeedNagDto.fromNagAndUnlocked(nag,
+              nagUnlockRepository.existsByNagAndMember(nag, member),
+              nagLikeRepository.existsByNagAndMember(nag, member))
       );
     }).collect(Collectors.toList());
 

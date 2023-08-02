@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface NagLikeRepository extends JpaRepository<NagLike, Long> {
 
   Optional<NagLike> findNagLikeByNagAndMember(Nag nag, Member member);
+
+  Boolean existsByNagAndMember(Nag nag, Member member);
 }
