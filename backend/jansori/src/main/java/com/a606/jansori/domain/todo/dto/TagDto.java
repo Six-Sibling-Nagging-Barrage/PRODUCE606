@@ -34,6 +34,13 @@ public class TagDto {
         .build();
   }
 
+  public static TagDto from(Tag tag) {
+    return TagDto.builder()
+        .tagId(tag.getId())
+        .tagName(tag.getName())
+        .build();
+  }
+
   public Tag toNewTag() {
 
     return Tag.builder()
