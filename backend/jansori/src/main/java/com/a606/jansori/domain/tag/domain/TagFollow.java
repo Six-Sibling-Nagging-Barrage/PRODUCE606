@@ -27,4 +27,11 @@ public class TagFollow {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id")
     private Tag tag;
+
+    public static TagFollow fromTagAndMember(Tag tag, Member member) {
+        return TagFollow.builder()
+            .tag(tag)
+            .member(member)
+            .build();
+    }
 }
