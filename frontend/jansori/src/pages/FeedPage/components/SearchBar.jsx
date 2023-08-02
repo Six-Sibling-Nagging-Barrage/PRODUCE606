@@ -34,7 +34,7 @@ const SearchBar = () => {
 
 const SearchBarContainer = styled.div`
   ${tw`w-2/5`}
-  padding: 20px 0;
+  padding: 10px 0;
   margin: 0 auto;
 `;
 const SearchInput = styled.input`
