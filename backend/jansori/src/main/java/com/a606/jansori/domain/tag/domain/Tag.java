@@ -27,6 +27,11 @@ public class Tag {
 
   @Column(name = "follow_count")
   @Builder.Default
-  private Integer followCount = 0;
+  private Integer followCount = 1;
 
+  public static Tag fromKeyword(String keyword) {
+    return Tag.builder()
+        .name(keyword)
+        .build();
+  }
 }
