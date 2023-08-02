@@ -5,6 +5,7 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagLike;
+import com.a606.jansori.domain.nag.domain.NagUnlock;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
@@ -12,8 +13,11 @@ import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
+import com.a606.jansori.domain.nag.exception.NagUnlockBusinessException;
 import com.a606.jansori.domain.nag.repository.NagLikeRepository;
 import com.a606.jansori.domain.nag.repository.NagRepository;
+import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
+import com.a606.jansori.domain.nag.util.PreviewUtil;
 import com.a606.jansori.domain.tag.domain.NagTag;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
@@ -36,7 +40,9 @@ public class NagService {
   private final NagTagRepository nagTagRepository;
   private final MemberRepository memberRepository;
   private final NagLikeRepository nagLikeRepository;
+  private final NagUnlockRepository nagUnlockRepository;
   private final NagRandomGenerator nagRandomGenerator;
+  private final PreviewUtil previewUtil;
 
   @Transactional
   public PostNagResDto createNag(Long memberId, PostNagReqDto postNagReqDto) {
@@ -44,7 +50,7 @@ public class NagService {
         .orElseThrow(TagNotFoundException::new);
     Member member = memberRepository.findById(memberId)
         .orElseThrow(MemberNotFoundException::new);
-    String preview = KoreanUtil.convertToInitialSound(postNagReqDto.getContent());
+    String preview = previewUtil.convertNagToPreview(postNagReqDto.getContent());
 
     Nag nag = Nag.of(member, postNagReqDto, preview);
     NagTag nagTag = NagTag.of(nag, tag);
@@ -62,6 +68,22 @@ public class NagService {
 
     nagLike.ifPresentOrElse(nagLikeRepository::delete,
         () -> nagLikeRepository.save(NagLike.builder().nag(nag).member(member).build()));
+  }
+
+  @Transactional
+  public NagDto unlockNagPreviewByMemberTicket(Long memberId, Long nagId) {
+    Nag nag = nagRepository.findById(nagId).orElseThrow(NagNotFoundException::new);
+    Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+
+    if (nagUnlockRepository.existsByNagAndMember(nag, member)) {
+      throw new NagUnlockBusinessException();
+    } else if (member.getTicket() <= 0) {
+      throw new NagUnlockBusinessException();
+    }
+
+    member.consumeTicketToUnlockNag();
+    nagUnlockRepository.save(NagUnlock.ofUnlockPreviewByNagAndMember(nag, member));
+    return NagDto.from(nag);
   }
 
   @Transactional(readOnly = true)

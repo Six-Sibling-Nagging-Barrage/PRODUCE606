@@ -2,6 +2,7 @@ package com.a606.jansori.domain.nag.controller;
 
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
+import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.service.NagService;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,6 +55,14 @@ public class NagController {
 
     nagService.toggleNagLike(1L, nagId);
     return EnvelopeResponse.builder()
+        .build();
+  }
+
+  @PutMapping("/{nagId}/unlock")
+  public EnvelopeResponse<NagDto> unlockNagPreviewByMemberTicket(Long memberId,
+      @PathVariable Long nagId) {
+    return EnvelopeResponse.<NagDto>builder()
+        .data(nagService.unlockNagPreviewByMemberTicket(memberId, nagId))
         .build();
   }
 }
