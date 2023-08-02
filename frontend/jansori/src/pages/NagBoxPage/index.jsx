@@ -62,10 +62,9 @@ export default NagBoxPage;
 
 const CenteredContainer = styled.div`
   ${tw`
-    flex
-    justify-center
-    items-center
-    h-full
+  w-3/5
+  mx-auto
+  py-20
   `}
 `;
 
@@ -73,9 +72,8 @@ const CountBoxContainer = styled.div`
   ${tw`grid 
   grid-cols-3
   gap-4
-  w-9/12
-  w-fit
-  py-20`}
+  w-3/4
+  w-fit`}
 `;
 
 const SpeechBubbleContainer = styled.div`
