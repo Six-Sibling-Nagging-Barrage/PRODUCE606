@@ -6,9 +6,6 @@ import { RxHamburgerMenu } from 'react-icons/rx';
 import Modal from '../UI/Modal';
 import GoogleLoginButton from '../Login/GoogleLoginButton';
 
-// 설치해야 하는 파일
-//npm install react-icons --save
-
 const NavBar = () => {
   const [isToggleOpen, setIsToggleOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -36,10 +33,9 @@ const NavBar = () => {
           </Logo>
           {/* 오른쪽 로그인 버튼 부분 시작*/}
           <RightButtons>
-            <a href='search'>
-              <BiSearch className='mr-6 mt-3' />
-            </a>
+            {/* 로그인 하기 전 */}
             <LoginButton onClick={handleLoginClick}>Login</LoginButton>
+            {/* 로그인 하고 난 후 - 알림버튼, 티켓 개수, 프로필 사진 + 드롭다운으로 로그아웃 */}
             {/* 화면 작아졌을 때 햄버거 icon 시작 */}
             <HamburgerButton
               type='button'
@@ -54,19 +50,19 @@ const NavBar = () => {
           </RightButtons>
           {/* 오른쪽 로그인 버튼 부분 끝*/}
           {/* 네비게이션 리스트 부분 시작 */}
-          <NavItems id='navbar-sticky'>
+          <NavItems id='navbar-sticky' isToggleOpen={isToggleOpen}>
             <NavItemsUl>
               <li>
                 <NavItem href='feed'>Feed</NavItem>
               </li>
               <li>
-                <NavItem href='todo'>ToDo</NavItem>
+                <NavItem href='profile'>Profile</NavItem>
               </li>
               <li>
                 <NavItem href='nagbox'>잔소리함</NavItem>
               </li>
               <li>
-                <NavItem href='aboutus'>About Us</NavItem>
+                <NavItem href='characterinfo'>About Us</NavItem>
               </li>
             </NavItemsUl>
           </NavItems>
@@ -150,8 +146,7 @@ const HamburgerButton = styled.button`
 
 const LoginButton = styled.button`
   ${tw`text-base
-text-blue-600
- mt-2`}
+text-blue-600`}
 `;
 
 const NavItems = styled.div`
@@ -164,6 +159,7 @@ md:flex
 md:w-auto
 md:order-1
 `}
+  display: ${(props) => (props.isToggleOpen ? 'flex' : 'none')};
 `;
 
 const NavItemsUl = styled.ul`
@@ -177,6 +173,7 @@ font-medium
 border
 border-gray-100
 rounded-lg
+w-full
 bg-gray-50
 md:flex-row
 md:space-x-8
