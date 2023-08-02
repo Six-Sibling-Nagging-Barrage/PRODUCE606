@@ -45,9 +45,9 @@ public class TagController {
 
   @GetMapping("/auto-complete")
   public EnvelopeResponse<GetAutoCompleteTagsResDto> getTagsBySearch(
-      GetTagReqDto getTagReqDto) {
+      GetTagSearchDto getTagSearchDto) {
     return EnvelopeResponse.<GetAutoCompleteTagsResDto>builder()
-        .data(tagService.getTagsBySearch(getTagReqDto.getKeyword()))
+        .data(tagService.getTagsBySearch(getTagSearchDto.getKeyword()))
         .build();
   }
 }
