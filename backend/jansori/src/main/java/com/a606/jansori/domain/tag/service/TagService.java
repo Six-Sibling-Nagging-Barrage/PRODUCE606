@@ -7,6 +7,8 @@ import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
 import com.a606.jansori.domain.tag.dto.GetAutoCompleteTagsResDto;
 import com.a606.jansori.domain.tag.dto.GetFollowingTagResDto;
+import com.a606.jansori.domain.tag.dto.GetTagReqDto;
+import com.a606.jansori.domain.tag.exception.TagDuplicateException;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
@@ -40,6 +42,21 @@ public class TagService {
 
     tagFollow.ifPresentOrElse(tagFollowRepository::delete,
         () -> tagFollowRepository.save(TagFollow.builder().tag(tag).member(member).build()));
+  }
+
+  @Transactional
+  public TagDto createTagByKeyword(Long memberId, String name) {
+    Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+    boolean isExist = tagRepository.existsTagByName(name);
+
+    if(isExist) {
+      throw new TagDuplicateException();
+    }
+
+    Tag tag = tagRepository.save(Tag.fromKeyword(name));
+    tagFollowRepository.save(TagFollow.fromTagAndMember(tag, member));
+
+    return TagDto.from(tag);
   }
 
   @Transactional(readOnly = true)
