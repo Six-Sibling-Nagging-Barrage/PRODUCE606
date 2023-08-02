@@ -1,6 +1,8 @@
 package com.a606.jansori.domain.tag.controller;
 
+import com.a606.jansori.domain.tag.dto.GetAutoCompleteTagsResDto;
 import com.a606.jansori.domain.tag.dto.GetFollowingTagResDto;
+import com.a606.jansori.domain.tag.dto.GetTagSearchReqDto;
 import com.a606.jansori.domain.tag.service.TagService;
 import com.a606.jansori.global.common.EnvelopeResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,14 @@ public class TagController {
       @PathVariable Long memberId) {
     return EnvelopeResponse.<GetFollowingTagResDto>builder()
         .data(tagService.getFollowingTagByMemberId(memberId))
+        .build();
+  }
+
+  @GetMapping("/auto-complete")
+  public EnvelopeResponse<GetAutoCompleteTagsResDto> getTagsBySearch(
+      GetTagSearchReqDto getTagSearchReqDto) {
+    return EnvelopeResponse.<GetAutoCompleteTagsResDto>builder()
+        .data(tagService.getTagsBySearch(getTagSearchReqDto.getKeyword()))
         .build();
   }
 }
