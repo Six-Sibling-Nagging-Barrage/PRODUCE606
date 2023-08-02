@@ -3,8 +3,6 @@ package com.a606.jansori.domain.todo.service;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
-import com.a606.jansori.domain.nag.domain.Nag;
-import com.a606.jansori.domain.nag.dto.FeedNagDto;
 import com.a606.jansori.domain.nag.repository.NagLikeRepository;
 import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
@@ -13,10 +11,13 @@ import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
-import com.a606.jansori.domain.todo.dto.FeedDto;
+import com.a606.jansori.domain.todo.dto.GetTodoDetailResDto;
+import com.a606.jansori.domain.todo.dto.TodoFeedDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedByFollowingReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedByTagReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
+import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
+import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
 import java.time.Clock;
@@ -50,7 +51,7 @@ public class TodoFeedService {
   private final Clock clock;
 
   @Transactional(readOnly = true)
-  public GetTodoFeedResDto getFollowingFeed(
+  public GetTodoFeedResDto getTodoFeedByFollowingTags(
       GetTodoFeedByFollowingReqDto getTodoFeedByFollowingReqDto) {
 
     Member member = getMemberFromSecurityUtil();
@@ -74,7 +75,7 @@ public class TodoFeedService {
   }
 
   @Transactional(readOnly = true)
-  public GetTodoFeedResDto getTagFeed(GetTodoFeedByTagReqDto getTodoFeedByTagReqDto) {
+  public GetTodoFeedResDto getTodoFeedByGivenTag(GetTodoFeedByTagReqDto getTodoFeedByTagReqDto) {
 
     Member member = getMemberFromSecurityUtil();
 
@@ -91,18 +92,31 @@ public class TodoFeedService {
     return getFeedResDtoFrom(size, member, pagedTodos);
   }
 
-  private List<FeedDto> convertTodosWithMemberToFeedDto(List<Todo> todos, Member member) {
+  @Transactional(readOnly = true)
+  public GetTodoDetailResDto getTodoDetail(Long todoId) {
 
-    return todos.stream().map(todo -> {
+    Member member = getMemberFromSecurityUtil();
 
-      Nag nag = todo.getNag();
+    Todo todo = todoRepository.findById(todoId)
+        .orElseThrow(TodoNotFoundException::new);
 
-      return FeedDto.from(todo,
-          FeedNagDto.fromNagAndUnlocked(nag,
-              nagUnlockRepository.existsByNagAndMember(nag, member),
-              nagLikeRepository.existsByNagAndMember(nag, member))
-      );
-    }).collect(Collectors.toList());
+    if (!todo.getMember().equals(member) && !todo.getDisplay()) {
+      throw new TodoUnauthorizedException();
+    }
+
+    return GetTodoDetailResDto.from(todo,
+        nagUnlockRepository.existsByNagAndMember(todo.getNag(), member),
+        nagLikeRepository.existsByNagAndMember(todo.getNag(), member));
+  }
+
+  private List<TodoFeedDto> convertTodosWithMemberToFeedTodoDto(List<Todo> todos, Member member) {
+
+    return todos.stream().map(todo ->
+        TodoFeedDto.from(todo,
+            nagUnlockRepository.existsByNagAndMember(todo.getNag(), member),
+            nagLikeRepository.existsByNagAndMember(todo.getNag(), member)
+        )
+    ).collect(Collectors.toList());
 
   }
 
@@ -113,7 +127,7 @@ public class TodoFeedService {
     List<Todo> todos = pagedTodos.getContent();
 
     return GetTodoFeedResDto.builder()
-        .feed(convertTodosWithMemberToFeedDto(todos, member))
+        .feed(convertTodosWithMemberToFeedTodoDto(todos, member))
         .nextCursor(nextCursor)
         .hasNext(hasNext)
         .build();
