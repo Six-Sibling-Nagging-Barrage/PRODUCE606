@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GetTagSearchReqDto {
+public class GetTagReqDto {
 
   private String keyword;
 }

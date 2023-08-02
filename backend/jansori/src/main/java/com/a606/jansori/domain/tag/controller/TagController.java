@@ -2,7 +2,7 @@ package com.a606.jansori.domain.tag.controller;
 
 import com.a606.jansori.domain.tag.dto.GetAutoCompleteTagsResDto;
 import com.a606.jansori.domain.tag.dto.GetFollowingTagResDto;
-import com.a606.jansori.domain.tag.dto.GetTagSearchReqDto;
+import com.a606.jansori.domain.tag.dto.GetTagReqDto;
 import com.a606.jansori.domain.tag.service.TagService;
 import com.a606.jansori.global.common.EnvelopeResponse;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +35,9 @@ public class TagController {
 
   @GetMapping("/auto-complete")
   public EnvelopeResponse<GetAutoCompleteTagsResDto> getTagsBySearch(
-      GetTagSearchReqDto getTagSearchReqDto) {
+      GetTagReqDto getTagReqDto) {
     return EnvelopeResponse.<GetAutoCompleteTagsResDto>builder()
-        .data(tagService.getTagsBySearch(getTagSearchReqDto.getKeyword()))
+        .data(tagService.getTagsBySearch(getTagReqDto.getKeyword()))
         .build();
   }
 }
