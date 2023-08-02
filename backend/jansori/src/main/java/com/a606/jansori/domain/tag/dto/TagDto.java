@@ -1,4 +1,4 @@
-package com.a606.jansori.domain.todo.dto;
+package com.a606.jansori.domain.tag.dto;
 
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
