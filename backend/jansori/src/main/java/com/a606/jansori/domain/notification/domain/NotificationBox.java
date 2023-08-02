@@ -23,6 +23,9 @@ public class NotificationBox {
   @Column
   private LocalDateTime readAt;
 
+  @Column
+  private LocalDateTime modifiedAt;
+
   @OneToOne
   @JoinColumn(name = "member_id")
   private Member member;
