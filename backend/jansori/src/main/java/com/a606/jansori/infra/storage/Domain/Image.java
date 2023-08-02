@@ -1,11 +1,11 @@
-package com.a606.jansori.global.S3.Domain;
+package com.a606.jansori.infra.storage.Domain;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
-public class AwsS3 {
+public class Image {
 
   private String key;
   private String path;
