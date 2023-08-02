@@ -5,6 +5,7 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.dto.FeedNagDto;
+import com.a606.jansori.domain.nag.repository.NagLikeRepository;
 import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
@@ -41,6 +42,8 @@ public class TodoFeedService {
   private final TagRepository tagRepository;
 
   private final NagUnlockRepository nagUnlockRepository;
+
+  private final NagLikeRepository nagLikeRepository;
 
   private final SecurityUtil securityUtil;
 
@@ -95,7 +98,9 @@ public class TodoFeedService {
       Nag nag = todo.getNag();
 
       return FeedDto.from(todo,
-          FeedNagDto.fromNagAndUnlocked(nag, nagUnlockRepository.existsByNagAndMember(nag, member))
+          FeedNagDto.fromNagAndUnlocked(nag,
+              nagUnlockRepository.existsByNagAndMember(nag, member),
+              nagLikeRepository.existsByNagAndMember(nag, member))
       );
     }).collect(Collectors.toList());
 
