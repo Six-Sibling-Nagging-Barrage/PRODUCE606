@@ -17,17 +17,22 @@ public class FeedNagDto {
 
   private Boolean unlocked;
 
+  private Boolean isLiked;
+
   private String content;
 
   private Integer likeCount;
 
-  public static FeedNagDto fromNagAndUnlocked(Nag nag, Boolean isUnlocked) {
+
+  public static FeedNagDto fromNagAndUnlocked(Nag nag, Boolean isUnlocked, Boolean isLiked) {
 
     return FeedNagDto.builder()
         .nagId(nag.getId())
         .feedMemberDto(FeedMemberDto.from(nag.getMember()))
         .likeCount(nag.getLikeCount())
         .content(getNagContentByUnlocked(isUnlocked, nag))
+        .unlocked(isUnlocked)
+        .isLiked(isLiked)
         .build();
   }
 
