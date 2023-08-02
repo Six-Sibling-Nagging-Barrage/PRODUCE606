@@ -2,20 +2,20 @@ import React from 'react';
 import { styled } from 'twin.macro';
 
 const NagCommentItem = (props) => {
-  const { comment } = props;
+  const { id, like, content, img } = props;
 
   return (
     <CommentContainer>
       <div className="profile-img">
         <img
           className="w-10 h-10 rounded-full"
-          src={comment.img}
+          src={img}
           alt="Rounded avatar"
         />
-        <div>{comment.writer}</div>
+        <div>{id}</div>
       </div>
       <CommentContent>
-        <div>{comment.content}</div>
+        <div>{content}</div>
       </CommentContent>
     </CommentContainer>
   );

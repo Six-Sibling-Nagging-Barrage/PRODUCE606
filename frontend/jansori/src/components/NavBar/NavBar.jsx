@@ -63,7 +63,7 @@ const NavBar = () => {
                 <NavItem href='todo'>ToDo</NavItem>
               </li>
               <li>
-                <NavItem href='nag'>잔소리함</NavItem>
+                <NavItem href='nagbox'>잔소리함</NavItem>
               </li>
               <li>
                 <NavItem href='aboutus'>About Us</NavItem>

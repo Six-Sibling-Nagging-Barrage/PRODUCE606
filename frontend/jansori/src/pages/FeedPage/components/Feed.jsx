@@ -9,17 +9,75 @@ const Feed = () => {
   const [postList, setPostList] = useState([]);
 
   useEffect(() => {
+    console.log(postList);
     setPostList((prev) => [
       ...prev,
       ...Array.from({ length: 10 }, () => ({
-        id: 1,
-        writer: {
-          nickname: '팜하니',
-          img: profileImg,
+        todoMember: {
+          memberId: 1,
+          nickname: 'User001',
+          imageUrl: profileImg,
         },
-        finished: false,
-        date: '2023.07.26',
-        content: '페이지 언능 만들기 ! ! !',
+        todo: {
+          todoId: 107,
+          display: true,
+          finished: false,
+          content: 'API 1개 완성',
+          todoAt: '2023-08-01',
+          tags: [
+            {
+              tagId: 1,
+              tagName: '개발',
+            },
+            {
+              tagId: 2,
+              tagName: '코딩',
+            },
+          ],
+          personas: [
+            {
+              todoPersonaId: 61,
+              personaId: 1,
+              likeCount: 0,
+            },
+            {
+              todoPersonaId: 62,
+              personaId: 2,
+              likeCount: 0,
+            },
+            {
+              todoPersonaId: 63,
+              personaId: 3,
+              likeCount: 77,
+            },
+            {
+              todoPersonaId: 64,
+              personaId: 4,
+              likeCount: 0,
+            },
+            {
+              todoPersonaId: 65,
+              personaId: 5,
+              likeCount: 0,
+            },
+            {
+              todoPersonaId: 66,
+              personaId: 6,
+              likeCount: 100,
+            },
+          ],
+        },
+        nag: {
+          nagId: 5,
+          unlocked: null,
+          content: 'ㄴㅇ ㅈㄱㄱ ㅁㅁㅎㄷ ㄴㄱㄱㄴ ㅋㄷㅎㄷ',
+          likeCount: 5,
+          nagMember: {
+            memberId: 2,
+            nickname: 'User002',
+            imageUrl: profileImg,
+          },
+        },
       })),
     ]); // dummy data
   }, [cursor]);
