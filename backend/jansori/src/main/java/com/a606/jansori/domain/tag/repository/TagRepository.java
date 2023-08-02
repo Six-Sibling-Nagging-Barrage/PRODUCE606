@@ -10,6 +10,8 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
 
   Optional<Tag> findTagById(Long id);
 
+  Boolean existsTagByName(String name);
+
   List<Tag> findTagsByNameContainingIgnoreCaseOrderByFollowCountDesc(
       String name,
       Pageable pageable);
