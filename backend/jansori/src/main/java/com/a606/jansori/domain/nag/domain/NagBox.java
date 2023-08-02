@@ -10,6 +10,7 @@ public class NagBox {
 
   public NagBox(List<Nag> nags, List<NagUnlock> nagUnlocks) {
     makeTopRanksNags(nags);
+    matchUnLockStatus(nagUnlocks);
   }
 
   public List<NagOfNagBox> getNags() {
@@ -18,5 +19,19 @@ public class NagBox {
 
   private void makeTopRanksNags(List<Nag> nags) {
     this.nags = nags.stream().map(NagOfNagBox::fromNag).collect(Collectors.toList());
+  }
+
+  private void matchUnLockStatus(List<NagUnlock> nagUnlocks) {
+    nagUnlocks.forEach(nagUnlock -> {
+      changeLockStatusByNagId(nagUnlock.getNag().getId());
+    });
+  }
+
+  private void changeLockStatusByNagId(Long nagId) {
+    this.nags.forEach(nagOfNagBox -> {
+      if (nagOfNagBox.getNagId().equals(nagId)) {
+        nagOfNagBox.changeUnlocked();
+      }
+    });
   }
 }
