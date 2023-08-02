@@ -15,46 +15,4 @@ import org.springframework.stereotype.Repository;
 public interface TodoRepository extends JpaRepository<Todo, Long>, TodoDynamicQueryRepository {
 
   List<Todo> findAllByMemberAndTodoAtIsOrderByCreatedAtDesc(Member member, LocalDate date);
-
-  @Query(value = "SELECT distinct td FROM todo td " +
-      "JOIN td.member m " +
-      "JOIN td.nag n " +
-      "JOIN td.todoTags tt " +
-      "JOIN tt.tag t " +
-      "WHERE t IN :tags " +
-      "AND td.id < :cursor " +
-      "AND td.display = true " +
-      "ORDER BY td.id DESC ")
-  Slice<Todo> findByFollowingTagsWithCursor(List<Tag> tags, Long cursor, Pageable pageable);
-
-  @Query(value = "SELECT distinct td FROM todo td " +
-      "JOIN td.member m " +
-      "JOIN td.nag n " +
-      "JOIN td.todoTags tt " +
-      "JOIN tt.tag t " +
-      "WHERE t IN :tags " +
-      "AND td.display = true " +
-      "ORDER BY td.id DESC ")
-  Slice<Todo> findByFollowingTagsWithoutCursor(List<Tag> tags, Pageable pageable);
-
-  @Query(value = "SELECT distinct td FROM todo td " +
-      "JOIN td.member m " +
-      "JOIN td.nag n " +
-      "JOIN td.todoTags tt " +
-      "JOIN tt.tag t " +
-      "WHERE t = :tag " +
-      "AND td.display = true " +
-      "ORDER BY td.id DESC ")
-  Slice<Todo> findByTagWithoutCursor(Tag tag, Pageable pageable);
-
-  @Query(value = "SELECT distinct td FROM todo td " +
-      "JOIN td.member m " +
-      "JOIN td.nag n " +
-      "JOIN td.todoTags tt " +
-      "JOIN tt.tag t " +
-      "WHERE t = :tag " +
-      "AND td.id < :cursor " +
-      "AND td.display = true " +
-      "ORDER BY td.id DESC ")
-  Slice<Todo> findByTagWithCursor(Tag tag, Long cursor, Pageable pageable);
 }
