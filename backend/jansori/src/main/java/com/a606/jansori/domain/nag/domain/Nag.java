@@ -49,4 +49,14 @@ public class Nag extends BaseTimeEntity {
         .content(postNagReqDto.getContent())
         .build();
   }
+
+  public void decreaseLikeCount() {
+    if (likeCount > 0) {
+      likeCount -= 1;
+    }
+  }
+
+  public void increaseLikeCount() {
+    likeCount += 1;
+  }
 }
