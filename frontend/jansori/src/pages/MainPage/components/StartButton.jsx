@@ -1,13 +1,16 @@
 import React from 'react';
 import tw, { styled } from 'twin.macro';
+import { Link } from 'react-router-dom';
 import SpeechBubble from '../../../components/UI/SpeechBubble';
 
 const StartButton = (props) => {
   const { nagCount } = props;
   return (
     <SpeechBubbleContainer>
-      <SpeechBubble text={'잔소리 하러 가기'} normal />
-      <p>현재 작성된 잔소리 총 {nagCount}개</p>
+      <Link to='nag'>
+        <SpeechBubble text={'잔소리 하러 가기'} normal='true' />
+      </Link>
+      <TotalNagCount>현재 작성된 잔소리 총 {nagCount}개</TotalNagCount>
     </SpeechBubbleContainer>
   );
 };
@@ -20,8 +23,11 @@ const SpeechBubbleContainer = styled.div`
   sm:w-1/3
   md:w-3/5
   lg:w-2/5
-  m-auto
+  mx-auto
   z-50
 `}
-  padding-top:50vh;
+`;
+
+const TotalNagCount = styled.p`
+  ${tw`text-zinc-500	`}
 `;
