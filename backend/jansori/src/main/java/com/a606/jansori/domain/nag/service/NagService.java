@@ -4,6 +4,7 @@ import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
+import com.a606.jansori.domain.nag.domain.NagBox;
 import com.a606.jansori.domain.nag.domain.NagLike;
 import com.a606.jansori.domain.nag.domain.NagUnlock;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
@@ -113,6 +114,7 @@ public class NagService {
             .collect(Collectors.toList()))
         .build();
   }
+
   @Transactional(readOnly = true)
   public GetNagsOfNagBoxResDto getNagsOfNagBox(Long memberId) {
     Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
@@ -120,10 +122,9 @@ public class NagService {
     List<Nag> nags = nagRepository.findByNagsOfNagBox(PageRequest.of(0, NAG_BOX_COUNT));
     List<NagUnlock> nagUnlocks = nagUnlockRepository.findNagUnlocksByNagIsInAndMember(nags, member);
 
-    log.info("nag 개수: " + nags.size());
-    log.info("nagUnlocks 개수: " + nagUnlocks.size());
-    log.info("잔소리 정보: " + nagUnlocks.get(0).getNag().getContent() + "좋아요 개수: " + nagUnlocks.get(0).getNag().getLikeCount());
-    return null;
+    NagBox nagBox = new NagBox(nags, nagUnlocks);
+
+    return GetNagsOfNagBoxResDto.fromNagsOfNagBox(nagBox.getNags());
   }
 
   private void decreaseNagLike(Nag nag, NagLike nagLike) {

@@ -2,6 +2,7 @@ package com.a606.jansori.domain.nag.controller;
 
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
+import com.a606.jansori.domain.nag.dto.GetNagsOfNagBoxResDto;
 import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
@@ -36,6 +37,13 @@ public class NagController {
   public EnvelopeResponse<GetNagOfMainPageResDto> getRandomNagsOfMainPage() {
     return EnvelopeResponse.<GetNagOfMainPageResDto>builder()
         .data(nagService.getRandomNagsOfMainPage())
+        .build();
+  }
+
+  @GetMapping("/nag-rank")
+  public EnvelopeResponse<GetNagsOfNagBoxResDto> getNagsOfNagBox(Long memberId) {
+    return EnvelopeResponse.<GetNagsOfNagBoxResDto>builder()
+        .data(nagService.getNagsOfNagBox(memberId))
         .build();
   }
 
