@@ -2,6 +2,7 @@ package com.a606.jansori.domain.todo.controller;
 
 import com.a606.jansori.domain.todo.dto.GetTodoByDateReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoByDateResDto;
+import com.a606.jansori.domain.todo.dto.GetTodoDetailResDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedByFollowingReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedByTagReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
@@ -59,7 +60,7 @@ public class TodoController {
       @Valid GetTodoFeedByFollowingReqDto getTodoFeedByFollowingReqDto) {
 
     return EnvelopeResponse.<GetTodoFeedResDto>builder()
-        .data(todoFeedService.getFollowingFeed(getTodoFeedByFollowingReqDto))
+        .data(todoFeedService.getTodoFeedByFollowingTags(getTodoFeedByFollowingReqDto))
         .build();
   }
 
@@ -68,7 +69,15 @@ public class TodoController {
       @Valid GetTodoFeedByTagReqDto getTodoFeedByTagReqDto) {
 
     return EnvelopeResponse.<GetTodoFeedResDto>builder()
-        .data(todoFeedService.getTagFeed(getTodoFeedByTagReqDto))
+        .data(todoFeedService.getTodoFeedByGivenTag(getTodoFeedByTagReqDto))
+        .build();
+  }
+
+  @GetMapping("/{todoId}")
+  public EnvelopeResponse<GetTodoDetailResDto> getTodoDetail(@PathVariable Long todoId) {
+
+    return EnvelopeResponse.<GetTodoDetailResDto>builder()
+        .data(todoFeedService.getTodoDetail(todoId))
         .build();
   }
 
