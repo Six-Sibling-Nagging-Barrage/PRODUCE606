@@ -3,7 +3,6 @@ import { styled } from 'twin.macro';
 
 const SpeechBubble = (props) => {
   const { text, normal, isOdd } = props;
-  console.log(isOdd);
 
   return (
     <BubbleSpeech normal={normal} isOdd={isOdd}>
@@ -25,6 +24,8 @@ const BubbleSpeech = styled.div`
   ${(props) =>
     props.normal &&
     `
+      font-weight: bold;
+      font-size: 20px;
         &:after {
           border-top: 0px solid transparent;
           border-left: 10px solid transparent;
