@@ -24,7 +24,7 @@ public class FeedNagDto {
   private Integer likeCount;
 
 
-  public static FeedNagDto fromNagAndUnlocked(Nag nag, Boolean isUnlocked, Boolean isLiked) {
+  public static FeedNagDto fromNagAndUnlockedAndIsLiked(Nag nag, Boolean isUnlocked, Boolean isLiked) {
 
     return FeedNagDto.builder()
         .nagId(nag.getId())

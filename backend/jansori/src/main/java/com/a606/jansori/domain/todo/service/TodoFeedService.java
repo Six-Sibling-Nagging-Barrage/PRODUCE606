@@ -3,8 +3,6 @@ package com.a606.jansori.domain.todo.service;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
-import com.a606.jansori.domain.nag.domain.Nag;
-import com.a606.jansori.domain.nag.dto.FeedNagDto;
 import com.a606.jansori.domain.nag.repository.NagLikeRepository;
 import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
@@ -13,7 +11,7 @@ import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
-import com.a606.jansori.domain.todo.dto.FeedDto;
+import com.a606.jansori.domain.todo.dto.FeedTodoDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedByFollowingReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedByTagReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
@@ -91,18 +89,14 @@ public class TodoFeedService {
     return getFeedResDtoFrom(size, member, pagedTodos);
   }
 
-  private List<FeedDto> convertTodosWithMemberToFeedDto(List<Todo> todos, Member member) {
+  private List<FeedTodoDto> convertTodosWithMemberToFeedTodoDto(List<Todo> todos, Member member) {
 
-    return todos.stream().map(todo -> {
-
-      Nag nag = todo.getNag();
-
-      return FeedDto.from(todo,
-          FeedNagDto.fromNagAndUnlocked(nag,
-              nagUnlockRepository.existsByNagAndMember(nag, member),
-              nagLikeRepository.existsByNagAndMember(nag, member))
-      );
-    }).collect(Collectors.toList());
+    return todos.stream().map(todo ->
+        FeedTodoDto.from(todo,
+            nagUnlockRepository.existsByNagAndMember(todo.getNag(), member),
+            nagLikeRepository.existsByNagAndMember(todo.getNag(), member)
+        )
+    ).collect(Collectors.toList());
 
   }
 
@@ -113,7 +107,7 @@ public class TodoFeedService {
     List<Todo> todos = pagedTodos.getContent();
 
     return GetTodoFeedResDto.builder()
-        .feed(convertTodosWithMemberToFeedDto(todos, member))
+        .feed(convertTodosWithMemberToFeedTodoDto(todos, member))
         .nextCursor(nextCursor)
         .hasNext(hasNext)
         .build();
@@ -121,7 +115,10 @@ public class TodoFeedService {
 
   private Member getMemberFromSecurityUtil() {
 
-    return memberRepository.findById(securityUtil.getSessionMemberId())
+    return memberRepository.findById(1L)
         .orElseThrow(MemberNotFoundException::new);
+
+//    return memberRepository.findById(securityUtil.getSessionMemberId())
+//        .orElseThrow(MemberNotFoundException::new);
   }
 }

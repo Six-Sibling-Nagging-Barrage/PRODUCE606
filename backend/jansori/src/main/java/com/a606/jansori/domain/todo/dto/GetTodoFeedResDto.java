@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 public class GetTodoFeedResDto {
 
-  private List<FeedDto> feed;
+  private List<FeedTodoDto> feed;
 
   private Boolean hasNext;
 
