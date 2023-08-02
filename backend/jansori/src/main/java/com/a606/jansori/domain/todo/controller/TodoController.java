@@ -59,7 +59,7 @@ public class TodoController {
       @Valid GetTodoFeedByFollowingReqDto getTodoFeedByFollowingReqDto) {
 
     return EnvelopeResponse.<GetTodoFeedResDto>builder()
-        .data(todoFeedService.getFollowingFeed(getTodoFeedByFollowingReqDto))
+        .data(todoFeedService.getTodoFeedByFollowingTags(getTodoFeedByFollowingReqDto))
         .build();
   }
 
@@ -68,7 +68,7 @@ public class TodoController {
       @Valid GetTodoFeedByTagReqDto getTodoFeedByTagReqDto) {
 
     return EnvelopeResponse.<GetTodoFeedResDto>builder()
-        .data(todoFeedService.getTagFeed(getTodoFeedByTagReqDto))
+        .data(todoFeedService.getTodoFeedByGivenTag(getTodoFeedByTagReqDto))
         .build();
   }
 

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
-public class FeedTodoDto extends TodoDto{
+public class TodoFeedDto extends TodoDto{
 
   @JsonProperty("member")
   private FeedMemberDto feedMemberDto;
@@ -15,7 +15,7 @@ public class FeedTodoDto extends TodoDto{
   @JsonProperty("nag")
   private FeedNagDto feedNagDto;
 
-  protected FeedTodoDto(Todo todo, Boolean unlocked, Boolean isLiked) {
+  protected TodoFeedDto(Todo todo, Boolean unlocked, Boolean isLiked) {
 
     super(todo);
 
@@ -24,8 +24,8 @@ public class FeedTodoDto extends TodoDto{
 
   }
 
-  public static FeedTodoDto from(Todo todo, Boolean unlocked, Boolean isLiked) {
+  public static TodoFeedDto from(Todo todo, Boolean unlocked, Boolean isLiked) {
 
-    return new FeedTodoDto(todo, unlocked, isLiked);
+    return new TodoFeedDto(todo, unlocked, isLiked);
   }
 }

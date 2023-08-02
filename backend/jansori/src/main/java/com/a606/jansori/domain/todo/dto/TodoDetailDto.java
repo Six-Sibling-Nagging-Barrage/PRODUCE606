@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 
 @Getter
-public class TodoDetailDto extends FeedTodoDto{
+public class TodoDetailDto extends TodoFeedDto {
 
   @JsonProperty("personas")
   private List<FeedTodoPersonaDto> feedTodoPersonaDtos;
