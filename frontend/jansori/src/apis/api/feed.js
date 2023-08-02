@@ -1,4 +1,5 @@
-import { defaultInstance, authInstance } from '../utils';
+import defaultInstance from '../utils/defaultInstance';
+import authInstance from '../utils/authInstance';
 
 // 팔로우한 태그의 피드 조회
 export const getFollowingFeed = async ({ cursor, pageSize }) => {

@@ -1,17 +1,19 @@
-import { useGoogleLogin } from '@react-oauth/google';
 import googleIcon from '../../assets/google_icon.png';
 import { styled } from 'twin.macro';
+import { createMember } from '../../apis/api/member';
 
 const GoogleLoginButton = () => {
-  const googleSocialLogin = useGoogleLogin({
-    onSuccess: (codeResponse) => console.log(codeResponse),
-    flow: 'auth-code',
-  });
+  const clickLogin = () => {
+    createMember();
+  };
+
   return (
     <>
-      <LoginContainer onClick={() => googleSocialLogin()}>
-        <img src={googleIcon} alt='google_login' />
-        <div>구글로 시작하기</div>
+      <LoginContainer onClick={clickLogin}>
+        <div>
+          <img src={googleIcon} />
+          구글로 시작하기
+        </div>
       </LoginContainer>
     </>
   );
@@ -19,7 +21,13 @@ const GoogleLoginButton = () => {
 
 const LoginContainer = styled.div`
   background-color: white;
-  width: 300px;
+  width: 20vw;
+  @media (max-width: 1000px) {
+    width: 30vw;
+  }
+  @media (max-width: 700px) {
+    width: 40vw;
+  }
   padding: 0.8em 1em;
   border-radius: 0.2em;
   margin-top: 0.7em;
@@ -27,10 +35,10 @@ const LoginContainer = styled.div`
   align-items: center;
   font-weight: bold;
   box-shadow: 0 0 5px rgb(207, 207, 207);
-  & > img {
+  & img {
+    display: inline-block;
     height: 1.5rem;
     margin-right: 0.7em;
-    margin-left: 0.2em;
   }
   & > div {
     width: 100%;
