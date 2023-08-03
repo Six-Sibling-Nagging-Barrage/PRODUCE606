@@ -58,7 +58,7 @@ public class NagService {
         .orElseThrow(MemberNotFoundException::new);
     String preview = previewUtil.convertNagToPreview(postNagReqDto.getContent());
 
-    Nag nag = Nag.of(member, postNagReqDto, preview);
+    Nag nag = Nag.ofMemberWithNagContentAndPreview(member, postNagReqDto, preview);
     NagTag nagTag = NagTag.of(nag, tag);
 
     nagTagRepository.save(nagTag);

@@ -50,7 +50,8 @@ public class Nag extends BaseTimeEntity {
   @OneToMany(mappedBy = "nag", cascade = CascadeType.ALL)
   private Set<Todo> todos = new HashSet<>();
 
-  public static Nag of(Member member, PostNagReqDto postNagReqDto, String preview) {
+  public static Nag ofMemberWithNagContentAndPreview(Member member, PostNagReqDto postNagReqDto,
+      String preview) {
     return Nag.builder()
         .member(member)
         .preview(preview)
