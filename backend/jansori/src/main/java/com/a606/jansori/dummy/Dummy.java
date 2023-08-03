@@ -31,7 +31,7 @@ public class Dummy implements CommandLineRunner {
   private final TagDummy tagDummy;
   private final TagFollowDummy tagFollowDummy;
   private final NagLikeDummy nagLikeDummy;
-  private final TodoDummy todoDummy;
+  private final TodoWithTodoTagDummy todoWithTodoTagDummy;
   private final TodoPersonaDummy todoPersonaDummy;
   private final PersonaReactionDummy personaReactionDummy;
 
@@ -50,11 +50,8 @@ public class Dummy implements CommandLineRunner {
     List<Tag> tags = tagDummy.createTags();
     List<TagFollow> tagFollows = tagFollowDummy.createTagFollows(tags, members);
     List<NagTag> nagTags = nagWithNagTagDummy.createNagTags(nags, tags);
-
-//    List<Todo> todos = todoDummy.create
-
+    List<Todo> todos = todoWithTodoTagDummy.createTodosWithTodoTags(members, tags, nags);
     List<TodoPersona> todoPersonas = todoPersonaDummy.createTodoPersonas(todos);
-
     List<PersonaReaction> personaReactions = personaReactionDummy.createPersonaReactions(members,
         todoPersonas);
 
