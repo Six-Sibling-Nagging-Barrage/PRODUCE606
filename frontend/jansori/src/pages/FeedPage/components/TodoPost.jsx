@@ -7,45 +7,6 @@ import hideImg from '../../../assets/hide.png';
 import NagCommentItem from './NagCommentItem';
 import HashTagItem from '../../../components/HashTag/HashTagItem';
 
-const personaNagData = [
-  {
-    personaId: 1,
-    likeCount: 1,
-    todoPersonaId: 1,
-    content: 'line1',
-  },
-  {
-    personaId: 2,
-    likeCount: 1,
-    todoPersonaId: 2,
-    content: 'line2',
-  },
-  {
-    personaId: 3,
-    likeCount: 1,
-    todoPersonaId: 3,
-    content: 'line3',
-  },
-  {
-    personaId: 4,
-    likeCount: 1,
-    todoPersonaId: 4,
-    content: 'line4',
-  },
-  {
-    personaId: 5,
-    likeCount: 1,
-    todoPersonaId: 5,
-    content: 'line5',
-  },
-  {
-    personaId: 6,
-    likeCount: 1,
-    todoPersonaId: 6,
-    content: 'line6',
-  },
-];
-
 const TodoPost = (props) => {
   const { post } = props;
   const [showMore, setShowMore] = useState(false);
@@ -71,38 +32,30 @@ const TodoPost = (props) => {
       <PostContainer>
         <PostHeader>
           <ProfileLink href="#">
-            <ProfileImage
-              src={post.todoMember.imageUrl}
-              width="48"
-              height="48"
-            />
+            <ProfileImage src={post.member.imageUrl} width="48" height="48" />
           </ProfileLink>
           <div>
-            <WriterName>{post.todoMember.nickname}</WriterName>
-            <CreateDate>{post.todo.todoAt}</CreateDate>
+            <WriterName>{post.member.nickname}</WriterName>
+            <CreateDate>{post.todoAt}</CreateDate>
           </div>
         </PostHeader>
         <TodoContent>
-          <div className="finished">{post.todo.finished ? '❌' : '✅'}</div>
-          <div className="todo">{post.todo.content}</div>
+          <div className="finished">{post.finished ? '❌' : '✅'}</div>
+          <div className="todo">{post.content}</div>
           <HashTagContainer>
-            {post.todo.tags.map((tag) => {
+            {post.tags.map((tag) => {
               return (
-                <HashTagItem
-                  key={tag.tagId}
-                  hashTag={tag.tagName}
-                  editable={false}
-                />
+                <HashTagItem key={tag.tagId} hashTag={tag} editable={false} />
               );
             })}
           </HashTagContainer>
         </TodoContent>
-        <PersonaReaction
+        {/* <PersonaReaction
           personas={post.todo.personas}
           todoId={post.todo.todoId}
           setShowMore={setShowMore}
           setPersonaNagList={setPersonaNagList}
-        />
+        /> */}
         <CommentsContainer>
           <NagCommentItem
             key={post.nag.nagId}
@@ -111,7 +64,7 @@ const TodoPost = (props) => {
             content={post.nag.content}
             img={post.nag.nagMember.imageUrl}
           />
-          {showMore &&
+          {/* {showMore &&
             personaNagList &&
             personaNagList.map((pesonaNag) => {
               return (
@@ -123,7 +76,7 @@ const TodoPost = (props) => {
                   img={profileImg} // 캐릭터 이미지
                 />
               );
-            })}
+            })} */}
         </CommentsContainer>
         <ShowMoreButton onClick={handleClickShowMore}>
           {showMore ? <img src={hideImg} /> : <img src={showMoreImg} />}
