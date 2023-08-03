@@ -17,7 +17,7 @@ export const getFollowingFeed = async ({ cursor, pageSize }) => {
 export const getSpecificFeed = async ({ tagId, cursor, pageSize }) => {
   try {
     const { data } = await authInstance.get(
-      `/todo/feed?tagId={tagId}&cursor=${cursor}&size=${pageSize}`
+      `/todo/feed?tagId=${tagId}&cursor=${cursor}&size=${pageSize}`
     );
     return data;
   } catch (e) {

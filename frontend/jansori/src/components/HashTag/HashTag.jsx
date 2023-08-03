@@ -3,11 +3,14 @@ import { styled } from 'twin.macro';
 import AutoComplete from '../AutoComplete/AutoComplete';
 import HashTagItem from './HashTagItem';
 
-const HashTag = () => {
+const HashTag = (props) => {
+  const { hashTagLimit, setSpecificTag } = props;
+
   const [hashTagInput, setHashTagInput] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [hashTagExists, setHashTagExists] = useState(false);
   const [hashTagList, setHashTagList] = useState([]);
+  const [hashTagCount, setHashTagCount] = useState(0);
 
   const handleHashTagInputChange = (event) => {
     setHashTagInput(event.target.value);
@@ -21,10 +24,13 @@ const HashTag = () => {
   };
 
   const addHashTag = (item) => {
+    for (const tag of hashTagList) {
+      if (tag.tagId === item.tagId) return;
+    }
     setHashTagList((prev) => {
-      console.log(prev);
       return [...prev, item];
     });
+    setHashTagCount((prev) => prev + 1);
     setHashTagInput('');
   };
 
@@ -34,26 +40,30 @@ const HashTag = () => {
         {hashTagList.map((hashTag, index) => {
           return (
             <HashTagItem
-              key={index}
+              key={hashTag.tagId}
               hashTag={hashTag}
               editable={true}
               setHashTagList={setHashTagList}
+              setHashTagCount={setHashTagCount}
             />
           );
         })}
-        <HashTagInput
-          type="text"
-          placeholder="해시태그를 추가하세요."
-          onChange={handleHashTagInputChange}
-          value={hashTagInput}
-          onKeyPress={handleKeyPress}
-        />
+        {hashTagCount < hashTagLimit && (
+          <HashTagInput
+            type="text"
+            placeholder="해시태그를 검색하세요."
+            onChange={handleHashTagInputChange}
+            value={hashTagInput}
+            onKeyPress={handleKeyPress}
+          />
+        )}
       </HashTagContainer>
       {isOpen && (
         <AutoComplete
           searchValue={hashTagInput}
           setSearchValue={setHashTagInput}
           setIsOpen={setIsOpen}
+          setSpecificTag={setSpecificTag}
           setExists={setHashTagExists}
           addHashTag={addHashTag}
         />

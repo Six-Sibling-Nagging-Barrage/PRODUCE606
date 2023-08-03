@@ -2,8 +2,48 @@ import React, { useEffect, useRef, useState } from 'react';
 import profileImg from '../../../assets/profileImg.png';
 import tw, { styled } from 'twin.macro';
 
+const dummyData = {
+  feed: [
+    {
+      todoId: 108,
+      finished: false,
+      content: '테스트 코드 작성',
+      todoAt: '2023-08-02',
+      tags: [
+        {
+          tagId: 1,
+          tagName: '개발',
+        },
+        {
+          tagId: 2,
+          tagName: '코딩',
+        },
+      ],
+      member: {
+        memberId: 1,
+        nickname: 'User001',
+        imageUrl: profileImg,
+      },
+      nag: {
+        nagId: 5,
+        unlocked: false,
+        isLiked: false,
+        content: 'ㄴㅇ ㅈㄱㄱ ㅁㅁㅎㄷ ㄴㄱㄱㄴ ㅋㄷㅎㄷ',
+        likeCount: 5,
+        nagMember: {
+          memberId: 2,
+          nickname: 'User002',
+          imageUrl: profileImg,
+        },
+      },
+    },
+  ],
+  hasNext: true,
+  nextCursor: 106,
+};
+
 const InfiniteScroll = (props) => {
-  const { setTodoPostList } = props;
+  const { specificTag, setTodoPostList, getFeedData } = props;
 
   const target = useRef();
   const [isLoading, setIsLoading] = useState(false);
@@ -12,15 +52,18 @@ const InfiniteScroll = (props) => {
 
   const pageSize = 10;
 
-  const fetchMoreTodoPosts = async () => {
+  let nextCursor;
+
+  const triggerMoreTodoPosts = () => {
     if (!hasMore) return;
-    setCursor((prev) => prev + pageSize);
+    // setCursor(nextCursor); // 실제
+    setCursor((prev) => prev + 10); // 임시
   };
 
-  const onIntersect = async ([entry], observer) => {
+  const onIntersect = ([entry], observer) => {
     if (entry.isIntersecting && !isLoading) {
       observer.unobserve(entry.target);
-      await fetchMoreTodoPosts();
+      triggerMoreTodoPosts();
       observer.observe(entry.target);
     }
   };
@@ -28,9 +71,7 @@ const InfiniteScroll = (props) => {
   useEffect(() => {
     let observer;
     if (target.current) {
-      observer = new IntersectionObserver(onIntersect, {
-        threshold: 1,
-      });
+      observer = new IntersectionObserver(onIntersect);
       observer.observe(target.current);
     }
     return () => observer && observer.disconnect();
@@ -38,96 +79,33 @@ const InfiniteScroll = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
-    try {
-      // api 호출
-      // /todo/feed/following?cursor={cursor}&size={pageSize}
-      setTodoPostList((prev) => [
-        ...prev,
-        ...Array.from({ length: pageSize }, () => ({
-          todoMember: {
-            memberId: 1,
-            nickname: 'User001',
-            imageUrl: profileImg,
-          },
-          todo: {
-            todoId: 107,
-            display: true,
-            finished: false,
-            content: 'API 1개 완성',
-            todoAt: '2023-08-01',
-            tags: [
-              {
-                tagId: 1,
-                tagName: '개발',
-              },
-              {
-                tagId: 2,
-                tagName: '코딩',
-              },
-            ],
-            personas: [
-              {
-                todoPersonaId: 61,
-                personaId: 1,
-                likeCount: 0,
-              },
-              {
-                todoPersonaId: 62,
-                personaId: 2,
-                likeCount: 0,
-              },
-              {
-                todoPersonaId: 63,
-                personaId: 3,
-                likeCount: 77,
-              },
-              {
-                todoPersonaId: 64,
-                personaId: 4,
-                likeCount: 0,
-              },
-              {
-                todoPersonaId: 65,
-                personaId: 5,
-                likeCount: 0,
-              },
-              {
-                todoPersonaId: 66,
-                personaId: 6,
-                likeCount: 100,
-              },
-            ],
-          },
-          nag: {
-            nagId: 5,
-            unlocked: null,
-            content: 'ㄴㅇ ㅈㄱㄱ ㅁㅁㅎㄷ ㄴㄱㄱㄴ ㅋㄷㅎㄷ',
-            likeCount: 5,
-            nagMember: {
-              memberId: 2,
-              nickname: 'User002',
-              imageUrl: profileImg,
-            },
-          },
-        })),
-      ]); // dummy data
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setIsLoading(false);
-    }
+    // api 호출
+    // let param;
+    // if (specificTag === -1) {
+    //   param = { cursor, pageSize };
+    // } else {
+    //   param = { specificTag, cursor, pageSize };
+    // }
+    // const data = await getFeedData(param);
+    // setTodoPostList((prev) => [...prev, ...data.feed]);
+
+    // dummy data
+    const data = dummyData;
+    setTodoPostList((prev) => [
+      ...prev,
+      ...Array.from({ length: 10 }, () => data.feed[0]),
+    ]);
+    setHasMore(data.hasNext);
+    nextCursor = data.nextCursor;
+    setIsLoading(false);
   }, [cursor]);
 
-  return <Target ref={target}>{isLoading && <div> 로딩중 ... </div>}</Target>;
+  return <Target ref={target}>{isLoading && <div> 로딩 중 ... </div>}</Target>;
 };
 
 const Target = styled.div`
   bottom: 0;
-  left: 0;
-  right: 0;
-  margin-top: 10px;
-  text-align: center;
-  line-height: 28px;
+  height: 20px;
 `;
 
 export default InfiniteScroll;
