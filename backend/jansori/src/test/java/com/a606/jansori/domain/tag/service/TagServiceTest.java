@@ -17,7 +17,7 @@ import com.a606.jansori.domain.tag.dto.GetFollowingTagResDto;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
-import com.a606.jansori.domain.todo.dto.TagDto;
+import com.a606.jansori.domain.tag.dto.TagDto;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;

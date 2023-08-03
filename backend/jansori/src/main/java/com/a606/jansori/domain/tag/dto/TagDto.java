@@ -1,4 +1,4 @@
-package com.a606.jansori.domain.todo.dto;
+package com.a606.jansori.domain.tag.dto;
 
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
@@ -31,6 +31,13 @@ public class TagDto {
     return TagDto.builder()
         .tagId(tagFollow.getTag().getId())
         .tagName(tagFollow.getTag().getName())
+        .build();
+  }
+
+  public static TagDto from(Tag tag) {
+    return TagDto.builder()
+        .tagId(tag.getId())
+        .tagName(tag.getName())
         .build();
   }
 

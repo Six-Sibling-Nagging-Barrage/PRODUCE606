@@ -5,16 +5,18 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
+import com.a606.jansori.domain.tag.dto.GetAutoCompleteTagsResDto;
 import com.a606.jansori.domain.tag.dto.GetFollowingTagResDto;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
-import com.a606.jansori.domain.todo.dto.TagDto;
+import com.a606.jansori.domain.tag.dto.TagDto;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,8 @@ public class TagService {
   private final TagRepository tagRepository;
   private final TagFollowRepository tagFollowRepository;
   private final MemberRepository memberRepository;
+  private final int PAGE_START = 0;
+  private final int AUTO_COMPLETE_SIZE = 10;
 
   @Transactional
   public void followTagByTagWithMember(Long memberId, Long tagId) {
@@ -45,5 +49,16 @@ public class TagService {
     List<TagFollow> tagFollows = tagFollowRepository.findTagFollowsByMember(member);
     return GetFollowingTagResDto.from(
         tagFollows.stream().map(TagDto::from).collect(Collectors.toList()));
+  }
+
+  @Transactional(readOnly = true)
+  public GetAutoCompleteTagsResDto getTagsBySearch(String keyword) {
+    List<Tag> tags = tagRepository.findTagsByNameContainingIgnoreCaseOrderByFollowCountDesc(
+        keyword, PageRequest.of(PAGE_START, AUTO_COMPLETE_SIZE));
+
+    return GetAutoCompleteTagsResDto.fromTagsBySearch(tags
+        .stream()
+        .map(TagDto::from)
+        .collect(Collectors.toList()));
   }
 }
