@@ -52,6 +52,7 @@ const ModalSection = styled.div`
   backdrop-filter: blur(10px);
   border-radius: 5px;
   box-shadow: 0 0 100px rgba(0, 0, 0, 0.4);
+  overflow: auto;
 `;
 
 const Title = styled.div`

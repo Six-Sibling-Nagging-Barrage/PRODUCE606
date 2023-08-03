@@ -68,9 +68,10 @@ const HashTagContainer = styled.div`
   flex-wrap: wrap;
   min-height: 50px;
   padding: 10px;
-  margin: 0 auto;
+  margin: 10px auto;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 5px;
+  margin-bottom: 30px;
 `;
 
 const HashTagInput = styled.input`
