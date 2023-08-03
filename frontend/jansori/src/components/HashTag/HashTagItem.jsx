@@ -2,17 +2,18 @@ import React from 'react';
 import { styled } from 'twin.macro';
 
 const HashTagItem = (props) => {
-  const { hashTag, editable, setHashTagList } = props;
+  const { hashTag, editable, setHashTagList, setHashTagCount } = props;
 
   const handleRemoveHashTag = () => {
     setHashTagList((prev) => {
-      return prev.filter((item) => item !== hashTag);
+      return prev.filter((item) => item.tagName !== hashTag.tagName);
     });
+    setHashTagCount((prev) => prev - 1);
   };
 
   return (
     <HashTag>
-      <Text>{hashTag}</Text>
+      <Text>{hashTag.tagName}</Text>
       {editable && <RemoveButton onClick={handleRemoveHashTag}>X</RemoveButton>}
     </HashTag>
   );

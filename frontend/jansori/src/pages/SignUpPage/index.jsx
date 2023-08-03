@@ -56,7 +56,7 @@ const SignUpPage = () => {
             <ErrorMessage>{errors?.description?.message}</ErrorMessage>
           </Bio>
         </SignUpForm>
-        <HashTag />
+        <HashTag hashTagLimit={3} />
         <Button normal label={'완료'} />
       </SignUpContainer>
     </Background>
