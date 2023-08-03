@@ -34,4 +34,14 @@ public class Tag {
         .name(keyword)
         .build();
   }
+
+  public void decreaseFollowCount() {
+    if (followCount > 0) {
+      followCount -= 1;
+    }
+  }
+
+  public void increaseFollowCount() {
+    followCount += 1;
+  }
 }
