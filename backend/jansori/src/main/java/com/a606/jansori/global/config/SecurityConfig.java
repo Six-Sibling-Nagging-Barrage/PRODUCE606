@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .antMatchers("/signup/**").hasRole("GUEST")
                 .antMatchers("/oauth2/authorization/google/**").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and().exceptionHandling()
