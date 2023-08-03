@@ -18,14 +18,11 @@ public class NotificationDto {
 
   private LocalDateTime createdAt;
 
-  private LocalDateTime readAt;
-
-  public static NotificationDto of(Notification notification, LocalDateTime readAt){
+  public static NotificationDto from(Notification notification){
     return NotificationDto.builder()
         .notificationId(notification.getId())
         .content(notification.getContent())
         .createdAt(notification.getCreatedAt())
-        .readAt(readAt)
         .build();
   }
 }
