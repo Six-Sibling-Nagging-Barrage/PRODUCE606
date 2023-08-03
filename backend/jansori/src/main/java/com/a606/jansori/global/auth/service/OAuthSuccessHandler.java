@@ -33,11 +33,9 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
 
         if(role == MemberRole.GUEST){
             uri = "http://i9a606.p.ssafy.io/signup";
-        } else if (savedRequest != null ){
+        } else if (savedRequest != null){
             uri = savedRequest.getRedirectUrl();
         }
-
-        log.info(uri);
 
         response.sendRedirect(uri);
 
