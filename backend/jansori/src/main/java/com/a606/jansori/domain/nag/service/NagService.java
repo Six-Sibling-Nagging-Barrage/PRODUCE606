@@ -101,7 +101,7 @@ public class NagService {
     return GetNagOfProfilePageResDto.from(nagTagRepository
         .findByMember(member)
         .stream()
-        .map(nagTag -> NagDetailDto.from(nagTag.getNag(), nagTag.getTag()))
+        .map(nagTag -> NagDetailDto.ofNagAndTag(nagTag.getNag(), nagTag.getTag()))
         .collect(Collectors.toList()));
   }
 
