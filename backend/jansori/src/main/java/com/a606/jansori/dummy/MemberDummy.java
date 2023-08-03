@@ -25,7 +25,7 @@ public class MemberDummy {
 
     List<Member> members = new ArrayList<>();
 
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 50; i++) {
 
       Member member = Member.builder()
           .memberRole(MemberRole.USER)

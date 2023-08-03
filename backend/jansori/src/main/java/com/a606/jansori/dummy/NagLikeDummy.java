@@ -22,12 +22,12 @@ public class NagLikeDummy {
 
     List<NagLike> nagLikes = new ArrayList<>();
 
+    int x = 0;
+
     for (int i = 0 ; i < members.size(); i++) {
 
-      int x = i;
-
-      for (int j = 0; j < nags.size(); j++) {
-        x = x + 200;
+      for (int j = 0; j < 20; j++) {
+        x = x + 53;
         x %= nags.size();
 
         nagLikes.add(nagLikeRepository.save(NagLike.builder()

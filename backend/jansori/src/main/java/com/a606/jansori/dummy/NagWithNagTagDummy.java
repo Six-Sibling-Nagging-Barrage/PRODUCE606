@@ -27,7 +27,7 @@ public class NagWithNagTagDummy {
     int start = 0;
 
     for (int i = 0; i < members.size(); i++) {
-      for (int j = 0; j < 200; j++) {
+      for (int j = 0; j < 20; j++) {
         nags.add(
             Nag.builder().member(members.get(i)).content("잔소리" + start++).preview("ㅈㅅㄹ" + start)
                 .likeCount(i).build());
