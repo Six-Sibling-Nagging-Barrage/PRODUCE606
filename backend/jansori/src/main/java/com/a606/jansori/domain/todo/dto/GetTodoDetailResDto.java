@@ -1,6 +1,6 @@
 package com.a606.jansori.domain.todo.dto;
 
-import com.a606.jansori.domain.persona.dto.FeedTodoPersonaDto;
+import com.a606.jansori.domain.persona.dto.FeedTodoPersonaDetailDto;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
@@ -11,14 +11,14 @@ import lombok.Getter;
 public class GetTodoDetailResDto extends TodoFeedDto {
 
   @JsonProperty("personas")
-  private List<FeedTodoPersonaDto> feedTodoPersonaDtos;
+  private List<FeedTodoPersonaDetailDto> feedTodoPersonaDetailDtos;
 
   private GetTodoDetailResDto(Todo todo, Boolean unlocked, Boolean isLiked) {
 
     super(todo, unlocked, isLiked);
 
-    this.feedTodoPersonaDtos = todo.getTodoPersonas().stream()
-        .map(FeedTodoPersonaDto::from)
+    this.feedTodoPersonaDetailDtos = todo.getTodoPersonas().stream()
+        .map(FeedTodoPersonaDetailDto::from)
         .collect(Collectors.toList());
   }
 
