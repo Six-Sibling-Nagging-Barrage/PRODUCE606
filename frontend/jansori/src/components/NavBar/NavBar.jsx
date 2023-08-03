@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import tw from 'twin.macro';
-import { BiSearch } from 'react-icons/bi';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import Modal from '../UI/Modal';
 import GoogleLoginButton from '../Login/GoogleLoginButton';
+import { Link } from 'react-router-dom';
 
 const NavBar = () => {
   const [isToggleOpen, setIsToggleOpen] = useState(false);
@@ -53,16 +53,16 @@ const NavBar = () => {
           <NavItems id='navbar-sticky' isToggleOpen={isToggleOpen}>
             <NavItemsUl>
               <li>
-                <NavItem href='feed'>Feed</NavItem>
+                <NavItem to='/feed'>Feed</NavItem>
               </li>
               <li>
-                <NavItem href='profile'>Profile</NavItem>
+                <NavItem to='/profile'>Profile</NavItem>
               </li>
               <li>
-                <NavItem href='nagbox'>잔소리함</NavItem>
+                <NavItem to='/nagbox'>잔소리함</NavItem>
               </li>
               <li>
-                <NavItem href='characterinfo'>About Us</NavItem>
+                <NavItem to='characterinfo'>About Us</NavItem>
               </li>
             </NavItemsUl>
           </NavItems>
@@ -151,14 +151,14 @@ text-blue-600`}
 
 const NavItems = styled.div`
   ${tw`
-items-center
-justify-between
-w-full
-hidden
-md:flex
-md:w-auto
-md:order-1
-`}
+    items-center
+    justify-between
+    w-full
+    hidden
+    md:flex
+    md:w-auto
+    md:order-1
+  `}
   display: ${(props) => (props.isToggleOpen ? 'flex' : 'none')};
 `;
 
@@ -183,7 +183,7 @@ md:bg-white
 `}
 `;
 
-const NavItem = styled.a`
+const NavItem = styled(Link)`
   ${tw`
 block
 py-2
