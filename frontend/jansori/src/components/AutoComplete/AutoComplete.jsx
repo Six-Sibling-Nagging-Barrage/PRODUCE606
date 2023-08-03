@@ -1,20 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from 'twin.macro';
 
-const dummyData = [
-  '뉴진스',
-  '하니',
-  '뉴진스하니',
-  '하니귀여워',
-  '민지귀여워',
-  '뉴진스민지',
-  '귀여워뉴진스',
-  '어쩌구하니저쩌구',
-];
+const dummyData = {
+  tagCount: 5,
+  tags: [
+    {
+      tagId: 23,
+      tagName: '뉴진스',
+    },
+    {
+      tagId: 24,
+      tagName: '하니뉴진스',
+    },
+    {
+      tagId: 22,
+      tagName: '뉴진스하니',
+    },
+    {
+      tagId: 20,
+      tagName: '뉴진스민지',
+    },
+  ],
+};
 
 const AutoComplete = (props) => {
-  const { searchValue, setSearchValue, setIsOpen, setExists, addHashTag } =
-    props;
+  const {
+    searchValue,
+    setSearchValue,
+    setIsOpen,
+    setSpecificTag,
+    setExists,
+    addHashTag,
+  } = props;
 
   const [autoCompleteList, setAutoCompleteList] = useState([]);
 
@@ -22,18 +39,20 @@ const AutoComplete = (props) => {
     if (searchValue === '') {
       setAutoCompleteList([]);
     } else {
+      // TODO: 태그 자동완성 검색 api 호출
+
       if (typeof setExists === 'function') {
-        setExists(dummyData.includes(searchValue));
+        setExists(dummyData.tagCount.tagCount > 0);
       }
-      const filteredData = dummyData.filter((item) =>
-        item.includes(searchValue)
-      );
-      setAutoCompleteList(filteredData);
+      setAutoCompleteList(dummyData.tags);
     }
   }, [searchValue]);
 
   const handleSelectAutoComplete = (item) => {
-    setSearchValue(item);
+    setSearchValue('');
+    if (typeof setSpecificTag === 'function') {
+      setSpecificTag(item.tagId);
+    }
     if (typeof addHashTag === 'function') {
       addHashTag(item);
     }
@@ -47,12 +66,12 @@ const AutoComplete = (props) => {
       ) : (
         autoCompleteList.map((item, index) => (
           <DropDownItem
-            key={index}
+            key={item.tagId}
             onMouseDown={() => {
               handleSelectAutoComplete(item);
             }}
           >
-            {item}
+            {item.tagName}
           </DropDownItem>
         ))
       )}
