@@ -11,4 +11,6 @@ public interface LineRepository extends JpaRepository<Line, Long> {
   Long countByPersona(Persona persona);
 
   List<Line> findLineByPersona(Persona persona, Pageable pageable);
+
+  List<Line> findAllByPersona(Persona persona);
 }
