@@ -30,6 +30,7 @@ import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.NagTagRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -203,11 +204,11 @@ class NagServiceTest {
   @Test
   void Given_Valid_MemberId_When_GetNagsListByMemberId_Then_Success() {
     //given
-    Nag nag = Nag.builder().content("test").likeCount(1).build();
+    Nag nag = Nag.builder().content("test").likeCount(1).todos(new HashSet<>()).build();
     Tag tag = Tag.builder().name("test").build();
     List<NagTag> nagTags = List.of(new NagTag(1L, nag, tag));
     GetNagOfProfilePageResDto getNagOfProfilePageResDto = GetNagOfProfilePageResDto
-        .from(nagTags.stream().map(nagTag -> NagDetailDto.from(nag, tag)).collect(Collectors.toList()));
+        .from(nagTags.stream().map(nagTag -> NagDetailDto.ofNagAndTag(nag, tag)).collect(Collectors.toList()));
     given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
     given(nagTagRepository.findByMember(member)).willReturn(nagTags);
 
