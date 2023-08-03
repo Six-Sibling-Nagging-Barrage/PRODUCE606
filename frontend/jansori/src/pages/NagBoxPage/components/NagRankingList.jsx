@@ -1,4 +1,5 @@
 import React from 'react';
+import tw, { styled } from 'twin.macro';
 import NagRankingItem from './NagRankingItem';
 
 const NagRankingList = () => {
@@ -36,20 +37,31 @@ const NagRankingList = () => {
   ];
 
   return (
-    <div>
+    <NagRankingListWrap>
       {memberNagRankings.map((memberNagRanking, index) => {
+        const isOdd = (index + 1) % 2 !== 0;
         return (
-          <NagRankingItem
-            key={memberNagRanking.nagId}
-            id={memberNagRanking.nagId}
-            content={memberNagRanking.content}
-            likeCount={memberNagRanking.likeCount}
-            isOdd={(index + 1) % 2 !== 0}
-          />
+          <NagRankingItemWrap isOdd={isOdd}>
+            <NagRankingItem
+              key={memberNagRanking.nagId}
+              id={memberNagRanking.nagId}
+              content={memberNagRanking.content}
+              likeCount={memberNagRanking.likeCount}
+              isOdd={isOdd}
+            />
+          </NagRankingItemWrap>
         );
       })}
-    </div>
+    </NagRankingListWrap>
   );
 };
 
 export default NagRankingList;
+
+const NagRankingListWrap = styled.div`
+  ${tw`
+  flex
+  flex-col`}
+`;
+
+const NagRankingItemWrap = styled.div(({ isOdd }) => [isOdd ? tw`mr-auto` : tw`ml-auto`]);

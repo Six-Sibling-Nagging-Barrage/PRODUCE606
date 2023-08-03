@@ -62,20 +62,18 @@ export default NagBoxPage;
 
 const CenteredContainer = styled.div`
   ${tw`
-    flex
-    justify-center
-    items-center
-    h-full
+  lg:w-2/5
+  md:w-3/5
+  sm:w-4/5
+  mx-auto
+  py-20
   `}
 `;
 
 const CountBoxContainer = styled.div`
   ${tw`grid 
   grid-cols-3
-  gap-4
-  w-9/12
-  w-fit
-  py-20`}
+  gap-4`}
 `;
 
 const SpeechBubbleContainer = styled.div`
@@ -90,7 +88,7 @@ const SpeechBubbleContainer = styled.div`
 `;
 
 const NagRannkingContainer = styled.div`
-  ${tw`w-2/3
+  ${tw`w-1/2
   mx-auto`}
 `;
 

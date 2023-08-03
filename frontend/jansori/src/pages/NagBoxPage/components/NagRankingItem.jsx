@@ -6,8 +6,8 @@ const NagRankingItem = (props) => {
   const { id, likeCount, content, isOdd } = props;
 
   return (
-    <NagRankingItemContainer>
-      <SpeechBubble text={id + content} isOdd={isOdd} />
+    <NagRankingItemContainer isOdd={isOdd}>
+      <SpeechBubble text={content} isOdd={isOdd} />
       <LikeButton isOdd={isOdd}>{likeCount}</LikeButton>
     </NagRankingItemContainer>
   );
@@ -16,14 +16,13 @@ const NagRankingItem = (props) => {
 export default NagRankingItem;
 
 const NagRankingItemContainer = styled.div`
-  ${tw`w-4/12
-  mx-auto
-  my-10
-  relative
-  `}
+  ${tw`
+my-5
+relative
+`}
 `;
 
 const LikeButton = styled.div(({ isOdd }) => [
-  tw`bg-white w-fit absolute z-50`,
+  tw`bg-white w-fit absolute z-50 `,
   isOdd ? tw`-bottom-3 -right-3` : tw`-bottom-3 -left-3`,
 ]);
