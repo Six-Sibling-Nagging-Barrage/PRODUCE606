@@ -9,9 +9,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name = "notification_box")
 public class NotificationBox {
 
@@ -29,4 +37,9 @@ public class NotificationBox {
   @OneToOne
   @JoinColumn(name = "member_id")
   private Member member;
+
+  public void updateReadAt(LocalDateTime now){
+    this.readAt = now;
+  }
+
 }
