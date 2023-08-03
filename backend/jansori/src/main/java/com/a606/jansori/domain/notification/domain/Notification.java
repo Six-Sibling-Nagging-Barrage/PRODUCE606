@@ -19,8 +19,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name="notification")
 public class Notification {
 
@@ -28,10 +28,6 @@ public class Notification {
   @Column(name = "notification_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
-//  @ManyToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "notification_type_id")
-//  private NotificationType notificationType;
 
   @Column
   private String content;

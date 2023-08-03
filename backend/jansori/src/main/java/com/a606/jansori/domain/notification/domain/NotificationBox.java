@@ -18,8 +18,8 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "notification_box")
 public class NotificationBox {
 
