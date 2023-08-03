@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 @Profile("local")
-public class dummy implements CommandLineRunner {
+public class Dummy implements CommandLineRunner {
 
   private EntityManager entityManager;
 
