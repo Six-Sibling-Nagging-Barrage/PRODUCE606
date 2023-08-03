@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class Image {
 
-  private String key;
-  private String path;
+  private String imageName;
+  private String imageDir;
 
 }
