@@ -4,10 +4,12 @@ import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
+import com.a606.jansori.domain.nag.domain.NagBox;
 import com.a606.jansori.domain.nag.domain.NagLike;
 import com.a606.jansori.domain.nag.domain.NagUnlock;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
+import com.a606.jansori.domain.nag.dto.GetNagsOfNagBoxResDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
 import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
@@ -24,10 +26,12 @@ import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.NagTagRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class NagService {
 
+  private final int NAG_BOX_COUNT = 5;
   private final NagRepository nagRepository;
   private final TagRepository tagRepository;
   private final NagTagRepository nagTagRepository;
@@ -108,6 +113,18 @@ public class NagService {
             .map(NagDto::from)
             .collect(Collectors.toList()))
         .build();
+  }
+
+  @Transactional(readOnly = true)
+  public GetNagsOfNagBoxResDto getNagsOfNagBox(Long memberId) {
+    Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+
+    List<Nag> nags = nagRepository.findByNagsOfNagBox(PageRequest.of(0, NAG_BOX_COUNT));
+    List<NagUnlock> nagUnlocks = nagUnlockRepository.findNagUnlocksByNagIsInAndMember(nags, member);
+
+    NagBox nagBox = new NagBox(nags, nagUnlocks);
+
+    return GetNagsOfNagBoxResDto.fromNagsOfNagBox(nagBox.getNags());
   }
 
   private void decreaseNagLike(Nag nag, NagLike nagLike) {
