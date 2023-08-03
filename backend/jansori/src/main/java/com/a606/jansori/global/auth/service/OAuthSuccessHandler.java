@@ -1,7 +1,6 @@
 package com.a606.jansori.global.auth.service;
 
 import com.a606.jansori.domain.member.domain.MemberRole;
-import com.a606.jansori.global.auth.dto.PrincipalDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
