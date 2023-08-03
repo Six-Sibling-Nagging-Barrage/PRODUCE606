@@ -28,8 +28,8 @@ public class NotificationService {
   @Transactional
   public PatchNotificationsResDto patchNotifications() {
 
-//    Member member = getMemberFromSecurityUtil();
-    Member member = memberRepository.findById(1L).orElseThrow(MemberNotFoundException::new);
+    Member member = getMemberFromSecurityUtil();
+
     NotificationBox notificationBox = notificationBoxRepository.findByMember(member);
 
     PatchNotificationsResDto patchNotificationsResDto =
