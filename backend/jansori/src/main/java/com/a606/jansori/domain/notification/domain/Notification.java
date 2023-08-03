@@ -29,9 +29,9 @@ public class Notification {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "notification_type_id")
-  private NotificationType notificationType;
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "notification_type_id")
+//  private NotificationType notificationType;
 
   @Column
   private String content;
