@@ -61,8 +61,7 @@ public class MemberController {
     }
 
     return EnvelopeResponse.<PatchMemberInfoResDto>builder()
-            .data(memberService
-                .updateMemberInfo(patchMemberInfoReqDto, imageName))
+            .data(memberService.updateMemberInfo(patchMemberInfoReqDto))
             .build();
 
   }
