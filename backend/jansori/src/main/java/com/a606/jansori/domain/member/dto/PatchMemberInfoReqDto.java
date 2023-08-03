@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.URL;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,9 +20,6 @@ public class PatchMemberInfoReqDto {
 
   @Length(max = 200, message = "자기소개는 200자 이하여야 합니다.")
   private String bio;
-
-  @URL(message = "이미지 주소는 URL 형식과 일치해야 합니다.")
-  private String imageUrl;
 
   private List<Long> tags;
 

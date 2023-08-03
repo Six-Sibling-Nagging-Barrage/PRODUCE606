@@ -5,10 +5,15 @@ import com.a606.jansori.domain.member.dto.*;
 import com.a606.jansori.domain.member.service.MemberService;
 import com.a606.jansori.global.auth.util.SecurityUtil;
 import com.a606.jansori.global.common.EnvelopeResponse;
+import com.a606.jansori.infra.storage.Service.AwsS3Service;
+import com.a606.jansori.infra.storage.dto.PostFileUploadReqDto;
+import com.a606.jansori.infra.storage.dto.PostFileUploadResDto;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/members")
@@ -16,6 +21,8 @@ import javax.validation.Valid;
 public class MemberController {
 
   private final MemberService memberService;
+  private final AwsS3Service awsS3Service;
+  private final String UPLOAD_DIR = "upload";
 
   // 닉네임 중복 검사
   @GetMapping("/nickname")
@@ -37,11 +44,21 @@ public class MemberController {
 
   @PatchMapping("/update")
   public EnvelopeResponse<PatchMemberInfoResDto> updateMemberInfo(
-      @RequestBody @Valid PatchMemberInfoReqDto patchMemberInfoReqDto) {
+      @RequestPart(value = "imageFile", required = false) MultipartFile multipartFile,
+      @RequestParam @Valid PatchMemberInfoReqDto patchMemberInfoReqDto)
+      throws IOException {
+
+    PostFileUploadResDto postFileUploadResDto =
+        awsS3Service.uploadFile(
+        PostFileUploadReqDto
+            .builder()
+            .multipartFile(multipartFile)
+            .build(), UPLOAD_DIR);
 
     return EnvelopeResponse.<PatchMemberInfoResDto>builder()
-        .data(memberService.updateMemberInfo(patchMemberInfoReqDto))
-        .build();
+            .data(memberService
+                .updateMemberInfo(patchMemberInfoReqDto, postFileUploadResDto.getImageName()))
+            .build();
 
   }
 
