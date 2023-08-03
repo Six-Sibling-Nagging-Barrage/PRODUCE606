@@ -1,6 +1,30 @@
 import defaultInstance from '../utils/defaultInstance';
 import authInstance from '../utils/authInstance';
 
+// Todo 작성
+export const createTodo = async (todo) => {
+  try {
+    const { data } = await authInstance.post(`/todo`, todo, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return data;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+// 나의 날짜별 Todo List 가져오기
+export const getTodoListByDate = async (date) => {
+  try {
+    const { data } = await authInstance.get(`/todo/my?date=${date}`);
+    return data;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // 팔로우한 태그의 피드 조회
 export const getFollowingFeed = async ({ cursor, pageSize }) => {
   try {
@@ -29,6 +53,16 @@ export const getSpecificFeed = async ({ tagId, cursor, pageSize }) => {
 export const getTodoDetail = async (todoId) => {
   try {
     const { data } = await defaultInstance.get(`/todo/${todoId}`);
+    return data;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+// 나의 Todo 완료 토글
+export const updateTodoComplete = async (todoId) => {
+  try {
+    const { data } = await defaultInstance.patch(`/todo/${todoId}`);
     return data;
   } catch (e) {
     console.log(e);
