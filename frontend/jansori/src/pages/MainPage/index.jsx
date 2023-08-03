@@ -56,7 +56,6 @@ const MainPage = () => {
       const startButtonBottom = startButtonWrapRect.bottom;
       const startButtonTop = startButtonWrapRect.top - startButtonWrapRect.height;
 
-      console.log('startButtonBottom', startButtonBottom, 'startButtonTop', startButtonTop);
       // 중복 체크하는 함수
       const checkPosition = (y) => {
         if (startButtonTop <= y && y <= startButtonBottom) {
@@ -90,21 +89,18 @@ const MainPage = () => {
           newY = 100;
           break;
       }
-      console.log('newY', newY);
       while (!checkPosition(newY)) {
         if (quadrant === 1 || quadrant === 2) {
           newY -= 5;
         } else {
           newY += 5;
         }
-        console.log('chekcPosition', newY);
       }
 
       return { x: newX, y: newY };
     };
 
     const newPositions = nags.map((nag, index) => {
-      console.log('nag', nag.content);
       return getQuadrantPosition(index);
       // return index === nags.length - 1 ? generateRandomPosition() : getQuadrantPosition(index);
     });

@@ -71,7 +71,6 @@ const InfiniteScroll = (props) => {
   useEffect(() => {
     let observer;
     if (target.current) {
-      console.log('타겟 존재');
       observer = new IntersectionObserver(onIntersect);
       observer.observe(target.current);
     }
@@ -79,7 +78,6 @@ const InfiniteScroll = (props) => {
   }, [onIntersect]);
 
   useEffect(() => {
-    console.log('cursor');
     setIsLoading(true);
     // api 호출
     // let param;

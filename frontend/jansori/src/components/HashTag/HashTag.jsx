@@ -13,7 +13,6 @@ const HashTag = (props) => {
   const [hashTagCount, setHashTagCount] = useState(0);
 
   const handleHashTagInputChange = (event) => {
-    console.log(event.target.value);
     setHashTagInput(event.target.value);
     setIsOpen(true);
   };
@@ -79,10 +78,9 @@ const HashTagContainer = styled.div`
   flex-wrap: wrap;
   min-height: 50px;
   padding: 10px;
-  margin: 10px auto;
+  margin: 0 auto;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 5px;
-  margin-bottom: 30px;
 `;
 
 const HashTagInput = styled.input`

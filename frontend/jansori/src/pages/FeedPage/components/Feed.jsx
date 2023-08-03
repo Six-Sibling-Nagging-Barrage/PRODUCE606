@@ -3,13 +3,19 @@ import InfiniteScroll from './InfiniteScroll';
 import TodoPostList from './TodoPostList';
 import tw, { styled } from 'twin.macro';
 
-const Feed = () => {
+const Feed = (props) => {
+  const { specificTag, getFeedData } = props;
+
   const [todoPostList, setTodoPostList] = useState([]);
 
   return (
     <FeedContainer>
       <TodoPostList todoPostList={todoPostList} />
-      <InfiniteScroll setTodoPostList={setTodoPostList} />
+      <InfiniteScroll
+        specificTag={specificTag}
+        setTodoPostList={setTodoPostList}
+        getFeedData={getFeedData}
+      />
     </FeedContainer>
   );
 };
