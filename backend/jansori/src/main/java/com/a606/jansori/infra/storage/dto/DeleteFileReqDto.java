@@ -9,7 +9,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class DeleteFileReqDto {
 
-    private String key;
-    private String path;
+    private String imageName;
 
 }

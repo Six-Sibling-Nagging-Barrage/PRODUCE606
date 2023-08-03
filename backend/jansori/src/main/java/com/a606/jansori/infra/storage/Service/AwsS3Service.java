@@ -89,13 +89,13 @@ public class AwsS3Service {
 
     public DeleteFileResDto removeUploadedFile(DeleteFileReqDto deleteFileReqDto) {
 
-        if (!amazonS3.doesObjectExist(bucket, deleteFileReqDto.getKey())) {
+        if (!amazonS3.doesObjectExist(bucket, deleteFileReqDto.getImageName())) {
 
-            throw new AmazonS3Exception("대상이 " + deleteFileReqDto.getKey() + " 존재하지 않습니다.");
+            throw new AmazonS3Exception("대상이 " + deleteFileReqDto.getImageName() + " 존재하지 않습니다.");
 
         }
 
-        amazonS3.deleteObject(bucket, deleteFileReqDto.getKey());
+        amazonS3.deleteObject(bucket, deleteFileReqDto.getImageName());
 
         return DeleteFileResDto.builder()
                 .deleted(true)
