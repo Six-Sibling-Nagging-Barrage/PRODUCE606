@@ -26,7 +26,7 @@ public class PersonaReactionDummy {
 
     for (int i = 0; i < members.size(); i++) {
 
-      for (int j = 0; j < 600; j++) {
+      for (int j = 0; j < 100; j++) {
         x += 103;
         x %= todoPersonas.size();
 
