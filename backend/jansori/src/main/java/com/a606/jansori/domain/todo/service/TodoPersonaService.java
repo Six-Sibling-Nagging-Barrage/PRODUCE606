@@ -25,8 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TodoPersonaService {
 
-  private final MemberRepository memberRepository;
-
   private final TodoRepository todoRepository;
 
   private final TodoPersonaRepository todoPersonaRepository;
@@ -48,7 +46,7 @@ public class TodoPersonaService {
   @Transactional
   public PostPersonaReactResDto postPersonaReaction(Long todoId, Long todoPersonaId) {
 
-    Member member = getMemberFromSecurityUtil();
+    Member member = securityUtil.getMemberFromSession();
 
     Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
 
@@ -78,11 +76,5 @@ public class TodoPersonaService {
     }
 
     return PostPersonaReactResDto.from(todoPersona);
-  }
-
-  private Member getMemberFromSecurityUtil() {
-
-    return memberRepository.findById(securityUtil.getSessionMemberId())
-        .orElseThrow(MemberNotFoundException::new);
   }
 }

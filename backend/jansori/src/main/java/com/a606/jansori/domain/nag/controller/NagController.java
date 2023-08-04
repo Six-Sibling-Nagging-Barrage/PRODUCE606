@@ -27,9 +27,9 @@ public class NagController {
   private final NagService nagService;
 
   @GetMapping("/my-list")
-  public EnvelopeResponse<GetNagOfProfilePageResDto> getAllNagsByMember(Long memberId) {
+  public EnvelopeResponse<GetNagOfProfilePageResDto> getAllNagsByMember() {
     return EnvelopeResponse.<GetNagOfProfilePageResDto>builder()
-        .data(nagService.getAllNagsByMember(memberId))
+        .data(nagService.getAllNagsByMember())
         .build();
   }
 
@@ -41,35 +41,31 @@ public class NagController {
   }
 
   @GetMapping("/nag-rank")
-  public EnvelopeResponse<GetNagsOfNagBoxResDto> getNagsOfNagBox(Long memberId) {
+  public EnvelopeResponse<GetNagsOfNagBoxResDto> getNagsOfNagBox() {
     return EnvelopeResponse.<GetNagsOfNagBoxResDto>builder()
-        .data(nagService.getNagsOfNagBox(memberId))
+        .data(nagService.getNagsOfNagBox())
         .build();
   }
 
   @PostMapping
   public EnvelopeResponse<PostNagResDto> postNaggingByMember(
-      Long memberId,
       @Valid @RequestBody PostNagReqDto postNagReqDto) {
     return EnvelopeResponse.<PostNagResDto>builder()
-        .data(nagService.createNag(memberId, postNagReqDto))
+        .data(nagService.createNag(postNagReqDto))
         .build();
   }
 
   @PostMapping("/{nagId}/like")
-  public EnvelopeResponse<PostNagLikeResDto> toggleNagLike(
-      Long memberId,
-      @PathVariable Long nagId) {
+  public EnvelopeResponse<PostNagLikeResDto> toggleNagLike(@PathVariable Long nagId) {
     return EnvelopeResponse.<PostNagLikeResDto>builder()
-        .data(nagService.toggleNagLike(memberId, nagId))
+        .data(nagService.toggleNagLike(nagId))
         .build();
   }
 
   @PutMapping("/{nagId}/unlock")
-  public EnvelopeResponse<NagDto> unlockNagPreviewByMemberTicket(Long memberId,
-      @PathVariable Long nagId) {
+  public EnvelopeResponse<NagDto> unlockNagPreviewByMemberTicket(@PathVariable Long nagId) {
     return EnvelopeResponse.<NagDto>builder()
-        .data(nagService.unlockNagPreviewByMemberTicket(memberId, nagId))
+        .data(nagService.unlockNagPreviewByMemberTicket(nagId))
         .build();
   }
 }

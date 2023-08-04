@@ -21,9 +21,9 @@ public class TagController {
   private final TagService tagService;
 
   @PostMapping("/{tagId}/follow")
-  public EnvelopeResponse<PostTagFollowResDto> followTagByTagWithMember(Long memberId, @PathVariable Long tagId) {
+  public EnvelopeResponse<PostTagFollowResDto> followTagByTagWithMember(@PathVariable Long tagId) {
     return EnvelopeResponse.<PostTagFollowResDto>builder()
-        .data(tagService.followTagByTagWithMember(memberId, tagId))
+        .data(tagService.followTagByTagWithMember(tagId))
         .build();
   }
 
