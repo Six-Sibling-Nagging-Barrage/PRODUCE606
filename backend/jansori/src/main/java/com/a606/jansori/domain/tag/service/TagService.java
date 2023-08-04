@@ -36,7 +36,7 @@ public class TagService {
   public PostTagFollowResDto followTagByTagWithMember(Long memberId, Long tagId) {
 
     Tag tag = tagRepository.findById(tagId).orElseThrow(TagNotFoundException::new);
-    Member member = memberRepository.findById(51L).orElseThrow(MemberNotFoundException::new);
+    Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
     Optional<TagFollow> tagFollow = tagFollowRepository.findTagFollowByTagAndMember(tag, member);
     PostTagFollowResDto postTagFollowResDto = new PostTagFollowResDto();
