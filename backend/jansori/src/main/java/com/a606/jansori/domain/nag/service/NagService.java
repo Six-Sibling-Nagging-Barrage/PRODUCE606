@@ -58,7 +58,7 @@ public class NagService {
         .orElseThrow(MemberNotFoundException::new);
     String preview = previewUtil.convertNagToPreview(postNagReqDto.getContent());
 
-    Nag nag = Nag.of(member, postNagReqDto, preview);
+    Nag nag = Nag.ofMemberWithNagContentAndPreview(member, postNagReqDto, preview);
     NagTag nagTag = NagTag.of(nag, tag);
 
     nagTagRepository.save(nagTag);
@@ -101,7 +101,7 @@ public class NagService {
     return GetNagOfProfilePageResDto.from(nagTagRepository
         .findByMember(member)
         .stream()
-        .map(nagTag -> NagDetailDto.from(nagTag.getNag(), nagTag.getTag()))
+        .map(nagTag -> NagDetailDto.ofNagAndTag(nagTag.getNag(), nagTag.getTag()))
         .collect(Collectors.toList()));
   }
 
