@@ -7,6 +7,7 @@ import com.a606.jansori.global.exception.NotFoundException;
 import com.a606.jansori.global.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,86 +18,86 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public EnvelopeResponse BadRequestExceptionHandler(BindingResult bindingResult) {
+  @ExceptionHandler(value = {BindException.class, MethodArgumentNotValidException.class})
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public EnvelopeResponse BadRequestExceptionHandler(BindingResult bindingResult) {
 
-        StringBuilder errorMessage = new StringBuilder();
+    StringBuilder errorMessage = new StringBuilder();
 
-        bindingResult.getAllErrors().forEach((error) -> {
-            errorMessage.append(error.getDefaultMessage());
-        });
+    bindingResult.getAllErrors().forEach((error) -> {
+      errorMessage.append(error.getDefaultMessage());
+    });
 
-        log.error(errorMessage.toString());
+    log.error(errorMessage.toString());
 
-        return EnvelopeResponse.builder()
-                .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
-                .message(errorMessage.toString())
-                .build();
-    }
+    return EnvelopeResponse.builder()
+        .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
+        .message(errorMessage.toString())
+        .build();
+  }
 
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public EnvelopeResponse RuntimeExceptionHandler(RuntimeException e) {
+  @ExceptionHandler(RuntimeException.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public EnvelopeResponse RuntimeExceptionHandler(RuntimeException e) {
 
-        e.printStackTrace();
-        log.error(e.getMessage());
+    e.printStackTrace();
+    log.error(e.getMessage());
 
-        return EnvelopeResponse.builder()
-                .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
-                .message(HttpStatus.INTERNAL_SERVER_ERROR.name())
-                .build();
-    }
+    return EnvelopeResponse.builder()
+        .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
+        .message(HttpStatus.INTERNAL_SERVER_ERROR.name())
+        .build();
+  }
 
-    @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public EnvelopeResponse NotFoundExceptionHandler(NotFoundException e) {
+  @ExceptionHandler(NotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public EnvelopeResponse NotFoundExceptionHandler(NotFoundException e) {
 
-        e.printStackTrace();
-        log.error(e.getMessage());
+    e.printStackTrace();
+    log.error(e.getMessage());
 
-        return EnvelopeResponse.builder()
-                .code(e.getCode())
-                .message(e.getMessage())
-                .build();
-    }
+    return EnvelopeResponse.builder()
+        .code(e.getCode())
+        .message(e.getMessage())
+        .build();
+  }
 
-    @ExceptionHandler(BadRequestException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public EnvelopeResponse BadRequestExceptionHandler(BadRequestException e) {
+  @ExceptionHandler(BadRequestException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public EnvelopeResponse BadRequestExceptionHandler(BadRequestException e) {
 
-        e.printStackTrace();
-        log.error(e.getMessage());
+    e.printStackTrace();
+    log.error(e.getMessage());
 
-        return EnvelopeResponse.builder()
-                .code(e.getCode())
-                .message(e.getMessage())
-                .build();
-    }
+    return EnvelopeResponse.builder()
+        .code(e.getCode())
+        .message(e.getMessage())
+        .build();
+  }
 
-    @ExceptionHandler(UnauthorizedException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public EnvelopeResponse UnauthorizedExceptionHandler(UnauthorizedException e) {
+  @ExceptionHandler(UnauthorizedException.class)
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  public EnvelopeResponse UnauthorizedExceptionHandler(UnauthorizedException e) {
 
-        e.printStackTrace();
-        log.error(e.getMessage());
+    e.printStackTrace();
+    log.error(e.getMessage());
 
-        return EnvelopeResponse.builder()
-                .code(e.getCode())
-                .message(e.getMessage())
-                .build();
-    }
+    return EnvelopeResponse.builder()
+        .code(e.getCode())
+        .message(e.getMessage())
+        .build();
+  }
 
-    @ExceptionHandler(ForbiddenException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public EnvelopeResponse ForbiddenExceptionHandler(ForbiddenException e) {
+  @ExceptionHandler(ForbiddenException.class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  public EnvelopeResponse ForbiddenExceptionHandler(ForbiddenException e) {
 
-        e.printStackTrace();
-        log.error(e.getMessage());
+    e.printStackTrace();
+    log.error(e.getMessage());
 
-        return EnvelopeResponse.builder()
-                .code(e.getCode())
-                .message(e.getMessage())
-                .build();
-    }
+    return EnvelopeResponse.builder()
+        .code(e.getCode())
+        .message(e.getMessage())
+        .build();
+  }
 }

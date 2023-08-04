@@ -20,7 +20,7 @@ public class TagFollowDummy {
 
   private final List<TagFollow> tagFollows = new ArrayList<>();
 
-  public List<TagFollow> createTagFollows(List<Tag> tags, List<Member> members) {
+  public void createTagFollows(List<Tag> tags, List<Member> members) {
     int start = 0, end = start + 100;
 
     for (Member member : members) {
@@ -34,7 +34,7 @@ public class TagFollowDummy {
       end = start + 100;
     }
 
-    return tagFollowRepository.saveAll(tagFollows);
+    tagFollowRepository.saveAll(tagFollows);
   }
 
 }
