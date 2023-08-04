@@ -17,7 +17,7 @@ public class PersonaReactionDummy {
 
   private final PersonaReactionRepository personaReactionRepository;
 
-  public List<PersonaReaction> createPersonaReactions(List<Member> members,
+  public void createPersonaReactions(List<Member> members,
       List<TodoPersona> todoPersonas) {
 
     List<PersonaReaction> personaReactions = new ArrayList<>();
@@ -40,7 +40,7 @@ public class PersonaReactionDummy {
 
       }
     }
-    return personaReactionRepository.saveAll(personaReactions);
+    personaReactionRepository.saveAll(personaReactions);
   }
 
 }

@@ -11,14 +11,16 @@ public class NagDetailDto extends NagDto {
 
   private Integer likeCount;
   private String tagName;
+  private Integer deliveredCount;
 
-  public static NagDetailDto from(Nag nag, Tag tag) {
+  public static NagDetailDto ofNagAndTag(Nag nag, Tag tag) {
     return NagDetailDto.builder()
         .nagId(nag.getId())
         .content(nag.getContent())
         .createAt(nag.getCreatedAt())
         .likeCount(nag.getLikeCount())
         .tagName(tag.getName())
+        .deliveredCount(nag.getTodos().size())
         .build();
   }
 }

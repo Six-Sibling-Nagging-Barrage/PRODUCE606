@@ -1,8 +1,6 @@
 package com.a606.jansori.domain.todo.service;
 
 import com.a606.jansori.domain.member.domain.Member;
-import com.a606.jansori.domain.member.exception.MemberNotFoundException;
-import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.repository.NagLikeRepository;
 import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
@@ -12,10 +10,10 @@ import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.dto.GetTodoDetailResDto;
-import com.a606.jansori.domain.todo.dto.TodoFeedDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedByFollowingReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedByTagReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
+import com.a606.jansori.domain.todo.dto.TodoFeedDto;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
@@ -33,8 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class TodoFeedService {
-
-  private final MemberRepository memberRepository;
 
   private final TodoRepository todoRepository;
 
@@ -54,7 +50,7 @@ public class TodoFeedService {
   public GetTodoFeedResDto getTodoFeedByFollowingTags(
       GetTodoFeedByFollowingReqDto getTodoFeedByFollowingReqDto) {
 
-    Member member = getMemberFromSecurityUtil();
+    Member member = securityUtil.getMemberFromSession();
 
     List<Tag> tags = tagFollowRepository.findAllByMember(member).stream()
         .map(TagFollow::getTag)
@@ -77,7 +73,7 @@ public class TodoFeedService {
   @Transactional(readOnly = true)
   public GetTodoFeedResDto getTodoFeedByGivenTag(GetTodoFeedByTagReqDto getTodoFeedByTagReqDto) {
 
-    Member member = getMemberFromSecurityUtil();
+    Member member = securityUtil.getMemberFromSession();
 
     Tag tag = tagRepository.findById(getTodoFeedByTagReqDto.getTagId())
         .orElseThrow(TagNotFoundException::new);
@@ -95,7 +91,7 @@ public class TodoFeedService {
   @Transactional(readOnly = true)
   public GetTodoDetailResDto getTodoDetail(Long todoId) {
 
-    Member member = getMemberFromSecurityUtil();
+    Member member = securityUtil.getMemberFromSession();
 
     Todo todo = todoRepository.findById(todoId)
         .orElseThrow(TodoNotFoundException::new);
@@ -131,11 +127,5 @@ public class TodoFeedService {
         .nextCursor(nextCursor)
         .hasNext(hasNext)
         .build();
-  }
-
-  private Member getMemberFromSecurityUtil() {
-
-    return memberRepository.findById(securityUtil.getSessionMemberId())
-        .orElseThrow(MemberNotFoundException::new);
   }
 }

@@ -37,11 +37,11 @@ class NagBoxTest {
         .nickname("taeyong")
         .build();
 
-    nags = List.of(new Nag(1L, "잔소리1", "ㅈㅅㄹ1", 1, member),
-        new Nag(2L, "잔소리2", "ㅈㅅㄹ2", 2, member),
-        new Nag(3L, "잔소리3", "ㅈㅅㄹ3", 3, member),
-        new Nag(4L, "잔소리4", "ㅈㅅㄹ4", 4, member),
-        new Nag(5L, "잔소리5", "ㅈㅅㄹ5", 5, member));
+    nags = List.of(new Nag(1L, "잔소리1", "ㅈㅅㄹ1", 1, member, null),
+        new Nag(2L, "잔소리2", "ㅈㅅㄹ2", 2, member, null),
+        new Nag(3L, "잔소리3", "ㅈㅅㄹ3", 3, member, null),
+        new Nag(4L, "잔소리4", "ㅈㅅㄹ4", 4, member, null),
+        new Nag(5L, "잔소리5", "ㅈㅅㄹ5", 5, member, null));
 
     return Stream.of(
         Arguments.of(List.of(

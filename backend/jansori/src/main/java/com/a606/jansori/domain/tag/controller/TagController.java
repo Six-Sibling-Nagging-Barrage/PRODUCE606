@@ -3,6 +3,7 @@ package com.a606.jansori.domain.tag.controller;
 import com.a606.jansori.domain.tag.dto.GetAutoCompleteTagsResDto;
 import com.a606.jansori.domain.tag.dto.GetFollowingTagResDto;
 import com.a606.jansori.domain.tag.dto.GetTagReqDto;
+import com.a606.jansori.domain.tag.dto.PostTagFollowResDto;
 import com.a606.jansori.domain.tag.service.TagService;
 import com.a606.jansori.global.common.EnvelopeResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +21,10 @@ public class TagController {
   private final TagService tagService;
 
   @PostMapping("/{tagId}/follow")
-  public EnvelopeResponse followTagByTagWithMember(Long memberId, @PathVariable Long tagId) {
-    tagService.followTagByTagWithMember(memberId, tagId);
-    return EnvelopeResponse.builder().build();
+  public EnvelopeResponse<PostTagFollowResDto> followTagByTagWithMember(@PathVariable Long tagId) {
+    return EnvelopeResponse.<PostTagFollowResDto>builder()
+        .data(tagService.followTagByTagWithMember(tagId))
+        .build();
   }
 
   @GetMapping("/{memberId}/list")

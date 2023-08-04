@@ -5,13 +5,11 @@ import com.a606.jansori.domain.member.domain.MemberRole;
 import com.a606.jansori.domain.member.domain.MemberStatus;
 import com.a606.jansori.domain.member.domain.OauthType;
 import com.a606.jansori.domain.member.repository.MemberRepository;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,10 +20,10 @@ public class MemberDummy {
   private final MemberRepository memberRepository;
 
   public List<Member> createMembers() {
-
+    int targetMemberSize = 20;
     List<Member> members = new ArrayList<>();
 
-    for (int i = 0; i < 50; i++) {
+    for (int i = 0; i < targetMemberSize; i++) {
 
       Member member = Member.builder()
           .memberRole(MemberRole.USER)

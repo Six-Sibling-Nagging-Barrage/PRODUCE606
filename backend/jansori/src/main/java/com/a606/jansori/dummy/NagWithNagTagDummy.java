@@ -37,7 +37,7 @@ public class NagWithNagTagDummy {
     return nagRepository.saveAll(nags);
   }
 
-  public List<NagTag> createNagTags(List<Nag> nags, List<Tag> tags) {
+  public void createNagTags(List<Nag> nags, List<Tag> tags) {
     int start = 0;
     for (Nag nag : nags) {
       nagTags.add(NagTag.of(nag, tags.get(start++)));
@@ -46,6 +46,6 @@ public class NagWithNagTagDummy {
         start = 0;
       }
     }
-    return nagTagRepository.saveAll(nagTags);
+    nagTagRepository.saveAll(nagTags);
   }
 }

@@ -29,4 +29,13 @@ public class Tag {
   @Builder.Default
   private Integer followCount = 0;
 
+  public void decreaseFollowCount() {
+    if (followCount > 0) {
+      followCount -= 1;
+    }
+  }
+
+  public void increaseFollowCount() {
+    followCount += 1;
+  }
 }

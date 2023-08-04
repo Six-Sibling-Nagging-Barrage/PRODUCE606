@@ -1,14 +1,13 @@
 package com.a606.jansori.domain.todo.service;
 
 import com.a606.jansori.domain.member.domain.Member;
-import com.a606.jansori.domain.member.exception.MemberNotFoundException;
-import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.service.NagRandomGenerator;
 import com.a606.jansori.domain.persona.domain.Persona;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.domain.persona.repository.PersonaRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TodoTag;
+import com.a606.jansori.domain.tag.dto.TagDto;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
@@ -17,7 +16,6 @@ import com.a606.jansori.domain.todo.dto.GetTodoByDateResDto;
 import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
 import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
 import com.a606.jansori.domain.todo.dto.PostTodoResDto;
-import com.a606.jansori.domain.tag.dto.TagDto;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
@@ -36,8 +34,6 @@ public class TodoService {
 
   private final TagRepository tagRepository;
 
-  private final MemberRepository memberRepository;
-
   private final PersonaRepository personaRepository;
 
   private final NagRandomGenerator nagRandomGenerator;
@@ -47,7 +43,7 @@ public class TodoService {
   @Transactional
   public PostTodoResDto postTodo(PostTodoReqDto postTodoReqDto) {
 
-    Member member = getMemberFromSecurityUtil();
+    Member member = securityUtil.getMemberFromSession();
 
     Todo todo = postTodoReqDto.getTodoWith(member);
 
@@ -76,7 +72,7 @@ public class TodoService {
   @Transactional(readOnly = true)
   public GetTodoByDateResDto getMyTodoByDate(GetTodoByDateReqDto getTodoByDateReqDto) {
 
-    Member member = getMemberFromSecurityUtil();
+    Member member = securityUtil.getMemberFromSession();
 
     LocalDate date = getTodoByDateReqDto.getDate();
 
@@ -87,7 +83,7 @@ public class TodoService {
   @Transactional
   public PatchTodoResDto patchTodoAccomplishment(Long todoId) {
 
-    Member member = getMemberFromSecurityUtil();
+    Member member = securityUtil.getMemberFromSession();
 
     Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
 
@@ -96,12 +92,6 @@ public class TodoService {
     }
 
     return PatchTodoResDto.from(todo.toggleFinished());
-  }
-
-  private Member getMemberFromSecurityUtil() {
-
-    return memberRepository.findById(securityUtil.getSessionMemberId())
-        .orElseThrow(MemberNotFoundException::new);
   }
 
   private Tag getTagIfExistElseSave(TagDto tagDto) {
