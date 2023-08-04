@@ -28,6 +28,7 @@ public interface NagTagRepository extends JpaRepository<NagTag, Long> {
   @Query(value = "select nt from nag_tag nt "
       + "join fetch nt.nag n "
       + "join fetch nt.tag t "
+      + "left join fetch n.todos "
       + "where n.member = :member")
   List<NagTag> findByMember(Member member);
 }
