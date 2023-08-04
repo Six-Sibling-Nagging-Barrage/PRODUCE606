@@ -4,7 +4,7 @@ import likeIcon from '../../../assets/like_icon.avif';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 
 const NagCommentItem = (props) => {
-  const { isMemberNag, nag } = props;
+  const { isMemberNag, id, isLiked, likeCount, content, writer, nag } = props;
 
   const queryClient = useQueryClient();
   const updateLike = useMutation(
@@ -37,18 +37,18 @@ const NagCommentItem = (props) => {
   );
 
   const handleLikeClick = () => {
-    updateLike.mutate(nag.nagId);
+    updateLike.mutate(id);
   };
 
   return (
     <CommentContainer>
       <Profile>
-        <ProfileImg src={nag.nagMember.imageUrl} />
-        <NickName>{nag.nagMember.nickname}</NickName>
+        <ProfileImg src={writer.img} />
+        <NickName>{writer.nickname}</NickName>
       </Profile>
-      <CommentContent>
-        <div>{nag.content}</div>
-      </CommentContent>
+      <CommentContentWrapper>
+        <CommentContent>{content}</CommentContent>
+      </CommentContentWrapper>
       {isMemberNag && (
         <LikeButton onClick={handleLikeClick}>
           {nag.isLiked ? (
@@ -79,7 +79,6 @@ const CommentContainer = styled.div`
 
 const Profile = styled.div`
   width: 10%;
-  margin: 0 10px;
 `;
 
 const NickName = styled.div`
@@ -91,17 +90,24 @@ const ProfileImg = styled.img`
   margin: 0 auto;
 `;
 
+const CommentContentWrapper = styled.div`
+  position: relative;
+  width: 80%;
+  line-height: 18px;
+  padding-left: 20px;
+  text-align: left;
+  padding-right: 30px;
+`;
+
 const CommentContent = styled.div`
   position: relative;
-  width: 85%;
-  line-height: 64px;
-  padding-left: 10px;
-  text-align: left;
+  top: 50%;
+  transform: translateY(-50%);
 `;
 
 const LikeButton = styled.button`
   position: absolute;
-  right: 10px;
+  right: 0;
   height: 64px;
   & > img {
     width: 25px;
