@@ -59,10 +59,12 @@ const TodoPost = (props) => {
         <CommentsContainer>
           <NagCommentItem
             key={post.nag.nagId}
+            isMemberNag={true}
             id={post.nag.nagId}
             like={post.nag.likeCount}
             content={post.nag.content}
             img={post.nag.nagMember.imageUrl}
+            nag={post.nag}
           />
           {/* {showMore &&
             personaNagList &&
@@ -112,9 +114,7 @@ const ShowMoreButton = styled.div`
   }
 `;
 
-const CommentsContainer = styled.div`
-  margin-top: 20px;
-`;
+const CommentsContainer = styled.div``;
 
 const HashTagContainer = styled.div`
   width: fit-content;

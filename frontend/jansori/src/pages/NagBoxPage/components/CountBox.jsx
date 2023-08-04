@@ -19,19 +19,19 @@ export default CountBox;
 
 const BoxContainer = styled.div`
   ${tw`
-    w-64
-    h-40`}
+    w-full
+    h-40
+    relative`}
 `;
 
 const Background = styled.div`
   ${tw`
     rounded
-    w-64
-    h-40
+    w-full
+    h-full
     bg-white
-    fixed
-    z-0
-    opacity-50`}
+    opacity-50
+    absolute`}
 `;
 
 const BoxContent = styled.div`
@@ -41,7 +41,6 @@ const BoxContent = styled.div`
     justify-center
     items-center
     h-full
-    z-50
     relative`}
 `;
 
@@ -50,6 +49,10 @@ const ValueCount = styled.p`
   font-bold
   text-2xl
   m-1
+  text-xl
   text-green-500
+  lg:text-3xl
+  md:text-2xl
+  sm:text-xl
 `}
 `;
