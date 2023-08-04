@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 @Transactional
-@Profile("release")
+@Profile("local")
 public class Dummy implements CommandLineRunner {
 
   private final EntityManager entityManager;
@@ -48,12 +48,11 @@ public class Dummy implements CommandLineRunner {
     List<Member> members =  memberDummy.createMembers();
     List<Nag> nags = nagWithNagTagDummy.createNags(members);
     List<Tag> tags = tagDummy.createTags();
-    List<TagFollow> tagFollows = tagFollowDummy.createTagFollows(tags, members);
-    List<NagTag> nagTags = nagWithNagTagDummy.createNagTags(nags, tags);
+    tagFollowDummy.createTagFollows(tags, members);
+    nagWithNagTagDummy.createNagTags(nags, tags);
     List<Todo> todos = todoWithTodoTagDummy.createTodosWithTodoTags(members, tags, nags);
     List<TodoPersona> todoPersonas = todoPersonaDummy.createTodoPersonas(todos);
-    List<PersonaReaction> personaReactions = personaReactionDummy.createPersonaReactions(members,
-        todoPersonas);
+    personaReactionDummy.createPersonaReactions(members,todoPersonas);
 
 
     nagLikeDummy.createNagLikes(members, nags);
