@@ -46,6 +46,9 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/signup/**").hasRole("GUEST")
+                .antMatchers("/oauth2/authorization/google/**").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and().exceptionHandling()
@@ -60,13 +63,10 @@ public class SecurityConfig {
 
                 .and()
                 .oauth2Login()
-//                .loginProcessingUrl("/oauth/authorization/google")
-//                .defaultSuccessUrl("/") //OAuth2 성공시 redirect
                 .successHandler(oAuthSuccessHandler)
-                .userInfoEndpoint() //OAuth2 로그인 성공 이후 사용자 정보를 가져올 때 설정 담당
+                .userInfoEndpoint()
                 .userService(oAuthService);
 
-        //OAuth2 로그인 성공 시, 작업을 진행할 MemberService
         return http.build();
     }
 
