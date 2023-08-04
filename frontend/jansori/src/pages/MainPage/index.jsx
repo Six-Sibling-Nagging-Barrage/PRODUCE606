@@ -2,46 +2,29 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import StartButton from './components/StartButton';
 import Background from '../../components/UI/Background';
+import { getMainNags } from '../../apis/api/nag';
 
 const MainPage = () => {
-  // 더미데이터
-  const nags = [
-    {
-      nagId: 1,
-      content: '니 코드가 개발새발인데 놀고싶어?',
-      createAt: null,
-    },
-    {
-      nagId: 2,
-      content: '일어나',
-      createAt: null,
-    },
-    {
-      nagId: 3,
-      content: '답없누',
-      createAt: null,
-    },
-    {
-      nagId: 4,
-      content: '잠이나 자',
-      createAt: null,
-    },
-    {
-      nagId: 5,
-      content: '답답하다~',
-      createAt: null,
-    },
-  ];
-
   // 문장을 뿌려줄 좌표를 저장하는 상태
   const [positions, setPositions] = useState([]);
+  const [randomNags, setRandomNags] = useState([]);
 
   // startButton의 ref
   const startButtonWrapRef = useRef(null);
 
-  // 컴포넌트가 마운트될 때 랜덤한 좌표를 생성하여 상태에 저장
   useEffect(() => {
-    const startButtonWrapRect = startButtonWrapRef.current.getBoundingClientRect();
+    (async () => {
+      const data = await getMainNags();
+      // console.log(data);
+      setRandomNags(data.nags);
+    })();
+  }, []);
+
+  // 랜덤 잔소리를 가져오면 랜덤한 좌표를 생성하여 상태에 저장
+  useEffect(() => {
+    if (!randomNags) return;
+    const startButtonWrapRect =
+      startButtonWrapRef.current.getBoundingClientRect();
 
     // 사분면에 랜덤으로 배치
     const getQuadrantPosition = (index) => {
@@ -54,7 +37,8 @@ const MainPage = () => {
 
       // 시작 버튼 y좌표값 위 아래
       const startButtonBottom = startButtonWrapRect.bottom;
-      const startButtonTop = startButtonWrapRect.top - startButtonWrapRect.height;
+      const startButtonTop =
+        startButtonWrapRect.top - startButtonWrapRect.height;
 
       // 중복 체크하는 함수
       const checkPosition = (y) => {
@@ -100,13 +84,13 @@ const MainPage = () => {
       return { x: newX, y: newY };
     };
 
-    const newPositions = nags.map((nag, index) => {
+    const newPositions = randomNags.map((nag, index) => {
       return getQuadrantPosition(index);
       // return index === nags.length - 1 ? generateRandomPosition() : getQuadrantPosition(index);
     });
 
     setPositions(newPositions);
-  }, []);
+  }, [randomNags]);
 
   return (
     <Background>
@@ -114,18 +98,19 @@ const MainPage = () => {
         <StartButton nagCount={'172032'} />
       </StartButtonWrap>
       <NagsContainer>
-        {nags.map((nag, index) => (
-          <Wrap
-            key={nag.nagId}
-            style={{
-              position: 'absolute',
-              top: positions[index]?.y,
-              left: positions[index]?.x,
-            }}
-          >
-            <ContentContainer key={index}>{nag.content}</ContentContainer>
-          </Wrap>
-        ))}
+        {randomNags &&
+          randomNags.map((nag, index) => (
+            <Wrap
+              key={nag.nagId}
+              style={{
+                position: 'absolute',
+                top: positions[index]?.y,
+                left: positions[index]?.x,
+              }}
+            >
+              <ContentContainer key={index}>{nag.content}</ContentContainer>
+            </Wrap>
+          ))}
       </NagsContainer>
     </Background>
   );
