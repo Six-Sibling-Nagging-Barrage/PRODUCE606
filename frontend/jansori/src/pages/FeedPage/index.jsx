@@ -17,21 +17,34 @@ const FeedPage = () => {
 
   return (
     <FeedContainer>
-      <Search>
-        <HashTag hashTagLimit={1} setSpecificTag={setSpecificTag} />
-      </Search>
+      <SearchDiv>
+        <Search>
+          <HashTag hashTagLimit={1} setSpecificTag={setSpecificTag} />
+        </Search>
+      </SearchDiv>
       <Feed specificTag={specificTag} getFeedData={getFeedData} />
     </FeedContainer>
   );
 };
 
 const FeedContainer = styled.div`
+  display: flex;
   padding-top: 72px;
+  justify-content: center;
+`;
+
+const SearchDiv = styled.div`
+  position: relative;
 `;
 
 const Search = styled.div`
   width: fit-content;
   margin: 0 auto;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
 `;
 
 export default FeedPage;

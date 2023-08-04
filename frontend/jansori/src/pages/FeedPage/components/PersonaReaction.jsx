@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from 'twin.macro';
 import profileImg from '../../../assets/profileImg.png';
+import NagCommentItem from './NagCommentItem';
 
 const personaInfo = [
   {
@@ -42,18 +43,23 @@ const personaInfo = [
 ];
 
 const PersonaReaction = (props) => {
-  const { personas, todoId, setShowMore, setPersonaNagList } = props;
+  const { personaReaction, setCurrentPostId } = props;
 
   const [personaIndex, setPersonaIndex] = useState(-1);
-  const [isAdded, setIsAdded] = useState(
-    Array.from({ length: 6 }, () => false)
-  ); // 이미 반응한 캐릭터인지 저장하는 배열
+  const [isAdded, setIsAdded] = useState(null); // 이미 반응한 캐릭터인지 저장하는 배열
   const [personaLikeCount, setPersonaLikeCount] = useState([]);
+  const [personaNagList, setPersonaNagList] = useState([]);
 
   useEffect(() => {
-    personas.map((persona) => {
+    const isAddedReaction = Array.from({ length: 6 }, () => false);
+    personaReaction.map((persona) => {
       setPersonaLikeCount((prev) => [...prev, persona.likeCount]);
+      if (persona.content) {
+        isAddedReaction[persona.personaId - 1] = true;
+        setPersonaNagList((prev) => [...prev, persona]);
+      }
     });
+    setIsAdded(isAddedReaction);
   }, []);
 
   const handlePersonaHover = (personaId) => {
@@ -61,9 +67,10 @@ const PersonaReaction = (props) => {
   };
 
   const handleClickPersonaReaction = (personaId) => {
+    console.log(personaId);
+    console.log(personaLikeCount);
     if (isAdded[personaId - 1]) return;
     // 캐릭터 반응 api 호출
-    // axios.post(`http://localhost:8080//todo/${todoId}/${personaId}`, config).then(res => ...);
     const personaNag = {
       todoPersonaId: 64,
       personaId: personaId,
@@ -91,50 +98,98 @@ const PersonaReaction = (props) => {
       })
     );
     setPersonaNagList((prev) => [...prev, personaNag]);
-    setShowMore(true);
+  };
+
+  const handleClosePersona = () => {
+    setCurrentPostId(-1);
   };
 
   return (
-    <>
-      <PersonaContainer>
-        {personas.map((persona) => {
-          return (
-            <PersonaProfile
-              key={persona.personaId}
-              onMouseEnter={() => {
-                handlePersonaHover(persona.personaId);
-              }}
-              onClick={() => {
-                handleClickPersonaReaction(persona.personaId);
-              }}
-            >
-              <img
-                className="w-10 h-10 rounded-full"
-                src={profileImg} // TODO: 캐릭터 이미지
-                alt="Rounded avatar"
+    <PersonaReactionWrapper>
+      <Header>
+        <CloseBtn onClick={handleClosePersona}>X</CloseBtn>
+      </Header>
+      <PersonaReactionContainer>
+        <PersonaCounter>
+          {personaReaction.map((reaction) => {
+            return (
+              <PersonaProfile
+                key={reaction.todoPersonaId}
+                onMouseEnter={() => {
+                  handlePersonaHover(reaction.personaId);
+                }}
+                onClick={() => {
+                  handleClickPersonaReaction(reaction.personaId);
+                }}
+              >
+                <img
+                  className="w-10 h-10 rounded-full"
+                  src={profileImg} // TODO: 캐릭터 이미지
+                  alt="Rounded avatar"
+                />
+                <CountBadge>
+                  {personaLikeCount[reaction.personaId - 1] < 100
+                    ? personaLikeCount[reaction.personaId - 1]
+                    : '99+'}
+                </CountBadge>
+              </PersonaProfile>
+            );
+          })}
+        </PersonaCounter>
+        {personaIndex === -1 ? (
+          <PersonaBio>캐릭터를 클릭해 잔소리를 해주세요.</PersonaBio>
+        ) : (
+          <PersonaBio>
+            <div>{personaInfo[personaIndex].name}</div>
+            <div>{personaInfo[personaIndex].bio}</div>
+          </PersonaBio>
+        )}
+        <CommentsContainer>
+          {personaNagList.map((reaction, index) => {
+            if (!reaction.content) return;
+            return (
+              <NagCommentItem
+                // key={reaction.todoPersonaId}
+                key={index}
+                isMemberNag={false}
+                id={reaction.todoPersonaId}
+                content={reaction.content}
+                writer={{
+                  nickname: personaInfo[reaction.personaId - 1].name,
+                  img: personaInfo[reaction.personaId - 1].img,
+                }}
               />
-              <CountBadge>
-                {personaLikeCount[persona.personaId - 1] < 100
-                  ? personaLikeCount[persona.personaId - 1]
-                  : '99+'}
-              </CountBadge>
-            </PersonaProfile>
-          );
-        })}
-      </PersonaContainer>
-      {personaIndex === -1 ? (
-        <PersonaBio>캐릭터를 클릭해 잔소리를 해주세요.</PersonaBio>
-      ) : (
-        <PersonaBio>
-          <div>{personaInfo[personaIndex].name}</div>
-          <div>{personaInfo[personaIndex].bio}</div>
-        </PersonaBio>
-      )}
-    </>
+            );
+          })}
+        </CommentsContainer>
+      </PersonaReactionContainer>
+    </PersonaReactionWrapper>
   );
 };
 
-const PersonaContainer = styled.div`
+const PersonaReactionWrapper = styled.div`
+  position: fixed;
+  top: 100px;
+  right: 30px;
+  padding: 20px;
+  display: flex;
+`;
+
+const PersonaReactionContainer = styled.div`
+  width: 350px;
+`;
+
+const Header = styled.div`
+  position: relative;
+  width: 50px;
+`;
+
+const CloseBtn = styled.button`
+  position: absolute;
+  right: 10px;
+`;
+
+const PersonaCounter = styled.div`
   display: flex;
   justify-content: space-evenly;
   margin-top: 10px;
@@ -180,5 +235,7 @@ const PersonaBio = styled.div`
     margin-top: -12px;
   }
 `;
+
+const CommentsContainer = styled.div``;
 
 export default PersonaReaction;
