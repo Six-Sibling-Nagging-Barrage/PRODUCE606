@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Feed from './components/Feed';
 import { styled } from 'twin.macro';
-import { getFollowingFeed, getSpecificFeed } from '../../apis/api/feed';
+import { getFollowingFeed, getSpecificFeed } from '../../apis/api/todo';
 import HashTag from '../../components/HashTag/HashTag';
 
 const FeedPage = () => {
