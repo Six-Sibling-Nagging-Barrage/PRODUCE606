@@ -31,6 +31,7 @@ const AutoComplete = (props) => {
     setSpecificTag,
     setExists,
     addHashTag,
+    setCurrentHashTag,
   } = props;
 
   const [autoCompleteList, setAutoCompleteList] = useState([]);
@@ -42,7 +43,11 @@ const AutoComplete = (props) => {
       // TODO: 태그 자동완성 검색 api 호출
 
       if (typeof setExists === 'function') {
-        setExists(dummyData.tagCount.tagCount > 0);
+        const existingTag = dummyData.tags.find((tag) => tag.tagName === searchValue);
+        if (existingTag) {
+          setCurrentHashTag(existingTag);
+          setExists(true);
+        }
       }
       setAutoCompleteList(dummyData.tags);
     }

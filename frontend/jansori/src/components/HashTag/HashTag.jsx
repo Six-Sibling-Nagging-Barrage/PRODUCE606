@@ -11,6 +11,7 @@ const HashTag = (props) => {
   const [hashTagExists, setHashTagExists] = useState(false);
   const [hashTagList, setHashTagList] = useState([]);
   const [hashTagCount, setHashTagCount] = useState(0);
+  const [currentHashTag, setCurrentHashTag] = useState(null);
 
   const handleHashTagInputChange = (event) => {
     setHashTagInput(event.target.value);
@@ -19,7 +20,8 @@ const HashTag = (props) => {
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter' && hashTagExists) {
-      addHashTag(hashTagInput);
+      addHashTag(currentHashTag);
+      setIsOpen(false);
     }
   };
 
@@ -50,8 +52,8 @@ const HashTag = (props) => {
         })}
         {hashTagCount < hashTagLimit && (
           <HashTagInput
-            type="text"
-            placeholder="해시태그를 검색하세요."
+            type='text'
+            placeholder='해시태그를 검색하세요.'
             onChange={handleHashTagInputChange}
             value={hashTagInput}
             onKeyPress={handleKeyPress}
@@ -66,6 +68,7 @@ const HashTag = (props) => {
           setSpecificTag={setSpecificTag}
           setExists={setHashTagExists}
           addHashTag={addHashTag}
+          setCurrentHashTag={setCurrentHashTag}
         />
       )}
     </>
