@@ -40,11 +40,11 @@ public class MemberController {
 
   @PatchMapping("/update")
   public EnvelopeResponse<PatchMemberInfoResDto> updateMemberInfo(
-          @RequestBody @Valid PatchMemberInfoReqDto patchMemberInfoReqDto){
+      @RequestBody @Valid PatchMemberInfoReqDto patchMemberInfoReqDto) {
 
     return EnvelopeResponse.<PatchMemberInfoResDto>builder()
-            .data(memberService.updateMemberInfo(patchMemberInfoReqDto))
-            .build();
+        .data(memberService.updateMemberInfo(patchMemberInfoReqDto))
+        .build();
 
   }
 
