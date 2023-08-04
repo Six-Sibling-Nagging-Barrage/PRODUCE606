@@ -2,7 +2,11 @@ package com.a606.jansori.domain.nag.domain;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
+import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.global.common.BaseTimeEntity;
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,11 +48,14 @@ public class Nag extends BaseTimeEntity {
   @JoinColumn(name = "member_id")
   private Member member;
 
-  public static Nag of(Member member, PostNagReqDto postNagReqDto, String preview) {
+  @OneToMany(mappedBy = "nag", cascade = CascadeType.ALL)
+  private Set<Todo> todos = new HashSet<>();
+
+  public static Nag ofMemberWithNagContentAndPreview(Member member, PostNagReqDto postNagReqDto,
+      String preview) {
     return Nag.builder()
         .member(member)
         .preview(preview)
-        .content(postNagReqDto.getContent())
         .build();
   }
 
