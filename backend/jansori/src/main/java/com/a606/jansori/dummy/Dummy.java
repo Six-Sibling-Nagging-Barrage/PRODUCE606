@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 @Transactional
-@Profile("local")
+@Profile("release")
 public class Dummy implements CommandLineRunner {
 
   private final EntityManager entityManager;
