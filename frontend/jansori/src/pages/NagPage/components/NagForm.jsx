@@ -27,7 +27,7 @@ const NagForm = () => {
     const timer = setTimeout(() => {
       reset();
       setButtonToggled(true);
-    }, 1000);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [buttonToggled]);
@@ -53,7 +53,7 @@ const NagForm = () => {
                     },
                     pattern: {
                       value:
-                        /^(?!.*\s\s)(?!.*\s$)[[\u1100-\u1112\u3131-\u314e\u314f-\u3163가-힣\s]+$/,
+                        /^(?!.*\s\s)(?!.*\s$)[[\u1100-\u1112\u3131-\u314e\u314f-\u3163가-힣a-zA-Z\s]+$/,
                       message: '공백 문자를 연속 2개 이상 사용할 수 없어요.',
                     },
                   })}
