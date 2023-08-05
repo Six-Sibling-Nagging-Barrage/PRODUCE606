@@ -1,6 +1,8 @@
 package com.a606.jansori.global.config;
 
+import com.a606.jansori.global.auth.service.OAuthAccessDeniedHandler;
 import com.a606.jansori.global.auth.service.OAuthService;
+import com.a606.jansori.global.auth.service.OAuthSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,53 +13,83 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+import java.util.List;
+
 @RequiredArgsConstructor
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
 
-  private final OAuthService oAuthService;
+    private final OAuthSuccessHandler oAuthSuccessHandler;
+    private final OAuthService oAuthService;
+    private final OAuthAccessDeniedHandler oAuthAccessDeniedHandler;
 
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
 
-    configuration.addAllowedOriginPattern("*");
-    configuration.addAllowedHeader("*");
-    configuration.addAllowedMethod("*");
-    configuration.setAllowCredentials(true);
+//        configuration.setAllowedOrigins(Arrays.asList("<http://localhost:3000>", "..."));
+//        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+//        configuration.setAllowCredentials(true);
+//        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Authorization-refresh", "Cache-Control", "Content-Type"));
+//
+//        configuration.setExposedHeaders(Arrays.asList("Authorization", "Authorization-refresh"));
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-    return source;
-  }
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Requestor-Type"));
+        configuration.setExposedHeaders(Arrays.asList("X-Get-Header"));
+        configuration.setMaxAge(3600L);
 
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-    http.httpBasic().disable()
-        .cors().configurationSource(corsConfigurationSource())
+//        configuration.setAllowCredentials(true);
+//        configuration.setAllowedOrigins(List.of("http://i9a606.p.ssafy.io"));
+//        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+//        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+//        configuration.addAllowedOrigin("http://localhost:3000");
+//        configuration.addAllowedHeader("*");
+//        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+//        configuration.setAllowedHeaders(List.of("*"));
+//        configuration.setExposedHeaders(List.of("*"));
 
-        .and()
-        .authorizeRequests()
-        .antMatchers("/register").hasRole("GUEST")
-        .anyRequest().permitAll()
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
-        .and()
-        .csrf().disable()
-        .headers().frameOptions().disable()
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        .and()
-        .logout().logoutSuccessUrl("/") //logout 요청시 홈으로 이동 - 기본 logout url = "/logout"
+        http.httpBasic()
+                .disable()
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
+                .authorizeRequests()
+                .antMatchers("/signup/**").hasRole("GUEST")
+                .antMatchers("/oauth2/authorization/google/**").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/").permitAll()
+                .anyRequest()
+                .authenticated()
+                .and().exceptionHandling()
+                .accessDeniedHandler(oAuthAccessDeniedHandler)
 
-        .and()
-        .oauth2Login()
-        .defaultSuccessUrl("/", true) //OAuth2 성공시 redirect
-        .userInfoEndpoint() //OAuth2 로그인 성공 이후 사용자 정보를 가져올 때 설정 담당
-        .userService(oAuthService);
+                .and()
+                .csrf().disable()
+                .headers().frameOptions().disable()
 
-    //OAuth2 로그인 성공 시, 작업을 진행할 MemberService
-    return http.build();
-  }
+                .and()
+                .logout().logoutSuccessUrl("/") //logout 요청시 홈으로 이동 - 기본 logout url = "/logout"
+
+                .and()
+                .oauth2Login()
+                .successHandler(oAuthSuccessHandler)
+                .userInfoEndpoint()
+                .userService(oAuthService);
+
+        return http.build();
+    }
 
 }
