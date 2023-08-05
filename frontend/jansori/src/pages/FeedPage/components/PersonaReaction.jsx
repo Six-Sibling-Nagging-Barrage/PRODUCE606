@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { styled } from 'twin.macro';
 import profileImg from '../../../assets/profileImg.png';
 import NagCommentItem from './NagCommentItem';
+import { createPersonaReaction } from '../../../apis/api/todo';
 
 const personaInfo = [
   {
@@ -43,7 +44,7 @@ const personaInfo = [
 ];
 
 const PersonaReaction = (props) => {
-  const { personaReaction, setCurrentPostId } = props;
+  const { personaReaction, currentPostId, setCurrentPostId } = props;
 
   const [personaIndex, setPersonaIndex] = useState(-1);
   const [isAdded, setIsAdded] = useState(null); // 이미 반응한 캐릭터인지 저장하는 배열
@@ -66,20 +67,12 @@ const PersonaReaction = (props) => {
     setPersonaIndex(personaId - 1);
   };
 
-  const handleClickPersonaReaction = (personaId) => {
-    console.log(personaId);
-    console.log(personaLikeCount);
+  const handleClickPersonaReaction = async (personaId) => {
     if (isAdded[personaId - 1]) return;
-    // 캐릭터 반응 api 호출
-    const personaNag = {
-      todoPersonaId: 64,
-      personaId: personaId,
-      likeCount: 1,
-      content: '새로 추가된 캐릭터 잔소리',
-      isFirstReaction: true,
-    };
+    // TODO: 캐릭터 반응 api 호출
+    const data = await createPersonaReaction({ currentPostId, personaId });
 
-    if (!personaNag.isFirstReaction) return;
+    if (!data.isFirstReaction) return;
 
     setPersonaLikeCount((prev) =>
       prev.map((item, index) => {
@@ -89,6 +82,7 @@ const PersonaReaction = (props) => {
         return item;
       })
     );
+
     setIsAdded((prev) =>
       prev.map((item, index) => {
         if (index === personaId - 1) {
@@ -97,7 +91,8 @@ const PersonaReaction = (props) => {
         return item;
       })
     );
-    setPersonaNagList((prev) => [...prev, personaNag]);
+
+    setPersonaNagList((prev) => [...prev, data]);
   };
 
   const handleClosePersona = () => {
@@ -145,18 +140,20 @@ const PersonaReaction = (props) => {
           </PersonaBio>
         )}
         <CommentsContainer>
-          {personaNagList.map((reaction, index) => {
+          {personaNagList.map((reaction) => {
             if (!reaction.content) return;
             return (
               <NagCommentItem
-                // key={reaction.todoPersonaId}
-                key={index}
+                key={reaction.todoPersonaId}
                 isMemberNag={false}
-                id={reaction.todoPersonaId}
-                content={reaction.content}
-                writer={{
-                  nickname: personaInfo[reaction.personaId - 1].name,
-                  img: personaInfo[reaction.personaId - 1].img,
+                nag={{
+                  nagId: reaction.todoPersonaId,
+                  likeCount: reaction.likeCount,
+                  content: reaction.content,
+                  nagMember: {
+                    nickname: personaInfo[reaction.personaId - 1],
+                    imgUrl: personaInfo[reaction.personaId - 1],
+                  },
                 }}
               />
             );
@@ -171,7 +168,6 @@ const PersonaReactionWrapper = styled.div`
   position: fixed;
   top: 100px;
   right: 30px;
-  padding: 20px;
   display: flex;
 `;
 
@@ -181,7 +177,7 @@ const PersonaReactionContainer = styled.div`
 
 const Header = styled.div`
   position: relative;
-  width: 50px;
+  width: 30px;
 `;
 
 const CloseBtn = styled.button`
@@ -192,7 +188,7 @@ const CloseBtn = styled.button`
 const PersonaCounter = styled.div`
   display: flex;
   justify-content: space-evenly;
-  margin-top: 10px;
+  margin: 15px 0;
 `;
 
 const PersonaProfile = styled.div`

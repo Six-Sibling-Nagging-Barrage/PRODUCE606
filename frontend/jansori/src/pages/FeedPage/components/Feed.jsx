@@ -1,42 +1,128 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InfiniteScroll from './InfiniteScroll';
 import tw, { styled } from 'twin.macro';
 import PersonaReaction from './PersonaReaction';
 import TodoPost from './TodoPost';
+import { useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import { updateLikeNag } from '../../../apis/api/nag';
 
 const Feed = (props) => {
   const { specificTag, getFeedData } = props;
 
-  const [todoPostList, setTodoPostList] = useState([]);
   const [currentPostId, setCurrentPostId] = useState(-1);
   const [personaReaction, setPersonaReaction] = useState([]);
+
+  const queryClient = useQueryClient();
+
+  const pageSize = 10;
+  let param;
+
+  useEffect(() => {
+    if (specificTag === -1) {
+      param = { cursor: null, pageSize };
+    } else {
+      param = { specificTag, cursor: null, pageSize };
+    }
+  }, []);
+
+  const fetchMoreTodoPosts = async (pageParam) => {
+    const data = await getFeedData(pageParam);
+    return data;
+  };
+
+  const toggleLike = async (nagId) => {
+    // 잔소리 좋아요 api 호출
+    const data = updateLikeNag(nagId);
+    return data;
+  };
+
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isError,
+    isLoading,
+  } = useInfiniteQuery(
+    ['feed'],
+    ({ pageParam = param }) => fetchMoreTodoPosts(pageParam),
+    {
+      getNextPageParam: (lastPage) => {
+        if (!lastPage.hasNext) return undefined;
+        if (specificTag === -1) {
+          return { cursor: lastPage.nextCursor, pageSize };
+        } else {
+          return { specificTag, cursor: lastPage.nextCursor, pageSize };
+        }
+      },
+    }
+  );
+
+  const updateLikeMutation = useMutation(
+    ({ postId, nagId }) => toggleLike(nagId),
+    {
+      onMutate: async ({ postId, nagId }) => {
+        await queryClient.cancelQueries(['feed']);
+        const prevFeed = queryClient.getQueryData(['feed']);
+        queryClient.setQueryData(['feed'], (oldData) => {
+          const newData = oldData.pages.map((page) => {
+            return {
+              ...page,
+              feed: page.feed.map((post) => {
+                if (post.id === postId) {
+                  return {
+                    ...post,
+                    isLiked: !post.nag.isLiked,
+                    likeCount: post.nag.isLiked
+                      ? post.nag.likeCount - 1
+                      : post.nag.likeCount + 1,
+                  };
+                }
+                return post;
+              }),
+            };
+          });
+          return { ...oldData, pages: newData };
+        });
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(['feed']);
+      },
+      onError: (err, variables, context) => {
+        queryClient.setQueryData(['feed'], context?.prevFeed);
+      },
+    }
+  );
 
   return (
     <FeedContainer>
       <ul>
-        {todoPostList &&
-          todoPostList.map((post, index) => {
+        {data?.pages.map((page) =>
+          page.feed.map((post) => {
             return (
               <TodoPost
                 post={post}
-                key={index}
-                todoId={index} // 임시 데이터
+                key={post.todoId}
                 currentPostId={currentPostId}
                 setCurrentPostId={setCurrentPostId}
                 setPersonaReaction={setPersonaReaction}
+                toggleLike={updateLikeMutation.mutate}
               />
             );
-          })}
+          })
+        )}
       </ul>
       <InfiniteScroll
-        specificTag={specificTag}
-        setTodoPostList={setTodoPostList}
-        getFeedData={getFeedData}
+        fetchNextPage={fetchNextPage}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
       />
       {currentPostId > -1 && (
         <PersonaReaction
           personaReaction={personaReaction}
           setCurrentPostId={setCurrentPostId}
+          currentPostId={currentPostId}
         />
       )}
     </FeedContainer>

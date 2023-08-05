@@ -1,53 +1,22 @@
 import React from 'react';
 import tw, { styled } from 'twin.macro';
 import likeIcon from '../../../assets/like_icon.avif';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
 
 const NagCommentItem = (props) => {
-  const { isMemberNag, id, isLiked, likeCount, content, writer, nag } = props;
-
-  const queryClient = useQueryClient();
-  const updateLike = useMutation(
-    (nagId) => {
-      // TODO: 잔소리 좋아요 api 호출
-
-      // 임시코드
-      console.log(nagId + ' 좋아요 api 호출');
-      nag.isLiked = !nag.isLiked;
-      nag.likeCount = nag.isLiked ? nag.likeCount + 1 : nag.likeCount - 1;
-    },
-    {
-      onMutate: (nagId) => {
-        const prevNag = queryClient.getQueryData(['nagLike', nagId]);
-        const newNag = {
-          ...nag,
-          isLiked: !nag.isLiked,
-          likeCount: nag.isLiked ? nag.likeCount - 1 : nag.likeCount + 1,
-        };
-        queryClient.setQueryData(['nagLike', nagId], newNag);
-        return { prevNag };
-      },
-      onError: (err, nagId, context) => {
-        queryClient.setQueryData(['nagLike', nagId], context?.prevNag);
-      },
-      onSettled: () => {
-        queryClient.invalidateQueries(['nagLike']);
-      },
-    }
-  );
+  const { isMemberNag, todoId, nag, toggleLike } = props;
 
   const handleLikeClick = () => {
-    updateLike.mutate(id);
+    toggleLike({ todoId, nagId: nag.nagId });
   };
 
   return (
     <CommentContainer>
       <Profile>
-        <ProfileImg src={writer.img} />
-        <NickName>{writer.nickname}</NickName>
+        <ProfileImg src={nag.nagMember.img} />
+        <NickName>{nag.nagMember.nickname}</NickName>
       </Profile>
       <CommentContentWrapper>
-        <CommentContent>{content}</CommentContent>
+        <CommentContent>{nag.content}</CommentContent>
       </CommentContentWrapper>
       {isMemberNag && (
         <LikeButton onClick={handleLikeClick}>
