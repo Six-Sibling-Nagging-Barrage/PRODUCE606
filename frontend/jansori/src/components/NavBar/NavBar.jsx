@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import Modal from '../UI/Modal';
 import GoogleLoginButton from '../Login/GoogleLoginButton';
@@ -149,18 +148,17 @@ const LoginButton = styled.button`
 text-blue-600`}
 `;
 
-const NavItems = styled.div`
-  ${tw`
+const NavItems = styled.div(({ isToggleOpen }) => [
+  tw`
     items-center
     justify-between
     w-full
     hidden
     md:flex
     md:w-auto
-    md:order-1
-  `}
-  display: ${(props) => (props.isToggleOpen ? 'flex' : 'none')};
-`;
+    md:order-1`,
+  isToggleOpen && tw`flex`,
+]);
 
 const NavItemsUl = styled.ul`
   ${tw`
