@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
+import { useRecoilValue } from 'recoil';
 import tw, { styled } from 'twin.macro';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import Modal from '../UI/Modal';
 import GoogleLoginButton from '../Login/GoogleLoginButton';
 import { Link } from 'react-router-dom';
 
+import { isLogin } from '../../states/user';
+
 const NavBar = () => {
   const [isToggleOpen, setIsToggleOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  const user = useRecoilValue(isLogin);
 
   const handleMenuClick = () => {
     setIsToggleOpen(!isToggleOpen);
@@ -33,8 +38,10 @@ const NavBar = () => {
           {/* 오른쪽 로그인 버튼 부분 시작*/}
           <RightButtons>
             {/* 로그인 하기 전 */}
-            <LoginButton onClick={handleLoginClick}>Login</LoginButton>
+            {!user && <LoginButton onClick={handleLoginClick}>Login</LoginButton>}
             {/* 로그인 하고 난 후 - 알림버튼, 티켓 개수, 프로필 사진 + 드롭다운으로 로그아웃 */}
+            {/* 임시 방편으로 그냥 Logout 이라고만 표시 */}
+            {user && <LoginButton onClick={handleLoginClick}>Logout</LoginButton>}
             {/* 화면 작아졌을 때 햄버거 icon 시작 */}
             <HamburgerButton
               type='button'
