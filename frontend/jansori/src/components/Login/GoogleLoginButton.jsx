@@ -1,9 +1,14 @@
 import googleIcon from '../../assets/google_icon.png';
 import { styled } from 'twin.macro';
 import { createMember } from '../../apis/api/member';
+import { useSetRecoilState } from 'recoil';
+import { isLogin } from '../../states/user';
 
 const GoogleLoginButton = () => {
+  const setIsLoginState = useSetRecoilState(isLogin);
+
   const clickLogin = () => {
+    setIsLoginState(true);
     createMember();
   };
 
