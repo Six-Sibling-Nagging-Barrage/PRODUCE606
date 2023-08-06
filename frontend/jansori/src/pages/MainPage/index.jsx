@@ -15,16 +15,15 @@ const MainPage = () => {
   useEffect(() => {
     (async () => {
       const data = await getMainNags();
-      // console.log(data);
-      setRandomNags(data.nags);
+      console.log(data);
+      if (data && data.nags && data.nags.length > 0) setRandomNags(data.nags);
     })();
   }, []);
 
   // 랜덤 잔소리를 가져오면 랜덤한 좌표를 생성하여 상태에 저장
   useEffect(() => {
     if (!randomNags) return;
-    const startButtonWrapRect =
-      startButtonWrapRef.current.getBoundingClientRect();
+    const startButtonWrapRect = startButtonWrapRef.current.getBoundingClientRect();
 
     // 사분면에 랜덤으로 배치
     const getQuadrantPosition = (index) => {
@@ -37,8 +36,7 @@ const MainPage = () => {
 
       // 시작 버튼 y좌표값 위 아래
       const startButtonBottom = startButtonWrapRect.bottom;
-      const startButtonTop =
-        startButtonWrapRect.top - startButtonWrapRect.height;
+      const startButtonTop = startButtonWrapRect.top - startButtonWrapRect.height;
 
       // 중복 체크하는 함수
       const checkPosition = (y) => {
