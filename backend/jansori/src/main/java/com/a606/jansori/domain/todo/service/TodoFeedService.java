@@ -19,7 +19,7 @@ import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
-import com.a606.jansori.global.auth.util.SecurityUtil;
+import com.a606.jansori.global.jwt.util.SecurityUtil;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;

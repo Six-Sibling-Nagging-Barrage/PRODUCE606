@@ -7,7 +7,7 @@ import com.a606.jansori.domain.member.exception.DuplicatedNicknameException;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
-import com.a606.jansori.global.auth.util.SecurityUtil;
+import com.a606.jansori.global.jwt.util.SecurityUtil;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
@@ -58,7 +58,7 @@ public class MemberService {
 
     private Member getMemberFromSecurityUtil() {
 
-        return memberRepository.findById(securityUtil.getSessionMemberId())
+        return memberRepository.findById(SecurityUtil.getCurrentMemberId())
                 .orElseThrow(MemberNotFoundException::new);
     }
 
@@ -99,5 +99,6 @@ public class MemberService {
 
         }
     }
+
 
 }
