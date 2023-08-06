@@ -71,7 +71,6 @@ const SignUpPage = () => {
 
   const handleNicknameInputChange = (event) => {
     setNicknameValue(event.target.value);
-    console.log(event);
   };
 
   const handleClickCheckboxLabel = () => {
@@ -191,11 +190,17 @@ const SignUpContainer = styled.div`
   top: 50%;
   left: 50%;
   width: 40%;
-  @media screen and (max-width: 768px) {
-    width: 70%;
-  }
-  @media screen and (max-width: 1024px) {
+  @media (min-width: 980px) and (max-width: 1200px) {
     width: 50%;
+  }
+  @media (min-width: 768px) and (max-width: 980px) {
+    width: 60%;
+  }
+  @media (min-width: 500px) and (max-width: 768px) {
+    width: 80%;
+  }
+  @media (max-width: 500px) {
+    width: 90%;
   }
   transform: translate(-50%, -50%);
   background-color: rgba(255, 255, 255, 0.5);
