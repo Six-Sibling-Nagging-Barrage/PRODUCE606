@@ -15,7 +15,7 @@ const MainPage = () => {
   useEffect(() => {
     (async () => {
       const data = await getMainNags();
-      console.log(data);
+      // console.log(data);
       if (data && data.nags && data.nags.length > 0) setRandomNags(data.nags);
     })();
   }, []);
