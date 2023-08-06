@@ -1,13 +1,19 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import tw, { styled } from 'twin.macro';
 
 const ProfileImg = (props) => {
-  const { editable } = props;
+  const { editable, profileImg, size } = props;
 
-  const [profileImg, setProfileImg] = useState(
+  const [newProfileImg, setNewProfileImg] = useState(
     'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
   );
   const profileImgInput = useRef(null);
+
+  useEffect(() => {
+    if (profileImg) {
+      setNewProfileImg(profileImg);
+    }
+  }, []);
 
   const handleProfileImgClick = () => {
     if (!editable) return;
@@ -18,17 +24,17 @@ const ProfileImg = (props) => {
     // console.log(URL.createObjectURL(event.target.files[0]));
     if (!event.target.files[0]) {
       // 업로드 취소하면 기본 이미지 세팅
-      return setProfileImg(
+      return setNewProfileImg(
         'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
       );
     }
-    setProfileImg(URL.createObjectURL(event.target.files[0]));
+    setNewProfileImg(URL.createObjectURL(event.target.files[0]));
   };
 
   return (
-    <ProfileImgContainer>
+    <ProfileImgContainer size={size}>
       <img
-        src={profileImg}
+        src={newProfileImg}
         alt="Rounded avatar"
         onClick={handleProfileImgClick}
       />
@@ -48,8 +54,10 @@ const ProfileImgContainer = styled.div`
   margin: 0 auto;
   margin-bottom: 15px;
   & > img {
-    ${tw`w-20 h-20 rounded-full`}
+    ${tw`rounded-full`}
     object-fit: cover;
+    width: ${({ size }) => size};
+    height: ${({ size }) => size};
   }
   & > input {
     display: none;

@@ -16,7 +16,7 @@ const MainPage = () => {
     (async () => {
       const data = await getMainNags();
       // console.log(data);
-      setRandomNags(data.nags);
+      setRandomNags(data?.nags);
     })();
   }, []);
 
