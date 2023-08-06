@@ -19,7 +19,7 @@ const NavBar = () => {
   };
 
   const handleLoginClick = () => {
-    setIsLoginModalOpen(true);
+    setIsLoginModalOpen(!isLogin);
   };
 
   return (
@@ -27,7 +27,7 @@ const NavBar = () => {
       <Nav>
         {/* 로고 들어가는 부분 시작 */}
         <NavWrap>
-          <Logo href='/'>
+          <Logo href='/' onClick={() => setIsToggleOpen(false)}>
             <img
               className='h-4'
               src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyy01YZvIVHu61Ocu6oepgHZwHOzzoYHRn8g&usqp=CAU'
@@ -59,16 +59,24 @@ const NavBar = () => {
           <NavItems id='navbar-sticky' isToggleOpen={isToggleOpen}>
             <NavItemsUl>
               <li>
-                <NavItem to='/feed'>Feed</NavItem>
+                <NavItem to='/feed' onClick={() => setIsToggleOpen(false)}>
+                  Feed
+                </NavItem>
               </li>
               <li>
-                <NavItem to='/profile'>Profile</NavItem>
+                <NavItem to='/profile' onClick={() => setIsToggleOpen(false)}>
+                  Profile
+                </NavItem>
               </li>
               <li>
-                <NavItem to='/nagbox'>잔소리함</NavItem>
+                <NavItem to='/nagbox' onClick={() => setIsToggleOpen(false)}>
+                  잔소리함
+                </NavItem>
               </li>
               <li>
-                <NavItem to='characterinfo'>About Us</NavItem>
+                <NavItem to='characterinfo' onClick={() => setIsToggleOpen(false)}>
+                  About Us
+                </NavItem>
               </li>
             </NavItemsUl>
           </NavItems>
