@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { RecoilRoot } from 'recoil';
 import './index.css';
 import App from './App';
 import GlobalStyles from './styles/GlobalStyles';
@@ -11,9 +12,11 @@ const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
-    <QueryClientProvider client={queryClient}>
-      <GlobalStyles />
-      <App />
-    </QueryClientProvider>
+    <RecoilRoot>
+      <QueryClientProvider client={queryClient}>
+        <GlobalStyles />
+        <App />
+      </QueryClientProvider>
+    </RecoilRoot>
   </BrowserRouter>
 );
