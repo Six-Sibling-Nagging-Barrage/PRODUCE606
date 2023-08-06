@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from 'twin.macro';
+import { getTagsAutoComplete } from '../../apis/api/tag';
 
 const dummyData = {
   tagCount: 5,
@@ -37,19 +38,32 @@ const AutoComplete = (props) => {
   const [autoCompleteList, setAutoCompleteList] = useState([]);
 
   useEffect(() => {
+    let timerId;
+
     if (searchValue === '') {
       setAutoCompleteList([]);
     } else {
-      // TODO: 태그 자동완성 검색 api 호출
+      // 타이머를 활용하여 API 요청 지연
+      timerId = setTimeout(async () => {
+        // 태그 자동완성 검색 api 호출
+        const data = await getTagsAutoComplete(searchValue);
 
-      if (typeof setExists === 'function') {
-        const existingTag = dummyData.tags.find((tag) => tag.tagName === searchValue);
-        if (existingTag) {
-          setCurrentHashTag(existingTag);
-          setExists(true);
+        if (typeof setExists === 'function') {
+          const existingTag = data.tags.find(
+            (tag) => tag.tagName === searchValue
+          );
+          if (existingTag) {
+            setCurrentHashTag(existingTag);
+            setExists(true);
+          }
         }
-      }
-      setAutoCompleteList(dummyData.tags);
+        setAutoCompleteList(data.tags);
+      }, 300); // 지연 시간 설정 (300ms)
+
+      // Cleanup 함수에서 타이머 해제
+      return () => {
+        clearTimeout(timerId);
+      };
     }
   }, [searchValue]);
 

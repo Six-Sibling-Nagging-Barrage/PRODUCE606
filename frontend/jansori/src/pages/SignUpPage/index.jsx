@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Background from '../../components/UI/Background';
 import { styled } from 'twin.macro';
@@ -27,12 +27,27 @@ const SignUpPage = () => {
   const [hashTagList, setHashTagList] = useState([]);
   const [checked, setChecked] = useState(false);
   const [nicknameValue, setNicknameValue] = useState('');
+  const [isAvailable, setIsAvailable] = useState(null);
 
   const {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
   } = useForm({ mode: 'onBlur' });
+
+  useEffect(() => {
+    if (nicknameValue === '') return setIsAvailable(null);
+    let timerId = setTimeout(async () => {
+      // TODO: 닉네임 중복 검사 api 호출
+      // const data = await getAvailableNickname();
+      // setIsAvailable(data.//);
+      setIsAvailable(true);
+    }, 500);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [nicknameValue]);
 
   const signupSubmit = (data) => {
     if (!checked) {
@@ -56,7 +71,6 @@ const SignUpPage = () => {
 
   const handleNicknameInputChange = (event) => {
     setNicknameValue(event.target.value);
-    // TODO: 닉네임 중복 검사 api 호출
   };
 
   const handleClickCheckboxLabel = () => {
@@ -70,9 +84,7 @@ const SignUpPage = () => {
         <form onKeyDown={handleFormKeyDown}>
           <ProfileImg editable={true} />
           <InfoContainer>
-            <Label value={nicknameValue} onChange={handleNicknameInputChange}>
-              닉네임
-            </Label>
+            <Label>닉네임</Label>
             <Nickname
               placeholder="닉네임을 입력해주세요."
               {...register('nickname', {
@@ -83,11 +95,28 @@ const SignUpPage = () => {
                 },
                 validate: validateNickname,
               })}
+              onChange={handleNicknameInputChange}
             />
             {errors.nickname ? (
               <ErrorMessage>{errors?.nickname?.message}</ErrorMessage>
             ) : (
-              <GuideMessage>1~11자 닉네임을 지어주세요.</GuideMessage>
+              <>
+                {nicknameValue === '' || isAvailable === null ? (
+                  <GuideMessage>1~11자 닉네임을 지어주세요.</GuideMessage>
+                ) : (
+                  <>
+                    {isAvailable ? (
+                      <GuideMessage granted>
+                        사용 가능한 닉네임이에요!
+                      </GuideMessage>
+                    ) : (
+                      <ErrorMessage>
+                        이미 사용 중인 닉네임이에요...
+                      </ErrorMessage>
+                    )}
+                  </>
+                )}
+              </>
             )}
           </InfoContainer>
           <InfoContainer>
@@ -161,11 +190,17 @@ const SignUpContainer = styled.div`
   top: 50%;
   left: 50%;
   width: 40%;
-  @media screen and (max-width: 768px) {
-    width: 70%;
-  }
-  @media screen and (max-width: 1024px) {
+  @media (min-width: 980px) and (max-width: 1200px) {
     width: 50%;
+  }
+  @media (min-width: 768px) and (max-width: 980px) {
+    width: 60%;
+  }
+  @media (min-width: 500px) and (max-width: 768px) {
+    width: 80%;
+  }
+  @media (max-width: 500px) {
+    width: 90%;
   }
   transform: translate(-50%, -50%);
   background-color: rgba(255, 255, 255, 0.5);
@@ -203,6 +238,11 @@ const GuideMessage = styled.div`
   font-size: 14px;
   color: #757575;
   margin-top: 5px;
+  ${({ granted }) =>
+    granted &&
+    `
+      color: #66bb6a
+    `}
 `;
 
 const RequestMessage = styled.div`
