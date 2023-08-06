@@ -27,6 +27,12 @@ public class Member extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column
+  private String email;
+
+  @Column
+  private String password;
+
   @Enumerated(EnumType.STRING)
   private MemberRole memberRole;
 
@@ -84,5 +90,12 @@ public class Member extends BaseTimeEntity {
     if (ticket > 0) {
       ticket -= 1;
     }
+  }
+
+  @Builder
+  public Member(String email, String password, MemberRole memberRole){
+    this.email = email;
+    this.password = password;
+    this.memberRole = memberRole;
   }
 }

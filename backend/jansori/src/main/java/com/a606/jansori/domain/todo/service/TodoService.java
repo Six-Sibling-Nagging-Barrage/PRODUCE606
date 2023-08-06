@@ -21,7 +21,7 @@ import com.a606.jansori.domain.todo.dto.PostTodoResDto;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
-import com.a606.jansori.global.auth.util.SecurityUtil;
+import com.a606.jansori.global.jwt.util.SecurityUtil;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -122,6 +122,12 @@ public class TodoService {
     }
 
     return PatchTodoResDto.from(todo.toggleFinished());
+  }
+
+  private Member getMemberFromSecurityUtil() {
+
+    return memberRepository.findById(SecurityUtil.getCurrentMemberId())
+        .orElseThrow(MemberNotFoundException::new);
   }
 
   private Tag getTagIfExistElseSave(TagDto tagDto) {

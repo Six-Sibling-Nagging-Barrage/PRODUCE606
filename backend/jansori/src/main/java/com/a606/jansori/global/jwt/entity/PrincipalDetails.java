@@ -1,26 +1,25 @@
-package com.a606.jansori.global.auth.dto;
+package com.a606.jansori.global.jwt.entity;
 
+import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.MemberRole;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 @Data
-public class PrincipalDetails implements UserDetails, OAuth2User {
-    private static final long serialVersionUID = 1L;
-    private final Long id;
-    private final MemberRole role;
-    private final Map<String, Object> attributes;
+public class PrincipalDetails implements UserDetails {
+//    private static final long serialVersionUID = 1L;
+    private Long id;
+    private MemberRole role;
+    private Member member;
 
-    public PrincipalDetails(Map<String, Object> attributes, Long id, MemberRole role) {
-        this.id = id;
-        this.role = role;
-        this.attributes = attributes;
+    public PrincipalDetails(Member member) {
+        this.id = member.getId();
+        this.role = member.getMemberRole();
+        this.member = member;
     }
 
     public Long getId() {
@@ -29,16 +28,6 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     public MemberRole getRole() {
         return this.role;
-    }
-
-    @Override
-    public String getName() {
-        return (String) this.attributes.get("name");
-    }
-
-    @Override
-    public Map<String, Object> getAttributes() {
-        return attributes;
     }
 
     @Override
@@ -56,12 +45,12 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     @Override
     public String getPassword() {
-        return null;
+        return this.member.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return (String) this.attributes.get("name");
+        return (String) this.member.getEmail();
     }
 
     @Override

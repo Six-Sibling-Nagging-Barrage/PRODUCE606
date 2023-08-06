@@ -1,40 +1,47 @@
 package com.a606.jansori.global.config;
 
-import com.a606.jansori.global.auth.service.OAuthAccessDeniedHandler;
-import com.a606.jansori.global.auth.service.OAuthService;
-import com.a606.jansori.global.auth.service.OAuthSuccessHandler;
+import com.a606.jansori.global.jwt.handler.JwtAccessDeniedHandler;
+import com.a606.jansori.global.jwt.handler.JwtAuthenticationEntryPoint;
+import com.a606.jansori.global.jwt.util.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.List;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
 
-    private final OAuthSuccessHandler oAuthSuccessHandler;
-    private final OAuthService oAuthService;
-    private final OAuthAccessDeniedHandler oAuthAccessDeniedHandler;
+    private final TokenProvider tokenProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
+    @Bean
+    AuthenticationManager authenticationManager(
+        AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
-//        configuration.setAllowedOrigins(Arrays.asList("<http://localhost:3000>", "..."));
-//        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-//        configuration.setAllowCredentials(true);
-//        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Authorization-refresh", "Cache-Control", "Content-Type"));
-//
-//        configuration.setExposedHeaders(Arrays.asList("Authorization", "Authorization-refresh"));
 
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
@@ -44,16 +51,6 @@ public class SecurityConfig {
         configuration.setMaxAge(3600L);
 
 
-//        configuration.setAllowCredentials(true);
-//        configuration.setAllowedOrigins(List.of("http://i9a606.p.ssafy.io"));
-//        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-//        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-//        configuration.addAllowedOrigin("http://localhost:3000");
-//        configuration.addAllowedHeader("*");
-//        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-//        configuration.setAllowedHeaders(List.of("*"));
-//        configuration.setExposedHeaders(List.of("*"));
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -61,35 +58,41 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        http.httpBasic()
+                http.httpBasic()
                 .disable()
+                    .exceptionHandling()
+                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                    .accessDeniedHandler(jwtAccessDeniedHandler)
+
+                .and()
+                .formLogin().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                .and()
                 .cors().configurationSource(corsConfigurationSource())
+
                 .and()
                 .authorizeRequests()
+                .antMatchers("/", "/login/oauth2/code/google").permitAll()
+                .antMatchers("/login/**").permitAll()
                 .antMatchers("/signup/**").hasRole("GUEST")
                 .antMatchers("/oauth2/authorization/google/**").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/api/members/login/success/**").permitAll()
                 .antMatchers("/").permitAll()
-                .anyRequest()
-                .authenticated()
-                .and().exceptionHandling()
-                .accessDeniedHandler(oAuthAccessDeniedHandler)
+
 
                 .and()
                 .csrf().disable()
                 .headers().frameOptions().disable()
 
                 .and()
-                .logout().logoutSuccessUrl("/") //logout 요청시 홈으로 이동 - 기본 logout url = "/logout"
+                .logout().logoutSuccessUrl("/")
 
-                .and()
-                .oauth2Login()
-                .successHandler(oAuthSuccessHandler)
-                .userInfoEndpoint()
-                .userService(oAuthService);
+                .and().apply(new JwtSecurityConfig(tokenProvider));
 
         return http.build();
+
     }
 
 }

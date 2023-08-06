@@ -16,7 +16,7 @@ import com.a606.jansori.domain.todo.dto.GetTodoPersonaDetailsResDto;
 import com.a606.jansori.domain.todo.dto.PostPersonaReactResDto;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
-import com.a606.jansori.global.auth.util.SecurityUtil;
+import com.a606.jansori.global.jwt.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
