@@ -2,24 +2,33 @@ import React, { useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import tw, { styled } from 'twin.macro';
 import { RxHamburgerMenu } from 'react-icons/rx';
+import { AiFillBell } from 'react-icons/ai';
+import { TbTicket } from 'react-icons/tb';
 import Modal from '../UI/Modal';
 import GoogleLoginButton from '../Login/GoogleLoginButton';
 import { Link } from 'react-router-dom';
 
-import { isLogin } from '../../states/user';
+import { isLogin, profileImgData, memberNameData } from '../../states/user';
+import DropdownProfileMenu from './DropdownProfileMenu';
 
 const NavBar = () => {
   const [isToggleOpen, setIsToggleOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const user = useRecoilValue(isLogin);
+  const profileImg = useRecoilValue(profileImgData);
 
   const handleMenuClick = () => {
     setIsToggleOpen(!isToggleOpen);
   };
 
   const handleLoginClick = () => {
-    setIsLoginModalOpen(!isLogin);
+    setIsLoginModalOpen(true);
+  };
+
+  const handleProfileClick = () => {
+    setIsProfileModalOpen(!isProfileModalOpen);
   };
 
   return (
@@ -37,11 +46,37 @@ const NavBar = () => {
           </Logo>
           {/* 오른쪽 로그인 버튼 부분 시작*/}
           <RightButtons>
-            {/* 로그인 하기 전 */}
-            {!user && <LoginButton onClick={handleLoginClick}>Login</LoginButton>}
-            {/* 로그인 하고 난 후 - 알림버튼, 티켓 개수, 프로필 사진 + 드롭다운으로 로그아웃 */}
-            {/* 임시 방편으로 그냥 Logout 이라고만 표시 */}
-            {user && <LoginButton onClick={handleLoginClick}>Logout</LoginButton>}
+            {user ? (
+              <AfterLoginWrap>
+                <button>
+                  <AiFillBell style={{ marginRight: '8px' }} />
+                </button>
+                <TicketWrap>
+                  <TicketItem>
+                    <TicketItemLogo>
+                      <TbTicket />
+                    </TicketItemLogo>
+                  </TicketItem>
+                  <TicketItem>137</TicketItem>
+                </TicketWrap>
+
+                <ul>
+                  <li>
+                    <button onClick={handleProfileClick}>
+                      <Avatar src={profileImg} alt='profile' />
+                    </button>
+                  </li>
+
+                  {isProfileModalOpen && (
+                    <li>
+                      <DropdownProfileMenu />
+                    </li>
+                  )}
+                </ul>
+              </AfterLoginWrap>
+            ) : (
+              <LoginButton onClick={handleLoginClick}>Login</LoginButton>
+            )}
             {/* 화면 작아졌을 때 햄버거 icon 시작 */}
             <HamburgerButton
               type='button'
@@ -214,4 +249,24 @@ md:p-0
 const LoginTitle = styled.div`
   font-size: 18px;
   margin-bottom: 20px;
+`;
+
+const AfterLoginWrap = styled.div`
+  ${tw`flex`}
+`;
+
+const Avatar = styled.img`
+  ${tw`w-8 h-8 ml-3 rounded-full border-2 border-violet-200`}
+`;
+
+const TicketWrap = styled.div`
+  ${tw`flex items-center m-1`}
+`;
+
+const TicketItem = styled.div`
+  ${tw`flex items-center text-purple-600 mr-2`}
+`;
+
+const TicketItemLogo = styled.div`
+  transform: rotate(-30deg);
 `;
