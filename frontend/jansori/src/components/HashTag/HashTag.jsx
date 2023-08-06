@@ -4,7 +4,13 @@ import AutoComplete from '../AutoComplete/AutoComplete';
 import HashTagItem from './HashTagItem';
 
 const HashTag = (props) => {
-  const { hashTagLimit, setSpecificTag, hashTagList, setHashTagList } = props;
+  const {
+    editable,
+    hashTagLimit,
+    setSpecificTag,
+    hashTagList,
+    setHashTagList,
+  } = props;
 
   const [hashTagInput, setHashTagInput] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +49,7 @@ const HashTag = (props) => {
             <HashTagItem
               key={hashTag.tagId}
               hashTag={hashTag}
-              editable={true}
+              editable={editable}
               setHashTagList={setHashTagList}
               setHashTagCount={setHashTagCount}
             />
@@ -81,6 +87,7 @@ const HashTagContainer = styled.div`
   min-height: 50px;
   padding: 10px;
   margin: 0 auto;
+  width: fit-content;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 5px;
 `;
