@@ -46,9 +46,9 @@ const ProfileImg = (props) => {
 const ProfileImgContainer = styled.div`
   width: fit-content;
   margin: 0 auto;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   & > img {
-    ${tw`w-24 h-24 rounded-full`}
+    ${tw`w-20 h-20 rounded-full`}
     object-fit: cover;
   }
   & > input {

@@ -4,12 +4,11 @@ import AutoComplete from '../AutoComplete/AutoComplete';
 import HashTagItem from './HashTagItem';
 
 const HashTag = (props) => {
-  const { hashTagLimit, setSpecificTag } = props;
+  const { hashTagLimit, setSpecificTag, hashTagList, setHashTagList } = props;
 
   const [hashTagInput, setHashTagInput] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [hashTagExists, setHashTagExists] = useState(false);
-  const [hashTagList, setHashTagList] = useState([]);
   const [hashTagCount, setHashTagCount] = useState(0);
   const [currentHashTag, setCurrentHashTag] = useState(null);
 
@@ -38,8 +37,8 @@ const HashTag = (props) => {
 
   return (
     <>
-      <HashTagContainer>
-        {hashTagList.map((hashTag, index) => {
+      <HashTagContainer className="hashtag-container">
+        {hashTagList?.map((hashTag, index) => {
           return (
             <HashTagItem
               key={hashTag.tagId}
@@ -52,8 +51,8 @@ const HashTag = (props) => {
         })}
         {hashTagCount < hashTagLimit && (
           <HashTagInput
-            type='text'
-            placeholder='해시태그를 검색하세요.'
+            type="text"
+            placeholder="해시태그를 검색하세요."
             onChange={handleHashTagInputChange}
             value={hashTagInput}
             onKeyPress={handleKeyPress}
@@ -94,6 +93,11 @@ const HashTagInput = styled.input`
   outline: none;
   cursor: text;
   margin-left: 4px;
+  &:hover {
+    .hashtag-container:has(&) {
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    }
+  }
 `;
 
 export default HashTag;
