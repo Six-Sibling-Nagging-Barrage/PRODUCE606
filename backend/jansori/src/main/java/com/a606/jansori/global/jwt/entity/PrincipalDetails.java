@@ -11,7 +11,7 @@ import java.util.Collection;
 
 @Data
 public class PrincipalDetails implements UserDetails {
-//    private static final long serialVersionUID = 1L;
+
     private Long id;
     private MemberRole role;
     private Member member;
