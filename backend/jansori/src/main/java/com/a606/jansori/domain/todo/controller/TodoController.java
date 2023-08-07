@@ -6,6 +6,8 @@ import com.a606.jansori.domain.todo.dto.GetTodoDetailResDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedByFollowingReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedByTagReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
+import com.a606.jansori.domain.todo.dto.GetTodoMonthlyExistenceReqDto;
+import com.a606.jansori.domain.todo.dto.GetTodoMonthlyExistenceResDto;
 import com.a606.jansori.domain.todo.dto.GetTodoPersonaDetailsResDto;
 import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
 import com.a606.jansori.domain.todo.dto.PostPersonaReactResDto;
@@ -54,12 +56,22 @@ public class TodoController {
         .build();
   }
 
-  @GetMapping("/member/{memberId}")
+  @GetMapping("/members/{memberId}")
   public EnvelopeResponse<GetTodoByDateResDto> getTodoByDateAndMemberId(
       @PathVariable Long memberId, @Valid GetTodoByDateReqDto getTodoByDateReqDto) {
 
     return EnvelopeResponse.<GetTodoByDateResDto>builder()
         .data(todoService.getMemberTodoByDate(memberId, getTodoByDateReqDto))
+        .build();
+  }
+
+  @GetMapping("/members/{memberId}/monthly")
+  public EnvelopeResponse<GetTodoMonthlyExistenceResDto> getTodoMonthlyExistence(
+      @PathVariable Long memberId, @Valid GetTodoMonthlyExistenceReqDto getTodoMonthlyExistenceReqDto
+      ) {
+
+    return EnvelopeResponse.<GetTodoMonthlyExistenceResDto>builder()
+        .data(todoService.getTodoMonthlyExistence(memberId, getTodoMonthlyExistenceReqDto))
         .build();
   }
 
