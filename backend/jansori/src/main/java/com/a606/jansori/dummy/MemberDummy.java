@@ -26,13 +26,13 @@ public class MemberDummy {
     for (int i = 0; i < targetMemberSize; i++) {
 
       Member member = Member.builder()
+          .email("email"+i+"@ssafy.com")
+          .password("$2a$10$sUIvQz.218ms3B6yTIFlvOoemUtt4GCVzovRVqNDiam8lcUrAAwF6")
           .memberRole(MemberRole.USER)
           .memberState(MemberStatus.ACTIVE)
           .bio("bio" + i)
           .imageUrl("www.image" + i + ".png")
           .nickname("nickname" + i)
-          .oauthIdentifier("oauth" + i)
-          .oauthType(OauthType.GOOGLE)
           .build();
 
       members.add(memberRepository.save(member));
