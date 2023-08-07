@@ -10,6 +10,7 @@ import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagsOfNagBoxResDto;
+import com.a606.jansori.domain.nag.dto.GetNagsOfProfilePageReqDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
 import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
@@ -26,7 +27,9 @@ import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -127,6 +130,21 @@ public class NagService {
     Long totalNagsCount = nagRepository.count();
 
     return GetNagBoxStatisticsResDto.of(totalMemberCount, totalDoneTodoCount, totalNagsCount);
+  }
+
+  @Transactional(readOnly = true)
+  public GetNagOfProfilePageResDto getNagsOfProfilePageByMemberId(
+      GetNagsOfProfilePageReqDto getNagsOfProfilePageReqDto) {
+
+    Member member = securityUtil.getCurrentMemberByToken();
+
+    Long memberId = getNagsOfProfilePageReqDto.getMemberId();
+    Long cursor = getNagsOfProfilePageReqDto.getCursor();
+    Integer size = getNagsOfProfilePageReqDto.getSize();
+
+
+
+    return null;
   }
 
   private void decreaseNagLike(Nag nag, NagLike nagLike) {
