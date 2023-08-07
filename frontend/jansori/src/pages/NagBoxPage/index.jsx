@@ -30,14 +30,9 @@ const NagBoxPage = () => {
 
   useEffect(() => {
     (async () => {
-      try {
-        const data = await getNagBoxStatistics();
-        setCounts(data);
-        setLoading(false);
-      } catch (e) {
-        console.error(e);
-        setLoading(false);
-      }
+      const data = await getNagBoxStatistics();
+      setCounts(data);
+      setLoading(false);
     })();
   }, []);
 

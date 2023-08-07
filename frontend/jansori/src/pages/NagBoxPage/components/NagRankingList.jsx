@@ -15,12 +15,8 @@ const NagRankingList = () => {
 
   useEffect(() => {
     (async () => {
-      try {
-        const data = await getNagRanking();
-        setMemberNagRankings(data.nags);
-      } catch (e) {
-        console.error(e);
-      }
+      const data = await getNagRanking();
+      setMemberNagRankings(data.nags);
     })();
   }, []);
 
