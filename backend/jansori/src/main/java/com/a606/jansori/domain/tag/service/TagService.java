@@ -39,7 +39,7 @@ public class TagService {
   public PostTagFollowResDto followTagByTagWithMember(Long tagId) {
 
     Tag tag = tagRepository.findById(tagId).orElseThrow(TagNotFoundException::new);
-    Member member = securityUtil.getMemberFromSession();
+    Member member = securityUtil.getCurrentMemberByToken();
 
     Optional<TagFollow> tagFollow = tagFollowRepository.findTagFollowByTagAndMember(tag, member);
     PostTagFollowResDto postTagFollowResDto = new PostTagFollowResDto();

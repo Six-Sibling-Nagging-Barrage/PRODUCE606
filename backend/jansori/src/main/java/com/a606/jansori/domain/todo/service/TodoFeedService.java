@@ -17,7 +17,8 @@ import com.a606.jansori.domain.todo.dto.TodoFeedDto;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
-import com.a606.jansori.global.jwt.util.SecurityUtil;
+
+import com.a606.jansori.global.auth.util.SecurityUtil;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
@@ -50,7 +51,7 @@ public class TodoFeedService {
   public GetTodoFeedResDto getTodoFeedByFollowingTags(
       GetTodoFeedByFollowingReqDto getTodoFeedByFollowingReqDto) {
 
-    Member member = securityUtil.getMemberFromSession();
+    Member member = securityUtil.getCurrentMemberByToken();
 
     List<Tag> tags = tagFollowRepository.findAllByMember(member).stream()
         .map(TagFollow::getTag)
@@ -73,8 +74,7 @@ public class TodoFeedService {
   @Transactional(readOnly = true)
   public GetTodoFeedResDto getTodoFeedByGivenTag(GetTodoFeedByTagReqDto getTodoFeedByTagReqDto) {
 
-//    Member member = securityUtil.getMemberFromSession();
-    Member member = securityUtil.getTestMemberFromSession();
+    Member member = securityUtil.getCurrentMemberByToken();
 
     Tag tag = tagRepository.findById(getTodoFeedByTagReqDto.getTagId())
         .orElseThrow(TagNotFoundException::new);
@@ -92,7 +92,7 @@ public class TodoFeedService {
   @Transactional(readOnly = true)
   public GetTodoDetailResDto getTodoDetail(Long todoId) {
 
-    Member member = securityUtil.getMemberFromSession();
+    Member member = securityUtil.getCurrentMemberByToken();
 
     Todo todo = todoRepository.findById(todoId)
         .orElseThrow(TodoNotFoundException::new);

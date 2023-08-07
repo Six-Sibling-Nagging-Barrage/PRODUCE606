@@ -4,12 +4,10 @@ import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.global.auth.entity.PrincipalDetails;
 import com.a606.jansori.global.auth.exception.AuthMemberNotFoundException;
-import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,9 +34,7 @@ public class PrincipalDetailsService implements UserDetailsService {
     GrantedAuthority grantedAuthority =
         new SimpleGrantedAuthority(member.getMemberRole().toString());
 
-//    return new User(String.valueOf(member.getId()), member.getPassword(),
-//        Collections.singleton(grantedAuthority));
-    return new PrincipalDetails(member, member.getId(), member.getMemberRole());
+    return new PrincipalDetails(member);
 
   }
 }

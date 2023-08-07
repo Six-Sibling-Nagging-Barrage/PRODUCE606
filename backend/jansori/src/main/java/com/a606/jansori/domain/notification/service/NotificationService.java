@@ -28,7 +28,7 @@ public class NotificationService {
   @Transactional
   public PatchNotificationsResDto patchNotifications() {
 
-    Member member = getMemberFromSecurityUtil();
+    Member member = securityUtil.getCurrentMemberByToken();
 
     NotificationBox notificationBox = notificationBoxRepository.findByMember(member);
 
@@ -42,9 +42,4 @@ public class NotificationService {
     return patchNotificationsResDto;
   }
 
-  private Member getMemberFromSecurityUtil() {
-
-    return memberRepository.findById(securityUtil.getSessionMemberId())
-        .orElseThrow(MemberNotFoundException::new);
-  }
 }

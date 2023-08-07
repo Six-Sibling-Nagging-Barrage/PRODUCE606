@@ -2,20 +2,20 @@ package com.a606.jansori.global.auth.controller;
 
 import com.a606.jansori.global.auth.dto.AuthReqDto;
 import com.a606.jansori.global.auth.dto.AuthResDto;
-import com.a606.jansori.global.auth.util.SecurityUtil;
-import com.a606.jansori.global.common.EnvelopeResponse;
 import com.a606.jansori.global.auth.dto.TokenDto;
 import com.a606.jansori.global.auth.dto.TokenRequestDto;
 import com.a606.jansori.global.auth.service.AuthService;
+import com.a606.jansori.global.auth.util.SecurityUtil;
+import com.a606.jansori.global.common.EnvelopeResponse;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor

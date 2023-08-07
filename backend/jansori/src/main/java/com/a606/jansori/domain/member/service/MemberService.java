@@ -54,14 +54,14 @@ public class MemberService {
   @Transactional(readOnly = true)
   public GetMyProfileResDto getMyProfile() {
 
-    Member member = securityUtil.getMemberFromCurrentMemberId();
+    Member member = securityUtil.getCurrentMemberByToken();
 
     return GetMyProfileResDto.from(member);
   }
 
   @Transactional
   public PatchMemberInfoResDto updateMemberInfo(PatchMemberInfoReqDto patchMemberInfoReqDto) {
-    Member member = securityUtil.getMemberFromCurrentMemberId();
+    Member member = securityUtil.getCurrentMemberByToken();
 
     member.update(patchMemberInfoReqDto.getNickname(), patchMemberInfoReqDto.getBio(),
         patchMemberInfoReqDto.getImageUrl(), MemberRole.USER);

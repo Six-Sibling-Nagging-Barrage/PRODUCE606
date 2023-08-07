@@ -20,18 +20,15 @@ public class RefreshToken {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "rt_key")
-  private String key;
+  @Column(name = "refreshtoken_email")
+  private String email;
 
-//  @Column(name = "member_id")
-//  private Long memberId;
-
-  @Column(name = "rt_value")
+  @Column(name = "refreshtoken_value")
   private String value;
 
 
-  public RefreshToken(String key, String value) {
-    this.key = key;
+  public RefreshToken(String email, String value) {
+    this.email = email;
     this.value = value;
   }
 

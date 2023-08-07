@@ -3,9 +3,7 @@ package com.a606.jansori.global.auth.util;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
-import com.a606.jansori.global.auth.entity.PrincipalDetails;
 import com.a606.jansori.global.auth.exception.AuthMemberNotFoundException;
-import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -19,7 +17,7 @@ public class SecurityUtil {
 
   private final MemberRepository memberRepository;
 
-  public Member getMemberByAccessToken() {
+  public Member getCurrentMemberByToken() {
 
     final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -29,21 +27,6 @@ public class SecurityUtil {
 
     return memberRepository.findMemberByEmail(authentication.getName())
         .orElseThrow(MemberNotFoundException::new);
-  }
-
-  public Member getMemberFromCurrentMemberId() {
-
-    return null;
-  }
-
-  public Member getNullableMemberFromCurrentMemberId() {
-
-    return null;
-  }
-
-  public Member getTestMemberFromCurrentMemberId() {
-
-    return memberRepository.findById(1L).orElseGet(null);
   }
 
 }
