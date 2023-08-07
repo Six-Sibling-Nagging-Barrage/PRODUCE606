@@ -1,40 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import tw, { styled } from 'twin.macro';
 import NagRankingItem from './NagRankingItem';
+import { getNagRanking } from '../../../apis/api/nag';
+import { addTokenToHeaders } from '../../../apis/utils/authInstance';
+import { useRecoilValue } from 'recoil';
+import { memberToken } from '../../../states/user';
 
 const NagRankingList = () => {
-  const memberNagRankings = [
-    {
-      nagId: 7,
-      unlocked: null,
-      content: 'ㄴㅇ ㅈㄱㄱ ㅁㅁㅎㄷ ㄴㄱㄱㄴ ㅋㄷㅎㄷ',
-      likeCount: 5,
-    },
-    {
-      nagId: 8,
-      unlocked: null,
-      content: 'ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ',
-      likeCount: 253,
-    },
-    {
-      nagId: 12,
-      unlocked: null,
-      content: 'ㄴㄷ ㅋㄷㅈㅎㄱ ㅅㄷ',
-      likeCount: 152,
-    },
-    {
-      nagId: 21,
-      unlocked: null,
-      content: 'ㅅㄹㅈㅅㄹㅈㅅㄹㅈ',
-      likeCount: 5,
-    },
-    {
-      nagId: 56,
-      unlocked: null,
-      content: 'ㄴㄷㄹㄴㅇㄹ ㄴㅇㄹ',
-      likeCount: 86,
-    },
-  ];
+  const jwtToken = useRecoilValue(memberToken);
+
+  addTokenToHeaders(jwtToken);
+
+  const [memberNagRankings, setMemberNagRankings] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await getNagRanking();
+        setMemberNagRankings(data.nags);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, []);
 
   return (
     <NagRankingListWrap>

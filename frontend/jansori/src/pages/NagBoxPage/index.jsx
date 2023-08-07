@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Background from '../../components/UI/Background';
 import CountBox from './components/CountBox';
 import SpeechBubble from '../../components/UI/SpeechBubble';
 import { Link } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
 import NagRankingList from './components/NagRankingList';
+import { getNagBoxStatistics } from '../../apis/api/nag';
 
 const NagBoxPage = () => {
+  const [counts, setCounts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const nagSentences = [
     {
       startSentence: '현재 총',
@@ -25,21 +28,36 @@ const NagBoxPage = () => {
     },
   ];
 
-  const counts = ['15698', '157', '586'];
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await getNagBoxStatistics();
+        setCounts(data);
+        setLoading(false);
+      } catch (e) {
+        console.error(e);
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   return (
     <Background>
       <CenteredContainer>
-        <CountBoxContainer>
-          {nagSentences.map((nagSentence, index) => (
-            <CountBox
-              key={index}
-              startSentence={nagSentence.startSentence}
-              count={counts[index] + nagSentence.expression}
-              endSentence={nagSentence.endSentence}
-            />
-          ))}
-        </CountBoxContainer>
+        {loading ? (
+          <LoadingMessage>Loading...</LoadingMessage>
+        ) : (
+          <CountBoxContainer>
+            {nagSentences.map((nagSentence, index) => (
+              <CountBox
+                key={index}
+                startSentence={nagSentence.startSentence}
+                count={counts[Object.keys(counts)[index]] + nagSentence.expression}
+                endSentence={nagSentence.endSentence}
+              />
+            ))}
+          </CountBoxContainer>
+        )}
       </CenteredContainer>
 
       {/* 잔소리 버튼 */}
@@ -94,4 +112,8 @@ const NagRannkingContainer = styled.div`
 
 const NagTitle = styled.p`
   ${tw`font-bold text-2xl my-10`}
+`;
+
+const LoadingMessage = styled.p`
+  ${tw`text-center text-gray-500 my-6 font-semibold text-4xl`}
 `;
