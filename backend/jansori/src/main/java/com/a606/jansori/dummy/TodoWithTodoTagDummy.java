@@ -42,7 +42,7 @@ public class TodoWithTodoTagDummy {
               .member(members.get(j))
               .content("오늘의 할일" + start++)
               .finished(false)
-              .display(true)
+              .display(k == 1 ? false : true)
               .todoAt(LocalDate.now().minusDays(i))
               .nag(nags.get(randomUtil.generate((long) nags.size())))
               .build();
