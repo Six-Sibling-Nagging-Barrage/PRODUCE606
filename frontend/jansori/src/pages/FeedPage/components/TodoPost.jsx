@@ -88,7 +88,7 @@ const PostContainer = styled.div`
   margin: 10px;
 `;
 const PostHeader = styled.header`
-  ${tw`flex gap-4 mb-4`}
+  ${tw`flex gap-4`}
   position: relative;
 `;
 const ProfileLink = tw.a`relative inline-flex items-center justify-center w-12 h-12 text-white rounded-full`;
@@ -99,16 +99,16 @@ const WriterName = styled.div`
 const CreateDate = tw.div`text-sm text-slate-400`;
 const TodoContent = styled.div`
   text-align: center;
-  padding: 20px 0;
+  margin: 10px;
   & .todo {
-    padding-top: 20px;
+    margin: 10px 0;
   }
 `;
 const CommentsContainer = styled.div``;
 
 const HashTagContainer = styled.div`
   width: fit-content;
-  margin: 10px auto;
+  margin: 0 auto;
   display: flex;
 `;
 

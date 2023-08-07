@@ -8,7 +8,7 @@ import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { updateLikeNag } from '../../../apis/api/nag';
 
 const Feed = (props) => {
-  const { specificTag, getFeedData } = props;
+  const { specificTag, hasFollowingHashTags, getFeedData } = props;
 
   const [currentPostId, setCurrentPostId] = useState(-1);
   const [personaReaction, setPersonaReaction] = useState([]);
@@ -18,15 +18,14 @@ const Feed = (props) => {
   const pageSize = 10;
   let param;
 
-  useEffect(() => {
-    if (specificTag === -1) {
-      param = { cursor: null, pageSize };
-    } else {
-      param = { specificTag, cursor: null, pageSize };
-    }
-  }, []);
+  if (specificTag === -1) {
+    param = { cursor: null, pageSize };
+  } else {
+    param = { cursor: null, tagId: specificTag, pageSize };
+  }
 
   const fetchMoreTodoPosts = async (pageParam) => {
+    if (!hasFollowingHashTags) return undefined;
     const data = await getFeedData(pageParam);
     return data;
   };
@@ -49,11 +48,11 @@ const Feed = (props) => {
     ({ pageParam = param }) => fetchMoreTodoPosts(pageParam),
     {
       getNextPageParam: (lastPage) => {
-        if (!lastPage.hasNext) return undefined;
+        if (!lastPage?.hasNext) return undefined;
         if (specificTag === -1) {
           return { cursor: lastPage.nextCursor, pageSize };
         } else {
-          return { specificTag, cursor: lastPage.nextCursor, pageSize };
+          return { tagId: specificTag, cursor: lastPage.nextCursor, pageSize };
         }
       },
     }
@@ -97,33 +96,40 @@ const Feed = (props) => {
 
   return (
     <FeedContainer>
-      <ul>
-        {data?.pages.map((page) =>
-          page.feed.map((post) => {
-            return (
-              <TodoPost
-                post={post}
-                key={post.todoId}
-                currentPostId={currentPostId}
-                setCurrentPostId={setCurrentPostId}
-                setPersonaReaction={setPersonaReaction}
-                toggleLike={updateLikeMutation.mutate}
-              />
-            );
-          })
-        )}
-      </ul>
-      <InfiniteScroll
-        fetchNextPage={fetchNextPage}
-        hasNextPage={hasNextPage}
-        isFetchingNextPage={isFetchingNextPage}
-      />
-      {currentPostId > -1 && (
-        <PersonaReaction
-          personaReaction={personaReaction}
-          setCurrentPostId={setCurrentPostId}
-          currentPostId={currentPostId}
-        />
+      {hasFollowingHashTags ? (
+        <>
+          <ul>
+            {data?.pages.map((page) =>
+              page.feed.map((post) => {
+                return (
+                  <TodoPost
+                    post={post}
+                    key={post.todoId}
+                    currentPostId={currentPostId}
+                    setCurrentPostId={setCurrentPostId}
+                    setPersonaReaction={setPersonaReaction}
+                    toggleLike={updateLikeMutation.mutate}
+                  />
+                );
+              })
+            )}
+          </ul>
+          <InfiniteScroll
+            fetchNextPage={fetchNextPage}
+            hasNextPage={hasNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+          />
+          {currentPostId > -1 && (
+            <PersonaReaction
+              personaReaction={personaReaction}
+              setPersonaReaction={setPersonaReaction}
+              setCurrentPostId={setCurrentPostId}
+              currentPostId={currentPostId}
+            />
+          )}
+        </>
+      ) : (
+        <div>해시태그 없음</div>
       )}
     </FeedContainer>
   );

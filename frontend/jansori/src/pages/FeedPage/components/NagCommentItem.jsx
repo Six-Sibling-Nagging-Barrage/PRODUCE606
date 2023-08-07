@@ -12,7 +12,7 @@ const NagCommentItem = (props) => {
   return (
     <CommentContainer>
       <Profile>
-        <ProfileImg src={nag.nagMember.img} />
+        <ProfileImg src={nag.nagMember.imageUrl} />
         <NickName>{nag.nagMember.nickname}</NickName>
       </Profile>
       <CommentContentWrapper>

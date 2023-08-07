@@ -5,7 +5,7 @@ import Background from '../../components/UI/Background';
 import { styled } from 'twin.macro';
 import Button from '../../components/UI/Button';
 import { createLogin } from '../../apis/api/member';
-import { memberToken } from '../../states/user';
+import { memberToken, memberInfoState } from '../../states/user';
 
 const LoginPage = () => {
   const {
@@ -15,6 +15,7 @@ const LoginPage = () => {
   } = useForm({ mode: 'onBlur' });
 
   const setMemberToken = useSetRecoilState(memberToken);
+  const setMemberInfo = useSetRecoilState(memberInfoState);
 
   const loginSubmit = async (data) => {
     const user = {
@@ -23,7 +24,12 @@ const LoginPage = () => {
     };
     // TODO: 로그인 api 호출
     const res = await createLogin(user);
-    console.log(res.accessToken);
+    console.log(res);
+    setMemberInfo({
+      memberId: 1,
+      email: data.email,
+      password: data.password,
+    });
     setMemberToken(res.accessToken);
   };
 
