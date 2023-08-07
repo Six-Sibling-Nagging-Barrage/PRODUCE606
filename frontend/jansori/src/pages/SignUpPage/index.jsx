@@ -82,7 +82,7 @@ const SignUpPage = () => {
       <SignUpContainer>
         <SignUpTitle></SignUpTitle>
         <form onKeyDown={handleFormKeyDown}>
-          <ProfileImg editable={true} />
+          <ProfileImg editable={true} size="80px" />
           <InfoContainer>
             <Label>닉네임</Label>
             <Nickname
@@ -142,6 +142,7 @@ const SignUpPage = () => {
         </form>
         <Label>해시태그 구독</Label>
         <HashTag
+          editable={true}
           hashTagLimit={3}
           hashTagList={hashTagList}
           setHashTagList={setHashTagList}
