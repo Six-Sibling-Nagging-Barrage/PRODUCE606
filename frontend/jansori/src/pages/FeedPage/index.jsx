@@ -19,7 +19,11 @@ const FeedPage = () => {
     <FeedContainer>
       <SearchDiv>
         <Search>
-          <HashTag hashTagLimit={1} setSpecificTag={setSpecificTag} />
+          <HashTag
+            editable={true}
+            hashTagLimit={1}
+            setSpecificTag={setSpecificTag}
+          />
         </Search>
       </SearchDiv>
       <Feed specificTag={specificTag} getFeedData={getFeedData} />
