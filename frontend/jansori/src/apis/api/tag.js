@@ -1,10 +1,4 @@
-import { authInstance, addTokenToHeaders } from '../../apis/utils/authInstance';
-import { useRecoilValue } from 'recoil';
-import { memberToken } from '../../states/user';
-
-const jwtToken = useRecoilValue(memberToken);
-
-addTokenToHeaders(jwtToken);
+import { authInstance } from '../../apis/utils/authInstance';
 
 // 새로운 해시태그 생성 및 팔로우
 export const createTag = async (searchText) => {

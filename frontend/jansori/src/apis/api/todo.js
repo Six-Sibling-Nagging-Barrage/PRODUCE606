@@ -1,10 +1,4 @@
-import { authInstance, addTokenToHeaders } from '../../apis/utils/authInstance';
-import { useRecoilValue } from 'recoil';
-import { memberToken } from '../../states/user';
-
-const jwtToken = useRecoilValue(memberToken);
-
-addTokenToHeaders(jwtToken);
+import { authInstance } from '../../apis/utils/authInstance';
 
 // Todo 작성`
 export const createTodo = async (todo) => {

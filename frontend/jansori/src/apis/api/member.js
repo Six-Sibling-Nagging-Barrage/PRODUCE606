@@ -1,11 +1,5 @@
 import defaultInstance from '../utils/defaultInstance';
-import { authInstance, addTokenToHeaders } from '../../apis/utils/authInstance';
-import { useRecoilValue } from 'recoil';
-import { memberToken } from '../../states/user';
-
-const jwtToken = useRecoilValue(memberToken);
-
-addTokenToHeaders(jwtToken);
+import { authInstance } from '../../apis/utils/authInstance';
 
 // 회원가입
 export const createSignUp = async (user) => {
