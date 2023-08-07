@@ -58,6 +58,13 @@ public class NagController {
         .build();
   }
 
+  @GetMapping("/nags/members")
+  public EnvelopeResponse getNagsOfProfilePageByMemberId(
+      @Valid GetNagsOfProfilePageReqDto getNagsOfProfilePageReqDto) {
+      return EnvelopeResponse.builder()
+          .build();
+  }
+
   @PostMapping
   public EnvelopeResponse<PostNagResDto> postNaggingByMember(
       @Valid @RequestBody PostNagReqDto postNagReqDto) {
