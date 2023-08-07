@@ -2,17 +2,22 @@ import React, { useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import tw, { styled } from 'twin.macro';
 import { RxHamburgerMenu } from 'react-icons/rx';
+import { AiFillBell } from 'react-icons/ai';
+import { TbTicket } from 'react-icons/tb';
 import Modal from '../UI/Modal';
 import GoogleLoginButton from '../Login/GoogleLoginButton';
 import { Link } from 'react-router-dom';
 
-import { isLogin } from '../../states/user';
+import { isLogin, profileImgData, memberNameData } from '../../states/user';
+import DropdownProfileMenu from './DropdownProfileMenu';
 
 const NavBar = () => {
   const [isToggleOpen, setIsToggleOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const user = useRecoilValue(isLogin);
+  const profileImg = useRecoilValue(profileImgData);
 
   const handleMenuClick = () => {
     setIsToggleOpen(!isToggleOpen);
@@ -22,12 +27,16 @@ const NavBar = () => {
     setIsLoginModalOpen(true);
   };
 
+  const handleProfileClick = () => {
+    setIsProfileModalOpen(!isProfileModalOpen);
+  };
+
   return (
     <>
       <Nav>
         {/* 로고 들어가는 부분 시작 */}
         <NavWrap>
-          <Logo href='/'>
+          <Logo href='/' onClick={() => setIsToggleOpen(false)}>
             <img
               className='h-4'
               src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyy01YZvIVHu61Ocu6oepgHZwHOzzoYHRn8g&usqp=CAU'
@@ -37,11 +46,37 @@ const NavBar = () => {
           </Logo>
           {/* 오른쪽 로그인 버튼 부분 시작*/}
           <RightButtons>
-            {/* 로그인 하기 전 */}
-            {!user && <LoginButton onClick={handleLoginClick}>Login</LoginButton>}
-            {/* 로그인 하고 난 후 - 알림버튼, 티켓 개수, 프로필 사진 + 드롭다운으로 로그아웃 */}
-            {/* 임시 방편으로 그냥 Logout 이라고만 표시 */}
-            {user && <LoginButton onClick={handleLoginClick}>Logout</LoginButton>}
+            {user ? (
+              <AfterLoginWrap>
+                <button>
+                  <AiFillBell style={{ marginRight: '8px' }} />
+                </button>
+                <TicketWrap>
+                  <TicketItem>
+                    <TicketItemLogo>
+                      <TbTicket />
+                    </TicketItemLogo>
+                  </TicketItem>
+                  <TicketItem>137</TicketItem>
+                </TicketWrap>
+
+                <ul>
+                  <li>
+                    <button onClick={handleProfileClick}>
+                      <Avatar src={profileImg} alt='profile' />
+                    </button>
+                  </li>
+
+                  {isProfileModalOpen && (
+                    <li>
+                      <DropdownProfileMenu />
+                    </li>
+                  )}
+                </ul>
+              </AfterLoginWrap>
+            ) : (
+              <LoginButton onClick={handleLoginClick}>Login</LoginButton>
+            )}
             {/* 화면 작아졌을 때 햄버거 icon 시작 */}
             <HamburgerButton
               type='button'
@@ -59,16 +94,24 @@ const NavBar = () => {
           <NavItems id='navbar-sticky' isToggleOpen={isToggleOpen}>
             <NavItemsUl>
               <li>
-                <NavItem to='/feed'>Feed</NavItem>
+                <NavItem to='/feed' onClick={() => setIsToggleOpen(false)}>
+                  Feed
+                </NavItem>
               </li>
               <li>
-                <NavItem to='/profile'>Profile</NavItem>
+                <NavItem to='/profile' onClick={() => setIsToggleOpen(false)}>
+                  Profile
+                </NavItem>
               </li>
               <li>
-                <NavItem to='/nagbox'>잔소리함</NavItem>
+                <NavItem to='/nagbox' onClick={() => setIsToggleOpen(false)}>
+                  잔소리함
+                </NavItem>
               </li>
               <li>
-                <NavItem to='characterinfo'>About Us</NavItem>
+                <NavItem to='characterinfo' onClick={() => setIsToggleOpen(false)}>
+                  About Us
+                </NavItem>
               </li>
             </NavItemsUl>
           </NavItems>
@@ -90,15 +133,14 @@ export default NavBar;
 
 const Nav = styled.nav`
   ${tw`
-  bg-white
   fixed
   w-full
   z-20
   top-0
   left-0
-  border-b
-  border-gray-200
   `}
+  backdrop-filter:  blur(5px);
+  padding: 0 10px;
 `;
 
 const NavWrap = styled.div`
@@ -179,12 +221,10 @@ border
 border-gray-100
 rounded-lg
 w-full
-bg-gray-50
 md:flex-row
 md:space-x-8
 md:mt-0
 md:border-0
-md:bg-white
 `}
 `;
 
@@ -196,7 +236,6 @@ pl-3
 pr-4
 text-gray-900
 rounded
-hover:bg-gray-100
 md:hover:bg-transparent
 md:hover:text-blue-700
 md:p-0
@@ -206,4 +245,24 @@ md:p-0
 const LoginTitle = styled.div`
   font-size: 18px;
   margin-bottom: 20px;
+`;
+
+const AfterLoginWrap = styled.div`
+  ${tw`flex`}
+`;
+
+const Avatar = styled.img`
+  ${tw`w-8 h-8 ml-3 mr-3 rounded-full border-2 border-violet-200`}
+`;
+
+const TicketWrap = styled.div`
+  ${tw`flex items-center m-1`}
+`;
+
+const TicketItem = styled.div`
+  ${tw`flex items-center text-purple-600 mr-2`}
+`;
+
+const TicketItemLogo = styled.div`
+  transform: rotate(-30deg);
 `;
