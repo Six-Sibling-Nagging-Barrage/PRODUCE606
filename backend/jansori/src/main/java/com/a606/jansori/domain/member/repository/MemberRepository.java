@@ -19,4 +19,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
   @Query(value = "update member m set m.createdAt = :date, m.modifiedAt = :date where m = :member")
   Integer updateDate(Member member, LocalDateTime date);
 
+  Optional<Member> findMemberByEmail(String email);
+
+  boolean existsByEmail(String email);
+
 }

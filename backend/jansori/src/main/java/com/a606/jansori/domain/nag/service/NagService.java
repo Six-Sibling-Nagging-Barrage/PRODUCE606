@@ -58,7 +58,7 @@ public class NagService {
   public PostNagResDto createNag(PostNagReqDto postNagReqDto) {
     Tag tag = tagRepository.findById(postNagReqDto.getTagId())
         .orElseThrow(TagNotFoundException::new);
-    Member member = securityUtil.getMemberFromSession();
+    Member member = securityUtil.getCurrentMemberByToken();
     String preview = previewUtil.convertNagToPreview(postNagReqDto.getContent());
 
     Nag nag = Nag.ofMemberWithNagContentAndPreview(member, postNagReqDto, preview);
@@ -71,7 +71,7 @@ public class NagService {
   @Transactional
   public PostNagLikeResDto toggleNagLike(Long nagId) {
     Nag nag = nagRepository.findById(nagId).orElseThrow(NagNotFoundException::new);
-    Member member = securityUtil.getMemberFromSession();
+    Member member = securityUtil.getCurrentMemberByToken();
 
     Optional<NagLike> nagLike = nagLikeRepository.findNagLikeByNagAndMember(nag, member);
 
@@ -84,7 +84,7 @@ public class NagService {
   @Transactional
   public NagDto unlockNagPreviewByMemberTicket(Long nagId) {
     Nag nag = nagRepository.findById(nagId).orElseThrow(NagNotFoundException::new);
-    Member member = securityUtil.getMemberFromSession();
+    Member member = securityUtil.getCurrentMemberByToken();
 
     if (nagUnlockRepository.existsByNagAndMember(nag, member)) {
       throw new NagUnlockBusinessException();
@@ -99,7 +99,7 @@ public class NagService {
 
   @Transactional(readOnly = true)
   public GetNagOfProfilePageResDto getAllNagsByMember() {
-    Member member = securityUtil.getMemberFromSession();
+    Member member = securityUtil.getCurrentMemberByToken();
 
     return GetNagOfProfilePageResDto.from(nagTagRepository
         .findByMember(member)
@@ -120,7 +120,7 @@ public class NagService {
 
   @Transactional(readOnly = true)
   public GetNagsOfNagBoxResDto getNagsOfNagBox() {
-    Member member = securityUtil.getMemberFromSession();
+    Member member = securityUtil.getCurrentMemberByToken();
 
     List<Nag> nags = nagRepository.findByNagsOfNagBox(PageRequest.of(0, NAG_BOX_COUNT));
     List<NagUnlock> nagUnlocks = nagUnlockRepository.findNagUnlocksByNagIsInAndMember(nags, member);

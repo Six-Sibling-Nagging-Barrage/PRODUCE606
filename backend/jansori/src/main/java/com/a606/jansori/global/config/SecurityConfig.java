@@ -1,11 +1,18 @@
 package com.a606.jansori.global.config;
 
-import com.a606.jansori.global.auth.service.OAuthService;
+import com.a606.jansori.global.auth.handler.JwtAccessDeniedHandler;
+import com.a606.jansori.global.auth.handler.JwtAuthenticationEntryPoint;
+import com.a606.jansori.global.auth.util.TokenProvider;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -16,16 +23,32 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig {
 
-  private final OAuthService oAuthService;
+  private final TokenProvider tokenProvider;
+  private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+  private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
+  @Bean
+  AuthenticationManager authenticationManager(
+      AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    return authenticationConfiguration.getAuthenticationManager();
+  }
+
+  @Bean
+  public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
 
-    configuration.addAllowedOriginPattern("*");
-    configuration.addAllowedHeader("*");
-    configuration.addAllowedMethod("*");
+    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+    configuration.setAllowedMethods(
+        Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
     configuration.setAllowCredentials(true);
+    configuration.setAllowedHeaders(Arrays.asList("Authorization", "Requestor-Type"));
+    configuration.setExposedHeaders(Arrays.asList("X-Get-Header"));
+    configuration.setMaxAge(3600L);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
@@ -34,30 +57,40 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.httpBasic()
+        .disable()
+        .exceptionHandling()
+        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+        .accessDeniedHandler(jwtAccessDeniedHandler)
 
-    http.httpBasic().disable()
+        .and()
+        .formLogin().disable()
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+        .and()
         .cors().configurationSource(corsConfigurationSource())
 
         .and()
         .authorizeRequests()
-        .antMatchers("/register").hasRole("GUEST")
-        .anyRequest().permitAll()
+        .antMatchers("/", "/login/oauth2/code/google").permitAll()
+        .antMatchers("/login/**").permitAll()
+        .antMatchers("/signup/**").hasRole("GUEST")
+        .antMatchers("/oauth2/authorization/google/**").permitAll()
+        .antMatchers("/h2-console/**").permitAll()
+        .antMatchers("/api/members/login/success/**").permitAll()
+        .antMatchers("/").permitAll()
 
         .and()
         .csrf().disable()
         .headers().frameOptions().disable()
 
         .and()
-        .logout().logoutSuccessUrl("/") //logout 요청시 홈으로 이동 - 기본 logout url = "/logout"
+        .logout().logoutSuccessUrl("/")
 
-        .and()
-        .oauth2Login()
-        .defaultSuccessUrl("/", true) //OAuth2 성공시 redirect
-        .userInfoEndpoint() //OAuth2 로그인 성공 이후 사용자 정보를 가져올 때 설정 담당
-        .userService(oAuthService);
+        .and().apply(new JwtSecurityConfig(tokenProvider));
 
-    //OAuth2 로그인 성공 시, 작업을 진행할 MemberService
     return http.build();
+
   }
 
 }
