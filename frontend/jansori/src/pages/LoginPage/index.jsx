@@ -22,9 +22,9 @@ const LoginPage = () => {
       password: data.password,
     };
     // TODO: 로그인 api 호출
-    const data = await createLogin(user);
-    console.log(data.accessToken);
-    setMemberToken(data.accessToken);
+    const res = await createLogin(user);
+    console.log(res.accessToken);
+    setMemberToken(res.accessToken);
   };
 
   const handleFormKeyDown = (event) => {
