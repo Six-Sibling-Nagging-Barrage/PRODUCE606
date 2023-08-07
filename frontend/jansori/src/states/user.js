@@ -19,6 +19,6 @@ export const profileImgData = atom({
 
 export const memberNameData = atom({
   key: 'memberName',
-  default: '',
+  default: 'membername',
   effects_UNSTABLE: [persistAtom],
 });
