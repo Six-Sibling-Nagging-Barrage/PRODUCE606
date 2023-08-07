@@ -18,10 +18,10 @@ public interface TodoRepository extends JpaRepository<Todo, Long>, TodoDynamicQu
 
   Long countTodosByFinishedIsTrue();
 
-  @Query(value = "SELECT DISTINCT t.todoAt "
+  @Query(value = "SELECT DISTINCT t.todoAt as todoAt "
       + "FROM todo t "
       + "WHERE t.member = :member "
-      + "AND year(t.todoAt) = :year "
-      + "AND month(t.todoAt) = :month")
+      + "AND YEAR(todoAt) = :year "
+      + "AND MONTH(todoAt) = :month")
   List<TodoAt> findAllTodoAtByMemberAndMonthAndYear(Member member, int year, int month);
 }
