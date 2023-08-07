@@ -67,10 +67,10 @@ const PersonaReaction = (props) => {
     setPersonaIndex(personaId - 1);
   };
 
-  const handleClickPersonaReaction = async (personaId) => {
+  const handleClickPersonaReaction = async (personaId, todoPersonaId) => {
     if (isAdded[personaId - 1]) return;
     // TODO: 캐릭터 반응 api 호출
-    const data = await createPersonaReaction({ currentPostId, personaId });
+    const data = await createPersonaReaction({ currentPostId, todoPersonaId });
 
     if (!data.isFirstReaction) return;
 
@@ -114,7 +114,10 @@ const PersonaReaction = (props) => {
                   handlePersonaHover(reaction.personaId);
                 }}
                 onClick={() => {
-                  handleClickPersonaReaction(reaction.personaId);
+                  handleClickPersonaReaction(
+                    reaction.personaId,
+                    reaction.todoPersonaId
+                  );
                 }}
               >
                 <img
