@@ -153,17 +153,8 @@ public class TodoService {
     Member member = memberRepository.findById(memberId)
         .orElseThrow(MemberNotFoundException::new);
 
-    LocalDate firstDayOfMonth = getTodoMonthlyExistenceReqDto.getYearMonth().atDay(1);
-    LocalDate endDayOfMonth = getTodoMonthlyExistenceReqDto.getYearMonth().atEndOfMonth();
-
     int year = getTodoMonthlyExistenceReqDto.getYearMonth().getYear();
     int month = getTodoMonthlyExistenceReqDto.getYearMonth().getMonthValue();
-
-//    return new GetTodoMonthlyExistenceResDto(
-//        todoRepository.findAllTodoAtByMemberAndMonthAndYear(member, firstDayOfMonth, endDayOfMonth).stream()
-//            .map(TodoAt::getTodoAt)
-//            .collect(Collectors.toList())
-//    );
 
     return new GetTodoMonthlyExistenceResDto(
         todoRepository.findAllTodoAtByMemberAndMonthAndYear(member, year, month).stream()
