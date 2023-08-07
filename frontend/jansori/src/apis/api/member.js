@@ -4,8 +4,8 @@ import authInstance from '../utils/authInstance';
 // 회원가입/로그인 요청
 export const createMember = async () => {
   try {
-    const res = await defaultInstance.get(`/oauth2/authorization/google`);
-    return res;
+    const { data } = await defaultInstance.get(`/oauth2/authorization/google`);
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -14,8 +14,8 @@ export const createMember = async () => {
 // 로그아웃
 export const getLogout = async () => {
   try {
-    const res = await authInstance.get(`/logout`);
-    return res;
+    const { data } = await authInstance.get(`/logout`);
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -24,12 +24,12 @@ export const getLogout = async () => {
 // 회원 정보 최초 입력
 export const createProfile = async (profile) => {
   try {
-    const res = await authInstance.post(`/register`, profile, {
+    const { data } = await authInstance.post(`/register`, profile, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
-    return res;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -38,12 +38,12 @@ export const createProfile = async (profile) => {
 // 정보 수정
 export const updateProfile = async (profile) => {
   try {
-    const res = await authInstance.put(`/members`, profile, {
+    const { data } = await authInstance.put(`/members`, profile, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
-    return res;
+    return data.data;
   } catch (e) {
     console.log(e);
   }

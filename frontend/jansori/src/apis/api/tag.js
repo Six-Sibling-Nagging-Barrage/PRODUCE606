@@ -6,7 +6,7 @@ export const createTag = async (searchText) => {
     const { data } = await authInstance.post(
       `/tags/create?keyword=${searchText}`
     );
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -18,7 +18,7 @@ export const getTagsAutoComplete = async (searchText) => {
     const { data } = await authInstance.get(
       `/tags/auto-complete?keyword=${searchText}`
     );
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -28,7 +28,7 @@ export const getTagsAutoComplete = async (searchText) => {
 export const createFollowTag = async (tagId) => {
   try {
     const { data } = await authInstance.post(`/tags/${tagId}/follow`);
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -38,7 +38,7 @@ export const createFollowTag = async (tagId) => {
 export const getFollowTagList = async (memberId) => {
   try {
     const { data } = await authInstance.get(`/tags/${memberId}/list`);
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
