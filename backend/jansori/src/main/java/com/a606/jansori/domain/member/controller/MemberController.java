@@ -2,9 +2,6 @@ package com.a606.jansori.domain.member.controller;
 
 import com.a606.jansori.domain.member.dto.*;
 import com.a606.jansori.domain.member.service.MemberService;
-import com.a606.jansori.global.jwt.dto.TokenDto;
-import com.a606.jansori.global.jwt.dto.TokenRequestDto;
-import com.a606.jansori.global.jwt.util.SecurityUtil;
 import com.a606.jansori.global.common.EnvelopeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

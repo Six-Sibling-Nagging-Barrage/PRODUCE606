@@ -1,6 +1,6 @@
-package com.a606.jansori.global.jwt.filter;
+package com.a606.jansori.global.auth.filter;
 
-import com.a606.jansori.global.jwt.util.TokenProvider;
+import com.a606.jansori.global.auth.util.TokenProvider;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

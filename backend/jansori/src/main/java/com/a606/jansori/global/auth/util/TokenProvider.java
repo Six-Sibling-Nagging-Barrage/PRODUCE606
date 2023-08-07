@@ -1,6 +1,8 @@
-package com.a606.jansori.global.jwt.util;
+package com.a606.jansori.global.auth.util;
 
-import com.a606.jansori.global.jwt.dto.TokenDto;
+import com.a606.jansori.global.auth.dto.TokenDto;
+import com.a606.jansori.global.auth.entity.RefreshToken;
+import com.a606.jansori.global.auth.exception.AuthUnauthorizedException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -22,10 +24,16 @@ import java.util.stream.Collectors;
 @Component
 public class TokenProvider {
 
+//  private static final String AUTHORITIES_KEY = "auth";
+//  private static final String BEARER_TYPE = "Bearer";
+//  private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
+//  private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
+
   private static final String AUTHORITIES_KEY = "auth";
   private static final String BEARER_TYPE = "Bearer";
   private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
   private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
+  // 환경변수로 빼기
 
   private final Key key;
 
@@ -34,7 +42,19 @@ public class TokenProvider {
     this.key = Keys.hmacShaKeyFor(keyBytes);
   }
 
-  public TokenDto generateTokenDto(Authentication authentication) {
+  public String generateRefreshTokenDto() {
+    long now = (new Date()).getTime();
+
+    String refreshToken = Jwts.builder()
+        .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
+        .signWith(key, SignatureAlgorithm.HS512)
+        .compact();
+
+    return refreshToken;
+
+  }
+
+  public TokenDto generateAccessTokenDto(Authentication authentication, String refreshToken) {
 
     String authorities = authentication.getAuthorities().stream()
         .map(GrantedAuthority::getAuthority)
@@ -51,11 +71,10 @@ public class TokenProvider {
         .signWith(key, SignatureAlgorithm.HS512)
         .compact();
 
-
-    String refreshToken = Jwts.builder()
-        .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-        .signWith(key, SignatureAlgorithm.HS512)
-        .compact();
+//    String refreshToken = Jwts.builder()
+//        .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
+//        .signWith(key, SignatureAlgorithm.HS512)
+//        .compact();
 
     return TokenDto.builder()
         .grantType(BEARER_TYPE)
@@ -72,7 +91,7 @@ public class TokenProvider {
 
     if (claims.get(AUTHORITIES_KEY) == null) {
 
-      throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+      throw new AuthUnauthorizedException();
 
     }
 
@@ -88,6 +107,8 @@ public class TokenProvider {
   }
 
   public boolean validateToken(String token) {
+
+    // 이 부분 exception?
 
     try {
 

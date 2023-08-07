@@ -1,7 +1,6 @@
-package com.a606.jansori.global.jwt.handler;
+package com.a606.jansori.global.auth.handler;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
+import com.a606.jansori.global.auth.exception.AuthUnauthorizedException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -12,10 +11,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
   @Override
   public void commence(HttpServletRequest request, HttpServletResponse response,
-      org.springframework.security.core.AuthenticationException authException)
-      throws IOException, ServletException {
+      org.springframework.security.core.AuthenticationException authException) {
 
-    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+    throw new AuthUnauthorizedException();
 
   }
 

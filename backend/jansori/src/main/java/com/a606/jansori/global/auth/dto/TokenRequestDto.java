@@ -1,4 +1,4 @@
-package com.a606.jansori.global.jwt.dto;
+package com.a606.jansori.global.auth.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

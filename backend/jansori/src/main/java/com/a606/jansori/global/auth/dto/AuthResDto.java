@@ -1,4 +1,4 @@
-package com.a606.jansori.global.jwt.dto;
+package com.a606.jansori.global.auth.dto;
 
 import com.a606.jansori.domain.member.domain.Member;
 import lombok.AllArgsConstructor;
@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MemberResDto {
+public class AuthResDto {
 
   private String email;
 
-  public static MemberResDto of(Member member) {
+  public static AuthResDto of(Member member) {
 
-    return new MemberResDto(member.getEmail());
+    return new AuthResDto(member.getEmail());
 
   }
 

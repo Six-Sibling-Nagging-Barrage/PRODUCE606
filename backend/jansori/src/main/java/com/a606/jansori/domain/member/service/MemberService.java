@@ -11,8 +11,6 @@ import com.a606.jansori.domain.member.dto.PatchMemberInfoResDto;
 import com.a606.jansori.domain.member.exception.DuplicatedNicknameException;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
-import com.a606.jansori.domain.tag.repository.TagFollowRepository;
-import com.a606.jansori.global.auth.util.SecurityUtil;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
@@ -56,14 +54,14 @@ public class MemberService {
   @Transactional(readOnly = true)
   public GetMyProfileResDto getMyProfile() {
 
-    Member member = securityUtil.getMemberFromSession();
+    Member member = securityUtil.getMemberFromCurrentMemberId();
 
     return GetMyProfileResDto.from(member);
   }
 
   @Transactional
   public PatchMemberInfoResDto updateMemberInfo(PatchMemberInfoReqDto patchMemberInfoReqDto) {
-    Member member = securityUtil.getMemberFromSession();
+    Member member = securityUtil.getMemberFromCurrentMemberId();
 
     member.update(patchMemberInfoReqDto.getNickname(), patchMemberInfoReqDto.getBio(),
         patchMemberInfoReqDto.getImageUrl(), MemberRole.USER);

@@ -1,7 +1,9 @@
-package com.a606.jansori.global.jwt.service;
+package com.a606.jansori.global.auth.service;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.repository.MemberRepository;
+import com.a606.jansori.global.auth.entity.PrincipalDetails;
+import com.a606.jansori.global.auth.exception.AuthMemberNotFoundException;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,17 +27,18 @@ public class PrincipalDetailsService implements UserDetailsService {
 
     return memberRepository.findMemberByEmail(email)
         .map(this::createUserDetails)
-        .orElseThrow(() -> new UsernameNotFoundException(email + " -> 데이터베이스에서 찾을 수 없습니다."));
+        .orElseThrow(() -> new AuthMemberNotFoundException());
 
   }
 
-  private UserDetails createUserDetails(Member member){
+  private UserDetails createUserDetails(Member member) {
 
     GrantedAuthority grantedAuthority =
         new SimpleGrantedAuthority(member.getMemberRole().toString());
 
-    return new User(String.valueOf(member.getId()), member.getPassword(),
-        Collections.singleton(grantedAuthority));
+//    return new User(String.valueOf(member.getId()), member.getPassword(),
+//        Collections.singleton(grantedAuthority));
+    return new PrincipalDetails(member, member.getId(), member.getMemberRole());
 
   }
 }

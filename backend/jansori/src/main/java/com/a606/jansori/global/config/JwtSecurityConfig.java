@@ -1,7 +1,7 @@
 package com.a606.jansori.global.config;
 
-import com.a606.jansori.global.jwt.filter.JwtFilter;
-import com.a606.jansori.global.jwt.util.TokenProvider;
+import com.a606.jansori.global.auth.filter.JwtFilter;
+import com.a606.jansori.global.auth.util.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
