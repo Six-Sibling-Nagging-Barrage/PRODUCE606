@@ -269,6 +269,28 @@ class NagServiceTest {
     verify(nagUnlockRepository, times(1)).existsByNagAndMember(mockNag, mockMember);
   }
 
+  @DisplayName("잔소리함의 통계 조회에 성공한다.")
+  @Test
+  void Given_Any_When_GetNagBoxStatistics_Then_Success() {
+    //given
+    given(memberRepository.count()).willReturn(20L);
+    given(todoRepository.countTodosByFinishedIsTrue()).willReturn(30L);
+    given(nagRepository.count()).willReturn(50L);
+
+    //when
+    GetNagBoxStatisticsResDto getNagBoxStatisticsResDto = nagService.getNagBoxStatisticsResDto();
+
+    //then
+    assertThat(getNagBoxStatisticsResDto.getTotalMemberCount()).isEqualTo(20L);
+    assertThat(getNagBoxStatisticsResDto.getTotalDoneTodoCount()).isEqualTo(30L);
+    assertThat(getNagBoxStatisticsResDto.getTotalNagsCount()).isEqualTo(50L);
+
+    //verify
+    verify(memberRepository, times(1)).count();
+    verify(todoRepository, times(1)).countTodosByFinishedIsTrue();
+    verify(nagRepository, times(1)).count();
+  }
+
 
   static Stream<List<Nag>> generateNags() {
     return Stream.of(
