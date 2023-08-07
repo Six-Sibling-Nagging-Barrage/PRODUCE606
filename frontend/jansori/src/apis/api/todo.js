@@ -69,10 +69,10 @@ export const updateTodoComplete = async (todoId) => {
 };
 
 // Todo 캐릭터 반응하기
-export const createPersonaReaction = async ({ todoId, personaId }) => {
+export const createPersonaReaction = async ({ todoId, todoPersonaId }) => {
   try {
     const { data } = await authInstance.post(
-      `/todo/${todoId}/react?personaId=${personaId}`
+      `/todos/${todoId}/${todoPersonaId}`
     );
     return data.data;
   } catch (e) {
