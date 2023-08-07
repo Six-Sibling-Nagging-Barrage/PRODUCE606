@@ -15,15 +15,19 @@ import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.dto.GetTodoByDateReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoByDateResDto;
+import com.a606.jansori.domain.todo.dto.GetTodoMonthlyExistenceReqDto;
+import com.a606.jansori.domain.todo.dto.GetTodoMonthlyExistenceResDto;
 import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
 import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
 import com.a606.jansori.domain.todo.dto.PostTodoResDto;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
+import com.a606.jansori.domain.todo.repository.TodoAt;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.a606.jansori.global.auth.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -140,5 +144,32 @@ public class TodoService {
     }
 
     return tag;
+  }
+
+  @Transactional(readOnly = true)
+  public GetTodoMonthlyExistenceResDto getTodoMonthlyExistence(Long memberId,
+      GetTodoMonthlyExistenceReqDto getTodoMonthlyExistenceReqDto) {
+
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(MemberNotFoundException::new);
+
+    int year = getTodoMonthlyExistenceReqDto.getYearMonth().getYear();
+    int month = getTodoMonthlyExistenceReqDto.getYearMonth().getMonthValue();
+
+    List<LocalDate> dates = todoRepository.findAllTodoAtByMemberAndMonthAndYear(member, month, year).stream()
+        .map(todoAt -> {
+          System.out.println(todoAt.getTodoAt());
+
+          return todoAt.getTodoAt();
+        }).collect(Collectors.toList());
+
+    System.out.println("dates size : " + dates.size());
+
+    return new GetTodoMonthlyExistenceResDto(
+        todoRepository.findAllTodoAtByMemberAndMonthAndYear(member, month, year).stream()
+            .map(TodoAt::getTodoAt)
+            .collect(Collectors.toList())
+    );
+
   }
 }

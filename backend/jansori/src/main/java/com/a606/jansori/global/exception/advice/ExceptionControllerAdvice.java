@@ -32,7 +32,7 @@ public class ExceptionControllerAdvice {
 
     return EnvelopeResponse.builder()
         .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
-        .message(errorMessage.toString())
+        .message(HttpStatus.BAD_REQUEST.name())
         .build();
   }
 
