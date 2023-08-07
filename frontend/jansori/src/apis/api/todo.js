@@ -1,6 +1,12 @@
-import authInstance from '../utils/authInstance';
+import { authInstance, addTokenToHeaders } from '../../apis/utils/authInstance';
+import { useRecoilValue } from 'recoil';
+import { memberToken } from '../../states/user';
 
-// Todo 작성
+const jwtToken = useRecoilValue(memberToken);
+
+addTokenToHeaders(jwtToken);
+
+// Todo 작성`
 export const createTodo = async (todo) => {
   try {
     const { data } = await authInstance.post(`/todo`, todo, {

@@ -1,10 +1,34 @@
 import defaultInstance from '../utils/defaultInstance';
-import authInstance from '../utils/authInstance';
+import { authInstance, addTokenToHeaders } from '../../apis/utils/authInstance';
+import { useRecoilValue } from 'recoil';
+import { memberToken } from '../../states/user';
 
-// 회원가입/로그인 요청
-export const createMember = async () => {
+const jwtToken = useRecoilValue(memberToken);
+
+addTokenToHeaders(jwtToken);
+
+// 회원가입
+export const createSignUp = async (user) => {
   try {
-    const { data } = await defaultInstance.get(`/oauth2/authorization/google`);
+    const { data } = await defaultInstance.post(`/auth/signup`, user, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return data.data;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+// 로그인
+export const createLogin = async (user) => {
+  try {
+    const { data } = await defaultInstance.post(`/auth/login`, user, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     return data.data;
   } catch (e) {
     console.log(e);

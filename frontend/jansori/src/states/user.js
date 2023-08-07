@@ -22,3 +22,9 @@ export const memberNameData = atom({
   default: 'membername',
   effects_UNSTABLE: [persistAtom],
 });
+
+export const memberToken = atom({
+  key: 'memberToken',
+  default: '',
+  effects_UNSTABLE: [persistAtom],
+});

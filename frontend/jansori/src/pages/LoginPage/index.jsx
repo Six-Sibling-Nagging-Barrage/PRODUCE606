@@ -1,24 +1,30 @@
 import React, { useEffect, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 import { useForm } from 'react-hook-form';
 import Background from '../../components/UI/Background';
 import { styled } from 'twin.macro';
 import Button from '../../components/UI/Button';
-import { createSignUp } from '../../apis/api/member';
+import { createLogin } from '../../apis/api/member';
+import { memberToken } from '../../states/user';
 
-const SignUpPage = () => {
+const LoginPage = () => {
   const {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
   } = useForm({ mode: 'onBlur' });
 
+  const setMemberToken = useSetRecoilState(memberToken);
+
   const loginSubmit = async (data) => {
     const user = {
       email: data.email,
       password: data.password,
     };
-    // TODO: 회원가입 api 호출
-    const res = await createSignUp(user);
+    // TODO: 로그인 api 호출
+    const data = await createLogin(user);
+    console.log(data.accessToken);
+    setMemberToken(data.accessToken);
   };
 
   const handleFormKeyDown = (event) => {
@@ -143,4 +149,4 @@ const Footer = styled.div`
   margin: 10px 0 20px;
 `;
 
-export default SignUpPage;
+export default LoginPage;

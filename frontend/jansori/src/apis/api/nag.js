@@ -1,4 +1,10 @@
-import authInstance from '../utils/authInstance';
+import { authInstance, addTokenToHeaders } from '../../apis/utils/authInstance';
+import { useRecoilValue } from 'recoil';
+import { memberToken } from '../../states/user';
+
+const jwtToken = useRecoilValue(memberToken);
+
+addTokenToHeaders(jwtToken);
 
 // 내가 보낸 잔소리 목록 조회
 export const getMyNagList = async () => {
