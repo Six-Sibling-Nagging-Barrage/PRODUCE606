@@ -2,17 +2,16 @@ package com.a606.jansori.global.auth.service;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.repository.MemberRepository;
+import com.a606.jansori.global.auth.domain.RefreshToken;
 import com.a606.jansori.global.auth.dto.AuthReqDto;
 import com.a606.jansori.global.auth.dto.AuthResDto;
-import com.a606.jansori.global.auth.dto.TokenDto;
-import com.a606.jansori.global.auth.dto.TokenRequestDto;
-import com.a606.jansori.global.auth.entity.RefreshToken;
+import com.a606.jansori.global.auth.dto.TokenReqDto;
+import com.a606.jansori.global.auth.dto.TokenResDto;
 import com.a606.jansori.global.auth.exception.AuthInvalidRefreshTokenException;
 import com.a606.jansori.global.auth.exception.AuthMemberDuplicateException;
 import com.a606.jansori.global.auth.exception.AuthMemberNotFoundException;
 import com.a606.jansori.global.auth.exception.AuthUnauthorizedException;
 import com.a606.jansori.global.auth.repository.RefreshTokenRepository;
-import com.a606.jansori.global.auth.util.SecurityUtil;
 import com.a606.jansori.global.auth.util.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,12 +44,12 @@ public class AuthService {
 
     Member member = authReqDto.toMember(passwordEncoder);
 
-    return AuthResDto.of(memberRepository.save(member));
+    return AuthResDto.from(memberRepository.save(member));
 
   }
 
   @Transactional
-  public TokenDto login(AuthReqDto authReqDto) {
+  public TokenResDto login(AuthReqDto authReqDto) {
 
     UsernamePasswordAuthenticationToken authenticationToken = authReqDto.toAuthentication();
 
@@ -62,38 +61,34 @@ public class AuthService {
         .value(tokenProvider.generateRefreshTokenDto())
         .build();
 
-    TokenDto tokenDto = tokenProvider.generateAccessTokenDto(authentication,
+    TokenResDto tokenResDto = tokenProvider.generateAccessTokenDto(authentication,
         refreshToken.getValue());
 
     refreshTokenRepository.save(refreshToken);
 
-    return tokenDto;
+    return tokenResDto;
 
   }
 
   @Transactional
-  public TokenDto reissue(TokenRequestDto tokenRequestDto) {
+  public TokenResDto reissue(TokenReqDto tokenReqDto) {
 
-    if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
+    if (!tokenProvider.validateToken(tokenReqDto.getRefreshToken())) {
       throw new AuthInvalidRefreshTokenException();
     }
 
     Authentication authentication = tokenProvider.getAuthentication(
-        tokenRequestDto.getAccessToken());
+        tokenReqDto.getAccessToken());
 
     // 로그아웃 된 사용자
     RefreshToken refreshToken = refreshTokenRepository.findByEmail(authentication.getName())
-        .orElseThrow(() -> new AuthMemberNotFoundException());
+        .orElseThrow(AuthMemberNotFoundException::new);
 
     // 토근 유저 정보 불일치
-    if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
+    if (!refreshToken.getValue().equals(tokenReqDto.getRefreshToken())) {
       throw new AuthUnauthorizedException();
     }
-
-    TokenDto tokenDto = tokenProvider.generateAccessTokenDto(
-        authentication, refreshToken.getValue());
-
-    return tokenDto;
+    return tokenProvider.generateAccessTokenDto(authentication, refreshToken.getValue());
   }
 
 }

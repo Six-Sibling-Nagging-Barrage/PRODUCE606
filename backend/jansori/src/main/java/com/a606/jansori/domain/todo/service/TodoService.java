@@ -87,7 +87,7 @@ public class TodoService {
   public GetTodoByDateResDto getMemberTodoByDate(Long memberId,
       GetTodoByDateReqDto getTodoByDateReqDto) {
 
-    Member viewer = securityUtil.getNullableMemberFromSession();
+    Member viewer = securityUtil.getNullableMemberByToken();
 
     Member memberWhoViewed = memberRepository.findById(memberId)
         .orElseThrow(MemberNotFoundException::new);

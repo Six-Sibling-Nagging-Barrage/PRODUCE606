@@ -14,7 +14,7 @@ public class AuthResDto {
 
   private String email;
 
-  public static AuthResDto of(Member member) {
+  public static AuthResDto from(Member member) {
 
     return new AuthResDto(member.getEmail());
 

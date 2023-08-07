@@ -2,7 +2,7 @@ package com.a606.jansori.global.auth.service;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.repository.MemberRepository;
-import com.a606.jansori.global.auth.entity.PrincipalDetails;
+import com.a606.jansori.global.auth.domain.PrincipalDetails;
 import com.a606.jansori.global.auth.exception.AuthMemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

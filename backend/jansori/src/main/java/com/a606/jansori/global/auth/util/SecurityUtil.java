@@ -29,4 +29,16 @@ public class SecurityUtil {
         .orElseThrow(MemberNotFoundException::new);
   }
 
+  public Member getNullableMemberByToken() {
+
+    final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    if (authentication == null || authentication.getName() == null) {
+      throw new AuthMemberNotFoundException();
+    }
+
+    return memberRepository.findMemberByEmail(authentication.getName()).orElseGet(null);
+  }
+
+
 }

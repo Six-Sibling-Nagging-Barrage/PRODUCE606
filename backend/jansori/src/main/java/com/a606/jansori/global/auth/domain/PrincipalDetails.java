@@ -1,14 +1,16 @@
-package com.a606.jansori.global.auth.entity;
+package com.a606.jansori.global.auth.domain;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.MemberRole;
 import java.util.ArrayList;
 import java.util.Collection;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Data
+@Getter
+@Builder
 public class PrincipalDetails implements UserDetails {
 
   private Member member;

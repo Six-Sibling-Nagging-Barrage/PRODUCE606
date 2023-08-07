@@ -1,6 +1,8 @@
 package com.a606.jansori.global.auth.util;
 
-import com.a606.jansori.global.auth.dto.TokenDto;
+import com.a606.jansori.global.auth.dto.TokenResDto;
+import com.a606.jansori.global.auth.exception.AuthExpiredAccessTokenException;
+import com.a606.jansori.global.auth.exception.AuthInvalidAccessTokenException;
 import com.a606.jansori.global.auth.exception.AuthUnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -55,7 +57,7 @@ public class TokenProvider {
 
   }
 
-  public TokenDto generateAccessTokenDto(Authentication authentication, String refreshToken) {
+  public TokenResDto generateAccessTokenDto(Authentication authentication, String refreshToken) {
 
     String authorities = authentication.getAuthorities().stream()
         .map(GrantedAuthority::getAuthority)
@@ -72,7 +74,7 @@ public class TokenProvider {
         .signWith(key, SignatureAlgorithm.HS512)
         .compact();
 
-    return TokenDto.builder()
+    return TokenResDto.builder()
         .grantType(BEARER_TYPE)
         .accessToken(accessToken)
         .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
@@ -104,8 +106,6 @@ public class TokenProvider {
 
   public boolean validateToken(String token) {
 
-    // 이 부분 exception?
-
     try {
 
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -113,14 +113,15 @@ public class TokenProvider {
       return true;
 
     } catch (ExpiredJwtException e) {
-// 재발급
-      log.info("만료된 JWT 토큰입니다.");
+
+      throw new AuthExpiredAccessTokenException();
 
     } catch (Exception e) {
-      log.info("지원할 수 없는 토큰입니다.");
+
+      throw new AuthInvalidAccessTokenException();
+
     }
 
-    return false;
   }
 
   private Claims parseClaims(String accessToken) {
