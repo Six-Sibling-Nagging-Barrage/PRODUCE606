@@ -71,7 +71,7 @@ class TagServiceTest {
 
     //then
     assertThrows(TagNotFoundException.class,
-        () -> tagService.followTagByTagWithMember(member.getId(), tag.getId()));
+        () -> tagService.followTagByTagWithMember(tag.getId()));
 
     //verify
     verify(tagRepository, times(1)).findById(tag.getId());
@@ -90,7 +90,7 @@ class TagServiceTest {
     when(tagFollowRepository.save(any(TagFollow.class))).thenReturn(null);
 
     //then
-    tagService.followTagByTagWithMember(member.getId(), tag.getId());
+    tagService.followTagByTagWithMember(tag.getId());
 
     //verify
     verify(tagRepository, times(1)).findById(tag.getId());
@@ -109,7 +109,7 @@ class TagServiceTest {
         Optional.of(tagFollow));
 
     //then
-    tagService.followTagByTagWithMember(member.getId(), tag.getId());
+    tagService.followTagByTagWithMember(tag.getId());
 
     //verify
     verify(tagRepository, times(1)).findById(tag.getId());
