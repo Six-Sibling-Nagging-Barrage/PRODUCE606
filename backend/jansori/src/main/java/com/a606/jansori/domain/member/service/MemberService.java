@@ -13,11 +13,13 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
+import com.a606.jansori.domain.tag.dto.TagDto;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +42,7 @@ public class MemberService {
       throw new DuplicatedNicknameException();
     }
 
-    return GetDuplicateNicknameResDto.from(false);
+    return GetDuplicateNicknameResDto.from(true);
   }
 
   @Transactional(readOnly = true)
@@ -52,7 +54,7 @@ public class MemberService {
   }
 
   @Transactional(readOnly = true)
-  public GetMyProfileResDto getMyProfile() {
+  public GetMyProfileResDto getProfile() {
 
     Member member = securityUtil.getCurrentMemberByToken();
 
