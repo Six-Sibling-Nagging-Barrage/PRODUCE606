@@ -42,22 +42,27 @@ public class MemberController {
         .build();
   }
 
-  @PatchMapping("/update")
+  @PostMapping("/update")
   public EnvelopeResponse<PatchMemberInfoResDto> updateMemberInfo(
       @RequestPart(value = "imageFile", required = false) MultipartFile multipartFile,
-      @RequestParam @Valid PatchMemberInfoReqDto patchMemberInfoReqDto)
+      @RequestPart(value = "memberInfo") @Valid PatchMemberInfoReqDto patchMemberInfoReqDto)
       throws IOException {
 
-    PostFileUploadResDto postFileUploadResDto =
-        awsS3Service.uploadFile(
-        PostFileUploadReqDto
-            .builder()
-            .multipartFile(multipartFile)
-            .build(), UPLOAD_DIR);
+    String imageName = null;
+
+    if(multipartFile != null) {
+      PostFileUploadResDto postFileUploadResDto =
+              awsS3Service.uploadFile(
+                      PostFileUploadReqDto
+                              .builder()
+                              .multipartFile(multipartFile)
+                              .build(), UPLOAD_DIR);
+      imageName = postFileUploadResDto.getImageName();
+    }
 
     return EnvelopeResponse.<PatchMemberInfoResDto>builder()
             .data(memberService
-                .updateMemberInfo(patchMemberInfoReqDto, postFileUploadResDto.getImageName()))
+                .updateMemberInfo(patchMemberInfoReqDto, imageName))
             .build();
 
   }

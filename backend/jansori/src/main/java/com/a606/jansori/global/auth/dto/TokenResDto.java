@@ -18,5 +18,10 @@ public class TokenResDto {
   private String refreshToken;
 
   private Long accessTokenExpiresIn;
+  private Long memberId;
+
+  public void update(Long memberId){
+    this.memberId = memberId;
+  }
 
 }

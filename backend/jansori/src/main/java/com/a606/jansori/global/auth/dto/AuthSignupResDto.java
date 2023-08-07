@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AuthResDto {
+public class AuthSignupResDto {
 
   private String email;
 
-  public static AuthResDto from(Member member) {
+  public static AuthSignupResDto from(Member member) {
 
-    return new AuthResDto(member.getEmail());
+    return new AuthSignupResDto(member.getEmail());
 
   }
 
