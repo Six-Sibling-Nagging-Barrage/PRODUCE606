@@ -3,47 +3,42 @@ package com.a606.jansori.global.auth.util;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
-import com.a606.jansori.global.auth.dto.PrincipalDetails;
-import javax.servlet.http.HttpSession;
+import com.a606.jansori.global.auth.exception.AuthMemberNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SecurityUtil {
 
-  private final HttpSession httpSession;
   private final MemberRepository memberRepository;
 
-  public Long getSessionMemberId() {
+  public Member getCurrentMemberByToken() {
 
-    SecurityContext securityContext = (SecurityContext) httpSession.
-        getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+    final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    Authentication authentication = securityContext.getAuthentication();
-    PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+    if (authentication == null || authentication.getName() == null) {
+      throw new AuthMemberNotFoundException();
+    }
 
-    Long memberId = principalDetails.getId();
-
-    return memberId;
-  }
-
-  public Member getMemberFromSession() {
-
-    return memberRepository.findById(getSessionMemberId())
+    return memberRepository.findMemberByEmail(authentication.getName())
         .orElseThrow(MemberNotFoundException::new);
   }
 
-  public Member getNullableMemberFromSession() {
+  public Member getNullableMemberByToken() {
 
-    return memberRepository.findById(getSessionMemberId()).orElseGet(null);
+    final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    if (authentication == null || authentication.getName() == null) {
+      throw new AuthMemberNotFoundException();
+    }
+
+    return memberRepository.findMemberByEmail(authentication.getName()).orElseGet(null);
   }
 
-  public Member getTestMemberFromSession() {
 
-    return memberRepository.findById(1L).orElseGet(null);
-  }
 }

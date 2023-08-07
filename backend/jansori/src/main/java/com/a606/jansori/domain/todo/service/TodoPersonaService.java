@@ -1,8 +1,6 @@
 package com.a606.jansori.domain.todo.service;
 
 import com.a606.jansori.domain.member.domain.Member;
-import com.a606.jansori.domain.member.exception.MemberNotFoundException;
-import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.service.NagRandomGenerator;
 import com.a606.jansori.domain.persona.domain.PersonaReaction;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
@@ -46,7 +44,7 @@ public class TodoPersonaService {
   @Transactional
   public PostPersonaReactResDto postPersonaReaction(Long todoId, Long todoPersonaId) {
 
-    Member member = securityUtil.getMemberFromSession();
+    Member member = securityUtil.getCurrentMemberByToken();
 
     Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
 
