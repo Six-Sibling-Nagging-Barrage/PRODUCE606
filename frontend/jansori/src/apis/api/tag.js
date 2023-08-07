@@ -1,6 +1,8 @@
 import { authInstance, addTokenToHeaders } from '../../apis/utils/authInstance';
+import { useRecoilValue } from 'recoil';
+import { memberToken } from '../../states/user';
 
-const jwtToken = '';
+const jwtToken = useRecoilValue(memberToken);
 
 addTokenToHeaders(jwtToken);
 
