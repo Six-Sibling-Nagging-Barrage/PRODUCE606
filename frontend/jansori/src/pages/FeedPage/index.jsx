@@ -2,17 +2,30 @@ import React, { useEffect, useState } from 'react';
 import Feed from './components/Feed';
 import { styled } from 'twin.macro';
 import { getFollowingFeed, getSpecificFeed } from '../../apis/api/todo';
+import { getFollowTagList } from '../../apis/api/tag';
 import HashTag from '../../components/HashTag/HashTag';
+import { addTokenToHeaders } from '../../apis/utils/authInstance';
+import { useRecoilValue } from 'recoil';
+import { memberToken, memberInfoState } from '../../states/user';
 
 const FeedPage = () => {
-  const [specificTag, setSpecificTag] = useState(-1);
-  const [getFeedData, setGetFeedData] = useState(null);
+  const [specificTag, setSpecificTag] = useState(1);
+  const [hasFollowingHashTags, setHasFollowingHashTags] = useState(true);
+
+  const jwtToken = useRecoilValue(memberToken);
+  const user = useRecoilValue(memberInfoState);
+
+  addTokenToHeaders(jwtToken);
 
   useEffect(() => {
     if (specificTag === -1) {
-      return setGetFeedData(() => getFollowingFeed);
+      // 팔로우 중인 해시태그 api 호출
+      // (async () => {
+      //   const data = await getFollowTagList(user.memberId);
+      //   if (data.length === 0) setHasFollowingHashTags(false);
+      //   else setHasFollowingHashTags(true);
+      // })();
     }
-    setGetFeedData(() => getSpecificFeed);
   }, [specificTag]);
 
   return (
@@ -26,7 +39,11 @@ const FeedPage = () => {
           />
         </Search>
       </SearchDiv>
-      <Feed specificTag={specificTag} getFeedData={getFeedData} />
+      <Feed
+        specificTag={specificTag}
+        hasFollowingHashTags={hasFollowingHashTags}
+        getFeedData={specificTag === -1 ? getFollowingFeed : getSpecificFeed}
+      />
     </FeedContainer>
   );
 };

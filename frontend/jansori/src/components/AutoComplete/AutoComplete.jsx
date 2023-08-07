@@ -2,28 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { styled } from 'twin.macro';
 import { getTagsAutoComplete } from '../../apis/api/tag';
 
-const dummyData = {
-  tagCount: 5,
-  tags: [
-    {
-      tagId: 23,
-      tagName: '뉴진스',
-    },
-    {
-      tagId: 24,
-      tagName: '하니뉴진스',
-    },
-    {
-      tagId: 22,
-      tagName: '뉴진스하니',
-    },
-    {
-      tagId: 20,
-      tagName: '뉴진스민지',
-    },
-  ],
-};
-
 const AutoComplete = (props) => {
   const {
     searchValue,

@@ -1,9 +1,9 @@
 import { authInstance } from '../../apis/utils/authInstance';
 
-// Todo 작성`
+// Todo 작성
 export const createTodo = async (todo) => {
   try {
-    const { data } = await authInstance.post(`/todo`, todo, {
+    const { data } = await authInstance.post(`/todos`, todo, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -17,7 +17,7 @@ export const createTodo = async (todo) => {
 // 나의 날짜별 Todo List 가져오기
 export const getTodoListByDate = async (date) => {
   try {
-    const { data } = await authInstance.get(`/todo/my?date=${date}`);
+    const { data } = await authInstance.get(`/todos/my?date=${date}`);
     return data.data;
   } catch (e) {
     console.log(e);
@@ -27,9 +27,10 @@ export const getTodoListByDate = async (date) => {
 // 팔로우한 태그의 피드 조회
 export const getFollowingFeed = async ({ cursor, pageSize }) => {
   try {
-    const { data } = await authInstance.get(
-      `/todo/feed/following?cursor=${cursor}&size=${pageSize}`
-    );
+    const url = cursor
+      ? `/todos/feed/following?cursor=${cursor}&size=${pageSize}`
+      : `/todos/feed/following?size=${pageSize}`;
+    const { data } = await authInstance.get(url);
     return data.data;
   } catch (e) {
     console.log(e);
@@ -37,11 +38,12 @@ export const getFollowingFeed = async ({ cursor, pageSize }) => {
 };
 
 // 특정 태그 피드 조회
-export const getSpecificFeed = async ({ tagId, cursor, pageSize }) => {
+export const getSpecificFeed = async ({ cursor, tagId, pageSize }) => {
   try {
-    const { data } = await authInstance.get(
-      `/todo/feed?tagId=${tagId}&cursor=${cursor}&size=${pageSize}`
-    );
+    const url = cursor
+      ? `/todos/feed?cursor=${cursor}&tagId=${tagId}&size=${pageSize}`
+      : `/todos/feed?tagId=${tagId}&size=${pageSize}`;
+    const { data } = await authInstance.get(url);
     return data.data;
   } catch (e) {
     console.log(e);
@@ -51,7 +53,7 @@ export const getSpecificFeed = async ({ tagId, cursor, pageSize }) => {
 // Todo 상세 조회
 export const getTodoDetail = async (todoId) => {
   try {
-    const { data } = await authInstance.get(`/todo/${todoId}`);
+    const { data } = await authInstance.get(`/todos/${todoId}`);
     return data.data;
   } catch (e) {
     console.log(e);
@@ -61,7 +63,7 @@ export const getTodoDetail = async (todoId) => {
 // 나의 Todo 완료 토글
 export const updateTodoComplete = async (todoId) => {
   try {
-    const { data } = await authInstance.patch(`/todo/${todoId}`);
+    const { data } = await authInstance.patch(`/todos/${todoId}`);
     return data.data;
   } catch (e) {
     console.log(e);
@@ -83,7 +85,7 @@ export const createPersonaReaction = async ({ todoId, todoPersonaId }) => {
 // Todo 캐릭터 잔소리 더보기
 export const getPersonaNag = async (todoId) => {
   try {
-    const { data } = await authInstance.get(`/todo/${todoId}/personas`);
+    const { data } = await authInstance.get(`/todos/${todoId}/personas`);
     return data.data;
   } catch (e) {
     console.log(e);

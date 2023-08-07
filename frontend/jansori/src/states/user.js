@@ -28,3 +28,13 @@ export const memberToken = atom({
   default: '',
   effects_UNSTABLE: [persistAtom],
 });
+
+export const memberInfoState = atom({
+  key: 'memberInfoState',
+  default: {
+    memberId: null,
+    email: '',
+    password: '',
+  },
+  effects_UNSTABLE: [persistAtom],
+});

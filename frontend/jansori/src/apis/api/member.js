@@ -66,3 +66,13 @@ export const updateProfile = async (profile) => {
     console.log(e);
   }
 };
+
+// 나의 프로필 조회
+export const getMyProfile = async () => {
+  try {
+    const { data } = await authInstance.get(`/members/my/profile`);
+    return data.data;
+  } catch (e) {
+    console.log(e);
+  }
+};

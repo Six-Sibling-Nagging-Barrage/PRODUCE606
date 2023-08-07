@@ -4,16 +4,27 @@ import { styled } from 'twin.macro';
 import profileImg from '../../assets/profile_img.jpeg';
 import TabItem from './components/TabItem';
 import NagHistory from './components/NagHistory';
+import { getMyProfile } from '../../apis/api/member';
+import { addTokenToHeaders } from '../../apis/utils/authInstance';
+import { useRecoilValue } from 'recoil';
+import { memberToken } from '../../states/user';
 
 const tabs = ['TODO', '잔소리'];
 
 const ProfilePage = () => {
   const [currentTab, setCurrentTab] = useState(0);
 
+  const jwtToken = useRecoilValue(memberToken);
+
+  addTokenToHeaders(jwtToken);
+
   useEffect(() => {
     // TODO: 유저 프로필 조회 api 호출
     // TODO: 내가 보낸 잔소리 조회 api 호출
     // TODO: 유저가 팔로우한 해시태그 조회 api 호출
+    (async () => {
+      const data = await getMyProfile();
+    })();
   }, [currentTab]);
 
   return (
