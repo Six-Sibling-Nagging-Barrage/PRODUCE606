@@ -9,7 +9,7 @@ export const createSignUp = async (user) => {
         'Content-Type': 'application/json',
       },
     });
-    return data.data;
+    return data;
   } catch (e) {
     console.log(e);
   }
@@ -23,7 +23,7 @@ export const createLogin = async (user) => {
         'Content-Type': 'application/json',
       },
     });
-    return data.data;
+    return data;
   } catch (e) {
     console.log(e);
   }
@@ -33,7 +33,7 @@ export const createLogin = async (user) => {
 export const getLogout = async () => {
   try {
     const { data } = await authInstance.get(`/logout`);
-    return data.data;
+    return data;
   } catch (e) {
     console.log(e);
   }
@@ -47,7 +47,7 @@ export const createProfile = async (profile) => {
         'Content-Type': 'application/json',
       },
     });
-    return data.data;
+    return data;
   } catch (e) {
     console.log(e);
   }
@@ -61,7 +61,7 @@ export const updateProfile = async (profile) => {
         'Content-Type': 'application/json',
       },
     });
-    return data.data;
+    return data;
   } catch (e) {
     console.log(e);
   }

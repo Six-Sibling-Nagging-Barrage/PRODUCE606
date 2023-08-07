@@ -22,10 +22,6 @@ const NavBar = () => {
     setIsToggleOpen(!isToggleOpen);
   };
 
-  const handleLoginClick = () => {
-    setIsLoginModalOpen(true);
-  };
-
   const handleProfileClick = () => {
     setIsProfileModalOpen(!isProfileModalOpen);
   };
@@ -74,7 +70,16 @@ const NavBar = () => {
                 </ul>
               </AfterLoginWrap>
             ) : (
-              <LoginButton onClick={handleLoginClick}>Login</LoginButton>
+              <>
+                <NavItemsUl>
+                  <li>
+                    <NavItem to="/login">로그인</NavItem>
+                  </li>
+                  <li>
+                    <NavItem to="/signup">회원가입</NavItem>
+                  </li>
+                </NavItemsUl>
+              </>
             )}
             {/* 화면 작아졌을 때 햄버거 icon 시작 */}
             <HamburgerButton
