@@ -1,4 +1,8 @@
-import authInstance from '../utils/authInstance';
+import { authInstance, addTokenToHeaders } from '../../apis/utils/authInstance';
+
+const jwtToken = '';
+
+addTokenToHeaders(jwtToken);
 
 // 새로운 해시태그 생성 및 팔로우
 export const createTag = async (searchText) => {

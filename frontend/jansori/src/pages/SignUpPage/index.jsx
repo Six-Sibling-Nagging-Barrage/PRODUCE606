@@ -17,10 +17,8 @@ const SignUpPage = () => {
       email: data.email,
       password: data.password,
     };
-    console.log(user);
     // TODO: 회원가입 api 호출
     const res = await createSignUp(user);
-    console.log(res);
   };
 
   const handleFormKeyDown = (event) => {

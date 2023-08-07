@@ -1,5 +1,9 @@
 import defaultInstance from '../utils/defaultInstance';
-import authInstance from '../utils/authInstance';
+import { authInstance, addTokenToHeaders } from '../../apis/utils/authInstance';
+
+const jwtToken = '';
+
+addTokenToHeaders(jwtToken);
 
 // 회원가입
 export const createSignUp = async (user) => {

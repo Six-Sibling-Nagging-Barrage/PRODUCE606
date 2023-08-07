@@ -1,4 +1,8 @@
-import authInstance from '../utils/authInstance';
+import { authInstance, addTokenToHeaders } from '../../apis/utils/authInstance';
+
+const jwtToken = '';
+
+addTokenToHeaders(jwtToken);
 
 // Todo 작성
 export const createTodo = async (todo) => {
