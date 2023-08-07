@@ -32,7 +32,7 @@ public class MemberService {
   private final SecurityUtil securityUtil;
 
   @Transactional(readOnly = true)
-  public GetDuplicateNicknameResDto checkNicknameIsAvailable(
+  public GetDuplicateNicknameResDto checkNicknameIsDuplicated(
       GetDuplicateNicknameReqDto getDuplicateNicknameReqDto) {
 
     Boolean isExist = memberRepository.existsByNickname(getDuplicateNicknameReqDto.getNickname());
@@ -40,7 +40,7 @@ public class MemberService {
       throw new DuplicatedNicknameException();
     }
 
-    return GetDuplicateNicknameResDto.from(true);
+    return GetDuplicateNicknameResDto.from(false);
   }
 
   @Transactional(readOnly = true)

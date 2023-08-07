@@ -20,7 +20,7 @@ public class MemberController {
   public EnvelopeResponse<GetDuplicateNicknameResDto> checkNicknameAvailable(
       @RequestBody GetDuplicateNicknameReqDto getDuplicateNicknameReqDto) {
     return EnvelopeResponse.<GetDuplicateNicknameResDto>builder()
-        .data(memberService.checkNicknameIsAvailable(getDuplicateNicknameReqDto))
+        .data(memberService.checkNicknameIsDuplicated(getDuplicateNicknameReqDto))
         .build();
   }
 
