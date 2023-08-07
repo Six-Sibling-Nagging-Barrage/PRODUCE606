@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/todo")
+@RequestMapping("/todos")
 @RequiredArgsConstructor
 public class TodoController {
 
@@ -46,13 +46,21 @@ public class TodoController {
   }
 
   @GetMapping("/my")
-  public EnvelopeResponse<GetTodoByDateResDto> getMyTodayTodo(
+  public EnvelopeResponse<GetTodoByDateResDto> getMyTodoByDate(
       @Valid GetTodoByDateReqDto getTodoByDateReqDto) {
 
     return EnvelopeResponse.<GetTodoByDateResDto>builder()
         .data(todoService.getMyTodoByDate(getTodoByDateReqDto))
         .build();
+  }
 
+  @GetMapping("/member/{memberId}")
+  public EnvelopeResponse<GetTodoByDateResDto> getTodoByDateAndMemberId(
+      @PathVariable Long memberId, @Valid GetTodoByDateReqDto getTodoByDateReqDto) {
+
+    return EnvelopeResponse.<GetTodoByDateResDto>builder()
+        .data(todoService.getMemberTodoByDate(memberId, getTodoByDateReqDto))
+        .build();
   }
 
   @GetMapping("/feed/following")

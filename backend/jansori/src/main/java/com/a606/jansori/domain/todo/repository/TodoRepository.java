@@ -11,4 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface TodoRepository extends JpaRepository<Todo, Long>, TodoDynamicQueryRepository {
 
   List<Todo> findAllByMemberAndTodoAtIsOrderByCreatedAtDesc(Member member, LocalDate date);
+
+  List<Todo> findAllByMemberAndTodoAtIsAndDisplayTrueOrderByCreatedAtDesc(Member memberWhoWatched,
+      LocalDate date);
 }

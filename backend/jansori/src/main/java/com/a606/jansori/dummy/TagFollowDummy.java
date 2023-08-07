@@ -21,17 +21,17 @@ public class TagFollowDummy {
   private final List<TagFollow> tagFollows = new ArrayList<>();
 
   public void createTagFollows(List<Tag> tags, List<Member> members) {
-    int start = 0, end = start + 100;
+    int start = 0, end = start + tags.size() / 7;
 
     for (Member member : members) {
       for (int i = start; i < end; i++) {
         tagFollows.add(TagFollow.builder().tag(tags.get(i)).member(member).build());
       }
       start = end;
-      if (start >= 1000) {
+      if (start >= tags.size()) {
         start = 0;
       }
-      end = start + 100;
+      end = start + tags.size() / 7;
     }
 
     tagFollowRepository.saveAll(tagFollows);

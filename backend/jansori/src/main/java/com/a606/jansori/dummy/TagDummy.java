@@ -18,7 +18,7 @@ public class TagDummy {
   private final List<Tag> tags = new ArrayList<>();
 
   public List<Tag> createTags() {
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 20; i++) {
       tags.add(Tag.builder().name("태그" + i).build());
     }
     return tagRepository.saveAll(tags);
