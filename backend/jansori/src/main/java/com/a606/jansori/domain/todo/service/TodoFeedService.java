@@ -74,7 +74,7 @@ public class TodoFeedService {
   @Transactional(readOnly = true)
   public GetTodoFeedResDto getTodoFeedByGivenTag(GetTodoFeedByTagReqDto getTodoFeedByTagReqDto) {
 
-    Member member = securityUtil.getCurrentMemberByToken();
+    Member member = securityUtil.getNullableMemberByToken();
 
     Tag tag = tagRepository.findById(getTodoFeedByTagReqDto.getTagId())
         .orElseThrow(TagNotFoundException::new);
@@ -92,7 +92,7 @@ public class TodoFeedService {
   @Transactional(readOnly = true)
   public GetTodoDetailResDto getTodoDetail(Long todoId) {
 
-    Member member = securityUtil.getCurrentMemberByToken();
+    Member member = securityUtil.getNullableMemberByToken();
 
     Todo todo = todoRepository.findById(todoId)
         .orElseThrow(TodoNotFoundException::new);
