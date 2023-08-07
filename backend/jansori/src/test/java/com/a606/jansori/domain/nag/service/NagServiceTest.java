@@ -188,7 +188,7 @@ class NagServiceTest {
     given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
 
     //when
-    GetNagOfProfilePageResDto result = nagService.getAllNagsByMember();
+    GetNagOfProfilePageResDto result = nagService.getAllNagsByMine();
 
     //then
     assertThat(result.getNags()).isEmpty();
@@ -206,7 +206,7 @@ class NagServiceTest {
     given(securityUtil.getCurrentMemberByToken()).willReturn(member);
 
     //when
-    GetNagOfProfilePageResDto result = nagService.getAllNagsByMember();
+    GetNagOfProfilePageResDto result = nagService.getAllNagsByMine();
 
     //then
 

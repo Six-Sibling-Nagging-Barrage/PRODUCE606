@@ -1,5 +1,6 @@
 package com.a606.jansori.domain.nag.controller;
 
+import com.a606.jansori.domain.nag.dto.GetNagsOfProfilePageReqDto;
 import com.a606.jansori.domain.nag.task.NagBoxStatisticsScheduler;
 import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
@@ -30,9 +31,9 @@ public class NagController {
   private final NagBoxStatisticsScheduler nagBoxStatisticsScheduler;
 
   @GetMapping("/my-list")
-  public EnvelopeResponse<GetNagOfProfilePageResDto> getAllNagsByMember() {
+  public EnvelopeResponse<GetNagOfProfilePageResDto> getAllNagsByMine() {
     return EnvelopeResponse.<GetNagOfProfilePageResDto>builder()
-        .data(nagService.getAllNagsByMember())
+        .data(nagService.getAllNagsByMine())
         .build();
   }
 
