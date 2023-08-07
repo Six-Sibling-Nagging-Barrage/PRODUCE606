@@ -8,7 +8,7 @@ export const createTodo = async (todo) => {
         'Content-Type': 'application/json',
       },
     });
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -18,7 +18,7 @@ export const createTodo = async (todo) => {
 export const getTodoListByDate = async (date) => {
   try {
     const { data } = await authInstance.get(`/todo/my?date=${date}`);
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -30,7 +30,7 @@ export const getFollowingFeed = async ({ cursor, pageSize }) => {
     const { data } = await authInstance.get(
       `/todo/feed/following?cursor=${cursor}&size=${pageSize}`
     );
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -42,7 +42,7 @@ export const getSpecificFeed = async ({ tagId, cursor, pageSize }) => {
     const { data } = await authInstance.get(
       `/todo/feed?tagId=${tagId}&cursor=${cursor}&size=${pageSize}`
     );
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -52,7 +52,7 @@ export const getSpecificFeed = async ({ tagId, cursor, pageSize }) => {
 export const getTodoDetail = async (todoId) => {
   try {
     const { data } = await authInstance.get(`/todo/${todoId}`);
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -62,7 +62,7 @@ export const getTodoDetail = async (todoId) => {
 export const updateTodoComplete = async (todoId) => {
   try {
     const { data } = await authInstance.patch(`/todo/${todoId}`);
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -74,7 +74,7 @@ export const createPersonaReaction = async ({ todoId, personaId }) => {
     const { data } = await authInstance.post(
       `/todo/${todoId}/react?personaId=${personaId}`
     );
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -84,7 +84,7 @@ export const createPersonaReaction = async ({ todoId, personaId }) => {
 export const getPersonaNag = async (todoId) => {
   try {
     const { data } = await authInstance.get(`/todo/${todoId}/personas`);
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }

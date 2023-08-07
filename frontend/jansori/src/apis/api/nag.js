@@ -4,7 +4,7 @@ import authInstance from '../utils/authInstance';
 export const getMyNagList = async () => {
   try {
     const { data } = await authInstance.get(`/nags/my-list`);
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -14,7 +14,7 @@ export const getMyNagList = async () => {
 export const getMainNags = async () => {
   try {
     const { data } = await authInstance.get(`/nags/main-page`);
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -28,7 +28,7 @@ export const createNag = async (nag) => {
         'Content-Type': 'application/json',
       },
     });
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -38,7 +38,7 @@ export const createNag = async (nag) => {
 export const updateLikeNag = async (nagId) => {
   try {
     const { data } = await authInstance.post(`/nags/${nagId}/like`);
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -48,7 +48,7 @@ export const updateLikeNag = async (nagId) => {
 export const getNagRanking = async () => {
   try {
     const { data } = await authInstance.get(`/nags/nag-rank`);
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
@@ -58,7 +58,7 @@ export const getNagRanking = async () => {
 export const updateNagLock = async (nagId) => {
   try {
     const { data } = await authInstance.put(`/nags/${nagId}/unlock`);
-    return data;
+    return data.data;
   } catch (e) {
     console.log(e);
   }
