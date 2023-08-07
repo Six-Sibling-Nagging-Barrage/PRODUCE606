@@ -1,5 +1,7 @@
 package com.a606.jansori.domain.nag.controller;
 
+import com.a606.jansori.domain.nag.task.NagBoxStatisticsScheduler;
+import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagsOfNagBoxResDto;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class NagController {
 
   private final NagService nagService;
+  private final NagBoxStatisticsScheduler nagBoxStatisticsScheduler;
 
   @GetMapping("/my-list")
   public EnvelopeResponse<GetNagOfProfilePageResDto> getAllNagsByMember() {
@@ -44,6 +47,13 @@ public class NagController {
   public EnvelopeResponse<GetNagsOfNagBoxResDto> getNagsOfNagBox() {
     return EnvelopeResponse.<GetNagsOfNagBoxResDto>builder()
         .data(nagService.getNagsOfNagBox())
+        .build();
+  }
+
+  @GetMapping("/nag-box/statistics")
+  public EnvelopeResponse<GetNagBoxStatisticsResDto> getNagBoxStatisticsByScheduling() {
+    return EnvelopeResponse.<GetNagBoxStatisticsResDto>builder()
+        .data(nagBoxStatisticsScheduler.getNagBoxStatisticsResDto())
         .build();
   }
 

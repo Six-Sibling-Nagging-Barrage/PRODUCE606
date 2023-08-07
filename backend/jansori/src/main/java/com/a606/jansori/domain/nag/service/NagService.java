@@ -1,12 +1,12 @@
 package com.a606.jansori.domain.nag.service;
 
 import com.a606.jansori.domain.member.domain.Member;
-import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagBox;
 import com.a606.jansori.domain.nag.domain.NagLike;
 import com.a606.jansori.domain.nag.domain.NagUnlock;
+import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagsOfNagBoxResDto;
@@ -26,6 +26,7 @@ import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.NagTagRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
+import com.a606.jansori.domain.todo.repository.TodoRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +49,7 @@ public class NagService {
   private final MemberRepository memberRepository;
   private final NagLikeRepository nagLikeRepository;
   private final NagUnlockRepository nagUnlockRepository;
+  private final TodoRepository todoRepository;
   private final NagRandomGenerator nagRandomGenerator;
   private final PreviewUtil previewUtil;
   private final SecurityUtil securityUtil;
@@ -126,6 +128,15 @@ public class NagService {
     NagBox nagBox = new NagBox(nags, nagUnlocks);
 
     return GetNagsOfNagBoxResDto.fromNagsOfNagBox(nagBox.getNags());
+  }
+
+  @Transactional(readOnly = true)
+  public GetNagBoxStatisticsResDto getNagBoxStatisticsResDto() {
+    Long totalMemberCount = memberRepository.count();
+    Long totalDoneTodoCount = todoRepository.countTodosByFinishedIsTrue();
+    Long totalNagsCount = nagRepository.count();
+
+    return GetNagBoxStatisticsResDto.of(totalMemberCount, totalDoneTodoCount, totalNagsCount);
   }
 
   private void decreaseNagLike(Nag nag, NagLike nagLike) {

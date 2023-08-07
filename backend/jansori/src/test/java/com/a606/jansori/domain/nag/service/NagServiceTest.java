@@ -13,6 +13,7 @@ import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagLike;
+import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
@@ -29,6 +30,7 @@ import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.NagTagRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
+import com.a606.jansori.domain.todo.repository.TodoRepository;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -58,6 +60,8 @@ class NagServiceTest {
   private NagTagRepository nagTagRepository;
   @Mock
   private NagLikeRepository nagLikeRepository;
+  @Mock
+  private TodoRepository todoRepository;
   @Mock
   private PreviewUtil previewUtil;
   @Mock
@@ -101,7 +105,7 @@ class NagServiceTest {
 
     //when with then
     assertThrows(TagNotFoundException.class,
-        () -> nagService.createNag(member.getId(), postNagReqDto));
+        () -> nagService.createNag(postNagReqDto));
 
     //verify
     verify(tagRepository, times(1)).findById(tag.getId());
@@ -121,7 +125,7 @@ class NagServiceTest {
     when(nagTagRepository.save(any(NagTag.class))).thenReturn(null);
 
     //then
-    PostNagResDto postNagResDto = nagService.createNag(member.getId(), postNagReqDto);
+    PostNagResDto postNagResDto = nagService.createNag(postNagReqDto);
     assertThat(postNagResDto.getNagId()).isEqualTo(1L);
 
     //verify
@@ -138,7 +142,7 @@ class NagServiceTest {
 
     //then
     assertThrows(NagNotFoundException.class,
-        () -> nagService.toggleNagLike(member.getId(), nag.getId()));
+        () -> nagService.toggleNagLike(nag.getId()));
 
     //verify
     verify(nagRepository, times(1)).findById(nag.getId());
@@ -155,7 +159,7 @@ class NagServiceTest {
         Optional.of(nagLike));
 
     //then
-    nagService.toggleNagLike(member.getId(), nag.getId());
+    nagService.toggleNagLike(nag.getId());
 
     //verify
     verify(memberRepository, times(1)).findById(member.getId());
@@ -173,7 +177,7 @@ class NagServiceTest {
         Optional.empty());
 
     //then
-    nagService.toggleNagLike(member.getId(), nag.getId());
+    nagService.toggleNagLike(nag.getId());
 
     //verify
     verify(memberRepository, times(1)).findById(member.getId());
@@ -190,7 +194,7 @@ class NagServiceTest {
     given(nagTagRepository.findByMember(member)).willReturn(nagTags);
 
     //when
-    GetNagOfProfilePageResDto result = nagService.getAllNagsByMember(member.getId());
+    GetNagOfProfilePageResDto result = nagService.getAllNagsByMember();
 
     //then
     assertThat(result.getNags()).isEmpty();
@@ -213,7 +217,7 @@ class NagServiceTest {
     given(nagTagRepository.findByMember(member)).willReturn(nagTags);
 
     //when
-    GetNagOfProfilePageResDto result = nagService.getAllNagsByMember(member.getId());
+    GetNagOfProfilePageResDto result = nagService.getAllNagsByMember();
 
     //then
     assertThat(result).usingRecursiveComparison().isEqualTo(getNagOfProfilePageResDto);
@@ -254,7 +258,7 @@ class NagServiceTest {
     //when
     when(mockMember.getTicket()).thenReturn(1L);
     when(mockNag.getContent()).thenReturn("잔소리 폭격");
-    NagDto nagDto = nagService.unlockNagPreviewByMemberTicket(mockMember.getId(), mockNag.getId());
+    NagDto nagDto = nagService.unlockNagPreviewByMemberTicket(mockNag.getId());
 
     //then
     assertThat(nagDto.getContent()).isEqualTo("잔소리 폭격");
@@ -263,6 +267,28 @@ class NagServiceTest {
     verify(memberRepository, times(1)).findById(mockMember.getId());
     verify(nagRepository, times(1)).findById(mockNag.getId());
     verify(nagUnlockRepository, times(1)).existsByNagAndMember(mockNag, mockMember);
+  }
+
+  @DisplayName("잔소리함의 통계 조회에 성공한다.")
+  @Test
+  void Given_Any_When_GetNagBoxStatistics_Then_Success() {
+    //given
+    given(memberRepository.count()).willReturn(20L);
+    given(todoRepository.countTodosByFinishedIsTrue()).willReturn(30L);
+    given(nagRepository.count()).willReturn(50L);
+
+    //when
+    GetNagBoxStatisticsResDto getNagBoxStatisticsResDto = nagService.getNagBoxStatisticsResDto();
+
+    //then
+    assertThat(getNagBoxStatisticsResDto.getTotalMemberCount()).isEqualTo(20L);
+    assertThat(getNagBoxStatisticsResDto.getTotalDoneTodoCount()).isEqualTo(30L);
+    assertThat(getNagBoxStatisticsResDto.getTotalNagsCount()).isEqualTo(50L);
+
+    //verify
+    verify(memberRepository, times(1)).count();
+    verify(todoRepository, times(1)).countTodosByFinishedIsTrue();
+    verify(nagRepository, times(1)).count();
   }
 
 

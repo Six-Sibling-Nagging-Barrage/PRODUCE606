@@ -14,4 +14,6 @@ public interface TodoRepository extends JpaRepository<Todo, Long>, TodoDynamicQu
 
   List<Todo> findAllByMemberAndTodoAtIsAndDisplayTrueOrderByCreatedAtDesc(Member memberWhoWatched,
       LocalDate date);
+
+  Long countTodosByFinishedIsTrue();
 }
