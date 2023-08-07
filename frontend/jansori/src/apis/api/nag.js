@@ -54,6 +54,16 @@ export const getNagRanking = async () => {
   }
 };
 
+// 잔소리함 통계 조회
+export const getNagBoxStatistics = async () => {
+  try {
+    const { data } = await authInstance.get(`/nags/nag-box/statistics`);
+    return data.data;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // 잔소리 초성 해제
 export const updateNagLock = async (nagId) => {
   try {
