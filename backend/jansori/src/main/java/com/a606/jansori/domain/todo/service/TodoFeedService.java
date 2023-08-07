@@ -73,7 +73,8 @@ public class TodoFeedService {
   @Transactional(readOnly = true)
   public GetTodoFeedResDto getTodoFeedByGivenTag(GetTodoFeedByTagReqDto getTodoFeedByTagReqDto) {
 
-    Member member = securityUtil.getMemberFromSession();
+//    Member member = securityUtil.getMemberFromSession();
+    Member member = securityUtil.getTestMemberFromSession();
 
     Tag tag = tagRepository.findById(getTodoFeedByTagReqDto.getTagId())
         .orElseThrow(TagNotFoundException::new);
@@ -106,6 +107,12 @@ public class TodoFeedService {
   }
 
   private List<TodoFeedDto> convertTodosWithMemberToFeedTodoDto(List<Todo> todos, Member member) {
+
+    if (member == null) {
+      return todos.stream().map(todo ->
+          TodoFeedDto.from(todo, false, false)
+      ).collect(Collectors.toList());
+    }
 
     return todos.stream().map(todo ->
         TodoFeedDto.from(todo,

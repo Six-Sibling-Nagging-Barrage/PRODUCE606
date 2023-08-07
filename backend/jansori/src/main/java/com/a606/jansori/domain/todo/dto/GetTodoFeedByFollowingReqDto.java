@@ -13,7 +13,7 @@ public class GetTodoFeedByFollowingReqDto {
   @Positive(message = "유효하지 않은 페이지 크기입니다.")
   private Integer size;
 
-  public GetTodoFeedByFollowingReqDto(){
+  public GetTodoFeedByFollowingReqDto() {
     this.size = 10;
   }
 }

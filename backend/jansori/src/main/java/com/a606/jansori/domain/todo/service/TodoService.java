@@ -1,6 +1,8 @@
 package com.a606.jansori.domain.todo.service;
 
 import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.domain.member.exception.MemberNotFoundException;
+import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.service.NagRandomGenerator;
 import com.a606.jansori.domain.persona.domain.Persona;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
@@ -29,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class TodoService {
+
+  private final MemberRepository memberRepository;
 
   private final TodoRepository todoRepository;
 
@@ -74,6 +78,32 @@ public class TodoService {
 
     Member member = securityUtil.getMemberFromSession();
 
+    return getMyTodosByReqDtoAndMember(member, getTodoByDateReqDto);
+  }
+
+  @Transactional(readOnly = true)
+  public GetTodoByDateResDto getMemberTodoByDate(Long memberId,
+      GetTodoByDateReqDto getTodoByDateReqDto) {
+
+    Member viewer = securityUtil.getNullableMemberFromSession();
+
+    Member memberWhoViewed = memberRepository.findById(memberId)
+        .orElseThrow(MemberNotFoundException::new);
+
+    if (viewer != null & memberWhoViewed.equals(viewer)) {
+      return getMyTodosByReqDtoAndMember(memberWhoViewed, getTodoByDateReqDto);
+    }
+
+    LocalDate date = getTodoByDateReqDto.getDate();
+
+    return GetTodoByDateResDto.from(
+        todoRepository.findAllByMemberAndTodoAtIsAndDisplayTrueOrderByCreatedAtDesc(
+            memberWhoViewed, date));
+  }
+
+  private GetTodoByDateResDto getMyTodosByReqDtoAndMember(Member member,
+      GetTodoByDateReqDto getTodoByDateReqDto) {
+
     LocalDate date = getTodoByDateReqDto.getDate();
 
     return GetTodoByDateResDto.from(
@@ -97,11 +127,16 @@ public class TodoService {
   private Tag getTagIfExistElseSave(TagDto tagDto) {
 
     if (tagDto.getTagId() == -1) {
-
       return tagRepository.save(tagDto.toNewTag());
     }
 
-    return tagRepository.findById(tagDto.getTagId())
+    Tag tag = tagRepository.findById(tagDto.getTagId())
         .orElseThrow(TagNotFoundException::new);
+
+    if (!tag.getName().equals(tagDto.getTagName())) {
+      throw new TagNotFoundException();
+    }
+
+    return tag;
   }
 }
