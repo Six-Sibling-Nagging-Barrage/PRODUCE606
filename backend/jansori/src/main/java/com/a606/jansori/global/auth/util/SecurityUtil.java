@@ -34,10 +34,10 @@ public class SecurityUtil {
     final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     if (authentication == null || authentication.getName() == null) {
-      throw new AuthMemberNotFoundException();
+      return null;
     }
 
-    return memberRepository.findMemberByEmail(authentication.getName()).orElseGet(null);
+    return memberRepository.findMemberByEmail(authentication.getName()).orElse(null);
   }
 
 

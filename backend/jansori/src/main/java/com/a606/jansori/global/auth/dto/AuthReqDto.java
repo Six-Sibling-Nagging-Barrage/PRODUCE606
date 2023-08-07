@@ -2,6 +2,7 @@ package com.a606.jansori.global.auth.dto;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.MemberRole;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @NoArgsConstructor
 public class AuthReqDto {
 
-  @Pattern(regexp = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$", message = "이메일 형식이 올바르지 않습니다.")
+  @Email
   @NotBlank(message = "이메일은 필수 입력 값입니다.")
   private String email;
 

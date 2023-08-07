@@ -2,6 +2,7 @@ package com.a606.jansori.domain.todo.dto;
 
 import com.a606.jansori.domain.tag.dto.TagDto;
 import com.a606.jansori.domain.todo.domain.Todo;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ public class TodoDto {
 
   private String content;
 
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
   private LocalDate todoAt;
 
   private List<TagDto> tags;
