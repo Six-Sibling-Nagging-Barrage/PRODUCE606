@@ -5,9 +5,11 @@ import Background from '../../components/UI/Background';
 import { styled } from 'twin.macro';
 import Button from '../../components/UI/Button';
 import { createLogin } from '../../apis/api/member';
-import { memberToken, memberInfoState } from '../../states/user';
+import { isLogin, memberToken, memberInfoState } from '../../states/user';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const {
     register,
     formState: { errors, isSubmitting },
@@ -16,6 +18,7 @@ const LoginPage = () => {
 
   const setMemberToken = useSetRecoilState(memberToken);
   const setMemberInfo = useSetRecoilState(memberInfoState);
+  const setIsLogin = useSetRecoilState(isLogin);
 
   const loginSubmit = async (data) => {
     const user = {
@@ -25,25 +28,30 @@ const LoginPage = () => {
     // TODO: 로그인 api 호출
     const res = await createLogin(user);
     console.log(res);
-    setMemberInfo({
-      memberId: 1,
-      email: data.email,
-      password: data.password,
-    });
-    setMemberToken(res.accessToken);
+    if (res?.code === '200') {
+      setMemberToken(res.accessToken);
+      setIsLogin(true);
+      navigate('/');
+    }
   };
 
-  const handleFormKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
+  const handleFormKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+    }
+  };
+
+  const handleKeyDownSubmit = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit(loginSubmit);
     }
   };
 
   return (
     <Background>
       <SignUpContainer>
-        <SignUpTitle></SignUpTitle>
-        <form onKeyDown={handleFormKeyDown}>
+        <SignUpTitle>로그인</SignUpTitle>
+        <form>
           <InfoContainer>
             <Label>이메일</Label>
             <Email
@@ -51,26 +59,29 @@ const LoginPage = () => {
               {...register('email', {
                 required: '이메일을 입력해주세요.',
               })}
+              onKeyDown={handleFormKeyDown}
             />
           </InfoContainer>
           <InfoContainer>
             <Label>비밀번호</Label>
             <Password
+              type="password"
               placeholder="비밀번호를 입력해주세요."
               {...register('password', {
                 required: '비밀번호를 입력해주세요.',
               })}
+              onKeyDown={handleKeyDownSubmit}
             />
           </InfoContainer>
+          <Footer>
+            <Button
+              onClick={handleSubmit(loginSubmit)}
+              disabled={isSubmitting}
+              normal
+              label={'완료'}
+            />
+          </Footer>
         </form>
-        <Footer>
-          <Button
-            onClick={handleSubmit(loginSubmit)}
-            disabled={isSubmitting}
-            normal
-            label={'완료'}
-          />
-        </Footer>
       </SignUpContainer>
     </Background>
   );
@@ -80,18 +91,18 @@ const SignUpContainer = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 40%;
+  width: 30%;
   @media (min-width: 980px) and (max-width: 1200px) {
-    width: 50%;
+    width: 40%;
   }
   @media (min-width: 768px) and (max-width: 980px) {
+    width: 50%;
+  }
+  @media (min-width: 600px) and (max-width: 768px) {
     width: 60%;
   }
-  @media (min-width: 500px) and (max-width: 768px) {
-    width: 80%;
-  }
-  @media (max-width: 500px) {
-    width: 90%;
+  @media (max-width: 600px) {
+    width: 70%;
   }
   transform: translate(-50%, -50%);
   background-color: rgba(255, 255, 255, 0.5);
@@ -104,7 +115,6 @@ const SignUpContainer = styled.div`
 
 const SignUpTitle = styled.div`
   margin: 10px;
-  color: gray;
   font-weight: bold;
 `;
 
@@ -113,14 +123,16 @@ const Label = styled.div`
   color: gray;
   font-weight: bold;
   margin-bottom: 3px;
+  text-align: left;
+  padding-left: 5px;
 `;
 
 const InfoContainer = styled.div`
-  margin-bottom: 5px;
+  margin-bottom: 15px;
 `;
 
 const Email = styled.input`
-  width: 300px;
+  width: 100%;
   padding: 5px;
   border-radius: 5px;
   text-align: center;
@@ -130,22 +142,10 @@ const Email = styled.input`
 `;
 
 const Password = styled.input`
-  width: 300px;
+  width: 100%;
   padding: 5px;
   border-radius: 5px;
   text-align: center;
-  &:focus {
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  }
-`;
-
-const Bio = styled.textarea`
-  padding: 10px;
-  border-radius: 5px;
-  width: 100%;
-  height: 120px;
-  margin: 0;
-  font-size: 14px;
   &:focus {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   }
