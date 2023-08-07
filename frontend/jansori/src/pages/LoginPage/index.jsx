@@ -29,7 +29,7 @@ const LoginPage = () => {
     const res = await createLogin(user);
     console.log(res);
     if (res?.code === '200') {
-      setMemberToken(res.accessToken);
+      setMemberToken(res.data.accessToken);
       setIsLogin(true);
       navigate('/');
     }
