@@ -8,7 +8,7 @@ import java.util.List;
 
 @Builder
 @Getter
-public class PatchMemberInfoResDto {
+public class PostMemberInfoResDto {
 
   private Long memberId;
   private String nickname;
@@ -16,9 +16,9 @@ public class PatchMemberInfoResDto {
   private String imageUrl;
   private List<Long> tags;
 
-  public static PatchMemberInfoResDto of(Member member
+  public static PostMemberInfoResDto of(Member member
       , List<Long> tags) {
-    return PatchMemberInfoResDto.builder()
+    return PostMemberInfoResDto.builder()
         .memberId(member.getId())
         .nickname(member.getNickname())
         .bio(member.getBio())
