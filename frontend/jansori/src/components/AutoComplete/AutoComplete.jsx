@@ -26,8 +26,9 @@ const AutoComplete = (props) => {
         // 태그 자동완성 검색 api 호출
         const data = await getTagsAutoComplete(searchValue);
 
+        if (!data) return;
         if (typeof setExists === 'function') {
-          const existingTag = data.tags.find(
+          const existingTag = data?.tags.find(
             (tag) => tag.tagName === searchValue
           );
           if (existingTag) {
@@ -35,8 +36,8 @@ const AutoComplete = (props) => {
             setExists(true);
           }
         }
-        setAutoCompleteList(data.tags);
-      }, 300); // 지연 시간 설정 (300ms)
+        setAutoCompleteList(data?.tags);
+      }, 100); // 지연 시간 설정 (300ms)
 
       // Cleanup 함수에서 타이머 해제
       return () => {

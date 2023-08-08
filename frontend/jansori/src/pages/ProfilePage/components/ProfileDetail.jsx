@@ -16,7 +16,9 @@ const ProfileDetail = (props) => {
       </Header>
       <ProfileImg profileImg={profile.imageUrl} size="120px" />
       <Nickname>{profile.nickname}</Nickname>
-      <HashTag editable={false} hashTagList={tags} />
+      <HashTagContainer>
+        <HashTag editable={false} hashTagList={tags} />
+      </HashTagContainer>
       <Bio>{profile.bio}</Bio>
     </ProfileDetailContainer>
   );
@@ -48,6 +50,11 @@ const Nickname = styled.div`
 const Bio = styled.div`
   font-size: 14px;
   width: 70%;
+  margin: 0 auto;
+`;
+
+const HashTagContainer = styled.div`
+  width: fit-content;
   margin: 0 auto;
 `;
 

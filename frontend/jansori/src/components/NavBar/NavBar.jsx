@@ -7,7 +7,11 @@ import { TbTicket } from 'react-icons/tb';
 import Modal from '../UI/Modal';
 import { Link } from 'react-router-dom';
 
-import { isLogin, profileImgData, memberNameData } from '../../states/user';
+import {
+  isLoginState,
+  profileImgState,
+  memberNameState,
+} from '../../states/user';
 import DropdownProfileMenu from './DropdownProfileMenu';
 
 const NavBar = () => {
@@ -15,8 +19,8 @@ const NavBar = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
-  const user = useRecoilValue(isLogin);
-  const profileImg = useRecoilValue(profileImgData);
+  const user = useRecoilValue(isLoginState);
+  const profileImg = useRecoilValue(profileImgState);
 
   const handleMenuClick = () => {
     setIsToggleOpen(!isToggleOpen);

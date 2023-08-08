@@ -1,15 +1,19 @@
 import React from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import tw, { styled } from 'twin.macro';
-import { isLogin, profileImgData, memberNameData } from '../../states/user';
+import {
+  isLoginState,
+  profileImgState,
+  memberNameState,
+} from '../../states/user';
 import { useNavigate } from 'react-router-dom';
 
 const DropdownProfileMenu = () => {
   const navigate = useNavigate();
 
-  const [user, setUser] = useRecoilState(isLogin);
-  const profileImg = useRecoilValue(profileImgData);
-  const memberName = useRecoilValue(memberNameData);
+  const [user, setUser] = useRecoilState(isLoginState);
+  const profileImg = useRecoilValue(profileImgState);
+  const memberName = useRecoilValue(memberNameState);
 
   const handleLogOut = () => {
     setUser(false);
@@ -22,7 +26,7 @@ const DropdownProfileMenu = () => {
       <BackgroundContainer />
       <DropdownMenuContent>
         <ItemContainer>
-          <Avatar src={profileImg} alt='profile' />
+          <Avatar src={profileImg} alt="profile" />
           <MemberName>{memberName}</MemberName>
         </ItemContainer>
         <ItemContainer>mypage</ItemContainer>

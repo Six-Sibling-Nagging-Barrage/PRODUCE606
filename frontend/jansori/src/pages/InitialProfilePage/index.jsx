@@ -5,6 +5,12 @@ import { styled } from 'twin.macro';
 import ProfileImg from '../../components/Profile/ProfileImg';
 import HashTag from '../../components/HashTag/HashTag';
 import Button from '../../components/UI/Button';
+import { updateProfile } from '../../apis/api/member';
+import { useNavigate } from 'react-router';
+import { isLoginState, memberRoleState } from '../../states/user';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { addTokenToHeaders } from '../../apis/utils/authInstance';
+import { memberTokenState } from '../../states/user';
 
 const validateNickname = (value) => {
   if (/\s{2,}|^\s|\s$/.test(value)) {
@@ -26,8 +32,18 @@ const validateBio = (value) => {
 const InitialProfilePage = () => {
   const [hashTagList, setHashTagList] = useState([]);
   const [checked, setChecked] = useState(false);
+  const [checkError, setCheckError] = useState(false);
   const [nicknameValue, setNicknameValue] = useState('');
-  const [isAvailable, setIsAvailable] = useState(null);
+  const [isAvailable, setIsAvailable] = useState(false);
+
+  const navigate = useNavigate();
+
+  const isLogin = useRecoilValue(isLoginState);
+  const setMemberRole = useSetRecoilState(memberRoleState);
+
+  const jwtToken = useRecoilValue(memberTokenState);
+
+  addTokenToHeaders(jwtToken);
 
   const {
     register,
@@ -36,7 +52,7 @@ const InitialProfilePage = () => {
   } = useForm({ mode: 'onBlur' });
 
   useEffect(() => {
-    if (nicknameValue === '') return setIsAvailable(null);
+    if (nicknameValue === '') return setIsAvailable(false);
     let timerId = setTimeout(async () => {
       // TODO: 닉네임 중복 검사 api 호출
       // const data = await getAvailableNickname();
@@ -49,10 +65,8 @@ const InitialProfilePage = () => {
     };
   }, [nicknameValue]);
 
-  const signupSubmit = (data) => {
-    if (!checked) {
-      return document.getElementById('promise-checkbox').focus();
-    }
+  const signupSubmit = async (data) => {
+    if (!checked) return setCheckError(true);
 
     const profile = {
       nickname: data.nickname,
@@ -60,7 +74,16 @@ const InitialProfilePage = () => {
       imageUrl: 'https://example.com/image.jpg',
       tags: hashTagList.length > 0 ? hashTagList.map((tag) => tag.tagId) : [-1],
     };
-    // TODO: 회원 가입 api 호출
+
+    console.log(profile);
+    // TODO: 유저 정보 수정 api 호출
+    const res = await updateProfile(profile);
+    console.log(res);
+    if (res.code === '200') {
+      setMemberRole('USER');
+      if (isLogin) navigate('/');
+      else navigate('/login');
+    }
   };
 
   const handleFormKeyDown = (event) => {
@@ -74,14 +97,17 @@ const InitialProfilePage = () => {
   };
 
   const handleClickCheckboxLabel = () => {
-    setChecked((prev) => !prev);
+    setChecked((prev) => {
+      if (prev === false) setCheckError(false);
+      return !prev;
+    });
   };
 
   return (
     <Background>
       <SignUpContainer>
         <SignUpTitle></SignUpTitle>
-        <form onKeyDown={handleFormKeyDown}>
+        <form>
           <ProfileImg editable={true} size="80px" />
           <InfoContainer>
             <Label>닉네임</Label>
@@ -96,17 +122,18 @@ const InitialProfilePage = () => {
                 validate: validateNickname,
               })}
               onChange={handleNicknameInputChange}
+              onKeyDown={handleFormKeyDown}
             />
-            {errors.nickname ? (
+            {errors.nickname && nicknameValue === '' ? (
               <ErrorMessage>{errors?.nickname?.message}</ErrorMessage>
             ) : (
               <>
-                {nicknameValue === '' || isAvailable === null ? (
+                {nicknameValue === '' || !isAvailable ? (
                   <GuideMessage>1~11자 닉네임을 지어주세요.</GuideMessage>
                 ) : (
                   <>
                     {isAvailable ? (
-                      <GuideMessage granted>
+                      <GuideMessage granted="true">
                         사용 가능한 닉네임이에요!
                       </GuideMessage>
                     ) : (
@@ -130,6 +157,7 @@ const InitialProfilePage = () => {
                 },
                 validate: validateBio,
               })}
+              onKeyDown={handleFormKeyDown}
             />
             {errors.bio ? (
               <ErrorMessage>{errors.bio?.message}</ErrorMessage>
@@ -139,48 +167,41 @@ const InitialProfilePage = () => {
               </GuideMessage>
             )}
           </InfoContainer>
+          <Label>해시태그 구독</Label>
+          <HashTag
+            editable={true}
+            hashTagLimit={3}
+            hashTagList={hashTagList}
+            setHashTagList={setHashTagList}
+          />
+          <GuideMessage>
+            회원가입 시에는 최대 3개까지 등록할 수 있어요.
+          </GuideMessage>
+          <RequestMessage>
+            🌟 부적절한 언어나 다른 이용자들이 불쾌할 수 있는 잔소리는
+            삼가주세요! 🌟
+          </RequestMessage>
+          <CheckboxContainer>
+            <Checkbox type="checkbox" checked={checked} />
+            <CustomCheckbox>
+              <CheckboxLabel
+                onClick={handleClickCheckboxLabel}
+                checked={checked}
+              ></CheckboxLabel>
+              <div className="label" onClick={handleClickCheckboxLabel}>
+                확인했어요 ✔
+              </div>
+            </CustomCheckbox>
+          </CheckboxContainer>
+          {checkError && <ErrorMessage>확인 후 체크해주세요.</ErrorMessage>}
+          <Footer>
+            <Button
+              onClick={handleSubmit(signupSubmit)}
+              normal="true"
+              label={'완료'}
+            />
+          </Footer>
         </form>
-        <Label>해시태그 구독</Label>
-        <HashTag
-          editable={true}
-          hashTagLimit={3}
-          hashTagList={hashTagList}
-          setHashTagList={setHashTagList}
-        />
-        <GuideMessage>
-          회원가입 시에는 최대 3개까지 등록할 수 있어요.
-        </GuideMessage>
-        <RequestMessage>
-          🌟 부적절한 언어나 다른 이용자들이 불쾌할 수 있는 잔소리는 삼가주세요!
-          🌟
-        </RequestMessage>
-        <CheckboxContainer>
-          <Checkbox
-            type="checkbox"
-            {...register('checkbox', { required: true })}
-            checked={checked}
-          />
-          <CustomCheckbox>
-            <CheckboxLabel
-              onClick={handleClickCheckboxLabel}
-              checked={checked}
-            ></CheckboxLabel>
-            <div className="label" onClick={handleClickCheckboxLabel}>
-              확인했어요 ✔
-            </div>
-          </CustomCheckbox>
-        </CheckboxContainer>
-        {errors.checkbox && !checked && (
-          <ErrorMessage>확인 후 체크해주세요.</ErrorMessage>
-        )}
-        <Footer>
-          <Button
-            onClick={handleSubmit(signupSubmit)}
-            disabled={isSubmitting}
-            normal
-            label={'완료'}
-          />
-        </Footer>
       </SignUpContainer>
     </Background>
   );
@@ -188,14 +209,14 @@ const InitialProfilePage = () => {
 
 const SignUpContainer = styled.div`
   position: absolute;
-  top: 50%;
+  top: 52%;
   left: 50%;
-  width: 40%;
+  width: 50%;
   @media (min-width: 980px) and (max-width: 1200px) {
-    width: 50%;
+    width: 60%;
   }
   @media (min-width: 768px) and (max-width: 980px) {
-    width: 60%;
+    width: 70%;
   }
   @media (min-width: 500px) and (max-width: 768px) {
     width: 80%;
@@ -205,11 +226,18 @@ const SignUpContainer = styled.div`
   }
   transform: translate(-50%, -50%);
   background-color: rgba(255, 255, 255, 0.5);
-  padding: 10px 40px;
+  padding: 10px 50px;
   z-index: 99;
   backdrop-filter: blur(10px);
   border-radius: 5px;
   box-shadow: 0 0 100px rgba(0, 0, 0, 0.2);
+  overflow: auto;
+  height: 85%;
+  /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none; /* 파이어폭스 */
 `;
 
 const SignUpTitle = styled.div`
@@ -226,7 +254,7 @@ const Label = styled.div`
 `;
 
 const InfoContainer = styled.div`
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 `;
 
 const ErrorMessage = styled.div`
@@ -266,7 +294,7 @@ const Bio = styled.textarea`
   padding: 10px;
   border-radius: 5px;
   width: 100%;
-  height: 120px;
+  height: 80px;
   margin: 0;
   font-size: 14px;
   &:focus {
