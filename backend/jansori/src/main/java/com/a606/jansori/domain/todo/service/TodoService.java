@@ -20,6 +20,7 @@ import com.a606.jansori.domain.todo.dto.GetTodoMonthlyExistenceResDto;
 import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
 import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
 import com.a606.jansori.domain.todo.dto.PostTodoResDto;
+import com.a606.jansori.domain.todo.exception.TodoBusinessException;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
 import com.a606.jansori.domain.todo.repository.TodoAt;
@@ -56,6 +57,10 @@ public class TodoService {
     Member member = securityUtil.getCurrentMemberByToken();
 
     Todo todo = postTodoReqDto.getTodoWith(member);
+
+    if (postTodoReqDto.getTags().isEmpty() || postTodoReqDto.getTags().size() > 3) {
+      throw new TodoBusinessException();
+    }
 
     postTodoReqDto.getTags()
         .forEach(tagDto -> {
