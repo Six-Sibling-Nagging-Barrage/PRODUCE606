@@ -2,48 +2,44 @@ import React, { useEffect, useState } from 'react';
 import Feed from './components/Feed';
 import { styled } from 'twin.macro';
 import { getFollowingFeed, getSpecificFeed } from '../../apis/api/todo';
-import { getFollowTagList } from '../../apis/api/tag';
 import HashTag from '../../components/HashTag/HashTag';
 import { addTokenToHeaders } from '../../apis/utils/authInstance';
 import { useRecoilValue } from 'recoil';
-import { memberTokenState, memberInfoState } from '../../states/user';
+import { memberTokenState } from '../../states/user';
 
 const FeedPage = () => {
-  const [specificTag, setSpecificTag] = useState(1);
-  const [hasFollowingHashTags, setHasFollowingHashTags] = useState(true);
+  const [specificTag, setSpecificTag] = useState(-1);
+  const [hashTagList, setHashTagList] = useState([]);
 
   const jwtToken = useRecoilValue(memberTokenState);
-  const user = useRecoilValue(memberInfoState);
 
   addTokenToHeaders(jwtToken);
 
   useEffect(() => {
-    if (specificTag === -1) {
-      // 팔로우 중인 해시태그 api 호출
-      // (async () => {
-      //   const data = await getFollowTagList(user.memberId);
-      //   if (data.length === 0) setHasFollowingHashTags(false);
-      //   else setHasFollowingHashTags(true);
-      // })();
-    }
-  }, [specificTag]);
+    if (hashTagList.length === 0) return setSpecificTag(-1);
+    setSpecificTag(hashTagList[0].tagId);
+  }, [hashTagList]);
 
   return (
     <FeedContainer>
       <SearchDiv>
         <Search>
-          <HashTag
-            editable={true}
-            hashTagLimit={1}
-            setSpecificTag={setSpecificTag}
-          />
+          <div>
+            <HashTag
+              editable={true}
+              hashTagLimit={1}
+              hashTagList={hashTagList}
+              setHashTagList={setHashTagList}
+              setSpecificTag={setSpecificTag}
+            />
+          </div>
         </Search>
       </SearchDiv>
       <Feed
         specificTag={specificTag}
-        hasFollowingHashTags={hasFollowingHashTags}
         getFeedData={specificTag === -1 ? getFollowingFeed : getSpecificFeed}
       />
+      <Right></Right>
     </FeedContainer>
   );
 };
@@ -56,16 +52,21 @@ const FeedContainer = styled.div`
 
 const SearchDiv = styled.div`
   position: relative;
+  width: 30%;
 `;
 
 const Search = styled.div`
-  width: fit-content;
   margin: 0 auto;
   position: absolute;
   top: 10px;
   right: 10px;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
   border-radius: 5px;
+  width: fit-content;
+`;
+
+const Right = styled.div`
+  width: 30%;
 `;
 
 export default FeedPage;

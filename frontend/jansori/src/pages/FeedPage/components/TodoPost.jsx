@@ -35,7 +35,7 @@ const TodoPost = (props) => {
     // Todo 상세조회 api 호출
     (async () => {
       const data = await getTodoDetail(post.todoId);
-      setPersonaReaction(data.personas);
+      setPersonaReaction(data.data.personas);
     })();
   };
 
