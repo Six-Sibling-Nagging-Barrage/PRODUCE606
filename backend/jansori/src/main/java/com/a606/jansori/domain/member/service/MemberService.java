@@ -4,8 +4,7 @@ import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.MemberRole;
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameReqDto;
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameResDto;
-import com.a606.jansori.domain.member.dto.GetMyProfileResDto;
-import com.a606.jansori.domain.member.dto.GetUserProfileResDto;
+import com.a606.jansori.domain.member.dto.GetMemberProfileResDto;
 import com.a606.jansori.domain.member.dto.PatchMemberInfoReqDto;
 import com.a606.jansori.domain.member.dto.PatchMemberInfoResDto;
 import com.a606.jansori.domain.member.exception.DuplicatedNicknameException;
@@ -32,7 +31,7 @@ public class MemberService {
   private final SecurityUtil securityUtil;
 
   @Transactional(readOnly = true)
-  public GetDuplicateNicknameResDto checkNicknameIsAvailable(
+  public GetDuplicateNicknameResDto checkNicknameIsDuplicated(
       GetDuplicateNicknameReqDto getDuplicateNicknameReqDto) {
 
     Boolean isExist = memberRepository.existsByNickname(getDuplicateNicknameReqDto.getNickname());
@@ -40,23 +39,16 @@ public class MemberService {
       throw new DuplicatedNicknameException();
     }
 
-    return GetDuplicateNicknameResDto.from(true);
+    return GetDuplicateNicknameResDto.from(false);
   }
 
   @Transactional(readOnly = true)
-  public GetUserProfileResDto getUserProfile(Long memberId) {
+  public GetMemberProfileResDto getMemberProfile(Long memberId) {
+
     Member member = memberRepository.findById(memberId)
         .orElseThrow(() -> new MemberNotFoundException());
 
-    return GetUserProfileResDto.from(member);
-  }
-
-  @Transactional(readOnly = true)
-  public GetMyProfileResDto getMyProfile() {
-
-    Member member = securityUtil.getCurrentMemberByToken();
-
-    return GetMyProfileResDto.from(member);
+    return GetMemberProfileResDto.from(member);
   }
 
   @Transactional

@@ -7,11 +7,11 @@ import lombok.Getter;
 @Getter
 public class GetDuplicateNicknameResDto {
 
-  Boolean isPossible;
+  Boolean isDuplicated;
 
-  public static GetDuplicateNicknameResDto from(Boolean isPossible) {
+  public static GetDuplicateNicknameResDto from(Boolean isDuplicated) {
     return GetDuplicateNicknameResDto.builder()
-        .isPossible(isPossible)
+        .isDuplicated(isDuplicated)
         .build();
   }
 }
