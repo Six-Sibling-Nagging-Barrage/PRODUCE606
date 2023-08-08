@@ -35,14 +35,6 @@ public class MemberController {
         .build();
   }
 
-  @GetMapping("/my/profile")
-  public EnvelopeResponse<GetMyProfileResDto> getMyProfile() {
-
-    return EnvelopeResponse.<GetMyProfileResDto>builder()
-        .data(memberService.getMyProfile())
-        .build();
-  }
-
   @PatchMapping("/update")
   public EnvelopeResponse<PatchMemberInfoResDto> updateMemberInfo(
       @RequestBody @Valid PatchMemberInfoReqDto patchMemberInfoReqDto) {

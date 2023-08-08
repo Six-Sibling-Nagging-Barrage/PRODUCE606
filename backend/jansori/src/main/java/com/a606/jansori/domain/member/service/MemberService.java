@@ -4,7 +4,6 @@ import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.MemberRole;
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameReqDto;
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameResDto;
-import com.a606.jansori.domain.member.dto.GetMyProfileResDto;
 import com.a606.jansori.domain.member.dto.GetMemberProfileResDto;
 import com.a606.jansori.domain.member.dto.PatchMemberInfoReqDto;
 import com.a606.jansori.domain.member.dto.PatchMemberInfoResDto;
@@ -49,19 +48,7 @@ public class MemberService {
     Member member = memberRepository.findById(memberId)
         .orElseThrow(() -> new MemberNotFoundException());
 
-    if (memberId == securityUtil.getCurrentMemberByToken().getId()) {
-      return GetMyProfileResDto.from(member);
-    }
-
     return GetMemberProfileResDto.from(member);
-  }
-
-  @Transactional(readOnly = true)
-  public GetMyProfileResDto getMyProfile() {
-
-    Member member = securityUtil.getCurrentMemberByToken();
-
-    return GetMyProfileResDto.from(member);
   }
 
   @Transactional
