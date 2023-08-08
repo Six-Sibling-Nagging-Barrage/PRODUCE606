@@ -11,7 +11,8 @@ export const createSignUp = async (user) => {
     });
     return data;
   } catch (e) {
-    console.log(e);
+    console.log(e.response);
+    return e.response;
   }
 };
 
@@ -25,7 +26,8 @@ export const createLogin = async (user) => {
     });
     return data;
   } catch (e) {
-    console.log(e);
+    console.log(e.response);
+    return e.response;
   }
 };
 
@@ -35,7 +37,8 @@ export const getLogout = async () => {
     const { data } = await authInstance.get(`/logout`);
     return data;
   } catch (e) {
-    console.log(e);
+    console.log(e.response);
+    return e.response;
   }
 };
 
@@ -49,7 +52,8 @@ export const createProfile = async (profile) => {
     });
     return data;
   } catch (e) {
-    console.log(e);
+    console.log(e.response);
+    return e.response;
   }
 };
 
@@ -63,7 +67,8 @@ export const updateProfile = async (profile) => {
     });
     return data;
   } catch (e) {
-    console.log(e);
+    console.log(e.response);
+    return e.response;
   }
 };
 
@@ -73,6 +78,7 @@ export const getMemberProfile = async (memberId) => {
     const { data } = await authInstance.get(`/members/${memberId}/profile`);
     return data;
   } catch (e) {
-    console.log(e);
+    console.log(e.response);
+    return e.response;
   }
 };

@@ -6,7 +6,8 @@ export const getMyNagList = async () => {
     const { data } = await authInstance.get(`/nags/my-list`);
     return data.data;
   } catch (e) {
-    console.log(e);
+    console.log(e.response);
+    return e.response;
   }
 };
 
@@ -16,7 +17,8 @@ export const getMainNags = async () => {
     const { data } = await authInstance.get(`/nags/main-page`);
     return data.data;
   } catch (e) {
-    console.log(e);
+    console.log(e.response);
+    return e.response;
   }
 };
 
@@ -30,7 +32,8 @@ export const createNag = async (nag) => {
     });
     return data;
   } catch (e) {
-    console.log(e);
+    console.log(e.response);
+    return e.response;
   }
 };
 
@@ -40,7 +43,8 @@ export const updateLikeNag = async (nagId) => {
     const { data } = await authInstance.post(`/nags/${nagId}/like`);
     return data.data;
   } catch (e) {
-    console.log(e);
+    console.log(e.response);
+    return e.response;
   }
 };
 
@@ -50,7 +54,8 @@ export const getNagRanking = async () => {
     const { data } = await authInstance.get(`/nags/nag-rank`);
     return data.data;
   } catch (e) {
-    console.log(e);
+    console.log(e.response);
+    return e.response;
   }
 };
 
@@ -60,7 +65,8 @@ export const getNagBoxStatistics = async () => {
     const { data } = await authInstance.get(`/nags/nag-box/statistics`);
     return data.data;
   } catch (e) {
-    console.log(e);
+    console.log(e.response);
+    return e.response;
   }
 };
 
@@ -70,6 +76,7 @@ export const updateNagLock = async (nagId) => {
     const { data } = await authInstance.put(`/nags/${nagId}/unlock`);
     return data.data;
   } catch (e) {
-    console.log(e);
+    console.log(e.response);
+    return e.response;
   }
 };
