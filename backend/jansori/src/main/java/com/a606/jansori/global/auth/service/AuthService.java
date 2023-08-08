@@ -8,11 +8,19 @@ import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.global.auth.domain.RefreshToken;
-import com.a606.jansori.global.auth.dto.*;
-import com.a606.jansori.global.auth.exception.*;
+import com.a606.jansori.global.auth.dto.AuthLoginReqDto;
+import com.a606.jansori.global.auth.dto.AuthSignupReqDto;
+import com.a606.jansori.global.auth.dto.AuthSignupResDto;
+import com.a606.jansori.global.auth.dto.TokenReqDto;
+import com.a606.jansori.global.auth.dto.TokenResDto;
+import com.a606.jansori.global.auth.exception.AuthInvalidPasswordException;
+import com.a606.jansori.global.auth.exception.AuthInvalidRefreshTokenException;
+import com.a606.jansori.global.auth.exception.AuthMemberDuplicateException;
+import com.a606.jansori.global.auth.exception.AuthMemberNotFoundException;
+import com.a606.jansori.global.auth.exception.AuthUnauthorizedException;
 import com.a606.jansori.global.auth.repository.RefreshTokenRepository;
-import com.a606.jansori.global.auth.util.SecurityUtil;
 import com.a606.jansori.global.auth.util.TokenProvider;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,8 +30,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -70,9 +76,9 @@ public class AuthService {
     if (tagFollowRepository.findTagFollowByTagAndMember(tag, member).isEmpty()) {
 
       tagFollowRepository.save(TagFollow.builder()
-              .member(member)
-              .tag(tag)
-              .build());
+          .member(member)
+          .tag(tag)
+          .build());
 
     }
   }
@@ -84,18 +90,18 @@ public class AuthService {
 
     try {
       Authentication authentication = authenticationManagerBuilder.getObject()
-              .authenticate(authenticationToken);
+          .authenticate(authenticationToken);
 
       RefreshToken refreshToken = RefreshToken.builder()
-              .email(authentication.getName())
-              .value(tokenProvider.generateRefreshTokenDto())
-              .build();
+          .email(authentication.getName())
+          .value(tokenProvider.generateRefreshTokenDto())
+          .build();
 
       TokenResDto tokenResDto = tokenProvider.generateAccessTokenDto(authentication,
-              refreshToken.getValue());
+          refreshToken.getValue());
 
       Member member = memberRepository.findMemberByEmail(authLoginReqDto.getEmail())
-              .orElseThrow(AuthMemberNotFoundException::new);
+          .orElseThrow(AuthMemberNotFoundException::new);
 
       Long memberId = member.getId();
 
@@ -128,7 +134,18 @@ public class AuthService {
     if (!refreshToken.getValue().equals(tokenReqDto.getRefreshToken())) {
       throw new AuthUnauthorizedException();
     }
-    return tokenProvider.generateAccessTokenDto(authentication, refreshToken.getValue());
+
+    TokenResDto tokenResDto = tokenProvider.generateAccessTokenDto(authentication,
+        refreshToken.getValue());
+
+    Member member = memberRepository.findMemberByEmail(authentication.getName())
+        .orElseThrow(AuthMemberNotFoundException::new);
+
+    Long memberId = member.getId();
+
+    tokenResDto.update(memberId);
+
+    return tokenResDto;
   }
 
 

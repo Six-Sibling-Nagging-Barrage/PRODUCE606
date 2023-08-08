@@ -42,7 +42,7 @@ public class SecurityConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
 
-    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://i9a606.p.ssafy.io"));
     configuration.setAllowedMethods(
         Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
     configuration.setAllowCredentials(true);
@@ -72,12 +72,12 @@ public class SecurityConfig {
 
         .and()
         .authorizeRequests()
-        .antMatchers("/", "/login/oauth2/code/google").permitAll()
         .antMatchers("/login/**").permitAll()
-        .antMatchers("/signup/**").hasRole("GUEST")
-        .antMatchers("/oauth2/authorization/google/**").permitAll()
+        .antMatchers("/signup/**").permitAll()
         .antMatchers("/h2-console/**").permitAll()
-        .antMatchers("/api/members/login/success/**").permitAll()
+        .antMatchers("/api/members/**").permitAll()
+        .antMatchers("/api/auth/**").permitAll()
+        .antMatchers("/api/storage/**").permitAll()
         .antMatchers("/").permitAll()
 
         .and()

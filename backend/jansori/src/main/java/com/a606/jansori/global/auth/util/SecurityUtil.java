@@ -40,7 +40,7 @@ public class SecurityUtil {
     return memberRepository.findMemberByEmail(authentication.getName()).orElse(null);
   }
 
-  public Long getCurrentMemberIdByToken(){
+  public Long getCurrentMemberIdByToken() {
     final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     if (authentication == null || authentication.getName() == null) {
@@ -48,7 +48,7 @@ public class SecurityUtil {
     }
 
     Member member = memberRepository.findMemberByEmail(authentication.getName())
-            .orElseThrow(MemberNotFoundException::new);
+        .orElseThrow(MemberNotFoundException::new);
     return member.getId();
 
   }

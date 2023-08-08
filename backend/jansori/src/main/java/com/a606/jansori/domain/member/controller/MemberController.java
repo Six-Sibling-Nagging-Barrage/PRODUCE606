@@ -1,5 +1,11 @@
 package com.a606.jansori.domain.member.controller;
 
+import com.a606.jansori.domain.member.dto.GetDuplicateNicknameReqDto;
+import com.a606.jansori.domain.member.dto.GetDuplicateNicknameResDto;
+import com.a606.jansori.domain.member.dto.GetMyProfileResDto;
+import com.a606.jansori.domain.member.dto.GetUserProfileResDto;
+import com.a606.jansori.domain.member.dto.PatchMemberInfoReqDto;
+import com.a606.jansori.domain.member.dto.PatchMemberInfoResDto;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.dto.*;
 import com.a606.jansori.domain.member.service.MemberService;
@@ -9,10 +15,15 @@ import com.a606.jansori.infra.storage.Service.AwsS3Service;
 import com.a606.jansori.infra.storage.dto.PostFileUploadReqDto;
 import com.a606.jansori.infra.storage.dto.PostFileUploadResDto;
 import java.io.IOException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
