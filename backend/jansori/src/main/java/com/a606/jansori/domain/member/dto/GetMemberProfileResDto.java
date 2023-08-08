@@ -7,8 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 @Getter
 public class GetMemberProfileResDto {
 
