@@ -9,7 +9,6 @@ import com.a606.jansori.domain.persona.exception.LineNotFoundException;
 import com.a606.jansori.domain.persona.repository.LineRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TodoTag;
-import com.a606.jansori.domain.tag.repository.NagTagRepository;
 import com.a606.jansori.global.util.RandomUtil;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class NagRandomGenerator {
 
-  private final NagTagRepository nagTagRepository;
   private final NagRepository nagRepository;
   private final LineRepository lineRepository;
   private final RandomUtil randomUtil;
@@ -61,12 +59,12 @@ public class NagRandomGenerator {
 
     List<Tag> tags = todoTags.stream().map(TodoTag::getTag).collect(Collectors.toList());
 
-    Long count = nagTagRepository.countDistinctByNag_MemberNotAndTagIn(member, tags);
+    Long count = nagRepository.countDistinctByNag_MemberNotAndTagIn(member, tags);
 
     int randomIndex = randomUtil.generate(count);
 
-    return nagTagRepository.findByNag_MemberNotAndTagIn(member, tags,
-        PageRequest.of(randomIndex, 1)).get(0).getNag();
+    return nagRepository.findByNag_MemberNotAndTagIn(member, tags,
+        PageRequest.of(randomIndex, 1)).get(0);
   }
 
   /**
