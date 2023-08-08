@@ -3,9 +3,13 @@ package com.a606.jansori.domain.member.controller;
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameReqDto;
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameResDto;
 import com.a606.jansori.domain.member.dto.GetMemberProfileResDto;
-import com.a606.jansori.domain.member.dto.PostMemberInfoReqDto;
-import com.a606.jansori.domain.member.dto.PostMemberInfoResDto;
-import com.a606.jansori.infra.storage.exception.FileUploadException;
+import com.a606.jansori.domain.member.dto.GetDuplicateNicknameReqDto;
+import com.a606.jansori.domain.member.dto.GetDuplicateNicknameResDto;
+import com.a606.jansori.domain.member.dto.GetMemberProfileResDto;
+import com.a606.jansori.domain.member.dto.PatchMemberInfoReqDto;
+import com.a606.jansori.domain.member.dto.PatchMemberInfoResDto;
+import com.a606.jansori.domain.member.dto.PatchMemberNotificationSettingReqDto;
+import com.a606.jansori.domain.member.dto.PatchMemberNotificationSettingResDto;
 import com.a606.jansori.domain.member.service.MemberService;
 import com.a606.jansori.global.common.EnvelopeResponse;
 import com.a606.jansori.infra.storage.Service.AwsS3Service;
@@ -22,6 +26,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/members")
@@ -78,4 +89,18 @@ public class MemberController {
 
   }
 
+  @PatchMapping("/notification/setting")
+  public EnvelopeResponse<PatchMemberNotificationSettingResDto> setNotificationSettings(
+      @RequestBody PatchMemberNotificationSettingReqDto patchNotificationSettingReqDto) {
+
+    return EnvelopeResponse.<PatchMemberNotificationSettingResDto>
+            builder().data(memberService.setNotificationSettings(patchNotificationSettingReqDto))
+        .build();
+  }
+
+
 }
+
+
+
+
