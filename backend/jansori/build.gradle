@@ -33,6 +33,7 @@ dependencies {
 
     implementation 'com.github.kimkevin:hangulparser:1.0.0'
     implementation 'com.auth0:java-jwt:4.2.1'
+    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.1.0'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
