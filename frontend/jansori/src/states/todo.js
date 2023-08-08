@@ -20,3 +20,9 @@ export const todoDaysState = atom({
   key: 'focusTodoDaysState',
   default: [],
 });
+
+// 해당 일 todoList 배열
+export const todoListState = atom({
+  key: 'todoListState',
+  default: [],
+});
