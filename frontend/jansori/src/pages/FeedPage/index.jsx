@@ -6,13 +6,13 @@ import { getFollowTagList } from '../../apis/api/tag';
 import HashTag from '../../components/HashTag/HashTag';
 import { addTokenToHeaders } from '../../apis/utils/authInstance';
 import { useRecoilValue } from 'recoil';
-import { memberToken, memberInfoState } from '../../states/user';
+import { memberTokenState, memberInfoState } from '../../states/user';
 
 const FeedPage = () => {
   const [specificTag, setSpecificTag] = useState(1);
   const [hasFollowingHashTags, setHasFollowingHashTags] = useState(true);
 
-  const jwtToken = useRecoilValue(memberToken);
+  const jwtToken = useRecoilValue(memberTokenState);
   const user = useRecoilValue(memberInfoState);
 
   addTokenToHeaders(jwtToken);

@@ -7,14 +7,14 @@ import NagHistory from './components/NagHistory';
 import { getMyProfile } from '../../apis/api/member';
 import { addTokenToHeaders } from '../../apis/utils/authInstance';
 import { useRecoilValue } from 'recoil';
-import { memberToken } from '../../states/user';
+import { memberTokenState } from '../../states/user';
 
 const tabs = ['TODO', '잔소리'];
 
 const ProfilePage = () => {
   const [currentTab, setCurrentTab] = useState(0);
 
-  const jwtToken = useRecoilValue(memberToken);
+  const jwtToken = useRecoilValue(memberTokenState);
 
   addTokenToHeaders(jwtToken);
 

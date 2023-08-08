@@ -4,10 +4,10 @@ import NagRankingItem from './NagRankingItem';
 import { getNagRanking } from '../../../apis/api/nag';
 import { addTokenToHeaders } from '../../../apis/utils/authInstance';
 import { useRecoilValue } from 'recoil';
-import { memberToken } from '../../../states/user';
+import { memberTokenState } from '../../../states/user';
 
 const NagRankingList = () => {
-  const jwtToken = useRecoilValue(memberToken);
+  const jwtToken = useRecoilValue(memberTokenState);
 
   addTokenToHeaders(jwtToken);
 
