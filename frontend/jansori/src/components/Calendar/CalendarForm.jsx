@@ -53,7 +53,6 @@ const CalendarForm = () => {
       const date = moment(focusDate).format('YYYY-MM-DD');
 
       const response = await getTodoListByDate(date);
-      console.log(response);
       // TODO: recoil로 todoList부분 변경해주는 부분 설정
       if (response.code === '200') {
         setTodoList(response.data.todos);
