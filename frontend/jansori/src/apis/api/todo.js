@@ -8,7 +8,7 @@ export const createTodo = async (todo) => {
         'Content-Type': 'application/json',
       },
     });
-    return data.data;
+    return data;
   } catch (e) {
     console.log(e);
   }
@@ -73,9 +73,7 @@ export const updateTodoComplete = async (todoId) => {
 // Todo 캐릭터 반응하기
 export const createPersonaReaction = async ({ todoId, todoPersonaId }) => {
   try {
-    const { data } = await authInstance.post(
-      `/todos/${todoId}/${todoPersonaId}`
-    );
+    const { data } = await authInstance.post(`/todos/${todoId}/${todoPersonaId}`);
     return data.data;
   } catch (e) {
     console.log(e);
