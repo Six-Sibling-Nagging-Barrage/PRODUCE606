@@ -18,7 +18,7 @@ export const createTodo = async (todo) => {
 export const getTodoListByDate = async (date) => {
   try {
     const { data } = await authInstance.get(`/todos/my?date=${date}`);
-    return data.data;
+    return data;
   } catch (e) {
     console.log(e);
   }

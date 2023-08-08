@@ -3,9 +3,10 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
 import tw, { styled } from 'twin.macro';
+import { getTodoListByDate } from '../../apis/api/todo';
 
 const CalendarForm = () => {
-  const [date, setDate] = useState(new Date());
+  const [focusDate, setFocusDate] = useState(new Date());
   const [month, setMonth] = useState(moment().format('MM'));
   const [year, setYear] = useState(moment().format('YYYY'));
   const mark = ['2023-07-25', '2023-08-06', '2023-08-15'];
@@ -17,22 +18,41 @@ const CalendarForm = () => {
   };
 
   useEffect(() => {
-    // console.log('month', month, 'year', year);
+    // TODO: 달 이동할 경우 그 달에 해당하는 TODO 입력된 값들 불러오는 API 호출
   }, [month, year]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const date = moment(focusDate).format('YYYY-MM-DD');
+        console.log(date);
+
+        // 비동기 함수 호출
+        const response = await getTodoListByDate(date);
+        console.log(response);
+
+        // 여기서 response를 사용하여 상태 업데이트 등의 작업 수행
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [focusDate]);
 
   return (
     <CalendarCard>
       <StyledCalendar
         className={{}}
-        onChange={setDate}
-        formatDay={(locale, date) => moment(date).format('DD')} //일 표시 지우기
-        value={date}
+        onChange={setFocusDate}
+        formatDay={(locale, focusDate) => moment(focusDate).format('DD')} //일 표시 지우기
+        value={focusDate}
         minDetail='month'
         maxDetail='month'
         showNeighboringMonth={false}
-        tileContent={({ date, view }) => {
+        tileContent={({ focusDate, view }) => {
           // 날짜 타일에 컨텐츠 추가
-          const dateStr = moment(date).format('YYYY-MM-DD');
+          const dateStr = moment(focusDate).format('YYYY-MM-DD');
           if (mark.find((x) => x === dateStr)) {
             return <Dot />;
           }
@@ -40,7 +60,7 @@ const CalendarForm = () => {
         }}
         onActiveStartDateChange={handleActiveStartDateChange} // 활성화된 시작 날짜 변경 시 호출되는 콜백
       />
-      <div className='text-gray-500 mt-4'>{moment(date).format('YYYY-MM-DD')}</div>
+      <div className='text-gray-500 mt-4'>{moment(focusDate).format('YYYY-MM-DD')}</div>
     </CalendarCard>
   );
 };
