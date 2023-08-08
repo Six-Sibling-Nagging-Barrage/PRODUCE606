@@ -49,7 +49,7 @@ public class MemberService {
     Member member = memberRepository.findById(memberId)
         .orElseThrow(() -> new MemberNotFoundException());
 
-    if (memberId == securityUtil.getMemberFromSession().getId()) {
+    if (memberId == securityUtil.getCurrentMemberByToken().getId()) {
       return GetMyProfileResDto.from(member);
     }
 

@@ -16,7 +16,6 @@ import javax.validation.Valid;
 public class MemberController {
 
   private final MemberService memberService;
-  private final SecurityUtil securityUtil;
 
   // 닉네임 중복 검사
   @GetMapping("/nickname")
