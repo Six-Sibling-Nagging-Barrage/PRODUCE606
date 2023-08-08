@@ -33,10 +33,8 @@ const CalendarForm = () => {
       });
       if (response.code === '200') {
         // 데이터를 받아오는데 성공한 경우
-        console.log(response.data);
         setTodoDays(response.data.dates);
         marks = todoDays;
-        console.log(todoDays);
       }
     };
     fetchData();
