@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from 'twin.macro';
 import AutoComplete from '../AutoComplete/AutoComplete';
 import HashTagItem from './HashTagItem';
@@ -17,6 +17,10 @@ const HashTag = (props) => {
   const [hashTagExists, setHashTagExists] = useState(false);
   const [hashTagCount, setHashTagCount] = useState(0);
   const [currentHashTag, setCurrentHashTag] = useState(null);
+
+  useEffect(() => {
+    setHashTagCount(hashTagList.length);
+  }, [hashTagList]);
 
   const handleHashTagInputChange = (event) => {
     setHashTagInput(event.target.value);
@@ -55,7 +59,6 @@ const HashTag = (props) => {
               hashTag={hashTag}
               editable={editable}
               setHashTagList={setHashTagList}
-              setHashTagCount={setHashTagCount}
             />
           );
         })}

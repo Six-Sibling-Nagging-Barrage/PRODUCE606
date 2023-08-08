@@ -2,13 +2,12 @@ import React from 'react';
 import { styled } from 'twin.macro';
 
 const HashTagItem = (props) => {
-  const { hashTag, editable, setHashTagList, setHashTagCount } = props;
+  const { hashTag, editable, setHashTagList } = props;
 
   const handleRemoveHashTag = () => {
     setHashTagList((prev) => {
       return prev.filter((item) => item.tagName !== hashTag.tagName);
     });
-    setHashTagCount((prev) => prev - 1);
   };
 
   return (
