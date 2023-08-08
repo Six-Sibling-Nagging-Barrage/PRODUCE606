@@ -24,6 +24,16 @@ export const getTodoListByDate = async (date) => {
   }
 };
 
+// 멤버의 월별 투두 존재 여부 확인
+export const getTodoListByDateByMember = async ({ memberId, date }) => {
+  try {
+    const { data } = await authInstance.get(`/todos/members/${memberId}/monthly?yearMonth=${date}`);
+    return data;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // 팔로우한 태그의 피드 조회
 export const getFollowingFeed = async ({ cursor, pageSize }) => {
   try {
