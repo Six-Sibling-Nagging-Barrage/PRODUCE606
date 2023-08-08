@@ -4,6 +4,8 @@ import com.a606.jansori.infra.storage.dto.DeleteFileReqDto;
 import com.a606.jansori.infra.storage.dto.DeleteFileResDto;
 import com.a606.jansori.infra.storage.dto.PostFileUploadReqDto;
 import com.a606.jansori.infra.storage.dto.PostFileUploadResDto;
+import com.a606.jansori.infra.storage.exception.FileConversionException;
+import com.a606.jansori.infra.storage.exception.FileUploadException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -26,19 +28,29 @@ public class AwsS3Service {
 
   private final AmazonS3 amazonS3;
   private final ResourceLoader resourceLoader;
+  private final String UPLOAD_DIR = "upload";
 
   @Value("${cloud.aws.s3.bucket}")
   private String bucket;
 
-  public PostFileUploadResDto uploadFile(PostFileUploadReqDto postFileUploadReqDto, String dirName)
-      throws IOException {
+  public PostFileUploadResDto uploadFile(PostFileUploadReqDto postFileUploadReqDto) {
 
     MultipartFile multipartFile = postFileUploadReqDto.getMultipartFile();
 
-    File file = convertMultipartFileToFile(multipartFile)
-        .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File convert fail"));
+    File file = null;
 
-    String key = dirName + "/" + UUID.randomUUID() + file.getName();
+    try {
+
+      file = convertMultipartFileToFile(multipartFile)
+          .orElseThrow(FileConversionException::new);
+
+    } catch (IOException e) {
+
+      throw new FileUploadException();
+
+    }
+
+    String key = UPLOAD_DIR + "/" + UUID.randomUUID() + file.getName();
     String path = putS3(file, key);
 
     file.delete();

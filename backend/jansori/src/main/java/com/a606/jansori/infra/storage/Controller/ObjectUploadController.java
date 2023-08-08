@@ -1,5 +1,6 @@
 package com.a606.jansori.infra.storage.Controller;
 
+import com.a606.jansori.infra.storage.exception.FileUploadException;
 import com.a606.jansori.global.common.EnvelopeResponse;
 import com.a606.jansori.infra.storage.Service.AwsS3Service;
 import com.a606.jansori.infra.storage.dto.DeleteFileReqDto;
@@ -22,17 +23,16 @@ import org.springframework.web.multipart.MultipartFile;
 public class ObjectUploadController {
 
   private final AwsS3Service awsS3Service;
-  private final String UPLOAD_DIR = "upload";
+
 
   @PostMapping(value = "/upload")
   public EnvelopeResponse<PostFileUploadResDto> upload(
-      @RequestPart("file") MultipartFile multipartFile)
-      throws IOException {
+      @RequestPart("file") MultipartFile multipartFile) {
 
     return EnvelopeResponse.<PostFileUploadResDto>builder()
         .data(awsS3Service.uploadFile(PostFileUploadReqDto.builder()
             .multipartFile(multipartFile)
-            .build(), UPLOAD_DIR))
+            .build()))
         .build();
 
   }

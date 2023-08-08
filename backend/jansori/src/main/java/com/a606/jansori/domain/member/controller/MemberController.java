@@ -2,9 +2,10 @@ package com.a606.jansori.domain.member.controller;
 
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameReqDto;
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameResDto;
+import com.a606.jansori.domain.member.dto.GetMemberProfileResDto;
 import com.a606.jansori.domain.member.dto.PostMemberInfoReqDto;
 import com.a606.jansori.domain.member.dto.PostMemberInfoResDto;
-import com.a606.jansori.domain.member.dto.*;
+import com.a606.jansori.infra.storage.exception.FileUploadException;
 import com.a606.jansori.domain.member.service.MemberService;
 import com.a606.jansori.global.common.EnvelopeResponse;
 import com.a606.jansori.infra.storage.Service.AwsS3Service;
@@ -52,24 +53,28 @@ public class MemberController {
   @PostMapping("/update")
   public EnvelopeResponse<PostMemberInfoResDto> updateMemberInfo(
       @RequestPart(value = "imageFile", required = false) MultipartFile multipartFile,
-      @RequestPart(value = "memberInfo") @Valid PostMemberInfoReqDto postMemberInfoReqDto)
-      throws IOException {
+      @RequestPart(value = "memberInfo") @Valid PostMemberInfoReqDto postMemberInfoReqDto) {
 
     String imageName = null;
 
-    if(multipartFile != null) {
+    if (multipartFile != null) {
+
       PostFileUploadResDto postFileUploadResDto =
-              awsS3Service.uploadFile(
-                      PostFileUploadReqDto
-                              .builder()
-                              .multipartFile(multipartFile)
-                              .build(), UPLOAD_DIR);
+          null;
+
+      postFileUploadResDto = awsS3Service.uploadFile(
+          PostFileUploadReqDto
+              .builder()
+              .multipartFile(multipartFile)
+              .build());
+
       imageName = postFileUploadResDto.getImageName();
+
     }
 
     return EnvelopeResponse.<PostMemberInfoResDto>builder()
-            .data(memberService.updateMemberInfo(postMemberInfoReqDto, imageName))
-            .build();
+        .data(memberService.updateMemberInfo(postMemberInfoReqDto, imageName))
+        .build();
 
   }
 
