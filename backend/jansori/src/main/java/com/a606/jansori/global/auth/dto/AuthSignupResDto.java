@@ -13,10 +13,14 @@ import lombok.NoArgsConstructor;
 public class AuthSignupResDto {
 
   private String email;
+  private Long memberId;
 
   public static AuthSignupResDto from(Member member) {
 
-    return new AuthSignupResDto(member.getEmail());
+    return AuthSignupResDto.builder()
+        .email(member.getEmail())
+        .memberId(member.getId())
+        .build();
 
   }
 

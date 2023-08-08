@@ -85,7 +85,8 @@ public class SecurityConfig {
         .headers().frameOptions().disable()
 
         .and()
-        .logout().logoutSuccessUrl("/")
+        .logout()
+        .logoutUrl("/logout")
 
         .and().apply(new JwtSecurityConfig(tokenProvider));
 

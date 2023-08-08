@@ -2,11 +2,6 @@ package com.a606.jansori.global.auth.service;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.repository.MemberRepository;
-import com.a606.jansori.domain.tag.domain.Tag;
-import com.a606.jansori.domain.tag.domain.TagFollow;
-import com.a606.jansori.domain.tag.exception.TagNotFoundException;
-import com.a606.jansori.domain.tag.repository.TagFollowRepository;
-import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.global.auth.domain.RefreshToken;
 import com.a606.jansori.global.auth.dto.AuthLoginReqDto;
 import com.a606.jansori.global.auth.dto.AuthSignupReqDto;
@@ -20,7 +15,6 @@ import com.a606.jansori.global.auth.exception.AuthMemberNotFoundException;
 import com.a606.jansori.global.auth.exception.AuthUnauthorizedException;
 import com.a606.jansori.global.auth.repository.RefreshTokenRepository;
 import com.a606.jansori.global.auth.util.TokenProvider;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,11 +35,9 @@ public class AuthService {
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final TokenProvider tokenProvider;
   private final RefreshTokenRepository refreshTokenRepository;
-  private final TagFollowRepository tagFollowRepository;
-  private final TagRepository tagRepository;
 
   @Transactional
-  public AuthSignupResDto signup(AuthSignupReqDto authSignupReqDto, String imageName) {
+  public AuthSignupResDto signup(AuthSignupReqDto authSignupReqDto) {
 
     if (memberRepository.existsByEmail(authSignupReqDto.getEmail())) {
 
@@ -53,34 +45,12 @@ public class AuthService {
 
     }
 
-    Member member = authSignupReqDto.toMember(passwordEncoder, imageName);
+    Member member = authSignupReqDto.toMember(passwordEncoder);
 
     memberRepository.save(member);
 
-    List<Long> tags = authSignupReqDto.getTags();
+    return AuthSignupResDto.from(member);
 
-    if (tags != null) {
-      for (Long tagId : tags) {
-        Tag tag = tagRepository.findTagById(tagId).orElseThrow(TagNotFoundException::new);
-
-        followTags(member, tag);
-      }
-    }
-
-    return AuthSignupResDto.from(memberRepository.save(member));
-
-  }
-
-  private void followTags(Member member, Tag tag) {
-
-    if (tagFollowRepository.findTagFollowByTagAndMember(tag, member).isEmpty()) {
-
-      tagFollowRepository.save(TagFollow.builder()
-          .member(member)
-          .tag(tag)
-          .build());
-
-    }
   }
 
   @Transactional
@@ -97,17 +67,15 @@ public class AuthService {
           .value(tokenProvider.generateRefreshTokenDto())
           .build();
 
+      refreshTokenRepository.save(refreshToken);
+
       TokenResDto tokenResDto = tokenProvider.generateAccessTokenDto(authentication,
           refreshToken.getValue());
 
       Member member = memberRepository.findMemberByEmail(authLoginReqDto.getEmail())
           .orElseThrow(AuthMemberNotFoundException::new);
 
-      Long memberId = member.getId();
-
-      tokenResDto.update(memberId);
-
-      refreshTokenRepository.save(refreshToken);
+      tokenResDto.update(member);
 
       return tokenResDto;
 
@@ -141,9 +109,7 @@ public class AuthService {
     Member member = memberRepository.findMemberByEmail(authentication.getName())
         .orElseThrow(AuthMemberNotFoundException::new);
 
-    Long memberId = member.getId();
-
-    tokenResDto.update(memberId);
+    tokenResDto.update(member);
 
     return tokenResDto;
   }
