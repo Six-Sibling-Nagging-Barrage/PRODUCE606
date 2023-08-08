@@ -6,16 +6,14 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class GetNagsOfProfilePageReqDto {
-
-  private Long memberId;
+public class GetNagsOfReqDto {
 
   private Long cursor;
 
   @Positive(message = "유효하지 않은 페이지 크기입니다.")
   private Integer size;
 
-  public GetNagsOfProfilePageReqDto() {
+  public GetNagsOfReqDto() {
     this.size = 10;
   }
 }

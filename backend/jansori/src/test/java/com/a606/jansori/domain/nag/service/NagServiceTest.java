@@ -14,7 +14,7 @@ import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagLike;
 import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
-import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
+import com.a606.jansori.domain.nag.dto.GetNagsOfResDto;
 import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
@@ -188,7 +188,7 @@ class NagServiceTest {
     given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
 
     //when
-    GetNagOfProfilePageResDto result = nagService.getAllNagsByMine();
+    GetNagsOfResDto result = nagService.getAllNagsByMine();
 
     //then
     assertThat(result.getNags()).isEmpty();
@@ -206,7 +206,7 @@ class NagServiceTest {
     given(securityUtil.getCurrentMemberByToken()).willReturn(member);
 
     //when
-    GetNagOfProfilePageResDto result = nagService.getAllNagsByMine();
+    GetNagsOfResDto result = nagService.getAllNagsByMine();
 
     //then
 

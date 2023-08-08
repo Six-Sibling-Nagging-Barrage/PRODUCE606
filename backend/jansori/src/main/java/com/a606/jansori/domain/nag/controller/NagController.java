@@ -1,10 +1,10 @@
 package com.a606.jansori.domain.nag.controller;
 
-import com.a606.jansori.domain.nag.dto.GetNagsOfProfilePageReqDto;
+import com.a606.jansori.domain.nag.dto.GetNagsOfReqDto;
 import com.a606.jansori.domain.nag.task.NagBoxStatisticsScheduler;
 import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
-import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
+import com.a606.jansori.domain.nag.dto.GetNagsOfResDto;
 import com.a606.jansori.domain.nag.dto.GetNagsOfNagBoxResDto;
 import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
@@ -31,9 +31,10 @@ public class NagController {
   private final NagBoxStatisticsScheduler nagBoxStatisticsScheduler;
 
   @GetMapping("/my-list")
-  public EnvelopeResponse<GetNagOfProfilePageResDto> getAllNagsByMine() {
-    return EnvelopeResponse.<GetNagOfProfilePageResDto>builder()
-        .data(nagService.getAllNagsByMine())
+  public EnvelopeResponse<GetNagsOfResDto> getAllNagsByMine(
+      @Valid GetNagsOfReqDto getNagsOfReqDto) {
+    return EnvelopeResponse.<GetNagsOfResDto>builder()
+        .data(nagService.getAllNagsByMine(getNagsOfReqDto))
         .build();
   }
 
@@ -60,7 +61,7 @@ public class NagController {
 
   @GetMapping("/nags/members")
   public EnvelopeResponse getNagsOfProfilePageByMemberId(
-      @Valid GetNagsOfProfilePageReqDto getNagsOfProfilePageReqDto) {
+      @Valid GetNagsOfReqDto getNagsOfReqDto) {
       return EnvelopeResponse.builder()
           .build();
   }
