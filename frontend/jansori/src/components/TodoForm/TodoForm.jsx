@@ -41,7 +41,7 @@ const TodoForm = () => {
     };
     // TODO: todoinput 등록하는 api 호출
     const response = await createTodo(todo);
-    if (response.code === 200) {
+    if (response.code === '200') {
       console.log('성공성공');
     }
     // TODO: 성공했을 경우 밑에 등록되었다는 모달 띄우기(3초 후에 제거)
