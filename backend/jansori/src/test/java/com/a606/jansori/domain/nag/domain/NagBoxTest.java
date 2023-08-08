@@ -2,6 +2,7 @@ package com.a606.jansori.domain.nag.domain;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.nag.dto.NagOfNagBox;
+import com.a606.jansori.domain.tag.domain.Tag;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -36,18 +37,18 @@ class NagBoxTest {
         .id(1L)
         .nickname("taeyong")
         .build();
-
-    nags = List.of(new Nag(1L, "잔소리1", "ㅈㅅㄹ1", 1, member, null),
-        new Nag(2L, "잔소리2", "ㅈㅅㄹ2", 2, member, null),
-        new Nag(3L, "잔소리3", "ㅈㅅㄹ3", 3, member, null),
-        new Nag(4L, "잔소리4", "ㅈㅅㄹ4", 4, member, null),
-        new Nag(5L, "잔소리5", "ㅈㅅㄹ5", 5, member, null));
+    Tag tag = new Tag(1L, "tag", 0);
+    nags = List.of(new Nag(1L, "잔소리1", "ㅈㅅㄹ1", 1, tag, member, null),
+        new Nag(2L, "잔소리2", "ㅈㅅㄹ2", 2, tag, member, null),
+        new Nag(3L, "잔소리3", "ㅈㅅㄹ3", 3, tag, member, null),
+        new Nag(4L, "잔소리4", "ㅈㅅㄹ4", 4, tag, member, null),
+        new Nag(5L, "잔소리5", "ㅈㅅㄹ5", 5, tag, member, null));
 
     return Stream.of(
         Arguments.of(List.of(
             new NagUnlock(1L, member, nags.get(0)),
             new NagUnlock(2L, member, nags.get(1))), 2),
-        
+
         Arguments.of(Collections.emptyList(), 0),
 
         Arguments.of(List.of(

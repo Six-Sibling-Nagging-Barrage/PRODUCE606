@@ -2,11 +2,8 @@ package com.a606.jansori.dummy;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.nag.domain.Nag;
-import com.a606.jansori.domain.persona.domain.PersonaReaction;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
-import com.a606.jansori.domain.tag.domain.NagTag;
 import com.a606.jansori.domain.tag.domain.Tag;
-import com.a606.jansori.domain.tag.domain.TagFollow;
 import com.a606.jansori.domain.todo.domain.Todo;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -46,10 +43,9 @@ public class Dummy implements CommandLineRunner {
     log.info("dummy insertion start");
 
     List<Member> members =  memberDummy.createMembers();
-    List<Nag> nags = nagWithNagTagDummy.createNags(members);
     List<Tag> tags = tagDummy.createTags();
     tagFollowDummy.createTagFollows(tags, members);
-    nagWithNagTagDummy.createNagTags(nags, tags);
+    List<Nag> nags = nagWithNagTagDummy.createNags(members, tags);
     List<Todo> todos = todoWithTodoTagDummy.createTodosWithTodoTags(members, tags, nags);
     List<TodoPersona> todoPersonas = todoPersonaDummy.createTodoPersonas(todos);
     personaReactionDummy.createPersonaReactions(members,todoPersonas);

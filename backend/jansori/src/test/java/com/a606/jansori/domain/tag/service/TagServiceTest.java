@@ -14,10 +14,11 @@ import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
 import com.a606.jansori.domain.tag.dto.GetFollowingTagResDto;
+import com.a606.jansori.domain.tag.dto.TagDto;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
-import com.a606.jansori.domain.tag.dto.TagDto;
+import com.a606.jansori.global.auth.util.SecurityUtil;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +40,9 @@ class TagServiceTest {
 
   @Mock
   private MemberRepository memberRepository;
+
+  @Mock
+  private SecurityUtil securityUtil;
 
   @InjectMocks
   private TagService tagService;
@@ -82,7 +86,7 @@ class TagServiceTest {
   void Given_Valid_Tag_With_Member_When_Following_Tag_Then_Success() {
     //given
     given(tagRepository.findById(tag.getId())).willReturn(Optional.of(tag));
-    given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+    given(securityUtil.getCurrentMemberByToken()).willReturn(member);
     given(tagFollowRepository.findTagFollowByTagAndMember(tag, member)).willReturn(
         Optional.empty());
 
@@ -94,7 +98,7 @@ class TagServiceTest {
 
     //verify
     verify(tagRepository, times(1)).findById(tag.getId());
-    verify(memberRepository, times(1)).findById(member.getId());
+    verify(securityUtil, times(1)).getCurrentMemberByToken();
     verify(tagFollowRepository, times(1)).save(any(TagFollow.class));
     verify(tagFollowRepository, times(1)).findTagFollowByTagAndMember(tag, member);
   }
@@ -104,7 +108,7 @@ class TagServiceTest {
   void Given_Valid_Tag_With_Member_When_Exist_Following_Tag_Then_Success() {
     //given
     given(tagRepository.findById(tag.getId())).willReturn(Optional.of(tag));
-    given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+    given(securityUtil.getCurrentMemberByToken()).willReturn(member);
     given(tagFollowRepository.findTagFollowByTagAndMember(tag, member)).willReturn(
         Optional.of(tagFollow));
 
@@ -113,7 +117,7 @@ class TagServiceTest {
 
     //verify
     verify(tagRepository, times(1)).findById(tag.getId());
-    verify(memberRepository, times(1)).findById(member.getId());
+    verify(securityUtil, times(1)).getCurrentMemberByToken();
     verify(tagFollowRepository, times(1)).findTagFollowByTagAndMember(tag, member);
   }
 
