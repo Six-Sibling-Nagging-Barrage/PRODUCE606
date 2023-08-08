@@ -28,7 +28,7 @@ export const createNag = async (nag) => {
         'Content-Type': 'application/json',
       },
     });
-    return data.data;
+    return data;
   } catch (e) {
     console.log(e);
   }
