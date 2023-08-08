@@ -4,8 +4,8 @@ import tw, { styled } from 'twin.macro';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { AiFillBell } from 'react-icons/ai';
 import { TbTicket } from 'react-icons/tb';
-import Modal from '../UI/Modal';
 import { Link } from 'react-router-dom';
+import { memberIdState } from '../../states/user';
 
 import {
   isLoginState,
@@ -19,8 +19,9 @@ const NavBar = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
-  const user = useRecoilValue(isLoginState);
+  const isLogin = useRecoilValue(isLoginState);
   const profileImg = useRecoilValue(profileImgState);
+  const memberId = useRecoilValue(memberIdState);
 
   const handleMenuClick = () => {
     setIsToggleOpen(!isToggleOpen);
@@ -45,7 +46,7 @@ const NavBar = () => {
           </Logo>
           {/* 오른쪽 로그인 버튼 부분 시작*/}
           <RightButtons>
-            {user ? (
+            {isLogin ? (
               <AfterLoginWrap>
                 <button>
                   <AiFillBell style={{ marginRight: '8px' }} />
@@ -107,7 +108,10 @@ const NavBar = () => {
                 </NavItem>
               </li>
               <li>
-                <NavItem to="/profile" onClick={() => setIsToggleOpen(false)}>
+                <NavItem
+                  to={`/profile?id=${encodeURIComponent(memberId)}`}
+                  onClick={() => setIsToggleOpen(false)}
+                >
                   Profile
                 </NavItem>
               </li>

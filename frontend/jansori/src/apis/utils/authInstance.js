@@ -4,7 +4,6 @@ import axios from 'axios';
 // 헤더에 토큰 넣어주는 작업 추가 필요
 export const authInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
-  withCredentials: true,
 });
 
 // JWT 토큰을 헤더에 추가하는 함수

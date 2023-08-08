@@ -4,10 +4,12 @@ import { styled } from 'twin.macro';
 import profileImg from '../../assets/profile_img.jpeg';
 import TabItem from './components/TabItem';
 import NagHistory from './components/NagHistory';
-import { getMyProfile } from '../../apis/api/member';
+import { getMemberProfile } from '../../apis/api/member';
 import { addTokenToHeaders } from '../../apis/utils/authInstance';
 import { useRecoilValue } from 'recoil';
-import { memberTokenState } from '../../states/user';
+import { memberTokenState, memberIdState } from '../../states/user';
+import { getFollowTagList } from '../../apis/api/tag';
+import { useLocation } from 'react-router-dom';
 
 const tabs = ['TODO', '잔소리'];
 
@@ -15,25 +17,42 @@ const ProfilePage = () => {
   const [currentTab, setCurrentTab] = useState(0);
 
   const jwtToken = useRecoilValue(memberTokenState);
+  const memberId = useRecoilValue(memberIdState);
+
+  const [profile, setProfile] = useState(null);
+  const [tags, setTags] = useState([]);
+  const [isMine, setIsMine] = useState(false);
+
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+
+  // URL에서 query parameter 가져오기
+  const id = parseInt(query.get('id'));
 
   addTokenToHeaders(jwtToken);
 
   useEffect(() => {
-    // TODO: 유저 프로필 조회 api 호출
-    // TODO: 내가 보낸 잔소리 조회 api 호출
+    console.log(id, memberId);
+    if (id === memberId) setIsMine(true);
+    // 유저 프로필 조회 api 호출
     // TODO: 유저가 팔로우한 해시태그 조회 api 호출
     (async () => {
-      const data = await getMyProfile();
+      const profileRes = await getMemberProfile(id);
+      setProfile(profileRes.data);
+      const tagRes = await getFollowTagList(id);
+      setTags(tagRes.tags);
     })();
+  }, []);
+
+  useEffect(() => {
+    // TODO: 내가 보낸 잔소리 조회 api 호출
   }, [currentTab]);
 
   return (
     <ProfileContainer>
-      <ProfileDetail
-        profile={dummyData.profile}
-        nags={dummyData.nags}
-        tags={dummyData.tags}
-      />
+      {profile && (
+        <ProfileDetail isMine={isMine} profile={profile} tags={tags} />
+      )}
       <TabContainer>
         <Tabs>
           {tabs.map((tab, index) => (
@@ -52,7 +71,7 @@ const ProfilePage = () => {
             // <TodoHistory></TodoHistory>
             <div></div>
           ) : (
-            <NagHistory nags={dummyData.nags}></NagHistory>
+            <NagHistory></NagHistory>
           )}
         </TabContent>
       </TabContainer>
@@ -103,36 +122,3 @@ const Glider = styled.span`
 `;
 
 export default ProfilePage;
-
-const dummyData = {
-  profile: {
-    id: 4,
-    nickname: 'Admin001',
-    bio: '훌쩍 커버렸어 함께한 기억처럼 널 보는 내 마음은 어느새 여름 지나 가을 기다렸지 all this time Do you want somebody Like I want somebody? 날 보고 웃었지만 Do you think about me now? yeah All the time, yeah, all the time',
-    imageUrl: profileImg,
-    ticket: 8,
-  },
-  todos: {},
-  tags: [
-    {
-      tagId: 1,
-      tagName: '개발',
-    },
-    {
-      tagId: 2,
-      tagName: '코딩',
-    },
-    {
-      tagId: 3,
-      tagName: '운동',
-    },
-    {
-      tagId: 4,
-      tagName: '일상',
-    },
-    {
-      tagId: 5,
-      tagName: '알고리즘',
-    },
-  ],
-};

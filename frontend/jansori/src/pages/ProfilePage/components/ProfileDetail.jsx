@@ -3,16 +3,19 @@ import { styled } from 'twin.macro';
 import HashTag from '../../../components/HashTag/HashTag';
 import ProfileImg from '../../../components/Profile/ProfileImg';
 import editImg from '../../../assets/edit_icon.png';
+import Slider from 'react-slick';
 
 const ProfileDetail = (props) => {
-  const { profile, nags, tags } = props;
+  const { isMine, profile, nags, tags } = props;
 
   return (
     <ProfileDetailContainer>
       <Header>
-        <button>
-          <img src={editImg} />
-        </button>
+        {isMine && (
+          <button>
+            <img src={editImg} />
+          </button>
+        )}
       </Header>
       <ProfileImg profileImg={profile.imageUrl} size="120px" />
       <Nickname>{profile.nickname}</Nickname>

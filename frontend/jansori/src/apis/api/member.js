@@ -67,11 +67,11 @@ export const updateProfile = async (profile) => {
   }
 };
 
-// 나의 프로필 조회
-export const getMyProfile = async () => {
+// 멤버 프로필 조회
+export const getMemberProfile = async (memberId) => {
   try {
-    const { data } = await authInstance.get(`/members/my/profile`);
-    return data.data;
+    const { data } = await authInstance.get(`/members/${memberId}/profile`);
+    return data;
   } catch (e) {
     console.log(e);
   }
