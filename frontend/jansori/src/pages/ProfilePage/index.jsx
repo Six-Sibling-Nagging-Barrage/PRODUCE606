@@ -8,6 +8,9 @@ import { getMyProfile } from '../../apis/api/member';
 import { addTokenToHeaders } from '../../apis/utils/authInstance';
 import { useRecoilValue } from 'recoil';
 import { memberToken } from '../../states/user';
+import TodoForm from '../../components/TodoForm/TodoForm';
+import TodoList from '../../components/Todo/TodoList';
+import CalendarForm from '../../components/Calendar/CalendarForm';
 
 const tabs = ['TODO', '잔소리'];
 
@@ -29,11 +32,7 @@ const ProfilePage = () => {
 
   return (
     <ProfileContainer>
-      <ProfileDetail
-        profile={dummyData.profile}
-        nags={dummyData.nags}
-        tags={dummyData.tags}
-      />
+      <ProfileDetail profile={dummyData.profile} nags={dummyData.nags} tags={dummyData.tags} />
       <TabContainer>
         <Tabs>
           {tabs.map((tab, index) => (
@@ -50,7 +49,11 @@ const ProfilePage = () => {
         <TabContent>
           {currentTab === 0 ? (
             // <TodoHistory></TodoHistory>
-            <div></div>
+            <div>
+              <TodoForm />
+              <CalendarForm />
+              <TodoList />
+            </div>
           ) : (
             <NagHistory nags={dummyData.nags}></NagHistory>
           )}
@@ -97,9 +100,7 @@ const Glider = styled.span`
   border-radius: 10px 10px 0 0;
   transition: 0.25s ease-out;
   ${({ currentTab }) =>
-    currentTab === 0
-      ? `transform: translateX(-50%);`
-      : `transform: translateX(50%);`}
+    currentTab === 0 ? `transform: translateX(-50%);` : `transform: translateX(50%);`}
 `;
 
 export default ProfilePage;
