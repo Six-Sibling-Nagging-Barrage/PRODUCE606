@@ -1,7 +1,8 @@
 package com.a606.jansori.global.auth.controller;
 
-import com.a606.jansori.global.auth.dto.AuthReqDto;
-import com.a606.jansori.global.auth.dto.AuthResDto;
+import com.a606.jansori.global.auth.dto.AuthLoginReqDto;
+import com.a606.jansori.global.auth.dto.AuthSignupReqDto;
+import com.a606.jansori.global.auth.dto.AuthSignupResDto;
 import com.a606.jansori.global.auth.dto.TokenReqDto;
 import com.a606.jansori.global.auth.dto.TokenResDto;
 import com.a606.jansori.global.auth.service.AuthService;
@@ -23,17 +24,20 @@ public class AuthController {
   private final AuthService authService;
 
   @PostMapping("/signup")
-  public EnvelopeResponse<AuthResDto> signup(@Valid @RequestBody AuthReqDto authReqDto) {
-    return EnvelopeResponse.<AuthResDto>builder()
-        .data(authService.signup(authReqDto))
+  public EnvelopeResponse<AuthSignupResDto> signup(
+      @Valid @RequestBody AuthSignupReqDto authSignupReqDto) {
+
+    return EnvelopeResponse.<AuthSignupResDto>builder()
+        .data(authService.signup(authSignupReqDto))
         .build();
+
   }
 
   @PostMapping("/login")
-  public EnvelopeResponse<TokenResDto> login(@Valid @RequestBody AuthReqDto authReqDto) {
+  public EnvelopeResponse<TokenResDto> login(@Valid @RequestBody AuthLoginReqDto authLoginReqDto) {
 
     return EnvelopeResponse.<TokenResDto>builder()
-        .data(authService.login(authReqDto))
+        .data(authService.login(authLoginReqDto))
         .build();
 
   }

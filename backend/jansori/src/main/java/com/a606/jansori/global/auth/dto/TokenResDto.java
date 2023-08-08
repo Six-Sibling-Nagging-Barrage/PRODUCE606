@@ -1,5 +1,7 @@
 package com.a606.jansori.global.auth.dto;
 
+import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.domain.member.domain.MemberRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,5 +20,26 @@ public class TokenResDto {
   private String refreshToken;
 
   private Long accessTokenExpiresIn;
+
+  private Long memberId;
+
+  private String email;
+
+  private MemberRole memberRole;
+
+  private String nickname;
+
+  private String imageUrl;
+
+  private Long ticket;
+
+  public void update(Member member) {
+    this.memberId = member.getId();
+    this.email = member.getEmail();
+    this.memberRole = member.getMemberRole();
+    this.nickname = member.getNickname();
+    this.imageUrl = member.getImageUrl();
+    this.ticket = member.getTicket();
+  }
 
 }
