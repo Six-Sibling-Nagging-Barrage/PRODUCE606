@@ -2,13 +2,14 @@ package com.a606.jansori.domain.member.dto;
 
 import java.util.List;
 import java.util.Map;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class PatchMemberNotificationSettingReqDto {
 
 //  List<Boolean> notificationSettings;
