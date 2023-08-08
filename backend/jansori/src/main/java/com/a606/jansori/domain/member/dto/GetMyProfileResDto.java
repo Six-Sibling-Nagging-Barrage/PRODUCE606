@@ -7,15 +7,12 @@ import com.a606.jansori.domain.tag.dto.TagDto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
-@Builder
+@SuperBuilder
 @Getter
-public class GetMyProfileResDto {
+public class GetMyProfileResDto extends GetMemberProfileResDto{
 
-  private Long id;
-  private String nickname;
-  private String bio;
-  private String imageUrl;
   private Long ticket;
 
   public static GetMyProfileResDto from(Member member) {
