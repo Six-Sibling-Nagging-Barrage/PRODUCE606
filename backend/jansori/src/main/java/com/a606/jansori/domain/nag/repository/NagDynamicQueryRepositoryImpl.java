@@ -2,7 +2,6 @@ package com.a606.jansori.domain.nag.repository;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.nag.domain.Nag;
-import com.a606.jansori.domain.todo.domain.Todo;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -10,7 +9,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -32,19 +30,20 @@ public class NagDynamicQueryRepositoryImpl implements NagDynamicQueryRepository 
 
     Root<Nag> nag = cq.from(Nag.class);
 
-    nag.join("tag", JoinType.INNER);
-    nag.join("member", JoinType.INNER);
-    nag.join("todos", JoinType.LEFT);
+    nag.fetch("tag", JoinType.INNER);
+    nag.fetch("todos", JoinType.INNER);
 
     List<Predicate> predicates = new ArrayList<>();
+
+    predicates.add(cb.equal(nag.get("member"), member));
 
     if(cursor != null) {
       predicates.add(cb.lessThan(nag.get("id"), cursor));
     }
 
     cq.where(predicates.toArray(new Predicate[0]));
-    cq.orderBy(cb.desc(nag.get("createAt")));
-    cq.select(nag);
+    cq.orderBy(cb.desc(nag.get("id")));
+    cq.select(nag).distinct(true);
 
     TypedQuery<Nag> query = entityManager.createQuery(cq);
 
