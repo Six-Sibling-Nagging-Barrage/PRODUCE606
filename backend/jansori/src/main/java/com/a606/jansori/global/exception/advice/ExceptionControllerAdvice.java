@@ -3,6 +3,7 @@ package com.a606.jansori.global.exception.advice;
 import com.a606.jansori.global.common.EnvelopeResponse;
 import com.a606.jansori.global.exception.BadRequestException;
 import com.a606.jansori.global.exception.ForbiddenException;
+import com.a606.jansori.global.exception.InternalException;
 import com.a606.jansori.global.exception.NotFoundException;
 import com.a606.jansori.global.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
@@ -93,6 +94,18 @@ public class ExceptionControllerAdvice {
   public EnvelopeResponse ForbiddenExceptionHandler(ForbiddenException e) {
 
     e.printStackTrace();
+    log.error(e.getMessage());
+
+    return EnvelopeResponse.builder()
+        .code(e.getCode())
+        .message(e.getMessage())
+        .build();
+  }
+
+  @ExceptionHandler(InternalException.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public EnvelopeResponse InternalException(InternalException e) {
+
     log.error(e.getMessage());
 
     return EnvelopeResponse.builder()
