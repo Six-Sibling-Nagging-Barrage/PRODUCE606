@@ -3,35 +3,44 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
 import tw, { styled } from 'twin.macro';
-import { getTodoListByDate } from '../../apis/api/todo';
+import { getTodoListByDate, getTodoListByDateByMember } from '../../apis/api/todo';
+import { memberNameData } from '../../states/user';
 
 const CalendarForm = () => {
   const [focusDate, setFocusDate] = useState(new Date());
-  const [month, setMonth] = useState(moment().format('MM'));
-  const [year, setYear] = useState(moment().format('YYYY'));
+  const [monthYear, setMonthYear] = useState(moment().format('YYYY-MM'));
   const mark = ['2023-07-25', '2023-08-06', '2023-08-15'];
 
-  const handleActiveStartDateChange = (newStartDate) => {
+  const handleActiveStartDateChange = async (newStartDate) => {
     const newDate = moment(newStartDate.activeStartDate).format('YYYY-MM');
-    setMonth(moment(newDate).format('MM'));
-    setYear(moment(newDate).format('YYYY'));
+    setMonthYear(moment(newDate).format('YYYY-MM'));
   };
 
   useEffect(() => {
     // TODO: 달 이동할 경우 그 달에 해당하는 TODO 입력된 값들 불러오는 API 호출
-  }, [month, year]);
+    const fetchData = async () => {
+      try {
+        const response = await getTodoListByDateByMember({
+          // TODO: memberId 값 recoil 에서 받아와서 넣어주기
+          memberId: '1',
+          date: monthYear,
+        });
+        console.log(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [monthYear]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const date = moment(focusDate).format('YYYY-MM-DD');
-        console.log(date);
 
-        // 비동기 함수 호출
         const response = await getTodoListByDate(date);
         console.log(response);
-
-        // 여기서 response를 사용하여 상태 업데이트 등의 작업 수행
+        // TODO: recoil로 todoList부분 변경해주는 부분 설정
       } catch (error) {
         console.error('Error fetching data:', error);
       }
