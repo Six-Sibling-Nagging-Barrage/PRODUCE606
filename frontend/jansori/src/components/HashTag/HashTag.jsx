@@ -24,15 +24,19 @@ const HashTag = (props) => {
   };
 
   const handleKeyPress = (event) => {
-    if (event.key === 'Enter' && hashTagExists) {
-      addHashTag(currentHashTag);
-      setIsOpen(false);
+    if (event.key === 'Enter') {
+      event.preventDefault();
+
+      if (hashTagExists) {
+        addHashTag(currentHashTag);
+        setIsOpen(false);
+      }
     }
   };
 
   const addHashTag = (item) => {
     for (const tag of hashTagList) {
-      if (tag.tagId === item.tagId) return;
+      if (tag.tagId === item.tagId) return setHashTagInput('');
     }
     setHashTagList((prev) => {
       return [...prev, item];
@@ -62,6 +66,7 @@ const HashTag = (props) => {
             onChange={handleHashTagInputChange}
             value={hashTagInput}
             onKeyPress={handleKeyPress}
+            onBlur={() => setIsOpen(false)}
           />
         )}
       </HashTagContainer>
@@ -87,7 +92,7 @@ const HashTagContainer = styled.div`
   min-height: 50px;
   padding: 10px;
   margin: 0 auto;
-  width: fit-content;
+  width: 100%;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 5px;
 `;
