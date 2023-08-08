@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled } from 'twin.macro';
-import HashTag from '../../../components/HashTag/HashTag';
+import HashTagItem from '../../../components/HashTag/HashTagItem';
 import ProfileImg from '../../../components/Profile/ProfileImg';
 import editImg from '../../../assets/edit_icon.png';
-import Slider from 'react-slick';
 
 const ProfileDetail = (props) => {
   const { isMine, profile, nags, tags } = props;
@@ -19,10 +18,14 @@ const ProfileDetail = (props) => {
       </Header>
       <ProfileImg profileImg={profile.imageUrl} size="120px" />
       <Nickname>{profile.nickname}</Nickname>
-      <HashTagContainer>
-        <HashTag editable={false} hashTagList={tags} />
-      </HashTagContainer>
       <Bio>{profile.bio}</Bio>
+      <Wrapper>
+        <HashTagContainer>
+          {tags.map((tag) => {
+            return <HashTagItem key={tag.tagId} hashTag={tag} />;
+          })}
+        </HashTagContainer>
+      </Wrapper>
     </ProfileDetailContainer>
   );
 };
@@ -56,9 +59,27 @@ const Bio = styled.div`
   margin: 0 auto;
 `;
 
+const Wrapper = styled.div`
+  width: 50%;
+  height: 90px;
+  margin: 10px auto;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); /* 내부에 그림자 추가 */
+`;
+
 const HashTagContainer = styled.div`
-  width: fit-content;
-  margin: 0 auto;
+  transform: translateY(0%);
+  height: 100%;
+  display: flex;
+  overflow-x: auto;
+  flex-wrap: wrap;
+  flex-direction: column;
+  /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none; /* 파이어폭스 */
 `;
 
 export default ProfileDetail;
