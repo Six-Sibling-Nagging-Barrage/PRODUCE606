@@ -2,8 +2,6 @@ package com.a606.jansori.global.auth.service;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.repository.MemberRepository;
-import com.a606.jansori.domain.tag.repository.TagFollowRepository;
-import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.global.auth.domain.RefreshToken;
 import com.a606.jansori.global.auth.dto.AuthLoginReqDto;
 import com.a606.jansori.global.auth.dto.AuthSignupReqDto;
@@ -17,6 +15,7 @@ import com.a606.jansori.global.auth.exception.AuthMemberNotFoundException;
 import com.a606.jansori.global.auth.exception.AuthUnauthorizedException;
 import com.a606.jansori.global.auth.repository.RefreshTokenRepository;
 import com.a606.jansori.global.auth.util.TokenProvider;
+import com.a606.jansori.infra.redis.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,6 +36,8 @@ public class AuthService {
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final TokenProvider tokenProvider;
   private final RefreshTokenRepository refreshTokenRepository;
+
+  private final RedisUtil redisUtil;
 
   @Transactional
   public AuthSignupResDto signup(AuthSignupReqDto authSignupReqDto) {
@@ -117,14 +118,17 @@ public class AuthService {
   }
 
   @Transactional
-  public Void logout(TokenReqDto tokenReqDto) {
+  public void logout(TokenReqDto tokenReqDto) {
 
-    if (!tokenProvider.validateToken(tokenReqDto.getRefreshToken())) {
+    if (!tokenProvider.validateToken(tokenReqDto.getAccessToken())) {
       throw new AuthInvalidRefreshTokenException();
     }
 
     Authentication authentication = tokenProvider.getAuthentication(tokenReqDto.getAccessToken());
 
-    return null;
+    refreshTokenRepository.deleteByEmail(authentication.getName());
+
+    redisUtil.setBlackList(tokenReqDto.getAccessToken(), "accessToken", tokenProvider.getExpiration(
+        tokenReqDto.getAccessToken()));
   }
 }

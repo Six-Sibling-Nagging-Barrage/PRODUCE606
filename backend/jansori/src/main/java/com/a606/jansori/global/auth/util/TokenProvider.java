@@ -4,6 +4,7 @@ import com.a606.jansori.global.auth.dto.TokenResDto;
 import com.a606.jansori.global.auth.exception.AuthExpiredAccessTokenException;
 import com.a606.jansori.global.auth.exception.AuthInvalidAccessTokenException;
 import com.a606.jansori.global.auth.exception.AuthUnauthorizedException;
+import com.a606.jansori.infra.redis.util.RedisUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -16,6 +17,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -39,6 +41,9 @@ public class TokenProvider {
   private long REFRESH_TOKEN_EXPIRE_TIME;
 
   private final Key key;
+
+  @Autowired
+  private RedisUtil redisUtil;
 
   public TokenProvider(@Value("${jwt.secret}") String secretKey) {
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
@@ -110,6 +115,10 @@ public class TokenProvider {
 
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 
+      if (redisUtil.isBlackList(token)) {
+        throw new AuthInvalidAccessTokenException();
+      }
+
       return true;
 
     } catch (ExpiredJwtException e) {
@@ -117,11 +126,18 @@ public class TokenProvider {
       throw new AuthExpiredAccessTokenException();
 
     } catch (Exception e) {
-
+      e.printStackTrace();
       throw new AuthInvalidAccessTokenException();
 
     }
 
+  }
+
+  public Long getExpiration(String accessToken) {
+    Date expiration = parseClaims(accessToken).getExpiration();
+
+    Long now = new Date().getTime();
+    return expiration.getTime() - now;
   }
 
   private Claims parseClaims(String accessToken) {
