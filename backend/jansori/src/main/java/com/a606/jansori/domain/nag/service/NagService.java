@@ -8,9 +8,9 @@ import com.a606.jansori.domain.nag.domain.NagLike;
 import com.a606.jansori.domain.nag.domain.NagUnlock;
 import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
-import com.a606.jansori.domain.nag.dto.GetNagOfProfilePageResDto;
+import com.a606.jansori.domain.nag.dto.GetNagsOfResDto;
 import com.a606.jansori.domain.nag.dto.GetNagsOfNagBoxResDto;
-import com.a606.jansori.domain.nag.dto.GetNagsOfProfilePageReqDto;
+import com.a606.jansori.domain.nag.dto.GetNagsOfReqDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
 import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
@@ -27,14 +27,13 @@ import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -95,10 +94,22 @@ public class NagService {
   }
 
   @Transactional(readOnly = true)
-  public GetNagOfProfilePageResDto getAllNagsByMember() {
+  public GetNagsOfResDto getAllNagsByMine(GetNagsOfReqDto getNagsOfReqDto) {
+
     Member member = securityUtil.getCurrentMemberByToken();
 
-    return null;
+    Long cursor = getNagsOfReqDto.getCursor();
+    Integer size = getNagsOfReqDto.getSize();
+
+    Slice<Nag> nags = nagRepository.findByNagsByMemberAndPages(member, cursor,
+        PageRequest.of(0, size));
+
+    Long nextCursor = nags.hasNext() ? nags.getContent().get(size - 1).getId() : null;
+
+    return GetNagsOfResDto.ofNagList(nags.getContent()
+        .stream()
+        .map(nag -> NagDetailDto.ofNagAndTag(nag, nag.getTag()))
+        .collect(Collectors.toList()), nags.hasNext(), nextCursor);
   }
 
   @Transactional(readOnly = true)
@@ -133,15 +144,10 @@ public class NagService {
   }
 
   @Transactional(readOnly = true)
-  public GetNagOfProfilePageResDto getNagsOfProfilePageByMemberId(
-      GetNagsOfProfilePageReqDto getNagsOfProfilePageReqDto) {
+  public GetNagsOfResDto getNagsOfProfilePageByMemberId(
+       ) {
 
     Member member = securityUtil.getCurrentMemberByToken();
-
-    Long memberId = getNagsOfProfilePageReqDto.getMemberId();
-    Long cursor = getNagsOfProfilePageReqDto.getCursor();
-    Integer size = getNagsOfProfilePageReqDto.getSize();
-
 
 
     return null;
