@@ -6,6 +6,7 @@ import Mark from '../UI/Mark';
 import Button from '../UI/Button';
 import Toggle from '../UI/Toggle';
 import HashTag from '../HashTag/HashTag';
+import { createTodo } from '../../apis/api/todo';
 
 const validateBio = (value) => {
   if (/\s{2,}|^\s|\s$/.test(value)) {
@@ -14,6 +15,8 @@ const validateBio = (value) => {
   return true;
 };
 
+// TODO: hashtag 길이가 0일 경우 form 넘어가지 않도록 초기 설정 해주기
+//TODO : 전송하고 난 다음 hashtag count 초기화 되는 부분 설정
 const TodoForm = () => {
   const {
     register,
@@ -27,21 +30,24 @@ const TodoForm = () => {
   const [hashTagList, setHashTagList] = useState([]);
 
   const todoFormSubmit = async (data) => {
-    setContent('');
     const todo = {
-      // display(공개여부), content(todo), todoAt(시간),
-      // tags(tag - (tagId, tagName(tagId 없으면 - 1)))
       content: data.content,
       display: isPublic,
       todoAt: moment().format('YYYY-MM-DD'),
-      tags: hashTagList.length > 0 ? hashTagList.map((tag) => tag.tagId) : [-1],
+      tags: hashTagList.map((tag) => ({
+        tagId: tag.tagId,
+        tagName: tag.tagName,
+      })),
     };
     // TODO: todoinput 등록하는 api 호출
+    const response = await createTodo(todo);
+    if (response.code === 200) {
+      console.log('성공성공');
+    }
     // TODO: 성공했을 경우 밑에 등록되었다는 모달 띄우기(3초 후에 제거)
-    // TODO: input form 들어가 있는 부분 제거
     reset();
+    setHashTagList([]);
     setIsPublic(true);
-    console.log(todo);
   };
 
   const handleContentInputChange = (event) => {
@@ -56,12 +62,6 @@ const TodoForm = () => {
   const handleFormKeyDown = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault();
-    }
-  };
-
-  const handleSubmitButton = (event) => {
-    if (isSubmitting && content === '') {
-      console.log('못 제출해');
     }
   };
 
@@ -123,7 +123,6 @@ const TodoForm = () => {
           <Button
             onClick={handleSubmit(todoFormSubmit)}
             disabled={isSubmitting && content === ''}
-            type='submit'
             label={'Add'}
             normal
           />
