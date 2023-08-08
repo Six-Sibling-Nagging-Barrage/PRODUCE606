@@ -78,6 +78,7 @@ const ProfileContainer = styled.div`
   padding-top: 72px;
   width: 70%;
   margin: 0 auto;
+  margin-bottom: 2vh;
 `;
 
 const TabContainer = styled.div`
