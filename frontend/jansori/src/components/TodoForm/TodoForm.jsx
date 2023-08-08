@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import tw, { styled } from 'twin.macro';
 import moment from 'moment';
@@ -140,22 +140,9 @@ const TodoFormContainer = styled.div`
     relative
     bg-white
     rounded-lg
-    w-2/5
     border-2
+    mb-3
     pb-8`}
-
-  @media (min-width: 990px) and (max-width: 1200px) {
-    width: 50%;
-  }
-  @media (min-width: 786px) and (max-width: 990px) {
-    width: 60%;
-  }
-  @media (min-width: 680px) and (max-width: 786px) {
-    width: 70%;
-  }
-  @media (max-width: 680px) {
-    width: 90%;
-  }
 `;
 
 const TodoFormBox = styled.form`
@@ -166,15 +153,16 @@ const TodoFormBox = styled.form`
 `;
 
 const TodoFormLabel = styled.label`
-  ${tw`m-auto flex items-center text-center`}
+  ${tw`m-auto flex items-center text-center text-sm`}
 `;
 
 const TodoFormInput = styled.div`
-  ${tw`col-span-2`}
+  ${tw`col-span-2 text-sm`}
 `;
 
 const ErrorMessage = styled.div`
   ${tw`col-start-1 col-end-4
+   text-sm
     flex justify-center items-center w-full h-16`}
 `;
 
