@@ -4,11 +4,13 @@ import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
 import tw, { styled } from 'twin.macro';
 import { getTodoListByDate, getTodoListByDateByMember } from '../../apis/api/todo';
-import { memberNameData } from '../../states/user';
+import { useRecoilValue } from 'recoil';
+import { memberIdState } from '../../states/user';
 
 const CalendarForm = () => {
   const [focusDate, setFocusDate] = useState(new Date());
   const [monthYear, setMonthYear] = useState(moment().format('YYYY-MM'));
+  const memberId = useRecoilValue(memberIdState);
   const mark = ['2023-07-25', '2023-08-06', '2023-08-15'];
 
   const handleActiveStartDateChange = async (newStartDate) => {
@@ -19,16 +21,11 @@ const CalendarForm = () => {
   useEffect(() => {
     // TODO: 달 이동할 경우 그 달에 해당하는 TODO 입력된 값들 불러오는 API 호출
     const fetchData = async () => {
-      try {
-        const response = await getTodoListByDateByMember({
-          // TODO: memberId 값 recoil 에서 받아와서 넣어주기
-          memberId: '1',
-          date: monthYear,
-        });
-        console.log(response);
-      } catch (error) {
-        console.error(error);
-      }
+      const response = await getTodoListByDateByMember({
+        memberId: memberId,
+        date: monthYear,
+      });
+      console.log(response);
     };
     fetchData();
   }, [monthYear]);
@@ -69,7 +66,7 @@ const CalendarForm = () => {
         }}
         onActiveStartDateChange={handleActiveStartDateChange} // 활성화된 시작 날짜 변경 시 호출되는 콜백
       />
-      <div className='text-gray-500 mt-4'>{moment(focusDate).format('YYYY-MM-DD')}</div>
+      {/* <div className='text-gray-500 mt-4'>{moment(focusDate).format('YYYY-MM-DD')}</div> */}
     </CalendarCard>
   );
 };
@@ -102,27 +99,14 @@ const NotDot = styled.div`
 
 const StyledCalendar = styled(Calendar)`
   ${tw`
-    border
+    border-2
     border-gray-300
     py-5
     rounded-lg
     shadow-sm
     bg-white
-    w-2/5
-    
+    w-full
   `}
-  @media (min-width: 990px) and (max-width: 1200px) {
-    width: 50%;
-  }
-  @media (min-width: 786px) and (max-width: 990px) {
-    width: 60%;
-  }
-  @media (min-width: 680px) and (max-width: 786px) {
-    width: 70%;
-  }
-  @media (max-width: 680px) {
-    width: 90%;
-  }
 
   .react-calendar__navigation button {
     ${tw`
