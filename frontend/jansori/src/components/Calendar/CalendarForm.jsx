@@ -3,36 +3,65 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
 import tw, { styled } from 'twin.macro';
+import { getTodoListByDate, getTodoListByDateByMember } from '../../apis/api/todo';
+import { memberNameData } from '../../states/user';
 
 const CalendarForm = () => {
-  const [date, setDate] = useState(new Date());
-  const [month, setMonth] = useState(moment().format('MM'));
-  const [year, setYear] = useState(moment().format('YYYY'));
+  const [focusDate, setFocusDate] = useState(new Date());
+  const [monthYear, setMonthYear] = useState(moment().format('YYYY-MM'));
   const mark = ['2023-07-25', '2023-08-06', '2023-08-15'];
 
-  const handleActiveStartDateChange = (newStartDate) => {
+  const handleActiveStartDateChange = async (newStartDate) => {
     const newDate = moment(newStartDate.activeStartDate).format('YYYY-MM');
-    setMonth(moment(newDate).format('MM'));
-    setYear(moment(newDate).format('YYYY'));
+    setMonthYear(moment(newDate).format('YYYY-MM'));
   };
 
   useEffect(() => {
-    // console.log('month', month, 'year', year);
-  }, [month, year]);
+    // TODO: 달 이동할 경우 그 달에 해당하는 TODO 입력된 값들 불러오는 API 호출
+    const fetchData = async () => {
+      try {
+        const response = await getTodoListByDateByMember({
+          // TODO: memberId 값 recoil 에서 받아와서 넣어주기
+          memberId: '1',
+          date: monthYear,
+        });
+        console.log(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [monthYear]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const date = moment(focusDate).format('YYYY-MM-DD');
+
+        const response = await getTodoListByDate(date);
+        console.log(response);
+        // TODO: recoil로 todoList부분 변경해주는 부분 설정
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [focusDate]);
 
   return (
     <CalendarCard>
       <StyledCalendar
         className={{}}
-        onChange={setDate}
-        formatDay={(locale, date) => moment(date).format('DD')} //일 표시 지우기
-        value={date}
+        onChange={setFocusDate}
+        formatDay={(locale, focusDate) => moment(focusDate).format('DD')} //일 표시 지우기
+        value={focusDate}
         minDetail='month'
         maxDetail='month'
         showNeighboringMonth={false}
-        tileContent={({ date, view }) => {
+        tileContent={({ focusDate, view }) => {
           // 날짜 타일에 컨텐츠 추가
-          const dateStr = moment(date).format('YYYY-MM-DD');
+          const dateStr = moment(focusDate).format('YYYY-MM-DD');
           if (mark.find((x) => x === dateStr)) {
             return <Dot />;
           }
@@ -40,7 +69,7 @@ const CalendarForm = () => {
         }}
         onActiveStartDateChange={handleActiveStartDateChange} // 활성화된 시작 날짜 변경 시 호출되는 콜백
       />
-      <div className='text-gray-500 mt-4'>{moment(date).format('YYYY-MM-DD')}</div>
+      <div className='text-gray-500 mt-4'>{moment(focusDate).format('YYYY-MM-DD')}</div>
     </CalendarCard>
   );
 };

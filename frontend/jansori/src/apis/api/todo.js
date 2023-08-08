@@ -18,7 +18,17 @@ export const createTodo = async (todo) => {
 export const getTodoListByDate = async (date) => {
   try {
     const { data } = await authInstance.get(`/todos/my?date=${date}`);
-    return data.data;
+    return data;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+// 멤버의 월별 투두 존재 여부 확인
+export const getTodoListByDateByMember = async ({ memberId, date }) => {
+  try {
+    const { data } = await authInstance.get(`/todos/members/${memberId}/monthly?yearMonth=${date}`);
+    return data;
   } catch (e) {
     console.log(e);
   }
