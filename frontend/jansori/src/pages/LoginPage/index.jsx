@@ -10,6 +10,7 @@ import {
   memberTokenState,
   memberInfoState,
   memberRoleState,
+  memberIdState,
 } from '../../states/user';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,6 +26,7 @@ const LoginPage = () => {
   const setMemberInfo = useSetRecoilState(memberInfoState);
   const setIsLogin = useSetRecoilState(isLoginState);
   const [memberRole, setMemberRole] = useRecoilState(memberRoleState);
+  const setMemberId = useSetRecoilState(memberIdState);
 
   const loginSubmit = async (data) => {
     const user = {
@@ -45,6 +47,7 @@ const LoginPage = () => {
         imageUrl: res.data.imageUrl,
         ticket: res.data.ticket,
       });
+      setMemberId(res.data.memberId);
       // if (res.data.memberRole === 'GUEST') {
       //   navigate('/initialprofile');
       // } else navigate('/');
