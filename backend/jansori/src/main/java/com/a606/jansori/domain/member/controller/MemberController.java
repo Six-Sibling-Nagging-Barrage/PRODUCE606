@@ -2,14 +2,10 @@ package com.a606.jansori.domain.member.controller;
 
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameReqDto;
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameResDto;
-import com.a606.jansori.domain.member.dto.GetMyProfileResDto;
-import com.a606.jansori.domain.member.dto.GetUserProfileResDto;
-import com.a606.jansori.domain.member.dto.PatchMemberInfoReqDto;
-import com.a606.jansori.domain.member.dto.PatchMemberInfoResDto;
-import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.domain.member.dto.PostMemberInfoReqDto;
+import com.a606.jansori.domain.member.dto.PostMemberInfoResDto;
 import com.a606.jansori.domain.member.dto.*;
 import com.a606.jansori.domain.member.service.MemberService;
-import com.a606.jansori.global.auth.util.SecurityUtil;
 import com.a606.jansori.global.common.EnvelopeResponse;
 import com.a606.jansori.infra.storage.Service.AwsS3Service;
 import com.a606.jansori.infra.storage.dto.PostFileUploadReqDto;
@@ -54,9 +50,9 @@ public class MemberController {
   }
 
   @PostMapping("/update")
-  public EnvelopeResponse<PatchMemberInfoResDto> updateMemberInfo(
+  public EnvelopeResponse<PostMemberInfoResDto> updateMemberInfo(
       @RequestPart(value = "imageFile", required = false) MultipartFile multipartFile,
-      @RequestPart(value = "memberInfo") @Valid PatchMemberInfoReqDto patchMemberInfoReqDto)
+      @RequestPart(value = "memberInfo") @Valid PostMemberInfoReqDto postMemberInfoReqDto)
       throws IOException {
 
     String imageName = null;
@@ -71,8 +67,8 @@ public class MemberController {
       imageName = postFileUploadResDto.getImageName();
     }
 
-    return EnvelopeResponse.<PatchMemberInfoResDto>builder()
-            .data(memberService.updateMemberInfo(patchMemberInfoReqDto))
+    return EnvelopeResponse.<PostMemberInfoResDto>builder()
+            .data(memberService.updateMemberInfo(postMemberInfoReqDto, imageName))
             .build();
 
   }

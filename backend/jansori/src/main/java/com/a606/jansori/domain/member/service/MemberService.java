@@ -5,8 +5,8 @@ import com.a606.jansori.domain.member.domain.MemberRole;
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameReqDto;
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameResDto;
 import com.a606.jansori.domain.member.dto.GetMemberProfileResDto;
-import com.a606.jansori.domain.member.dto.PatchMemberInfoReqDto;
-import com.a606.jansori.domain.member.dto.PatchMemberInfoResDto;
+import com.a606.jansori.domain.member.dto.PostMemberInfoReqDto;
+import com.a606.jansori.domain.member.dto.PostMemberInfoResDto;
 import com.a606.jansori.domain.member.exception.DuplicatedNicknameException;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
@@ -17,7 +17,6 @@ import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
 
-import java.time.Clock;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -54,13 +53,13 @@ public class MemberService {
   }
 
   @Transactional
-  public PatchMemberInfoResDto updateMemberInfo(PatchMemberInfoReqDto patchMemberInfoReqDto, String imageName) {
+  public PostMemberInfoResDto updateMemberInfo(PostMemberInfoReqDto postMemberInfoReqDto, String imageName) {
     Member member = securityUtil.getCurrentMemberByToken();
 
-    member.update(patchMemberInfoReqDto.getNickname(), patchMemberInfoReqDto.getBio(),
+    member.update(postMemberInfoReqDto.getNickname(), postMemberInfoReqDto.getBio(),
         imageName, MemberRole.USER);
 
-    List<Long> tags = patchMemberInfoReqDto.getTags();
+    List<Long> tags = postMemberInfoReqDto.getTags();
 
     if (tags != null) {
       for (Long tagId : tags) {
@@ -70,7 +69,7 @@ public class MemberService {
       }
     }
 
-    return PatchMemberInfoResDto.of(member, tags);
+    return PostMemberInfoResDto.of(member, tags);
 
   }
 

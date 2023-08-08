@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class PatchMemberInfoReqDto {
+public class PostMemberInfoReqDto {
 
   @NotBlank(message = "닉네임이 공백입니다.")
   @Pattern(regexp = "^(?!\\s)(?!.*\\s{2})[가-힣a-zA-Z0-9_\\s]{1,11}(?<!\\s)$", message = "올바른 형식이 아닙니다.")

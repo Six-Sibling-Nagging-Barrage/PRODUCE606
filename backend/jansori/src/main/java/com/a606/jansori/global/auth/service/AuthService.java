@@ -2,6 +2,8 @@ package com.a606.jansori.global.auth.service;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.repository.MemberRepository;
+import com.a606.jansori.domain.tag.repository.TagFollowRepository;
+import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.global.auth.domain.RefreshToken;
 import com.a606.jansori.global.auth.dto.AuthLoginReqDto;
 import com.a606.jansori.global.auth.dto.AuthSignupReqDto;
