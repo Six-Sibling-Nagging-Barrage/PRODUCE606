@@ -25,11 +25,11 @@ const PersonaReaction = (props) => {
       todoPersonaId,
     });
 
-    if (!data?.isFirstReaction) return;
+    if (!data?.data?.isFirstReaction) return;
 
     setPersonaReaction((prev) => {
       return prev.map((item) =>
-        item.todoPersonaId === data.todoPersonaId ? data : item
+        item.todoPersonaId === data.data.todoPersonaId ? data.data : item
       );
     });
   };

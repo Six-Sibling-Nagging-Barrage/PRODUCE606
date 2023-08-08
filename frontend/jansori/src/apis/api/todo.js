@@ -29,7 +29,9 @@ export const getTodoListByDate = async (date) => {
 // 멤버의 월별 투두 존재 여부 확인
 export const getTodoListByDateByMember = async ({ memberId, date }) => {
   try {
-    const { data } = await authInstance.get(`/todos/members/${memberId}/monthly?yearMonth=${date}`);
+    const { data } = await authInstance.get(
+      `/todos/members/${memberId}/monthly?yearMonth=${date}`
+    );
     return data;
   } catch (e) {
     console.log(e.response);
@@ -44,7 +46,7 @@ export const getFollowingFeed = async ({ cursor, pageSize }) => {
       ? `/todos/feed/following?cursor=${cursor}&size=${pageSize}`
       : `/todos/feed/following?size=${pageSize}`;
     const { data } = await authInstance.get(url);
-    return data.data;
+    return data;
   } catch (e) {
     console.log(e.response);
     return e.response;
@@ -58,7 +60,7 @@ export const getSpecificFeed = async ({ cursor, tagId, pageSize }) => {
       ? `/todos/feed?cursor=${cursor}&tagId=${tagId}&size=${pageSize}`
       : `/todos/feed?tagId=${tagId}&size=${pageSize}`;
     const { data } = await authInstance.get(url);
-    return data.data;
+    return data;
   } catch (e) {
     console.log(e.response);
     return e.response;
@@ -69,7 +71,7 @@ export const getSpecificFeed = async ({ cursor, tagId, pageSize }) => {
 export const getTodoDetail = async (todoId) => {
   try {
     const { data } = await authInstance.get(`/todos/${todoId}`);
-    return data.data;
+    return data;
   } catch (e) {
     console.log(e.response);
     return e.response;
@@ -90,8 +92,10 @@ export const updateTodoComplete = async (todoId) => {
 // Todo 캐릭터 반응하기
 export const createPersonaReaction = async ({ todoId, todoPersonaId }) => {
   try {
-    const { data } = await authInstance.post(`/todos/${todoId}/${todoPersonaId}`);
-    return data.data;
+    const { data } = await authInstance.post(
+      `/todos/${todoId}/${todoPersonaId}`
+    );
+    return data;
   } catch (e) {
     console.log(e.response);
     return e.response;
@@ -102,7 +106,7 @@ export const createPersonaReaction = async ({ todoId, todoPersonaId }) => {
 export const getPersonaNag = async (todoId) => {
   try {
     const { data } = await authInstance.get(`/todos/${todoId}/personas`);
-    return data.data;
+    return data;
   } catch (e) {
     console.log(e.response);
     return e.response;

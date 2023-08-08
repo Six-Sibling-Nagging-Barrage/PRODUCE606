@@ -35,7 +35,6 @@ const LoginPage = () => {
     };
     // 로그인 api 호출
     const res = await createLogin(user);
-    console.log(res);
     if (res?.code === '200') {
       setMemberToken(res.data.accessToken);
       setIsLogin(true);

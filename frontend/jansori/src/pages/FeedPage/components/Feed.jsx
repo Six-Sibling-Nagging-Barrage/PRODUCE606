@@ -8,7 +8,7 @@ import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { updateLikeNag } from '../../../apis/api/nag';
 
 const Feed = (props) => {
-  const { specificTag, hasFollowingHashTags, getFeedData } = props;
+  const { specificTag, getFeedData } = props;
 
   const [currentPostId, setCurrentPostId] = useState(-1);
   const [personaReaction, setPersonaReaction] = useState([]);
@@ -16,25 +16,13 @@ const Feed = (props) => {
   const queryClient = useQueryClient();
 
   const pageSize = 10;
-  let param;
 
+  let param;
   if (specificTag === -1) {
     param = { cursor: null, pageSize };
   } else {
     param = { cursor: null, tagId: specificTag, pageSize };
   }
-
-  const fetchMoreTodoPosts = async (pageParam) => {
-    if (!hasFollowingHashTags) return undefined;
-    const data = await getFeedData(pageParam);
-    return data;
-  };
-
-  const toggleLike = async (nagId) => {
-    // 잔소리 좋아요 api 호출
-    const data = updateLikeNag(nagId);
-    return data;
-  };
 
   const {
     data,
@@ -43,6 +31,7 @@ const Feed = (props) => {
     isFetchingNextPage,
     isError,
     isLoading,
+    refetch,
   } = useInfiniteQuery(
     ['feed'],
     ({ pageParam = param }) => fetchMoreTodoPosts(pageParam),
@@ -58,6 +47,28 @@ const Feed = (props) => {
     }
   );
 
+  useEffect(() => {
+    console.log(specificTag);
+    if (specificTag === -1) {
+      param = { cursor: null, pageSize };
+    } else {
+      param = { cursor: null, tagId: specificTag, pageSize };
+    }
+    refetch();
+  }, [specificTag, refetch]);
+
+  const fetchMoreTodoPosts = async (pageParam) => {
+    const data = await getFeedData(pageParam);
+    console.log(data.data);
+    return data.data;
+  };
+
+  const toggleLike = async (nagId) => {
+    // 잔소리 좋아요 api 호출
+    const data = await updateLikeNag(nagId);
+    return data;
+  };
+
   const updateLikeMutation = useMutation(
     ({ postId, nagId }) => toggleLike(nagId),
     {
@@ -65,10 +76,10 @@ const Feed = (props) => {
         await queryClient.cancelQueries(['feed']);
         const prevFeed = queryClient.getQueryData(['feed']);
         queryClient.setQueryData(['feed'], (oldData) => {
-          const newData = oldData.pages.map((page) => {
+          const newData = oldData?.pages?.map((page) => {
             return {
               ...page,
-              feed: page.feed.map((post) => {
+              feed: page?.feed?.map((post) => {
                 if (post.id === postId) {
                   return {
                     ...post,
@@ -96,40 +107,35 @@ const Feed = (props) => {
 
   return (
     <FeedContainer>
-      {hasFollowingHashTags ? (
-        <>
-          <ul>
-            {data?.pages.map((page) =>
-              page?.feed.map((post) => {
-                return (
-                  <TodoPost
-                    post={post}
-                    key={post.todoId}
-                    currentPostId={currentPostId}
-                    setCurrentPostId={setCurrentPostId}
-                    setPersonaReaction={setPersonaReaction}
-                    toggleLike={updateLikeMutation.mutate}
-                  />
-                );
-              })
-            )}
-          </ul>
-          <InfiniteScroll
-            fetchNextPage={fetchNextPage}
-            hasNextPage={hasNextPage}
-            isFetchingNextPage={isFetchingNextPage}
-          />
-          {currentPostId > -1 && (
-            <PersonaReaction
-              personaReaction={personaReaction}
-              setPersonaReaction={setPersonaReaction}
-              setCurrentPostId={setCurrentPostId}
-              currentPostId={currentPostId}
-            />
-          )}
-        </>
-      ) : (
-        <div>해시태그 없음</div>
+      {isLoading && <div>피드 불러 오는 중.......</div>}
+      <ul>
+        {data?.pages?.map((page) =>
+          page?.feed?.map((post) => {
+            return (
+              <TodoPost
+                post={post}
+                key={post.todoId}
+                currentPostId={currentPostId}
+                setCurrentPostId={setCurrentPostId}
+                setPersonaReaction={setPersonaReaction}
+                toggleLike={updateLikeMutation.mutate}
+              />
+            );
+          })
+        )}
+      </ul>
+      <InfiniteScroll
+        fetchNextPage={fetchNextPage}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+      />
+      {currentPostId > -1 && (
+        <PersonaReaction
+          personaReaction={personaReaction}
+          setPersonaReaction={setPersonaReaction}
+          setCurrentPostId={setCurrentPostId}
+          currentPostId={currentPostId}
+        />
       )}
     </FeedContainer>
   );
