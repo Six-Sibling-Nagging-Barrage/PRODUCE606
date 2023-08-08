@@ -125,6 +125,6 @@ public class AuthService {
 
     Authentication authentication = tokenProvider.getAuthentication(tokenReqDto.getAccessToken());
 
-    
+    return null;
   }
 }
