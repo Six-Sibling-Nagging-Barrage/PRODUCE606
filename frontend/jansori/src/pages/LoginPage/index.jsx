@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useSetRecoilState, useRecoilState } from 'recoil';
 import { useForm } from 'react-hook-form';
 import Background from '../../components/UI/Background';
 import { styled } from 'twin.macro';
 import Button from '../../components/UI/Button';
 import { createLogin } from '../../apis/api/member';
-import { isLogin, memberToken, memberInfoState } from '../../states/user';
+import {
+  isLoginState,
+  memberTokenState,
+  memberInfoState,
+  memberRoleState,
+} from '../../states/user';
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
@@ -16,22 +21,36 @@ const LoginPage = () => {
     handleSubmit,
   } = useForm({ mode: 'onBlur' });
 
-  const setMemberToken = useSetRecoilState(memberToken);
+  const setMemberToken = useSetRecoilState(memberTokenState);
   const setMemberInfo = useSetRecoilState(memberInfoState);
-  const setIsLogin = useSetRecoilState(isLogin);
+  const setIsLogin = useSetRecoilState(isLoginState);
+  const [memberRole, setMemberRole] = useRecoilState(memberRoleState);
 
   const loginSubmit = async (data) => {
     const user = {
       email: data.email,
       password: data.password,
     };
-    // TODO: 로그인 api 호출
+    // 로그인 api 호출
     const res = await createLogin(user);
     console.log(res);
     if (res?.code === '200') {
       setMemberToken(res.data.accessToken);
       setIsLogin(true);
-      navigate('/');
+      setMemberRole(res.data.memberRole);
+      setMemberInfo({
+        memberId: res.data.memberId,
+        email: res.data.email,
+        nickname: res.data.nickname,
+        imageUrl: res.data.imageUrl,
+        ticket: res.data.ticket,
+      });
+      // if (res.data.memberRole === 'GUEST') {
+      //   navigate('/initialprofile');
+      // } else navigate('/');
+      if (memberRole === 'GUEST') {
+        navigate('/initialprofile');
+      } else navigate('/');
     }
   };
 
@@ -106,7 +125,7 @@ const SignUpContainer = styled.div`
   }
   transform: translate(-50%, -50%);
   background-color: rgba(255, 255, 255, 0.5);
-  padding: 10px 40px;
+  padding: 10px 60px;
   z-index: 99;
   backdrop-filter: blur(10px);
   border-radius: 5px;
@@ -114,8 +133,9 @@ const SignUpContainer = styled.div`
 `;
 
 const SignUpTitle = styled.div`
-  margin: 10px;
+  margin: 20px;
   font-weight: bold;
+  font-size: 18px;
 `;
 
 const Label = styled.div`
@@ -129,6 +149,9 @@ const Label = styled.div`
 
 const InfoContainer = styled.div`
   margin-bottom: 15px;
+  & > input {
+    height: 40px;
+  }
 `;
 
 const Email = styled.input`

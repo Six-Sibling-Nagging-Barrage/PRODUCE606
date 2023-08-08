@@ -5,6 +5,8 @@ import { styled } from 'twin.macro';
 import Button from '../../components/UI/Button';
 import { createSignUp } from '../../apis/api/member';
 import { useNavigate } from 'react-router-dom';
+import { memberIdState } from '../../states/user';
+import { useSetRecoilState } from 'recoil';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -12,7 +14,10 @@ const SignUpPage = () => {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
+    watch,
   } = useForm({ mode: 'onBlur' });
+
+  const setMemberId = useSetRecoilState(memberIdState);
 
   const signUpSubmit = async (data) => {
     const user = {
@@ -21,8 +26,12 @@ const SignUpPage = () => {
     };
     // TODO: 회원가입 api 호출
     const res = await createSignUp(user);
+    setMemberId(res.data.memberId);
     navigate('/login');
   };
+
+  // 비밀번호 확인 필드와의 일치 여부를 검증하기 위해 watch 함수 사용
+  const password = watch('password', ''); // 'password' 필드의 값을 가져옴, 기본값은 빈 문자열
 
   const handleFormKeyDown = (e) => {
     if (e.key === 'Enter') {
@@ -62,6 +71,25 @@ const SignUpPage = () => {
               onKeyDown={handleKeyDownSubmit}
             />
           </InfoContainer>
+          <InfoContainer>
+            <Label>비밀번호 확인</Label>
+            <Password
+              type="password"
+              placeholder="비밀번호를 한 번 더 입력해주세요."
+              {...register('confirmPassword', {
+                required: '비밀번호를 한 번 더 입력해주세요.',
+                validate: (value) =>
+                  value === watch('password') ||
+                  '비밀번호가 일치하지 않습니다.',
+              })}
+              onKeyDown={handleKeyDownSubmit}
+            />
+            {!errors.confirmPassword &&
+              watch('password') &&
+              watch('confirmPassword') === watch('password') && (
+                <MatchingMessage>비밀번호가 일치합니다!</MatchingMessage>
+              )}
+          </InfoContainer>
           <Footer>
             <Button
               onClick={handleSubmit(signUpSubmit)}
@@ -95,7 +123,7 @@ const SignUpContainer = styled.div`
   }
   transform: translate(-50%, -50%);
   background-color: rgba(255, 255, 255, 0.5);
-  padding: 10px 40px;
+  padding: 10px 60px;
   z-index: 99;
   backdrop-filter: blur(10px);
   border-radius: 5px;
@@ -103,8 +131,9 @@ const SignUpContainer = styled.div`
 `;
 
 const SignUpTitle = styled.div`
-  margin: 10px;
+  margin: 20px;
   font-weight: bold;
+  font-size: 18px;
 `;
 
 const Label = styled.div`
@@ -118,6 +147,9 @@ const Label = styled.div`
 
 const InfoContainer = styled.div`
   margin-bottom: 15px;
+  & > input {
+    height: 40px;
+  }
 `;
 
 const Email = styled.input`
@@ -138,6 +170,18 @@ const Password = styled.input`
   &:focus {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   }
+`;
+
+const ErrorMessage = styled.div`
+  font-size: 14px;
+  color: #ff6c6c;
+  margin-top: 5px;
+`;
+
+const MatchingMessage = styled.div`
+  font-size: 14px;
+  color: #66bb6a;
+  margin-top: 5px;
 `;
 
 const Footer = styled.div`

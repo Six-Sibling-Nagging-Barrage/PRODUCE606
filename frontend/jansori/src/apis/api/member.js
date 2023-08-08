@@ -56,7 +56,7 @@ export const createProfile = async (profile) => {
 // 정보 수정
 export const updateProfile = async (profile) => {
   try {
-    const { data } = await authInstance.put(`/members`, profile, {
+    const { data } = await authInstance.post(`/members/update`, profile, {
       headers: {
         'Content-Type': 'application/json',
       },
