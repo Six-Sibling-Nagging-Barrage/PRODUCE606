@@ -100,7 +100,7 @@ const Feed = (props) => {
         <>
           <ul>
             {data?.pages.map((page) =>
-              page.feed.map((post) => {
+              page?.feed.map((post) => {
                 return (
                   <TodoPost
                     post={post}

@@ -30,6 +30,7 @@ const HashTag = styled.div`
   color: white;
   font-size: 13px;
   width: fit-content;
+  height: fit-content;
 `;
 
 const Text = styled.span``;
