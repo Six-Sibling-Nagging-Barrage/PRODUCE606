@@ -15,7 +15,7 @@ const CalendarForm = () => {
   const [date, setDate] = useRecoilState(focusDateState);
   const [yearMonth, setYearMonth] = useRecoilState(focusYearMonthState);
   const [todoDays, setTodoDays] = useRecoilState(todoDaysState);
-  const mark = ['2023-07-25', '2023-08-06', '2023-08-15'];
+  let marks = todoDays;
 
   const handleActiveStartDateChange = async (newStartDate) => {
     const newDate = moment(newStartDate.activeStartDate).format('YYYY-MM');
@@ -35,6 +35,7 @@ const CalendarForm = () => {
         // 데이터를 받아오는데 성공한 경우
         console.log(response.data);
         setTodoDays(response.data.dates);
+        marks = todoDays;
         console.log(todoDays);
       }
     };
@@ -66,7 +67,7 @@ const CalendarForm = () => {
         showNeighboringMonth={false}
         tileContent={({ date, view }) => {
           const dateStr = moment(date).format('YYYY-MM-DD');
-          if (mark.find((x) => x === dateStr)) {
+          if (marks.find((x) => x === dateStr)) {
             return <Dot />;
           }
           return <NotDot />;
