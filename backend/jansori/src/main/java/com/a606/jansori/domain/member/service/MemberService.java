@@ -5,33 +5,22 @@ import com.a606.jansori.domain.member.domain.MemberRole;
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameReqDto;
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameResDto;
 import com.a606.jansori.domain.member.dto.GetMemberProfileResDto;
-import com.a606.jansori.domain.member.dto.PostMemberInfoReqDto;
-import com.a606.jansori.domain.member.dto.PostMemberInfoResDto;
-import com.a606.jansori.domain.member.dto.PatchMemberInfoReqDto;
-import com.a606.jansori.domain.member.dto.PatchMemberInfoResDto;
-import com.a606.jansori.domain.member.dto.GetDuplicateNicknameReqDto;
-import com.a606.jansori.domain.member.dto.GetDuplicateNicknameResDto;
-
-
-import com.a606.jansori.domain.member.dto.PatchMemberInfoReqDto;
-import com.a606.jansori.domain.member.dto.PatchMemberInfoResDto;
 import com.a606.jansori.domain.member.dto.PatchMemberNotificationSettingReqDto;
 import com.a606.jansori.domain.member.dto.PatchMemberNotificationSettingResDto;
+import com.a606.jansori.domain.member.dto.PostMemberInfoReqDto;
+import com.a606.jansori.domain.member.dto.PostMemberInfoResDto;
 import com.a606.jansori.domain.member.exception.DuplicatedNicknameException;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.notification.domain.NotificationSetting;
-
 import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
-import com.a606.jansori.domain.tag.repository.TagFollowRepository;
-import com.a606.jansori.global.auth.util.SecurityUtil;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
-
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +61,8 @@ public class MemberService {
   }
 
   @Transactional
-  public PostMemberInfoResDto updateMemberInfo(PostMemberInfoReqDto postMemberInfoReqDto, String imageName) {
+  public PostMemberInfoResDto updateMemberInfo(PostMemberInfoReqDto postMemberInfoReqDto,
+      String imageName) {
     Member member = securityUtil.getCurrentMemberByToken();
 
     member.update(postMemberInfoReqDto.getNickname(), postMemberInfoReqDto.getBio(),
@@ -108,20 +98,22 @@ public class MemberService {
   public PatchMemberNotificationSettingResDto setNotificationSettings(
       PatchMemberNotificationSettingReqDto patchNotificationSettingReqDto) {
 
-    Member member = securityUtil.getCurrentMemberByToken();
+//    Member member = securityUtil.getCurrentMemberByToken();
+
+//    log.info(String.valueOf(member.getId()));
 
     Map<Long, Boolean> isNotificationActivated =
         patchNotificationSettingReqDto.getNotificationSettings();
 
     List<NotificationSetting> notificationSettings =
-        notificationSettingRepository.findAllByMember(member);
+        notificationSettingRepository.findAllByMemberId(patchNotificationSettingReqDto.getMemberId());
 
-    notificationSettings.stream()
-        .forEach(notificationSetting ->
-            log.info(String.valueOf(notificationSetting.getNotificationType())));
+    notificationSettings.
+        forEach(notificationSetting -> notificationSetting.getActivated());
 
 //    notificationSettingRepository.saveAll(notificationSettings);
 
     return PatchMemberNotificationSettingResDto.from(isNotificationActivated);
 
   }
+}

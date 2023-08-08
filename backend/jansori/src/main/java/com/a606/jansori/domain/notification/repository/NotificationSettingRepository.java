@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 public interface NotificationSettingRepository extends JpaRepository<NotificationSetting, Long> {
   List<NotificationSetting> findAllByMember(Member member);
 
+  List<NotificationSetting> findAllByMemberId(Long id);
+
   Optional<NotificationSetting> findNotificationSettingByMemberAndNotificationTypeId(
       Member member, Long notificationType);
 }

@@ -16,4 +16,5 @@ public class PatchMemberNotificationSettingReqDto {
 
   Map<Long, Boolean> notificationSettings; // 1L : true, 2L : false
   // nagOnMyTodo : true, myNagOnOtherTodo : false
+  Long memberId;
 }
