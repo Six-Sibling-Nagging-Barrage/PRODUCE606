@@ -6,7 +6,12 @@ import tw, { styled } from 'twin.macro';
 import { getTodoListByDate, getTodoListByDateByMember } from '../../apis/api/todo';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { memberIdState } from '../../states/user';
-import { focusDateState, focusYearMonthState, todoDaysState } from '../../states/todo';
+import {
+  focusDateState,
+  focusYearMonthState,
+  todoDaysState,
+  todoListState,
+} from '../../states/todo';
 
 const CalendarForm = () => {
   const [focusDate, setFocusDate] = useState(new Date());
@@ -15,6 +20,7 @@ const CalendarForm = () => {
   const [date, setDate] = useRecoilState(focusDateState);
   const [yearMonth, setYearMonth] = useRecoilState(focusYearMonthState);
   const [todoDays, setTodoDays] = useRecoilState(todoDaysState);
+  const [todoList, setTodoList] = useRecoilState(todoListState);
   let marks = todoDays;
 
   const handleActiveStartDateChange = async (newStartDate) => {
@@ -49,6 +55,9 @@ const CalendarForm = () => {
       const response = await getTodoListByDate(date);
       console.log(response);
       // TODO: recoil로 todoList부분 변경해주는 부분 설정
+      if (response.code === '200') {
+        setTodoList(response.data.todos);
+      }
     };
 
     fetchData();
