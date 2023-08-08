@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import tw, { styled } from 'twin.macro';
 import TodoItem from './TodoItem';
+import { useRecoilValue } from 'recoil';
+import { focusYearMonthState } from '../../states/todo';
 
 const TodoList = () => {
   const [todoList, setTodoList] = useState([]);
+  const focusDate = useRecoilValue(focusYearMonthState);
 
   useEffect(() => {
     setTodoList((prev) => [
@@ -25,6 +28,7 @@ const TodoList = () => {
 
   return (
     <TodoContainer>
+      <div>{focusDate}</div>
       <ul>
         {todoList.map((todo, index) => {
           return (
@@ -43,8 +47,8 @@ const TodoList = () => {
 export default TodoList;
 
 const TodoContainer = styled.div`
-  ${tw`h-fit
-  w-fit
+  ${tw`
+bg-red-400
   p-3
   border-2
   rounded`}

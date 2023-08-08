@@ -4,11 +4,17 @@ import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
 import tw, { styled } from 'twin.macro';
 import { getTodoListByDate, getTodoListByDateByMember } from '../../apis/api/todo';
-import { memberNameData } from '../../states/user';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { memberIdState } from '../../states/user';
+import { focusDateState, focusYearMonthState, todoDaysState } from '../../states/todo';
 
 const CalendarForm = () => {
   const [focusDate, setFocusDate] = useState(new Date());
   const [monthYear, setMonthYear] = useState(moment().format('YYYY-MM'));
+  const memberId = useRecoilValue(memberIdState);
+  const [date, setDate] = useRecoilState(focusDateState);
+  const [yearMonth, setYearMonth] = useRecoilState(focusYearMonthState);
+  const [todoDays, setTodoDays] = useRecoilState(todoDaysState);
   const mark = ['2023-07-25', '2023-08-06', '2023-08-15'];
 
   const handleActiveStartDateChange = async (newStartDate) => {
@@ -16,34 +22,34 @@ const CalendarForm = () => {
     setMonthYear(moment(newDate).format('YYYY-MM'));
   };
 
+  // 달 이동할 때 해당하는 api 호출하는 부분
   useEffect(() => {
+    setYearMonth(monthYear);
     // TODO: 달 이동할 경우 그 달에 해당하는 TODO 입력된 값들 불러오는 API 호출
     const fetchData = async () => {
-      try {
-        const response = await getTodoListByDateByMember({
-          // TODO: memberId 값 recoil 에서 받아와서 넣어주기
-          memberId: '1',
-          date: monthYear,
-        });
-        console.log(response);
-      } catch (error) {
-        console.error(error);
+      const response = await getTodoListByDateByMember({
+        memberId: memberId,
+        date: monthYear,
+      });
+      if (response.code === '200') {
+        // 데이터를 받아오는데 성공한 경우
+        console.log(response.data);
+        setTodoDays(response.data.dates);
+        console.log(todoDays);
       }
     };
     fetchData();
   }, [monthYear]);
 
+  // 원하는 날 클릭할 경우 해당하는 todoList 호출하는 api
   useEffect(() => {
+    setDate(moment(focusDate).format('YYYY-MM-DD'));
     const fetchData = async () => {
-      try {
-        const date = moment(focusDate).format('YYYY-MM-DD');
+      const date = moment(focusDate).format('YYYY-MM-DD');
 
-        const response = await getTodoListByDate(date);
-        console.log(response);
-        // TODO: recoil로 todoList부분 변경해주는 부분 설정
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+      const response = await getTodoListByDate(date);
+      console.log(response);
+      // TODO: recoil로 todoList부분 변경해주는 부분 설정
     };
 
     fetchData();
@@ -52,24 +58,21 @@ const CalendarForm = () => {
   return (
     <CalendarCard>
       <StyledCalendar
-        className={{}}
-        onChange={setFocusDate}
-        formatDay={(locale, focusDate) => moment(focusDate).format('DD')} //일 표시 지우기
-        value={focusDate}
+        onChange={(newFocusDate) => setFocusDate(newFocusDate)}
+        formatDay={(locale, focusDate) => moment(focusDate).format('DD')}
+        value={moment(focusDate).toDate()}
         minDetail='month'
         maxDetail='month'
         showNeighboringMonth={false}
-        tileContent={({ focusDate, view }) => {
-          // 날짜 타일에 컨텐츠 추가
-          const dateStr = moment(focusDate).format('YYYY-MM-DD');
+        tileContent={({ date, view }) => {
+          const dateStr = moment(date).format('YYYY-MM-DD');
           if (mark.find((x) => x === dateStr)) {
             return <Dot />;
           }
           return <NotDot />;
         }}
-        onActiveStartDateChange={handleActiveStartDateChange} // 활성화된 시작 날짜 변경 시 호출되는 콜백
+        onActiveStartDateChange={handleActiveStartDateChange}
       />
-      <div className='text-gray-500 mt-4'>{moment(focusDate).format('YYYY-MM-DD')}</div>
     </CalendarCard>
   );
 };
@@ -102,27 +105,14 @@ const NotDot = styled.div`
 
 const StyledCalendar = styled(Calendar)`
   ${tw`
-    border
+    border-2
     border-gray-300
     py-5
     rounded-lg
     shadow-sm
     bg-white
-    w-2/5
-    
+    w-full
   `}
-  @media (min-width: 990px) and (max-width: 1200px) {
-    width: 50%;
-  }
-  @media (min-width: 786px) and (max-width: 990px) {
-    width: 60%;
-  }
-  @media (min-width: 680px) and (max-width: 786px) {
-    width: 70%;
-  }
-  @media (max-width: 680px) {
-    width: 90%;
-  }
 
   .react-calendar__navigation button {
     ${tw`

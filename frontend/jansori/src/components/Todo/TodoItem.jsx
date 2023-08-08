@@ -24,7 +24,7 @@ const TodoItem = (props) => {
 export default TodoItem;
 
 const TodoContainer = styled.div`
-  ${tw`w-96
+  ${tw`
 grid
 grid-cols-5
 gap-4
