@@ -1,7 +1,7 @@
 package com.a606.jansori.domain.nag.domain;
 
 import com.a606.jansori.domain.member.domain.Member;
-import com.a606.jansori.domain.nag.dto.PostNagReqDto;
+import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.global.common.BaseTimeEntity;
 import java.util.HashSet;
@@ -45,16 +45,21 @@ public class Nag extends BaseTimeEntity {
   private Integer likeCount = 0;
 
   @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "tag_id")
+  private Tag tag;
+
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
 
   @OneToMany(mappedBy = "nag", cascade = CascadeType.ALL)
   private Set<Todo> todos = new HashSet<>();
 
-  public static Nag ofMemberWithNagContentAndPreview(Member member, PostNagReqDto postNagReqDto,
+  public static Nag ofMemberWithNagContentAndPreview(Member member, Tag tag,
       String preview) {
     return Nag.builder()
         .member(member)
+        .tag(tag)
         .preview(preview)
         .build();
   }

@@ -21,10 +21,8 @@ import com.a606.jansori.domain.nag.repository.NagLikeRepository;
 import com.a606.jansori.domain.nag.repository.NagRepository;
 import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
 import com.a606.jansori.domain.nag.util.PreviewUtil;
-import com.a606.jansori.domain.tag.domain.NagTag;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
-import com.a606.jansori.domain.tag.repository.NagTagRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
@@ -45,7 +43,6 @@ public class NagService {
   private final int NAG_BOX_COUNT = 5;
   private final NagRepository nagRepository;
   private final TagRepository tagRepository;
-  private final NagTagRepository nagTagRepository;
   private final MemberRepository memberRepository;
   private final NagLikeRepository nagLikeRepository;
   private final NagUnlockRepository nagUnlockRepository;
@@ -61,10 +58,7 @@ public class NagService {
     Member member = securityUtil.getCurrentMemberByToken();
     String preview = previewUtil.convertNagToPreview(postNagReqDto.getContent());
 
-    Nag nag = Nag.ofMemberWithNagContentAndPreview(member, postNagReqDto, preview);
-    NagTag nagTag = NagTag.of(nag, tag);
-
-    nagTagRepository.save(nagTag);
+    Nag nag = Nag.ofMemberWithNagContentAndPreview(member, tag, preview);
     return PostNagResDto.builder().nagId(nagRepository.save(nag).getId()).build();
   }
 
@@ -101,11 +95,7 @@ public class NagService {
   public GetNagOfProfilePageResDto getAllNagsByMember() {
     Member member = securityUtil.getCurrentMemberByToken();
 
-    return GetNagOfProfilePageResDto.from(nagTagRepository
-        .findByMember(member)
-        .stream()
-        .map(nagTag -> NagDetailDto.ofNagAndTag(nagTag.getNag(), nagTag.getTag()))
-        .collect(Collectors.toList()));
+    return null;
   }
 
   @Transactional(readOnly = true)
