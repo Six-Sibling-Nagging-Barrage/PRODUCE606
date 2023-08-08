@@ -116,5 +116,15 @@ public class AuthService {
     return tokenResDto;
   }
 
+  @Transactional
+  public Void logout(TokenReqDto tokenReqDto) {
 
+    if (!tokenProvider.validateToken(tokenReqDto.getRefreshToken())) {
+      throw new AuthInvalidRefreshTokenException();
+    }
+
+    Authentication authentication = tokenProvider.getAuthentication(tokenReqDto.getAccessToken());
+
+    
+  }
 }
