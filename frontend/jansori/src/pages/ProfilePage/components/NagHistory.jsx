@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import NagItem from './NagItem';
 import { styled } from 'twin.macro';
 import { MasonryInfiniteGrid } from '@egjs/react-infinitegrid';
+import { getMyNagList } from '../../../apis/api/nag';
 
 const NagHistory = (props) => {
-  const { nags } = props;
   const [items, setItems] = useState([]);
   const [nextCursor, setNextCursor] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasNext, setHasNext] = useState(true);
 
   const pageSize = 10;
 
@@ -17,18 +18,16 @@ const NagHistory = (props) => {
 
   const handleGetNags = async () => {
     if (isLoading) return; // 이미 로딩 중이면 중복 요청 방지
-    setIsLoading(true);
+    if (!hasNext) return;
 
-    try {
-      // 사용자가 보낸 잔소리 조회 api 호출
-      // const data = await getMyNagList({cursor: nextCursor, size: pageSize});
-      setItems((prev) => [...prev, ...dummyData.nags]);
-      setNextCursor(dummyData.nextCursor);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(true);
+    // 사용자가 보낸 잔소리 조회 api 호출
+    const data = await getMyNagList({ cursor: nextCursor, pageSize });
+    console.log(data);
+    setItems((prev) => [...prev, ...data.data.nags]);
+    setNextCursor(data.data.nextCursor);
+    setHasNext(data.data.hasNext);
+    setIsLoading(false);
   };
 
   return (
