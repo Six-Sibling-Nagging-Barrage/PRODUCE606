@@ -19,6 +19,7 @@ const HashTag = (props) => {
   const [currentHashTag, setCurrentHashTag] = useState(null);
 
   useEffect(() => {
+    if (!hashTagList) return;
     setHashTagCount(hashTagList.length);
   }, [hashTagList]);
 
