@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @RequiredArgsConstructor
@@ -49,13 +50,16 @@ public class SecurityConfig {
     configuration.setAllowedMethods(
         List.of("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
 
-    configuration.setAllowedHeaders(
-        List.of("Authorization", "Content-Type", "X-Requested-With", "accept", "Origin",
-            "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+//    configuration.setAllowedHeaders(
+//        List.of("Authorization", "Content-Type", "X-Requested-With", "accept", "Origin",
+//            "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+//
+//    configuration.setExposedHeaders(
+//        List.of("X-Get-Header", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials",
+//            "Content-Type", "Authorization"));
 
-    configuration.setExposedHeaders(
-        List.of("X-Get-Header", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials",
-            "Content-Type", "Authorization"));
+    configuration.setAllowedHeaders(List.of("*"));
+    configuration.setExposedHeaders(List.of("*"));
 
     configuration.setAllowCredentials(true);
     configuration.setMaxAge(3600L);
@@ -74,7 +78,6 @@ public class SecurityConfig {
         .accessDeniedHandler(jwtAccessDeniedHandler)
 
         .and()
-        .formLogin().disable()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
         .and()
@@ -82,6 +85,7 @@ public class SecurityConfig {
 
         .and()
         .authorizeRequests()
+        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
         .antMatchers("/login/**").permitAll()
         .antMatchers("/exception/**").permitAll()
         .antMatchers("/signup/**").permitAll()
@@ -90,8 +94,10 @@ public class SecurityConfig {
         .antMatchers("/nags/main-page").permitAll()
         .anyRequest().authenticated()
 
+
         .and()
         .csrf().disable()
+        .formLogin().disable()
         .headers().frameOptions().disable()
 
         .and()
