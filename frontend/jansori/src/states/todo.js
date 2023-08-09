@@ -1,5 +1,4 @@
-import { atom } from 'recoil';
-import moment from 'moment';
+import { atom, useRecoilState } from 'recoil';
 
 // ------------------------ 날짜 ------------------------
 //클릭하고 있는 날
@@ -26,3 +25,15 @@ export const todoListState = atom({
   key: 'todoListState',
   default: [],
 });
+
+export function useTodoList() {
+  const [todoList, setTodoList] = useRecoilState(todoListState);
+  const toggleTodo = (todoId) => {
+    setTodoList((prevTodoList) =>
+      prevTodoList.map((todo) =>
+        todo.id === todoId ? { ...todo, finished: !todo.finished } : todo
+      )
+    );
+  };
+  return { todoList, toggleTodo };
+}
