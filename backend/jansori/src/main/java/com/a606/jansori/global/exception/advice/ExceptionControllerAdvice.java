@@ -42,7 +42,6 @@ public class ExceptionControllerAdvice {
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public EnvelopeResponse RuntimeExceptionHandler(RuntimeException e) {
 
-    e.printStackTrace();
     log.error(e.getMessage());
 
     return EnvelopeResponse.builder()
@@ -55,7 +54,6 @@ public class ExceptionControllerAdvice {
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public EnvelopeResponse NotFoundExceptionHandler(NotFoundException e) {
 
-    e.printStackTrace();
     log.error(e.getMessage());
 
     return EnvelopeResponse.builder()
@@ -68,7 +66,6 @@ public class ExceptionControllerAdvice {
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public EnvelopeResponse BadRequestExceptionHandler(BadRequestException e) {
 
-    e.printStackTrace();
     log.error(e.getMessage());
 
     return EnvelopeResponse.builder()
@@ -81,7 +78,6 @@ public class ExceptionControllerAdvice {
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   public EnvelopeResponse UnauthorizedExceptionHandler(UnauthorizedException e) {
 
-    e.printStackTrace();
     log.error(e.getMessage());
 
     return EnvelopeResponse.builder()
@@ -94,7 +90,6 @@ public class ExceptionControllerAdvice {
   @ResponseStatus(HttpStatus.FORBIDDEN)
   public EnvelopeResponse ForbiddenExceptionHandler(ForbiddenException e) {
 
-    e.printStackTrace();
     log.error(e.getMessage());
 
     return EnvelopeResponse.builder()
@@ -119,7 +114,6 @@ public class ExceptionControllerAdvice {
   @ResponseStatus(HttpStatus.FORBIDDEN)
   public EnvelopeResponse BusinessExceptionHandler(BusinessException e) {
 
-    e.printStackTrace();
     log.error(e.getMessage());
 
     return EnvelopeResponse.builder()

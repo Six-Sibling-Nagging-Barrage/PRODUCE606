@@ -5,10 +5,12 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.global.exception.domain.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SecurityUtil {
@@ -22,6 +24,7 @@ public class SecurityUtil {
     final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     if (authentication == null || authentication.getName().equals(anonymousUser)) {
+      log.error("security util error : {}", authentication.getName());
       throw new UnauthorizedException();
     }
 
