@@ -1,12 +1,12 @@
 package com.a606.jansori.global.exception.advice;
 
 import com.a606.jansori.global.common.EnvelopeResponse;
-import com.a606.jansori.global.exception.BadRequestException;
-import com.a606.jansori.global.exception.BusinessException;
-import com.a606.jansori.global.exception.ForbiddenException;
-import com.a606.jansori.global.exception.InternalException;
-import com.a606.jansori.global.exception.NotFoundException;
-import com.a606.jansori.global.exception.UnauthorizedException;
+import com.a606.jansori.global.exception.domain.BadRequestException;
+import com.a606.jansori.global.exception.domain.BusinessException;
+import com.a606.jansori.global.exception.domain.ForbiddenException;
+import com.a606.jansori.global.exception.domain.InternalException;
+import com.a606.jansori.global.exception.domain.NotFoundException;
+import com.a606.jansori.global.exception.domain.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
