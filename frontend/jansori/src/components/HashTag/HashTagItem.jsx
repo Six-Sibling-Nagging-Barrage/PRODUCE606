@@ -34,7 +34,8 @@ const HashTag = styled.div`
 
 const Text = styled.span``;
 
-const RemoveButton = styled.button`
+const RemoveButton = styled.div`
+  cursor: pointer;
   margin-left: 5px;
 `;
 

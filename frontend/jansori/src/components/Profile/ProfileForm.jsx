@@ -4,9 +4,13 @@ import HashTag from '../../components/HashTag/HashTag';
 import Button from '../../components/UI/Button';
 import { updateProfile } from '../../apis/api/member';
 import { useNavigate } from 'react-router';
-import { isLoginState, memberRoleState } from '../../states/user';
+import {
+  isLoginState,
+  memberRoleState,
+  profileImgState,
+} from '../../states/user';
 import { validateNickname, validateBio } from '../../utils/validate';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
 import { getAvailableNickname } from '../../apis/api/member';
 import ProfileImg from '../../components/Profile/ProfileImg';
 import { styled } from 'twin.macro';
@@ -24,16 +28,20 @@ const ProfileForm = (props) => {
 
   const isLogin = useRecoilValue(isLoginState);
   const setMemberRole = useSetRecoilState(memberRoleState);
+  const [profileImg, setProfileImg] = useRecoilState(profileImgState);
 
   const {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
+    setValue,
   } = useForm({ mode: 'onBlur' });
 
   useEffect(() => {
     if (!tags) return;
     setHashTagList(tags);
+    setValue('nickname', prevNickname);
+    setValue('bio', prevBio);
   }, []);
 
   useEffect(() => {
@@ -54,17 +62,18 @@ const ProfileForm = (props) => {
   const handleUpdateProfile = async (data) => {
     if (!checked) return setCheckError(true);
 
-    const profile = new FormData();
-    profile.append(
-      'memberInfo',
-      JSON.stringify({
-        nickname: data.nickname,
-        bio: data.bio,
-        tags:
-          hashTagList.length > 0 ? hashTagList.map((tag) => tag.tagId) : [-1],
-      })
-    );
-    profile.append('imageFile', '이미지경로'); // TODO: 이미지 넣기
+    const profile = {
+      nickname: data.nickname,
+      bio: data.bio,
+      tags: hashTagList.length > 0 ? hashTagList.map((tag) => tag.tagId) : [-1],
+    };
+
+    console.log(profile);
+
+    const formData = new FormData();
+
+    // formData.append('imageFile', profileImg);
+    formData.append('memberInfo', JSON.stringify(profile));
 
     // 유저 정보 수정 api 호출
     const res = await updateProfile(profile);
@@ -95,7 +104,12 @@ const ProfileForm = (props) => {
 
   return (
     <form>
-      <ProfileImg editable={true} size="80px" />
+      <ProfileImg
+        editable={true}
+        profileImg={profileImg}
+        setProfileImg={setProfileImg}
+        size="80px"
+      />
       <InfoContainer>
         <Label>닉네임</Label>
         <Nickname
@@ -248,7 +262,6 @@ const Bio = styled.textarea`
   width: 100%;
   height: 80px;
   margin: 0;
-  font-size: 14px;
   &:focus {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   }

@@ -2,10 +2,26 @@ import { authInstance } from '../../apis/utils/authInstance';
 import defaultInstance from '../utils/defaultInstance';
 
 // 내가 보낸 잔소리 목록 조회
-export const getMyNagList = async () => {
+export const getMyNagList = async ({ cursor, pageSize }) => {
   try {
-    const { data } = await authInstance.get(`/nags/my-list`);
-    return data.data;
+    const url = cursor
+      ? `/nags/my-list?cursor=${cursor}&size=${pageSize}`
+      : `/nags/my-list?&size=${pageSize}`;
+    const { data } = await authInstance.get(url);
+    return data;
+  } catch (e) {
+    console.log(e);
+    return e.response;
+  }
+};
+
+export const getMemberNagList = async ({ memberId, cursor, pageSize }) => {
+  try {
+    const url = cursor
+      ? `/nags/members?cursor=${cursor}&memberId=${memberId}&size=${pageSize}`
+      : `/nags/members?memberId=${memberId}&size=${pageSize}`;
+    const { data } = await authInstance.get(url);
+    return data;
   } catch (e) {
     console.log(e);
     return e.response;

@@ -37,17 +37,18 @@ const Background = styled.div`
 // ${(props) => modalSettings(props.visible)}
 
 const ModalSection = styled.div`
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(255, 255, 255, 1);
-  padding: 16px;
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 15px 30px;
   z-index: 99;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(3px);
   border-radius: 5px;
-  box-shadow: 0 0 100px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 100px rgba(0, 0, 0, 0.3);
   overflow: auto;
+  max-height: 85%;
 `;
 
 const Title = styled.div`

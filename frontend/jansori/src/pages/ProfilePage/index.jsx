@@ -21,6 +21,7 @@ const ProfilePage = () => {
   const [profile, setProfile] = useState(null);
   const [tags, setTags] = useState([]);
   const [isMine, setIsMine] = useState(false);
+  const [nags, setNags] = useState([]);
 
   const location = useLocation();
   const query = new URLSearchParams(location.search);
@@ -35,15 +36,11 @@ const ProfilePage = () => {
     // TODO: 유저가 팔로우한 해시태그 조회 api 호출
     (async () => {
       const profileRes = await getMemberProfile(id);
-      setProfile(profileRes.data);
+      setProfile(profileRes?.data);
       const tagRes = await getFollowTagList(id);
-      setTags(tagRes.tags);
+      setTags(tagRes?.tags);
     })();
   }, []);
-
-  useEffect(() => {
-    // TODO: 내가 보낸 잔소리 조회 api 호출
-  }, [currentTab]);
 
   return (
     <ProfileContainer>
@@ -72,7 +69,7 @@ const ProfilePage = () => {
           {currentTab === 0 ? (
             <TodoHistory></TodoHistory>
           ) : (
-            <NagHistory></NagHistory>
+            <NagHistory nags={nags}></NagHistory>
           )}
         </TabContent>
       </TabContainer>
