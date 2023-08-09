@@ -1,5 +1,6 @@
 package com.a606.jansori.domain.notification.controller;
 
+import com.a606.jansori.domain.notification.dto.PatchNotificationsReqDto;
 import com.a606.jansori.domain.notification.dto.PatchNotificationsResDto;
 import com.a606.jansori.domain.notification.service.NotificationService;
 import com.a606.jansori.global.common.EnvelopeResponse;
@@ -16,10 +17,11 @@ public class NotificationController {
   private final NotificationService notificationService;
 
   @PatchMapping
-  public EnvelopeResponse<PatchNotificationsResDto> patchNotifications(){
+  public EnvelopeResponse<PatchNotificationsResDto> patchNotifications(
+      PatchNotificationsReqDto patchNotificationsReqDto){
 
     return EnvelopeResponse.<PatchNotificationsResDto>builder()
-        .data(notificationService.patchNotifications())
+        .data(notificationService.patchNotifications(patchNotificationsReqDto))
         .build();
   }
 }

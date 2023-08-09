@@ -20,8 +20,10 @@ public class PatchNotificationsResDto {
 
   private List<NotificationDto> notifications;
   private LocalDateTime lastReadAt;
+  private Boolean hasNext;
+  private Long nextCursor;
 
-  public static PatchNotificationsResDto from(List<Notification> notifications, LocalDateTime lastReadAt){
+  public static PatchNotificationsResDto from(Integer size, List<Notification> notifications, LocalDateTime lastReadAt){
 
     return PatchNotificationsResDto.builder()
         .lastReadAt(lastReadAt)

@@ -2,6 +2,7 @@ package com.a606.jansori.domain.notification.domain;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.TalkerType;
+import com.a606.jansori.global.common.BaseTimeEntity;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name="notification")
-public class Notification {
+public class Notification extends BaseTimeEntity {
 
   @Id
   @Column(name = "notification_id")
@@ -31,9 +32,6 @@ public class Notification {
 
   @Column
   private String content;
-
-  @Column
-  private LocalDateTime createdAt;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
