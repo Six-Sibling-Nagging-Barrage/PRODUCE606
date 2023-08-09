@@ -14,4 +14,11 @@ import org.springframework.stereotype.Repository;
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
   Slice<Notification> findByReceiverOrderByCreatedAtDesc(Member member, Pageable pageable);
+
+  @Query("SELECT n FROM notification n "
+      + "WHERE n.receiver = :member "
+      + "AND n.id < :cursor "
+      + "ORDER BY n.createdAt DESC")
+  Slice<Notification> findNotificationByReceiverAndLessThanCursorOrderByCreatedAtDesc(Member member,
+      Long cursor, Pageable pageable);
 }

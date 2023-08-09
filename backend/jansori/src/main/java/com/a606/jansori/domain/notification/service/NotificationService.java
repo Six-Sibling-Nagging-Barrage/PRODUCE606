@@ -1,8 +1,6 @@
 package com.a606.jansori.domain.notification.service;
 
 import com.a606.jansori.domain.member.domain.Member;
-import com.a606.jansori.domain.member.exception.MemberNotFoundException;
-import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.notification.domain.Notification;
 import com.a606.jansori.domain.notification.domain.NotificationBox;
 import com.a606.jansori.domain.notification.dto.NotificationDto;
@@ -10,8 +8,6 @@ import com.a606.jansori.domain.notification.dto.PatchNotificationsReqDto;
 import com.a606.jansori.domain.notification.dto.PatchNotificationsResDto;
 import com.a606.jansori.domain.notification.repository.NotificationBoxRepository;
 import com.a606.jansori.domain.notification.repository.NotificationRepository;
-import com.a606.jansori.domain.todo.domain.Todo;
-import com.a606.jansori.domain.todo.dto.GetTodoFeedResDto;
 import com.a606.jansori.global.auth.util.SecurityUtil;
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -19,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +26,6 @@ public class NotificationService {
 
   private final NotificationRepository notificationRepository;
   private final NotificationBoxRepository notificationBoxRepository;
-  private final MemberRepository memberRepository;
   private final SecurityUtil securityUtil;
 
   private final Clock clock;
@@ -38,27 +34,36 @@ public class NotificationService {
   public PatchNotificationsResDto patchNotifications(
       PatchNotificationsReqDto patchNotificationsReqDto) {
 
-//    Member member = securityUtil.getCurrentMemberByToken();
-    Member member = memberRepository.findById(10L).orElseThrow(MemberNotFoundException::new);
+    Member member = securityUtil.getCurrentMemberByToken();
 
-//    NotificationBox notificationBox = notificationBoxRepository.findByMember(member);
     NotificationBox notificationBox = notificationBoxRepository.findByMember(member);
-    LocalDateTime lastReadAt = notificationBox.getReadAt();
+    LocalDateTime readAt = notificationBox.getReadAt();
 
     Long cursor = patchNotificationsReqDto.getCursor();
     Integer size = patchNotificationsReqDto.getSize();
 
-    Slice<Notification> pagedNotifications =
-        notificationRepository.findByReceiverOrderByCreatedAtDesc(member,
-            PageRequest.of(0, size));
+    Slice<Notification> pagedNotifications = getPagedNotifications(member, cursor, size);
 
-    if (cursor == null) {
+    // 알림함의 첫 페이지의 알림을 조회하는 경우, 조회시간을 업데이트한다.
+    if (cursor == null && !pagedNotifications.isEmpty()) {
       notificationBox.updateReadAt(LocalDateTime.now(clock));
     }
 
-    return patchNotificationsResDtoFrom(size, lastReadAt, pagedNotifications);
+    return patchNotificationsResDtoFrom(size, readAt, pagedNotifications);
   }
-  private PatchNotificationsResDto patchNotificationsResDtoFrom(Integer size, LocalDateTime lastReadAt,
+
+  private Slice<Notification> getPagedNotifications(Member member, Long cursor, Integer size) {
+
+    Pageable pageable = PageRequest.of(0, size);
+
+    return cursor != null ? notificationRepository
+        .findNotificationByReceiverAndLessThanCursorOrderByCreatedAtDesc(
+            member, cursor, pageable)
+        : notificationRepository.findByReceiverOrderByCreatedAtDesc(member, pageable);
+  }
+
+  private PatchNotificationsResDto patchNotificationsResDtoFrom(Integer size,
+      LocalDateTime lastReadAt,
       Slice<Notification> pagedNotifications) {
 
     Boolean hasNext = pagedNotifications.hasNext();
