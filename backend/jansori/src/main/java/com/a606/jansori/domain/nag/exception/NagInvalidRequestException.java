@@ -1,6 +1,6 @@
 package com.a606.jansori.domain.nag.exception;
 
-import com.a606.jansori.global.exception.BadRequestException;
+import com.a606.jansori.global.exception.domain.BadRequestException;
 
 public class NagInvalidRequestException extends BadRequestException  {
 
