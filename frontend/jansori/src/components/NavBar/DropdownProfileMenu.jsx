@@ -1,23 +1,34 @@
 import React from 'react';
-import { useRecoilValue, useRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import tw, { styled } from 'twin.macro';
 import {
   isLoginState,
   profileImgState,
-  memberNameState,
+  memberInfoState,
 } from '../../states/user';
 import { useNavigate } from 'react-router-dom';
+import { createLogout } from '../../apis/api/member';
 
 const DropdownProfileMenu = () => {
   const navigate = useNavigate();
 
-  const [user, setUser] = useRecoilState(isLoginState);
   const profileImg = useRecoilValue(profileImgState);
-  const memberName = useRecoilValue(memberNameState);
+  const member = useRecoilValue(memberInfoState);
+  const setIsLogin = useSetRecoilState(isLoginState);
 
-  const handleLogOut = () => {
-    setUser(false);
-    localStorage.removeItem('user');
+  const accessToken = localStorage.getItem('member_access_token');
+
+  const handleLogOut = async () => {
+    // 로그아웃 api 호출
+    const data = await createLogout({
+      accessToken,
+    });
+    setIsLogin(false);
+    localStorage.removeItem('member_access_token');
+    localStorage.removeItem('member_refresh_token');
+    localStorage.removeItem('member_token_exp');
+    localStorage.removeItem('recoil-persist');
+
     window.location.replace('/');
   };
 
@@ -26,11 +37,10 @@ const DropdownProfileMenu = () => {
       <BackgroundContainer />
       <DropdownMenuContent>
         <ItemContainer>
-          <Avatar src={profileImg} alt="profile" />
-          <MemberName>{memberName}</MemberName>
+          <Avatar src={member.imageUrl} alt="profile" />
+          <MemberName>{member.nickname}</MemberName>
         </ItemContainer>
-        <ItemContainer>mypage</ItemContainer>
-        <ItemContainer>LOGOUT</ItemContainer>
+        <ItemContainer onClick={handleLogOut}>LOGOUT</ItemContainer>
       </DropdownMenuContent>
     </DropdownProfileMenuContainer>
   );
@@ -59,12 +69,14 @@ const BackgroundContainer = styled.div`
 `;
 
 const DropdownMenuContent = styled.div`
-  ${tw`relative
-  z-50`};
+  ${tw`relative z-50 py-4`};
 `;
 
 const ItemContainer = styled.div`
   ${tw`flex justify-center items-center p-2`}
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const Avatar = styled.img`

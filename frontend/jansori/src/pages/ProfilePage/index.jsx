@@ -6,10 +6,8 @@ import TabItem from './components/TabItem';
 import NagHistory from './components/NagHistory';
 import { getMemberProfile } from '../../apis/api/member';
 import TodoHistory from './components/TodoHistory';
-import { getMyProfile } from '../../apis/api/member';
-import { addTokenToHeaders } from '../../apis/utils/authInstance';
 import { useRecoilValue } from 'recoil';
-import { memberTokenState, memberIdState } from '../../states/user';
+import { memberIdState } from '../../states/user';
 import { getFollowTagList } from '../../apis/api/tag';
 import { useLocation } from 'react-router-dom';
 
@@ -18,7 +16,6 @@ const tabs = ['TODO', '잔소리'];
 const ProfilePage = () => {
   const [currentTab, setCurrentTab] = useState(0);
 
-  const jwtToken = useRecoilValue(memberTokenState);
   const memberId = useRecoilValue(memberIdState);
 
   const [profile, setProfile] = useState(null);
@@ -30,8 +27,6 @@ const ProfilePage = () => {
 
   // URL에서 query parameter 가져오기
   const id = parseInt(query.get('id'));
-
-  addTokenToHeaders(jwtToken);
 
   useEffect(() => {
     console.log(id, memberId);
@@ -52,7 +47,9 @@ const ProfilePage = () => {
 
   return (
     <ProfileContainer>
-      {profile && <ProfileDetail isMine={isMine} profile={profile} tags={tags} />}
+      {profile && (
+        <ProfileDetail isMine={isMine} profile={profile} tags={tags} />
+      )}
       <TabContainer>
         <Tabs>
           {tabs.map((tab, index) => (
@@ -67,7 +64,11 @@ const ProfilePage = () => {
           <Glider currentTab={currentTab} />
         </Tabs>
         <TabContent>
-          {currentTab === 0 ? <TodoHistory></TodoHistory> : <NagHistory></NagHistory>}
+          {currentTab === 0 ? (
+            <TodoHistory></TodoHistory>
+          ) : (
+            <NagHistory></NagHistory>
+          )}
         </TabContent>
       </TabContainer>
     </ProfileContainer>
@@ -112,7 +113,9 @@ const Glider = styled.span`
   border-radius: 10px 10px 0 0;
   transition: 0.25s ease-out;
   ${({ currentTab }) =>
-    currentTab === 0 ? `transform: translateX(-50%);` : `transform: translateX(50%);`}
+    currentTab === 0
+      ? `transform: translateX(-50%);`
+      : `transform: translateX(50%);`}
 `;
 
 export default ProfilePage;

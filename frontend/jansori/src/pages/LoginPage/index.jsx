@@ -8,6 +8,8 @@ import { createLogin } from '../../apis/api/member';
 import {
   isLoginState,
   memberTokenState,
+  memberRefreshTokenState,
+  memberTokenExpState,
   memberInfoState,
   memberRoleState,
   memberIdState,
@@ -27,6 +29,8 @@ const LoginPage = () => {
   const setIsLogin = useSetRecoilState(isLoginState);
   const [memberRole, setMemberRole] = useRecoilState(memberRoleState);
   const setMemberId = useSetRecoilState(memberIdState);
+  const setMemberRefreshToken = useSetRecoilState(memberRefreshTokenState);
+  const setmemberTokenExp = useSetRecoilState(memberTokenExpState);
 
   const loginSubmit = async (data) => {
     const user = {
@@ -36,7 +40,10 @@ const LoginPage = () => {
     // 로그인 api 호출
     const res = await createLogin(user);
     if (res?.code === '200') {
+      console.log(res.data);
       setMemberToken(res.data.accessToken);
+      setMemberRefreshToken(res.data.refreshToken);
+      setmemberTokenExp(res.data.accessTokenExpiresIn);
       setIsLogin(true);
       setMemberRole(res.data.memberRole);
       setMemberInfo({
