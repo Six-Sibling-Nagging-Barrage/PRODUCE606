@@ -57,9 +57,9 @@ public class NotificationService {
     Pageable pageable = PageRequest.of(0, size);
 
     return cursor != null ? notificationRepository
-        .findNotificationByReceiverAndLessThanCursorOrderByCreatedAtDesc(
+        .findNotificationByReceiverAndLessThanCursorOrderByIdDesc(
             member, cursor, pageable)
-        : notificationRepository.findByReceiverOrderByCreatedAtDesc(member, pageable);
+        : notificationRepository.findByReceiverOrderByIdDesc(member, pageable);
   }
 
   private PatchNotificationsResDto patchNotificationsResDtoFrom(Integer size,
