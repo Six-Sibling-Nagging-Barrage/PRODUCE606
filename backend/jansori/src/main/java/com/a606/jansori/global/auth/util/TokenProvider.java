@@ -113,6 +113,8 @@ public class TokenProvider {
 
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 
+      log.error("Redis : {}", redisUtil.isBlackList(token));
+
       if (redisUtil.isBlackList(token)) {
         return false;
       }
