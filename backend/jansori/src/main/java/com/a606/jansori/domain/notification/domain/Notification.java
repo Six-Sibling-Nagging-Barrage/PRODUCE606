@@ -3,7 +3,6 @@ package com.a606.jansori.domain.notification.domain;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.TalkerType;
 import com.a606.jansori.global.common.BaseTimeEntity;
-import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,11 +13,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
+@SuperBuilder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,6 +29,10 @@ public class Notification extends BaseTimeEntity {
   @Column(name = "notification_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "notification_type_id")
+  private NotificationType notificationType;
 
   @Column
   private String content;

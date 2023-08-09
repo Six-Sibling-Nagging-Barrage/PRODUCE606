@@ -22,6 +22,7 @@ import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.dto.PutNagUnlockResDto;
 import com.a606.jansori.domain.nag.exception.NagInvalidRequestException;
+import com.a606.jansori.domain.nag.event.NagLikeEvent;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
 import com.a606.jansori.domain.nag.exception.NagUnlockBusinessException;
 import com.a606.jansori.domain.nag.repository.NagLikeRepository;
@@ -39,6 +40,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -59,6 +61,8 @@ public class NagService {
   private final NagRandomGenerator nagRandomGenerator;
   private final PreviewUtil previewUtil;
   private final SecurityUtil securityUtil;
+
+  private final ApplicationEventPublisher publisher;
 
   @Transactional
   public PostNagResDto createNag(PostNagReqDto postNagReqDto) {
@@ -86,6 +90,8 @@ public class NagService {
 
     nagLike.ifPresentOrElse(like -> decreaseNagLike(nag, like),
         () -> increaseNagLike(nag, member));
+
+    publisher.publishEvent(new NagLikeEvent(member, nag));
 
     return PostNagLikeResDto.ofStatusAboutMemberLikeNag(nagLike.isEmpty());
   }
