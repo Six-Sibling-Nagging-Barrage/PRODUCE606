@@ -77,6 +77,7 @@ public class SecurityConfig {
         .antMatchers("/signup/**").permitAll()
         .antMatchers("/auth/**").permitAll()
         .antMatchers("/storage/**").permitAll()
+        .antMatchers("/nags/main-page").permitAll()
         .anyRequest().authenticated()
 
         .and()
