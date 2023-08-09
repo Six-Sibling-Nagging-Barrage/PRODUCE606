@@ -44,6 +44,33 @@ public class NagDynamicQueryRepositoryImpl implements NagDynamicQueryRepository 
     return getNags(pageable, cq);
   }
 
+  @Override
+  public Slice<Nag> findByNagsWithLockStatusByMemberAndPages(
+      Member viewer,
+      Member owner,
+      Long cursor,
+      Pageable pageable) {
+
+    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+
+    CriteriaQuery<Nag> cq = cb.createQuery(Nag.class);
+
+    Root<Nag> nag = cq.from((Nag.class));
+
+    nag.fetch("tag", JoinType.INNER);
+    nag.fetch("todos", JoinType.LEFT);
+    Join<Nag, NagUnlock> nagUnlocks = nag.join("nagUnlocks", JoinType.LEFT);
+    nagUnlocks.on(cb.equal(nagUnlocks.get("member"), viewer));
+
+    List<Predicate> predicates = new ArrayList<>();
+
+    predicates.add(cb.equal(nag.get("member"), owner));
+
+    makeConditions(cursor, cb, cq, nag, predicates);
+
+    return getNags(pageable, cq);
+  }
+
   private void makeConditions(
       Long cursor,
       CriteriaBuilder cb,
