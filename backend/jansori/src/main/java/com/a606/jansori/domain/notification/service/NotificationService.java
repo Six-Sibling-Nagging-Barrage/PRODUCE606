@@ -64,8 +64,6 @@ public class NotificationService {
     return patchNotificationsResDtoFrom(size, readAt, pagedNotifications);
   }
 
-
-
   @EventListener(classes = {PostTodoEvent.class})
   public void createNotificationByWriteMemberNagOnTodo(final PostTodoEvent postTodoEvent){
     Todo todo = postTodoEvent.getTodo();
