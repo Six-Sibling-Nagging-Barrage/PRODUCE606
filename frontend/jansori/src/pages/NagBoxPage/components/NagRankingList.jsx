@@ -2,15 +2,8 @@ import React, { useState, useEffect } from 'react';
 import tw, { styled } from 'twin.macro';
 import NagRankingItem from './NagRankingItem';
 import { getNagRanking } from '../../../apis/api/nag';
-import { addTokenToHeaders } from '../../../apis/utils/authInstance';
-import { useRecoilValue } from 'recoil';
-import { memberTokenState } from '../../../states/user';
 
 const NagRankingList = () => {
-  const jwtToken = useRecoilValue(memberTokenState);
-
-  addTokenToHeaders(jwtToken);
-
   const [memberNagRankings, setMemberNagRankings] = useState([]);
 
   useEffect(() => {
@@ -48,4 +41,6 @@ const NagRankingListWrap = styled.div`
   flex-col`}
 `;
 
-const NagRankingItemWrap = styled.div(({ isOdd }) => [isOdd ? tw`mr-auto` : tw`ml-auto`]);
+const NagRankingItemWrap = styled.div(({ isOdd }) => [
+  isOdd ? tw`mr-auto` : tw`ml-auto`,
+]);

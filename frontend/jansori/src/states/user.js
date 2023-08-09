@@ -2,8 +2,23 @@ import { atom } from 'recoil';
 import { recoilPersist } from 'recoil-persist';
 import profileImg from '../assets/profileImg.png';
 
-// localStorage에 저장되며, key 이름은 'recoil-persist'
+// // localStorage에 저장되며, key 이름은 'recoil-persist'
 const { persistAtom } = recoilPersist();
+
+const localStorageEffect =
+  (key) =>
+  ({ setSelf, onSet }) => {
+    const savedValue = localStorage.getItem(key);
+    if (savedValue != null) {
+      setSelf(JSON.parse(savedValue));
+    }
+
+    onSet((newValue, _, isReset) => {
+      isReset
+        ? localStorage.removeItem(key)
+        : localStorage.setItem(key, JSON.stringify(newValue));
+    });
+  };
 
 export const isLoginState = atom({
   key: 'isLoginState',
@@ -26,7 +41,19 @@ export const memberNameState = atom({
 export const memberTokenState = atom({
   key: 'memberTokenState',
   default: '',
-  effects_UNSTABLE: [persistAtom],
+  effects: [localStorageEffect('member_access_token')],
+});
+
+export const memberRefreshTokenState = atom({
+  key: 'memberRefreshTokenState',
+  default: '',
+  effects: [localStorageEffect('member_refresh_token')],
+});
+
+export const memberTokenExpState = atom({
+  key: 'memberTokenExpState',
+  default: null,
+  effects: [localStorageEffect('member_token_exp')],
 });
 
 export const memberInfoState = atom({

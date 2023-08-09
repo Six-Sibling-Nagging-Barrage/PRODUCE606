@@ -9,8 +9,6 @@ import { updateProfile } from '../../apis/api/member';
 import { useNavigate } from 'react-router';
 import { isLoginState, memberRoleState } from '../../states/user';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { addTokenToHeaders } from '../../apis/utils/authInstance';
-import { memberTokenState } from '../../states/user';
 
 const validateNickname = (value) => {
   if (/\s{2,}|^\s|\s$/.test(value)) {
@@ -40,10 +38,6 @@ const InitialProfilePage = () => {
 
   const isLogin = useRecoilValue(isLoginState);
   const setMemberRole = useSetRecoilState(memberRoleState);
-
-  const jwtToken = useRecoilValue(memberTokenState);
-
-  addTokenToHeaders(jwtToken);
 
   const {
     register,

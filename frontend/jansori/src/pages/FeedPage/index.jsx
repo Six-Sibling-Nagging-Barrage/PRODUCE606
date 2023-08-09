@@ -3,17 +3,10 @@ import Feed from './components/Feed';
 import { styled } from 'twin.macro';
 import { getFollowingFeed, getSpecificFeed } from '../../apis/api/todo';
 import HashTag from '../../components/HashTag/HashTag';
-import { addTokenToHeaders } from '../../apis/utils/authInstance';
-import { useRecoilValue } from 'recoil';
-import { memberTokenState } from '../../states/user';
 
 const FeedPage = () => {
   const [specificTag, setSpecificTag] = useState(-1);
   const [hashTagList, setHashTagList] = useState([]);
-
-  const jwtToken = useRecoilValue(memberTokenState);
-
-  addTokenToHeaders(jwtToken);
 
   useEffect(() => {
     if (hashTagList.length === 0) return setSpecificTag(-1);
