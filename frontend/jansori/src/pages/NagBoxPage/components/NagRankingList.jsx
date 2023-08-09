@@ -15,7 +15,7 @@ const NagRankingList = () => {
 
   return (
     <NagRankingListWrap>
-      {memberNagRankings.map((memberNagRanking, index) => {
+      {memberNagRankings?.map((memberNagRanking, index) => {
         const isOdd = (index + 1) % 2 !== 0;
         return (
           <NagRankingItemWrap isOdd={isOdd}>

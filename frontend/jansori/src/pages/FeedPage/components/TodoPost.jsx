@@ -62,7 +62,7 @@ const TodoPost = (props) => {
           <div className="finished">{post.finished ? '❌' : '✅'}</div>
           <div className="todo">{post.content}</div>
           <HashTagContainer>
-            {post.tags.map((tag) => {
+            {post.tags?.map((tag) => {
               return (
                 <HashTagItem key={tag.tagId} hashTag={tag} editable={false} />
               );

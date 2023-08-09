@@ -83,7 +83,7 @@ const MainPage = () => {
       return { x: newX, y: newY };
     };
 
-    const newPositions = randomNags.map((nag, index) => {
+    const newPositions = randomNags?.map((nag, index) => {
       return getQuadrantPosition(index);
       // return index === nags.length - 1 ? generateRandomPosition() : getQuadrantPosition(index);
     });

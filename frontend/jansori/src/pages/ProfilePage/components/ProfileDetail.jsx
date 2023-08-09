@@ -31,7 +31,7 @@ const ProfileDetail = (props) => {
         <Bio>{profile.bio}</Bio>
         <Wrapper>
           <HashTagContainer>
-            {tags.map((tag) => {
+            {tags?.map((tag) => {
               return <HashTagItem key={tag.tagId} hashTag={tag} />;
             })}
           </HashTagContainer>
