@@ -91,8 +91,6 @@ public class NagService {
     nagLike.ifPresentOrElse(like -> decreaseNagLike(nag, like),
         () -> increaseNagLike(nag, member));
 
-    publisher.publishEvent(new NagLikeEvent(member, nag));
-
     return PostNagLikeResDto.ofStatusAboutMemberLikeNag(nagLike.isEmpty());
   }
 
@@ -196,5 +194,6 @@ public class NagService {
   private void increaseNagLike(Nag nag, Member member) {
     nagLikeRepository.save(NagLike.builder().nag(nag).member(member).build());
     nag.increaseLikeCount();
+    publisher.publishEvent(new NagLikeEvent(member, nag));
   }
 }

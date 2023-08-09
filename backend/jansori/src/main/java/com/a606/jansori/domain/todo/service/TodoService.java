@@ -20,6 +20,7 @@ import com.a606.jansori.domain.todo.dto.GetTodoMonthlyExistenceResDto;
 import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
 import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
 import com.a606.jansori.domain.todo.dto.PostTodoResDto;
+import com.a606.jansori.domain.todo.event.TodoCompleteEvent;
 import com.a606.jansori.domain.todo.exception.TodoBusinessException;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 
 import com.a606.jansori.global.auth.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +52,8 @@ public class TodoService {
   private final NagRandomGenerator nagRandomGenerator;
 
   private final SecurityUtil securityUtil;
+
+  private final ApplicationEventPublisher publisher;
 
   @Transactional
   public PostTodoResDto postTodo(PostTodoReqDto postTodoReqDto) {
@@ -124,13 +128,15 @@ public class TodoService {
   @Transactional
   public PatchTodoResDto patchTodoAccomplishment(Long todoId) {
 
-    Member member = securityUtil.getCurrentMemberByToken();
-
-    Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
+//    Member member = securityUtil.getCurrentMemberByToken();
+    Member member = memberRepository.findById(21L).orElseThrow(MemberNotFoundException::new);
+    Todo todo = todoRepository.findById(41L).orElseThrow(TodoNotFoundException::new);
 
     if (todo.getMember() != member) {
       throw new TodoUnauthorizedException();
     }
+
+    publisher.publishEvent(new TodoCompleteEvent(todo));
 
     return PatchTodoResDto.from(todo.toggleFinished());
   }

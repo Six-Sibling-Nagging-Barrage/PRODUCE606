@@ -9,10 +9,13 @@ import com.a606.jansori.domain.notification.domain.NotificationType;
 import com.a606.jansori.domain.notification.dto.NotificationDto;
 import com.a606.jansori.domain.notification.dto.PatchNotificationsReqDto;
 import com.a606.jansori.domain.notification.dto.PatchNotificationsResDto;
+import com.a606.jansori.domain.notification.exception.NotificationNotFoundException;
 import com.a606.jansori.domain.notification.repository.NotificationBoxRepository;
 import com.a606.jansori.domain.notification.repository.NotificationRepository;
 import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
 import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
+import com.a606.jansori.domain.todo.domain.Todo;
+import com.a606.jansori.domain.todo.event.TodoCompleteEvent;
 import com.a606.jansori.global.auth.util.SecurityUtil;
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -61,13 +64,14 @@ public class NotificationService {
   }
 
   @EventListener(classes = {NagLikeEvent.class})
-  public void createNotificationByLikeNag(final NagLikeEvent nagLikeEvent){
+  public void createNotificationByNagLike(final NagLikeEvent nagLikeEvent){
 
     Member member = nagLikeEvent.getMember();
     Nag nag = nagLikeEvent.getNag();
-    NotificationType notificationType = notificationTypeRepository.findById(3L).orElseThrow();
+    NotificationType notificationType = notificationTypeRepository.findById(3L)
+        .orElseThrow();
 
-    if(!notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member)
+    if(!notificationSettingRepository.findByNotificationTypeAndMember(notificationType, nag.getMember())
         .getActivated()){
       return;
     }
@@ -91,11 +95,30 @@ public class NotificationService {
 //  public void createNotificationByWritePersonaNagOnTodo(final WritePersonaNagOnTodoEvent writePersonaNagOnTodoEvent){
 //
 //  }
-//
-//  @EventListener(classes = {CompleteTodoEvent.class})
-//  public void createNotificationByCompleteTodo(final CompleteTodoEvent completeTodoEvent){
-//
-//  }
+
+  @EventListener(classes = {TodoCompleteEvent.class})
+  public void createNotificationByTodoComplete(final TodoCompleteEvent todoCompleteEvent){
+    Todo todo = todoCompleteEvent.getTodo();
+    NotificationType notificationType = notificationTypeRepository.findById(4L)
+        .orElseThrow();
+
+    // 알림 수신 거부하거나 Todo 완료에서 미완료로 바꿀 때는 알림 보내지 않음
+    if(!notificationSettingRepository.findByNotificationTypeAndMember(
+        notificationType, todo.getMember()).getActivated() || todo.getFinished()) {
+      return;
+    }
+
+    final Notification notification = Notification.builder()
+        .notificationType(notificationType)
+        .content(todo.getNag().getMember().getNickname() + "님의 잔소리가 남겨진 "
+            + todo.getMember().getNickname()+"님의 Todo"
+            + todo.getContent() + "가 완료되었습니다.")
+        .receiver(todo.getNag().getMember())
+        .createdAt(LocalDateTime.now(clock))
+        .build();
+
+    notificationRepository.save(notification);
+  }
 
   private Slice<Notification> getPagedNotifications(Member member, Long cursor, Integer size) {
 
