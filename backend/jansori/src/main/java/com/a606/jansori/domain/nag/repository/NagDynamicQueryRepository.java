@@ -8,4 +8,7 @@ import org.springframework.data.domain.Slice;
 public interface NagDynamicQueryRepository {
 
   Slice<Nag> findByNagsByMemberAndPages(Member member, Long cursor, Pageable pageable);
+
+  Slice<Nag> findByNagsWithLockStatusByMemberAndPages(Member viewer, Member owner,
+      Long cursor, Pageable pageable);
 }
