@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostFcmTokenReqDto {
+public class PostMessageReqDto {
 
-  String fcmToken;
+  private String fcmToken;
+  private String title;
+  private String body;
 
 }
