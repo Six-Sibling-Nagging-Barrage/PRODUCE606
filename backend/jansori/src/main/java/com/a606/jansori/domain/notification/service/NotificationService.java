@@ -1,6 +1,7 @@
 package com.a606.jansori.domain.notification.service;
 
 import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.domain.member.domain.TalkerType;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.event.NagLikeEvent;
 import com.a606.jansori.domain.notification.domain.Notification;
@@ -63,6 +64,30 @@ public class NotificationService {
     return patchNotificationsResDtoFrom(size, readAt, pagedNotifications);
   }
 
+
+
+  @EventListener(classes = {PostTodoEvent.class})
+  public void createNotificationByWriteMemberNagOnTodo(final PostTodoEvent postTodoEvent){
+    Todo todo = postTodoEvent.getTodo();
+    Nag nag = postTodoEvent.getNag();
+    NotificationType notificationType = postTodoEvent.getNotificationType();
+
+    final Notification notification = Notification.builder()
+            .notificationType(notificationType)
+            .content(nag.getMember().getNickname() + "님이 " + "\"" + todo.getContent() + "\"에 잔소리를 남겼습니다.")
+            .talkerId(nag.getMember().getId())
+            .talkerType(TalkerType.MEMBER)
+            .receiver(todo.getMember())
+            .build();
+
+    notificationRepository.save(notification);
+  }
+
+//  @EventListener(classes = {WritePersonaNagOnTodoEvent.class})
+//  public void createNotificationByWritePersonaNagOnTodo(final WritePersonaNagOnTodoEvent writePersonaNagOnTodoEvent){
+//
+//  }
+
   @EventListener(classes = {NagLikeEvent.class})
   public void createNotificationByNagLike(final NagLikeEvent nagLikeEvent){
 
@@ -71,24 +96,14 @@ public class NotificationService {
     NotificationType notificationType = nagLikeEvent.getNotificationType();
 
     final Notification notification = Notification.builder()
-        .notificationType(notificationType)
-        .content(member.getNickname()+"님이 "+nag.getMember().getNickname()+"님의 잔소리를 좋아합니다.")
-        .receiver(nag.getMember())
-        .createdAt(LocalDateTime.now(clock))
-        .build();
+            .notificationType(notificationType)
+            .content(member.getNickname()+"님이 "+nag.getMember().getNickname()+"님의 잔소리를 좋아합니다.")
+            .receiver(nag.getMember())
+            .createdAt(LocalDateTime.now(clock))
+            .build();
 
     notificationRepository.save(notification);
   }
-
-  @EventListener(classes = {PostTodoEvent.class})
-  public void createNotificationByWriteMemberNagOnTodo(final PostTodoEvent postTodoEvent){
-
-  }
-
-//  @EventListener(classes = {WritePersonaNagOnTodoEvent.class})
-//  public void createNotificationByWritePersonaNagOnTodo(final WritePersonaNagOnTodoEvent writePersonaNagOnTodoEvent){
-//
-//  }
 
   @EventListener(classes = {TodoAccomplishmentEvent.class})
   public void createNotificationByTodoComplete(final TodoAccomplishmentEvent todoAccomplishmentEvent){

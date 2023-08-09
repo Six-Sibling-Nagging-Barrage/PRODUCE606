@@ -23,6 +23,7 @@ import com.a606.jansori.domain.todo.dto.GetTodoMonthlyExistenceResDto;
 import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
 import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
 import com.a606.jansori.domain.todo.dto.PostTodoResDto;
+import com.a606.jansori.domain.todo.event.PostTodoEvent;
 import com.a606.jansori.domain.todo.event.TodoAccomplishmentEvent;
 import com.a606.jansori.domain.todo.exception.TodoBusinessException;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
@@ -69,6 +70,8 @@ public class TodoService {
 
     Todo todo = postTodoReqDto.getTodoWith(member);
 
+    NotificationType notificationType = notificationTypeRepository.findById(1L).orElseThrow();
+
     if (postTodoReqDto.getTags().isEmpty() || postTodoReqDto.getTags().size() > 3) {
       throw new TodoBusinessException();
     }
@@ -91,6 +94,11 @@ public class TodoService {
 
       todoPersona.setTodo(todo);
     });
+
+    // 알림설정이 수신으로 되어 있을 경우에만 알림 이벤트 발생
+    if(notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member).getActivated()){
+      publisher.publishEvent(new PostTodoEvent(todo, todo.getNag(), notificationType));
+    }
 
     return PostTodoResDto.from(todoRepository.save(todo));
   }
