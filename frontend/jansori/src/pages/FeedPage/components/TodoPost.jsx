@@ -4,6 +4,7 @@ import NagCommentItem from './NagCommentItem';
 import HashTagItem from '../../../components/HashTag/HashTagItem';
 import commentIcon from '../../../assets/more_comment.png';
 import { getTodoDetail } from '../../../apis/api/todo';
+import { Link } from 'react-router-dom';
 
 const TodoPost = (props) => {
   const {
@@ -43,11 +44,9 @@ const TodoPost = (props) => {
     <li>
       <PostContainer>
         <PostHeader>
-          <ProfileLink
-            to={`/profile?id=${encodeURIComponent(post.member.memberId)}`}
-          >
+          <Link to={`/profile?id=${encodeURIComponent(post.member.memberId)}`}>
             <ProfileImage src={post.member.imageUrl} width="48" height="48" />
-          </ProfileLink>
+          </Link>
           <div>
             <WriterName>{post.member.nickname}</WriterName>
             <CreateDate>{post.todoAt}</CreateDate>
@@ -95,9 +94,9 @@ const PostHeader = styled.header`
   position: relative;
 `;
 
-const ProfileLink = styled.Link`
-  relative inline-flex items-center justify-center w-12 h-12 text-white rounded-full
-`;
+// const ProfileLink = styled.Link`
+//   relative inline-flex items-center justify-center w-12 h-12 text-white rounded-full
+// `;
 
 const ProfileImage = styled.img`
   max-w-full rounded-full
