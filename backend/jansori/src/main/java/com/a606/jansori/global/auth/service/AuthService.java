@@ -119,9 +119,15 @@ public class AuthService {
   @Transactional
   public void logout(TokenReqDto tokenReqDto) {
 
-    if (!tokenProvider.validateToken(tokenReqDto.getAccessToken())) {
+    try {
+      if (!tokenProvider.validateToken(tokenReqDto.getAccessToken())) {
+        throw new InvalidTokenException();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
       throw new InvalidTokenException();
     }
+
 
     Authentication authentication = tokenProvider.getAuthentication(tokenReqDto.getAccessToken());
 
