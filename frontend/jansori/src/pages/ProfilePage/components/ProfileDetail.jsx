@@ -18,13 +18,21 @@ const ProfileDetail = (props) => {
   return (
     <>
       {isEditing && (
-        <Modal>
-          <ProfileForm tags={tags} setIsModalOpen={setIsEditing} />
+        <Modal setIsModalOpen={setIsEditing}>
+          <ProfileForm
+            tags={tags}
+            prevNickname={profile.nickname}
+            prevBio={profile.bio}
+          />
         </Modal>
       )}
       <ProfileDetailContainer>
         <Header>
-          {isMine && <button onClick={handleEditProfile}>수정</button>}
+          {isMine && (
+            <button onClick={handleEditProfile}>
+              <img src={editImg} />
+            </button>
+          )}
         </Header>
         <ProfileImg profileImg={profile.imageUrl} size="120px" />
         <Nickname>{profile.nickname}</Nickname>
@@ -71,7 +79,7 @@ const Bio = styled.div`
 `;
 
 const Wrapper = styled.div`
-  width: 50%;
+  width: 70%;
   height: 90px;
   margin: 10px auto;
   padding: 10px;

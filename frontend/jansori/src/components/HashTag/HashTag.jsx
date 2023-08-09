@@ -94,11 +94,13 @@ const HashTagContainer = styled.div`
   align-items: center;
   flex-wrap: wrap;
   min-height: 50px;
+  max-height: 190px;
   padding: 10px;
   margin: 0 auto;
   width: 100%;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 5px;
+  overflow: auto;
 `;
 
 const HashTagInput = styled.input`

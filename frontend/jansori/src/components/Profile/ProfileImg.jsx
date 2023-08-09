@@ -2,11 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import tw, { styled } from 'twin.macro';
 
 const ProfileImg = (props) => {
-  const { editable, profileImg, size } = props;
+  const { editable, profileImg, setProfileImg, size } = props;
 
-  const [newProfileImg, setNewProfileImg] = useState(
-    'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
-  );
+  const [newProfileImg, setNewProfileImg] = useState();
   const profileImgInput = useRef(null);
 
   useEffect(() => {
@@ -29,6 +27,7 @@ const ProfileImg = (props) => {
       );
     }
     setNewProfileImg(URL.createObjectURL(event.target.files[0]));
+    setProfileImg(event.target.files[0]);
   };
 
   return (
