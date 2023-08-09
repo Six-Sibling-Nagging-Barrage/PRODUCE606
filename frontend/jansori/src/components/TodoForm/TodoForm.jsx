@@ -6,7 +6,9 @@ import Mark from '../UI/Mark';
 import Button from '../UI/Button';
 import Toggle from '../UI/Toggle';
 import HashTag from '../HashTag/HashTag';
-import { createTodo } from '../../apis/api/todo';
+import { createTodo, getTodoListByDate } from '../../apis/api/todo';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { focusDateState, todoListState } from '../../states/todo';
 
 const validateBio = (value) => {
   if (/\s{2,}|^\s|\s$/.test(value)) {
@@ -16,7 +18,7 @@ const validateBio = (value) => {
 };
 
 // TODO: hashtag 길이가 0일 경우 form 넘어가지 않도록 초기 설정 해주기
-//TODO : 전송하고 난 다음 hashtag count 초기화 되는 부분 설정
+// TODO : 전송하고 난 다음 hashtag count 초기화 되는 부분 설정
 const TodoForm = () => {
   const {
     register,
@@ -28,6 +30,8 @@ const TodoForm = () => {
   const [content, setContent] = useState();
   const [isPublic, setIsPublic] = useState(true);
   const [hashTagList, setHashTagList] = useState([]);
+  const [date, setDate] = useRecoilState(focusDateState);
+  const [todoList, setTodoList] = useRecoilState(todoListState);
 
   const todoFormSubmit = async (data) => {
     const todo = {
@@ -39,10 +43,15 @@ const TodoForm = () => {
         tagName: tag.tagName,
       })),
     };
-    // TODO: todoinput 등록하는 api 호출
     const response = await createTodo(todo);
     if (response.code === '200') {
-      console.log('성공성공');
+      const newDate = moment(new Date()).format('YYYY-MM-DD');
+      setDate(newDate);
+      // 변경에 해당하는 api 호출
+      const result = await getTodoListByDate(newDate);
+      if (result.code === '200') {
+        setTodoList(result.data.todos);
+      }
     }
     // TODO: 성공했을 경우 밑에 등록되었다는 모달 띄우기(3초 후에 제거)
     reset();
@@ -54,7 +63,7 @@ const TodoForm = () => {
     setContent(event.target.value);
   };
 
-  //toglle 값 상태 변화
+  //toggle 값 상태 변화
   const handleToggle = () => {
     setIsPublic(!isPublic);
   };

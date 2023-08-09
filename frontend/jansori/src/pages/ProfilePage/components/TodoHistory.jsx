@@ -29,16 +29,16 @@ const TodoHistory = () => {
 export default TodoHistory;
 
 const TodoHistoryContainer = styled.div`
-  ${tw`grid grid-cols-5 gap-4
+  ${tw`grid grid-cols-2 gap-4
   `}
 `;
 
 const TodoHistoryLeftContainer = styled.div`
-  ${tw`col-span-2`}
+  ${tw``}
 `;
 
 const TodoHistoryRightContainer = styled.div`
-  ${tw`col-span-3 bg-red-100 overflow-auto`}
+  ${tw`bg-red-100 overflow-auto`}
   &::-webkit-scrollbar {
     display: none;
   }

@@ -1,10 +1,14 @@
 import React from 'react';
 import tw, { styled } from 'twin.macro';
+import { useRecoilState } from 'recoil';
+import { todoListState } from '../../states/todo';
 
 const TodoItem = (props) => {
   const { currentTodo, onTodoStatusChange, index } = props;
+  const [todoList, setTodoList] = useRecoilState(todoListState);
 
   const handleTodoClick = () => {
+    console.log(todoList);
     onTodoStatusChange(index);
   };
 

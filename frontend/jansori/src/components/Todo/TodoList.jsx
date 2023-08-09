@@ -1,24 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import tw, { styled } from 'twin.macro';
 import TodoItem from './TodoItem';
-import { useRecoilValue } from 'recoil';
-import { focusYearMonthState } from '../../states/todo';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { focusDateState, todoListState } from '../../states/todo';
 
 const TodoList = () => {
-  const [todoList, setTodoList] = useState([]);
-  const focusDate = useRecoilValue(focusYearMonthState);
-
-  useEffect(() => {
-    setTodoList((prev) => [
-      ...prev,
-      ...Array.from({ length: 10 }, () => ({
-        id: 1,
-        finished: false,
-        date: '2023.07.31',
-        content: '살려주세요!',
-      })),
-    ]);
-  }, []);
+  // const [todoList, setTodoList] = useState([]);
+  const [todoList, setTodoList] = useRecoilState(todoListState);
 
   const handleTodoStatusChange = (index) => {
     setTodoList((prev) =>
@@ -28,17 +16,20 @@ const TodoList = () => {
 
   return (
     <TodoContainer>
-      <div>{focusDate}</div>
       <ul>
-        {todoList.map((todo, index) => {
-          return (
+        {todoList && todoList.length > 0 ? (
+          todoList.map((todo, index) => (
             <TodoItem
               currentTodo={todo}
-              key={todo.id}
+              key={todo.todoId}
               onTodoStatusChange={() => handleTodoStatusChange(index)}
             />
-          );
-        })}
+          ))
+        ) : (
+          <>
+            <div>입력된 todo가 존재하지 않아요...</div>
+          </>
+        )}
       </ul>
     </TodoContainer>
   );
@@ -48,8 +39,8 @@ export default TodoList;
 
 const TodoContainer = styled.div`
   ${tw`
-bg-red-400
-  p-3
-  border-2
-  rounded`}
+  bg-red-400
+    p-3
+    border-2
+    rounded`}
 `;
