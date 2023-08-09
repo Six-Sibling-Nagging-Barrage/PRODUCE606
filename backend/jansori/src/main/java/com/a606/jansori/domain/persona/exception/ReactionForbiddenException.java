@@ -1,6 +1,6 @@
 package com.a606.jansori.domain.persona.exception;
 
-import com.a606.jansori.global.exception.ForbiddenException;
+import com.a606.jansori.global.exception.domain.ForbiddenException;
 
 public class ReactionForbiddenException extends ForbiddenException {
 

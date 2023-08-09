@@ -1,6 +1,6 @@
 package com.a606.jansori.domain.todo.exception;
 
-import com.a606.jansori.global.exception.BusinessException;
+import com.a606.jansori.global.exception.domain.BusinessException;
 
 public class TodoBusinessException extends BusinessException {
 
