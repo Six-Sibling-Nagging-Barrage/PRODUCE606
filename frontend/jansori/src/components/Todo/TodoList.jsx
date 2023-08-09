@@ -17,11 +17,11 @@ const TodoList = () => {
   return (
     <TodoContainer>
       <ul>
-        {todoList.length > 0 ? (
+        {todoList && todoList.length > 0 ? (
           todoList.map((todo, index) => (
             <TodoItem
               currentTodo={todo}
-              key={todo.index}
+              key={todo.todoId}
               onTodoStatusChange={() => handleTodoStatusChange(index)}
             />
           ))
