@@ -6,7 +6,6 @@ import { focusDateState, todoListState } from '../../states/todo';
 
 const TodoList = () => {
   // const [todoList, setTodoList] = useState([]);
-  const focusDate = useRecoilValue(focusDateState);
   const [todoList, setTodoList] = useRecoilState(todoListState);
 
   const handleTodoStatusChange = (index) => {
@@ -17,17 +16,20 @@ const TodoList = () => {
 
   return (
     <TodoContainer>
-      <div>{focusDate}</div>
       <ul>
-        {todoList.map((todo, index) => {
-          return (
+        {todoList.length > 0 ? (
+          todoList.map((todo, index) => (
             <TodoItem
               currentTodo={todo}
               key={todo.index}
               onTodoStatusChange={() => handleTodoStatusChange(index)}
             />
-          );
-        })}
+          ))
+        ) : (
+          <>
+            <div>입력된 todo가 존재하지 않아요...</div>
+          </>
+        )}
       </ul>
     </TodoContainer>
   );
@@ -37,8 +39,8 @@ export default TodoList;
 
 const TodoContainer = styled.div`
   ${tw`
-bg-red-400
-  p-3
-  border-2
-  rounded`}
+  bg-red-400
+    p-3
+    border-2
+    rounded`}
 `;
