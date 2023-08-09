@@ -32,6 +32,7 @@ const ProfileForm = (props) => {
   } = useForm({ mode: 'onBlur' });
 
   useEffect(() => {
+    if (!tags) return;
     setHashTagList(tags);
   }, []);
 
@@ -53,14 +54,18 @@ const ProfileForm = (props) => {
   const handleUpdateProfile = async (data) => {
     if (!checked) return setCheckError(true);
 
-    const profile = {
-      nickname: data.nickname,
-      bio: data.bio,
-      imageUrl: 'https://example.com/image.jpg',
-      tags: hashTagList.length > 0 ? hashTagList.map((tag) => tag.tagId) : [-1],
-    };
+    const profile = new FormData();
+    profile.append(
+      'memberInfo',
+      JSON.stringify({
+        nickname: data.nickname,
+        bio: data.bio,
+        tags:
+          hashTagList.length > 0 ? hashTagList.map((tag) => tag.tagId) : [-1],
+      })
+    );
+    profile.append('imageFile', '이미지경로'); // TODO: 이미지 넣기
 
-    console.log(profile);
     // 유저 정보 수정 api 호출
     const res = await updateProfile(profile);
     console.log(res);
