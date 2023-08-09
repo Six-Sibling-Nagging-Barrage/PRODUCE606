@@ -1,5 +1,7 @@
 package com.a606.jansori.domain.nag.controller;
 
+import com.a606.jansori.domain.nag.dto.GetMemberNagsOfReqDto;
+import com.a606.jansori.domain.nag.dto.GetNagsOfOtherResDto;
 import com.a606.jansori.domain.nag.dto.GetNagsOfReqDto;
 import com.a606.jansori.domain.nag.task.NagBoxStatisticsScheduler;
 import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
@@ -59,11 +61,12 @@ public class NagController {
         .build();
   }
 
-  @GetMapping("/nags/members")
-  public EnvelopeResponse getNagsOfProfilePageByMemberId(
-      @Valid GetNagsOfReqDto getNagsOfReqDto) {
-      return EnvelopeResponse.builder()
-          .build();
+  @GetMapping("/members")
+  public EnvelopeResponse<GetNagsOfOtherResDto> getNagsOfProfilePageByMemberId(
+      @Valid GetMemberNagsOfReqDto getMemberNagsOfReqDto) {
+    return EnvelopeResponse.<GetNagsOfOtherResDto>builder()
+        .data(nagService.getMemberNagsByMemberId(getMemberNagsOfReqDto))
+        .build();
   }
 
   @PostMapping
