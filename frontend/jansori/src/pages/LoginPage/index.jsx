@@ -15,6 +15,7 @@ import {
   memberIdState,
 } from '../../states/user';
 import { useNavigate } from 'react-router-dom';
+import { validateEmail } from '../../utils/validate';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -32,6 +33,8 @@ const LoginPage = () => {
   const setMemberRefreshToken = useSetRecoilState(memberRefreshTokenState);
   const setmemberTokenExp = useSetRecoilState(memberTokenExpState);
 
+  const [loginError, setLoginError] = useState(false);
+
   const loginSubmit = async (data) => {
     const user = {
       email: data.email,
@@ -40,6 +43,7 @@ const LoginPage = () => {
     // 로그인 api 호출
     const res = await createLogin(user);
     if (res?.code === '200') {
+      setLoginError(false);
       console.log(res.data);
       setMemberToken(res.data.accessToken);
       setMemberRefreshToken(res.data.refreshToken);
@@ -57,6 +61,8 @@ const LoginPage = () => {
       if (res.data.memberRole === 'GUEST') {
         navigate('/initialprofile');
       } else navigate('/');
+    } else {
+      setLoginError(true);
     }
   };
 
@@ -83,9 +89,13 @@ const LoginPage = () => {
               placeholder="이메일을 입력해주세요."
               {...register('email', {
                 required: '이메일을 입력해주세요.',
+                validate: validateEmail,
               })}
               onKeyDown={handleFormKeyDown}
             />
+            {errors.email && (
+              <ErrorMessage>{errors.email?.message}</ErrorMessage>
+            )}
           </InfoContainer>
           <InfoContainer>
             <Label>비밀번호</Label>
@@ -98,6 +108,9 @@ const LoginPage = () => {
               onKeyDown={handleKeyDownSubmit}
             />
           </InfoContainer>
+          {loginError && (
+            <ErrorMessage>아이디 또는 비밀번호를 확인하세요.</ErrorMessage>
+          )}
           <Footer>
             <Button
               onClick={handleSubmit(loginSubmit)}
@@ -178,6 +191,23 @@ const Password = styled.input`
   &:focus {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   }
+`;
+
+const GuideMessage = styled.div`
+  font-size: 14px;
+  color: #757575;
+  margin-top: 5px;
+  ${({ granted }) =>
+    granted &&
+    `
+      color: #66bb6a
+    `}
+`;
+
+const ErrorMessage = styled.div`
+  font-size: 14px;
+  color: #ff6c6c;
+  margin-top: 5px;
 `;
 
 const Footer = styled.div`

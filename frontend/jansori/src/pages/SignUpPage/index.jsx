@@ -7,6 +7,7 @@ import { createSignUp } from '../../apis/api/member';
 import { useNavigate } from 'react-router-dom';
 import { memberIdState } from '../../states/user';
 import { useSetRecoilState } from 'recoil';
+import { validateEmail, validatePassword } from '../../utils/validate';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -19,6 +20,8 @@ const SignUpPage = () => {
 
   const setMemberId = useSetRecoilState(memberIdState);
 
+  const [signupError, setSignupError] = useState(false);
+
   const signUpSubmit = async (data) => {
     const user = {
       email: data.email,
@@ -26,12 +29,15 @@ const SignUpPage = () => {
     };
     // TODO: 회원가입 api 호출
     const res = await createSignUp(user);
-    setMemberId(res.data.memberId);
-    navigate('/login');
+    if (res.code === '200') {
+      setSignupError(false);
+      // setMemberId(res.data.memberId);
+      // navigate('/initialprofile');
+      navigate('/login');
+    } else if (res.data.code === '853') {
+      setSignupError(true);
+    }
   };
-
-  // 비밀번호 확인 필드와의 일치 여부를 검증하기 위해 watch 함수 사용
-  const password = watch('password', ''); // 'password' 필드의 값을 가져옴, 기본값은 빈 문자열
 
   const handleFormKeyDown = (e) => {
     if (e.key === 'Enter') {
@@ -56,9 +62,13 @@ const SignUpPage = () => {
               placeholder="이메일을 입력해주세요."
               {...register('email', {
                 required: '이메일을 입력해주세요.',
+                validate: validateEmail,
               })}
               onKeyDown={handleFormKeyDown}
             />
+            {errors.email && (
+              <ErrorMessage>{errors.email?.message}</ErrorMessage>
+            )}
           </InfoContainer>
           <InfoContainer>
             <Label>비밀번호</Label>
@@ -67,9 +77,13 @@ const SignUpPage = () => {
               placeholder="비밀번호를 입력해주세요."
               {...register('password', {
                 required: '비밀번호를 입력해주세요.',
+                validate: validatePassword,
               })}
               onKeyDown={handleKeyDownSubmit}
             />
+            {errors.password && (
+              <ErrorMessage>{errors.password.message}</ErrorMessage>
+            )}
           </InfoContainer>
           <InfoContainer>
             <Label>비밀번호 확인</Label>
@@ -90,6 +104,9 @@ const SignUpPage = () => {
                 <MatchingMessage>비밀번호가 일치합니다!</MatchingMessage>
               )}
           </InfoContainer>
+          {signupError && (
+            <ErrorMessage>이미 가입된 이메일이네요!</ErrorMessage>
+          )}
           <Footer>
             <Button
               onClick={handleSubmit(signUpSubmit)}
