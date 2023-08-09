@@ -5,14 +5,18 @@ import likeIcon from '../../../assets/like_icon.avif';
 import sendIcon from '../../../assets/send_icon.png';
 
 const NagItem = (props) => {
-  const { nag } = props;
+  const { isMine, nag } = props;
 
   return (
     <Nag>
       <Header>
         <HashTagItem editable={false} hashTag={{ tagName: nag.tagName }} />
       </Header>
-      <NagContent>{nag.content}</NagContent>
+      {isMine ? (
+        <NagContent>{nag.content}</NagContent>
+      ) : (
+        <NagContent>{nag.unlocked ? nag.content : nag.preview}</NagContent>
+      )}
       <Counter>
         <div>
           <img src={likeIcon} />

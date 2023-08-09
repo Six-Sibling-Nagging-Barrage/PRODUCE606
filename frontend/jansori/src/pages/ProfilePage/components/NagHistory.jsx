@@ -2,9 +2,13 @@ import React, { useEffect, useState } from 'react';
 import NagItem from './NagItem';
 import { styled } from 'twin.macro';
 import { MasonryInfiniteGrid } from '@egjs/react-infinitegrid';
-import { getMyNagList } from '../../../apis/api/nag';
+import { getMemberNagList, getMyNagList } from '../../../apis/api/nag';
+import { useRecoilValue } from 'recoil';
+import { memberIdState } from '../../../states/user';
 
 const NagHistory = (props) => {
+  const { isMine, id } = props;
+
   const [items, setItems] = useState([]);
   const [nextCursor, setNextCursor] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,8 +25,16 @@ const NagHistory = (props) => {
     if (!hasNext) return;
 
     setIsLoading(true);
-    // 사용자가 보낸 잔소리 조회 api 호출
-    const data = await getMyNagList({ cursor: nextCursor, pageSize });
+    let data;
+    // 내가 보낸 잔소리 목록 조회 api
+    if (isMine) data = await getMyNagList({ cursor: nextCursor, pageSize });
+    // 다른 사람이 보낸 잔소리 목록 조회 api
+    else
+      data = await getMemberNagList({
+        memberId: id,
+        cursor: nextCursor,
+        pageSize,
+      });
     console.log(data);
     setItems((prev) => [...prev, ...data.data.nags]);
     setNextCursor(data.data.nextCursor);
@@ -37,106 +49,12 @@ const NagHistory = (props) => {
       onRequestAppend={handleGetNags}
       loading={isLoading}
     >
-      {items && items.map((nag, index) => <NagItem key={index} nag={nag} />)}
+      {items &&
+        items.map((nag, index) => (
+          <NagItem key={index} isMine={isMine} nag={nag} />
+        ))}
     </MasonryInfiniteGrid>
   );
 };
 
 export default NagHistory;
-
-const dummyData = {
-  nags: [
-    {
-      nagId: 1,
-      content:
-        '니 코드가 개발새발인데 놀고싶어?니 코드가 개발새발인데 놀고싶어?니 코드가 개발새발인데 놀고싶어?니 코드가 개발새발인데 놀고싶어?니 코드가 개발새발인데 놀고싶어?니 코드가 개발새발인데 놀고싶어?',
-      createAt: '2023-08-03T10:58:58.909891',
-      likeCount: 4,
-      tagName: '개발',
-      deliveredCount: 1,
-    },
-    {
-      nagId: 2,
-      content: '니 코드가 개발새발인데 놀고싶어?',
-      createAt: '2023-08-03T10:58:58.909891',
-      likeCount: 4,
-      tagName: '개발',
-      deliveredCount: 4,
-    },
-    {
-      nagId: 3,
-      content: '답답하다~',
-      createAt: '2023-08-03T10:58:58.909891',
-      likeCount: 2,
-      tagName: '코딩',
-      deliveredCount: 5,
-    },
-    {
-      nagId: 4,
-      content: '답없누',
-      createAt: '2023-08-03T10:58:58.909891',
-      likeCount: 2,
-      tagName: '코딩',
-      deliveredCount: 2,
-    },
-    {
-      nagId: 5,
-      content: '돼지되겠어',
-      createAt: '2023-08-03T10:58:58.909891',
-      likeCount: 10,
-      tagName: '개발',
-      deliveredCount: 1,
-    },
-    {
-      nagId: 6,
-      content:
-        '니 코드가 개발새발인데 놀고싶어?니 코드가 개발새발인데 놀고싶어?니 코드가 개발새발인데 놀고싶어?니 코드가 개발새발인데 놀고싶어?니 코드가 개발새발인데 놀고싶어?니 코드가 개발새발인데 놀고싶어?',
-      createAt: '2023-08-03T10:58:58.909891',
-      likeCount: 4,
-      tagName: '개발',
-      deliveredCount: 1,
-    },
-    {
-      nagId: 7,
-      content: '니 코드가 개발새발인데 놀고싶어?',
-      createAt: '2023-08-03T10:58:58.909891',
-      likeCount: 4,
-      tagName: '개발',
-      deliveredCount: 4,
-    },
-    {
-      nagId: 8,
-      content: '답답하다~',
-      createAt: '2023-08-03T10:58:58.909891',
-      likeCount: 2,
-      tagName: '코딩',
-      deliveredCount: 5,
-    },
-    {
-      nagId: 9,
-      content: '답없누',
-      createAt: '2023-08-03T10:58:58.909891',
-      likeCount: 2,
-      tagName: '코딩',
-      deliveredCount: 2,
-    },
-    {
-      nagId: 10,
-      content: '돼지되겠어',
-      createAt: '2023-08-03T10:58:58.909891',
-      likeCount: 10,
-      tagName: '개발',
-      deliveredCount: 1,
-    },
-    {
-      nagId: 11,
-      content: '돼지되겠어',
-      createAt: '2023-08-03T10:58:58.909891',
-      likeCount: 10,
-      tagName: '개발',
-      deliveredCount: 1,
-    },
-  ],
-  hasNext: true,
-  nextCursor: 106,
-};
