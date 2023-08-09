@@ -10,7 +10,7 @@ export const createTodo = async (todo) => {
     });
     return data;
   } catch (e) {
-    console.log(e.response);
+    console.log(e);
     return e.response;
   }
 };
@@ -21,7 +21,7 @@ export const getTodoListByDate = async (date) => {
     const { data } = await authInstance.get(`/todos/my?date=${date}`);
     return data;
   } catch (e) {
-    console.log(e.response);
+    console.log(e);
     return e.response;
   }
 };
@@ -34,7 +34,7 @@ export const getTodoListByDateByMember = async ({ memberId, date }) => {
     );
     return data;
   } catch (e) {
-    console.log(e.response);
+    console.log(e);
     return e.response;
   }
 };
@@ -48,7 +48,7 @@ export const getFollowingFeed = async ({ cursor, pageSize }) => {
     const { data } = await authInstance.get(url);
     return data;
   } catch (e) {
-    console.log(e.response);
+    console.log(e);
     return e.response;
   }
 };
@@ -62,7 +62,7 @@ export const getSpecificFeed = async ({ cursor, tagId, pageSize }) => {
     const { data } = await authInstance.get(url);
     return data;
   } catch (e) {
-    console.log(e.response);
+    console.log(e);
     return e.response;
   }
 };
@@ -73,7 +73,7 @@ export const getTodoDetail = async (todoId) => {
     const { data } = await authInstance.get(`/todos/${todoId}`);
     return data;
   } catch (e) {
-    console.log(e.response);
+    console.log(e);
     return e.response;
   }
 };
@@ -84,7 +84,7 @@ export const updateTodoComplete = async (todoId) => {
     const { data } = await authInstance.patch(`/todos/${todoId}`);
     return data.data;
   } catch (e) {
-    console.log(e.response);
+    console.log(e);
     return e.response;
   }
 };

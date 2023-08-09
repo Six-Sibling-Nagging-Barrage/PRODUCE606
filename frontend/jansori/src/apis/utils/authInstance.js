@@ -6,31 +6,32 @@ export const authInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
 
-const accessToken = localStorage.getItem('member_access_token');
+// const accessToken = localStorage.getItem('member_access_token');
 
-if (accessToken) {
-  authInstance.defaults.headers.common[
-    'Authorization'
-  ] = `Bearer ${accessToken.replace('"', '')}`;
-}
+// if (accessToken) {
+//   authInstance.defaults.headers.common[
+//     'Authorization'
+//   ] = `Bearer ${accessToken.replace('"', '')}`;
+// }
 
 authInstance.interceptors.request.use(
   async (request) => {
-    const accessToken = localStorage.getItem('member_access_token');
-    const refreshToken = localStorage.getItem('member_refresh_token');
-    const exp = localStorage.getItem('member_token_exp');
+    const accessToken = localStorage
+      .getItem('member_access_token')
+      .replaceAll('"', '');
+    const refreshToken = localStorage
+      .getItem('member_refresh_token')
+      .replaceAll('"', '');
+    const exp = parseInt(localStorage.getItem('member_token_exp'));
 
-    console.log(exp);
-    console.log(isExpired(exp));
+    if (!accessToken) return;
 
-    if (accessToken && isExpired(exp)) {
-      console.log(accessToken);
-      console.log(exp);
+    if (isExpired(exp)) {
       console.log('만료됨');
       const formData = new FormData();
 
       formData.append('accessToken', accessToken);
-      formData.append('refreshToken', refreshToken.replace('"', ''));
+      formData.append('refreshToken', refreshToken);
 
       // FormData 내용 출력
       for (const pair of formData.entries()) {
@@ -58,10 +59,14 @@ authInstance.interceptors.request.use(
         localStorage.setItem('member_refresh_token', newRefreshToken);
       } catch (e) {
         authInstance.defaults.headers.common = {};
-        localStorage.removeItem('member_access_token');
-        localStorage.removeItem('member_refresh_token');
         throw new AxiosError('토큰이 만료되었습니다.');
       }
+    } else {
+      console.log('헤더에 토큰 넣기', accessToken);
+      request.headers['Authorization'] = `Bearer ${accessToken}`;
+      authInstance.defaults.headers.common[
+        'Authorization'
+      ] = `Bearer ${accessToken}`;
     }
     return request;
   },
