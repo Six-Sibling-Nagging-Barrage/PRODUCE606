@@ -14,7 +14,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
   public void handle(HttpServletRequest request, HttpServletResponse response,
       AccessDeniedException accessDeniedException) throws IOException {
 
-    response.sendRedirect("/exception/access-denied");
+    response.sendRedirect("/api/exception/access-denied");
   }
 
 }

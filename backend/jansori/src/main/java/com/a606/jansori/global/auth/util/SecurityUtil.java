@@ -23,7 +23,7 @@ public class SecurityUtil {
 
     final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    if (authentication == null || authentication.getName().equals(anonymousUser)) {
+    if (authentication == null || authentication.getName() == null) {
       log.error("security util error : {}", authentication.getName());
       throw new UnauthorizedException();
     }
@@ -36,7 +36,7 @@ public class SecurityUtil {
 
     final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    if (authentication == null || authentication.getName().equals(anonymousUser)) {
+    if (authentication == null || authentication.getName() == null) {
       return null;
     }
 
@@ -47,7 +47,7 @@ public class SecurityUtil {
   public Long getCurrentMemberIdByToken() {
     final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    if (authentication == null || authentication.getName().equals(anonymousUser)) {
+    if (authentication == null || authentication.getName() == null) {
       throw new UnauthorizedException();
     }
 
