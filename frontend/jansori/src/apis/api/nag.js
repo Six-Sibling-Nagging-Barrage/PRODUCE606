@@ -15,6 +15,7 @@ export const getMyNagList = async ({ cursor, pageSize }) => {
   }
 };
 
+// 멤버의 잔소리 목록 조회
 export const getMemberNagList = async ({ memberId, cursor, pageSize }) => {
   try {
     const url = cursor

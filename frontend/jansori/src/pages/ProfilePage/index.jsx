@@ -69,7 +69,7 @@ const ProfilePage = () => {
           {currentTab === 0 ? (
             <TodoHistory></TodoHistory>
           ) : (
-            <NagHistory nags={nags}></NagHistory>
+            <NagHistory isMine={isMine} id={id}></NagHistory>
           )}
         </TabContent>
       </TabContainer>
