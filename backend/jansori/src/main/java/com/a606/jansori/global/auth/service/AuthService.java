@@ -1,6 +1,7 @@
 package com.a606.jansori.global.auth.service;
 
 import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.global.auth.domain.RefreshToken;
 import com.a606.jansori.global.auth.dto.AuthLoginReqDto;
@@ -8,13 +9,11 @@ import com.a606.jansori.global.auth.dto.AuthSignupReqDto;
 import com.a606.jansori.global.auth.dto.AuthSignupResDto;
 import com.a606.jansori.global.auth.dto.TokenReqDto;
 import com.a606.jansori.global.auth.dto.TokenResDto;
-import com.a606.jansori.global.auth.exception.AuthInvalidPasswordException;
-import com.a606.jansori.global.auth.exception.AuthInvalidRefreshTokenException;
-import com.a606.jansori.global.auth.exception.AuthMemberDuplicateException;
-import com.a606.jansori.global.auth.exception.AuthMemberNotFoundException;
-import com.a606.jansori.global.auth.exception.AuthUnauthorizedException;
+import com.a606.jansori.domain.member.exception.DuplicatedEmailException;
+import com.a606.jansori.global.auth.exception.InvalidTokenException;
 import com.a606.jansori.global.auth.repository.RefreshTokenRepository;
 import com.a606.jansori.global.auth.util.TokenProvider;
+import com.a606.jansori.global.exception.domain.UnauthorizedException;
 import com.a606.jansori.infra.redis.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +43,7 @@ public class AuthService {
 
     if (memberRepository.existsByEmail(authSignupReqDto.getEmail())) {
 
-      throw new AuthMemberDuplicateException();
+      throw new DuplicatedEmailException();
 
     }
 
@@ -76,14 +75,14 @@ public class AuthService {
           refreshToken.getValue());
 
       Member member = memberRepository.findMemberByEmail(authLoginReqDto.getEmail())
-          .orElseThrow(AuthMemberNotFoundException::new);
+          .orElseThrow(MemberNotFoundException::new);
 
       tokenResDto.update(member);
 
       return tokenResDto;
 
     } catch (AuthenticationException e) {
-      throw new AuthInvalidPasswordException();
+      throw new UnauthorizedException();
     }
   }
 
@@ -91,7 +90,7 @@ public class AuthService {
   public TokenResDto reissue(TokenReqDto tokenReqDto) {
 
     if (!tokenProvider.validateToken(tokenReqDto.getRefreshToken())) {
-      throw new AuthInvalidRefreshTokenException();
+      throw new InvalidTokenException();
     }
 
     Authentication authentication = tokenProvider.getAuthentication(
@@ -99,18 +98,18 @@ public class AuthService {
 
     // 로그아웃 된 사용자
     RefreshToken refreshToken = refreshTokenRepository.findByEmail(authentication.getName())
-        .orElseThrow(AuthMemberNotFoundException::new);
+        .orElseThrow(MemberNotFoundException::new);
 
     // 토근 유저 정보 불일치
     if (!refreshToken.getValue().equals(tokenReqDto.getRefreshToken())) {
-      throw new AuthUnauthorizedException();
+      throw new UnauthorizedException();
     }
 
     TokenResDto tokenResDto = tokenProvider.generateAccessTokenDto(authentication,
         refreshToken.getValue());
 
     Member member = memberRepository.findMemberByEmail(authentication.getName())
-        .orElseThrow(AuthMemberNotFoundException::new);
+        .orElseThrow(MemberNotFoundException::new);
 
     tokenResDto.update(member);
 
@@ -121,7 +120,7 @@ public class AuthService {
   public void logout(TokenReqDto tokenReqDto) {
 
     if (!tokenProvider.validateToken(tokenReqDto.getAccessToken())) {
-      throw new AuthInvalidRefreshTokenException();
+      throw new InvalidTokenException();
     }
 
     Authentication authentication = tokenProvider.getAuthentication(tokenReqDto.getAccessToken());
