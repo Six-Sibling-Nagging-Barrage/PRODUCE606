@@ -32,6 +32,21 @@ export const createLogin = async (user) => {
 };
 
 // 로그아웃
+export const createLogout = async (user) => {
+  try {
+    const { data } = await authInstance.post(`/auth/logout`, user, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return data;
+  } catch (e) {
+    console.log(e.response);
+    return e.response;
+  }
+};
+
+// 로그아웃
 export const getLogout = async () => {
   try {
     const { data } = await authInstance.get(`/logout`);
