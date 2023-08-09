@@ -1,17 +1,18 @@
-import { Routes, Route } from 'react-router-dom';
-import './App.css';
-import MainPage from './pages/MainPage';
-import FeedPage from './pages/FeedPage';
-import SignUpPage from './pages/SignUpPage';
-import NagBoxPage from './pages/NagBoxPage';
-import NagPage from './pages/NagPage';
-import ProfilePage from './pages/ProfilePage';
-import ProfileEditPage from './pages/ProfileEditPage';
-import CharacterInfoPage from './pages/CharacterInfoPage';
-import NavBar from './components/NavBar/NavBar';
-import FloatingButton from './components/FloatingButton/FloatingButton';
-import LoginPage from './pages/LoginPage';
-import InitialProfilePage from './pages/InitialProfilePage';
+import { Routes, Route } from "react-router-dom";
+import "./App.css";
+import MainPage from "./pages/MainPage";
+import FeedPage from "./pages/FeedPage";
+import SignUpPage from "./pages/SignUpPage";
+import NagBoxPage from "./pages/NagBoxPage";
+import NagPage from "./pages/NagPage";
+import ProfilePage from "./pages/ProfilePage";
+import ProfileEditPage from "./pages/ProfileEditPage";
+import CharacterInfoPage from "./pages/CharacterInfoPage";
+import NavBar from "./components/NavBar/NavBar";
+import FloatingButton from "./components/FloatingButton/FloatingButton";
+import LoginPage from "./pages/LoginPage";
+import InitialProfilePage from "./pages/InitialProfilePage";
+import "./firebase";
 
 function App() {
   return (
