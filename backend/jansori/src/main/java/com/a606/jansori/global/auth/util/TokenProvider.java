@@ -113,11 +113,12 @@ public class TokenProvider {
 
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 
-      log.error("Redis : {}", redisUtil.isBlackList(token));
+//      log.error("Redis : {}", redisUtil.isBlackList(token));
+//
+//      if (redisUtil.isBlackList(token)) {
+//        return false;
+//      }
 
-      if (redisUtil.isBlackList(token)) {
-        return false;
-      }
       return true;
     } catch (ExpiredJwtException e) {
       log.debug("토큰 만료 예외 발생 : {}", e.getMessage());
