@@ -38,7 +38,7 @@ const TodoHistoryLeftContainer = styled.div`
 `;
 
 const TodoHistoryRightContainer = styled.div`
-  ${tw`bg-red-100 overflow-auto`}
+  ${tw`overflow-auto bg-white border-2 rounded-lg`}
   &::-webkit-scrollbar {
     display: none;
   }

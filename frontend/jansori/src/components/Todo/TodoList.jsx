@@ -39,8 +39,6 @@ export default TodoList;
 
 const TodoContainer = styled.div`
   ${tw`
-  bg-red-400
-    p-3
-    border-2
-    rounded`}
+  bg-white
+    p-3`}
 `;
