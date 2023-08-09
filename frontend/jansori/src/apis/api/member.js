@@ -19,7 +19,7 @@ export const createSignUp = async (user) => {
 // 닉네임 중복 검사
 export const getAvailableNickname = async (user) => {
   try {
-    const { data } = await defaultInstance.get(`/members/nickname`, user, {
+    const { data } = await authInstance.get(`/members/nickname`, user, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -61,38 +61,12 @@ export const createLogout = async (user) => {
   }
 };
 
-// 로그아웃
-export const getLogout = async () => {
-  try {
-    const { data } = await authInstance.get(`/logout`);
-    return data;
-  } catch (e) {
-    console.log(e);
-    return e.response;
-  }
-};
-
-// 회원 정보 최초 입력
-export const createProfile = async (profile) => {
-  try {
-    const { data } = await authInstance.post(`/register`, profile, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    return data;
-  } catch (e) {
-    console.log(e);
-    return e.response;
-  }
-};
-
 // 정보 수정
 export const updateProfile = async (profile) => {
   try {
     const { data } = await authInstance.post(`/members/update`, profile, {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
       },
     });
     return data;

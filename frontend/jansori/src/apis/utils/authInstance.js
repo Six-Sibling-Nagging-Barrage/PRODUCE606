@@ -27,26 +27,28 @@ authInstance.interceptors.request.use(
     if (!accessToken) return;
 
     if (isExpired(exp)) {
+      console.log(new Date(exp));
       console.log('만료됨');
-      const formData = new FormData();
-
-      formData.append('accessToken', accessToken);
-      formData.append('refreshToken', refreshToken);
-
-      // FormData 내용 출력
-      for (const pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
 
       try {
-        const { data } = await axios.post(`/auth/reissue`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
+        const { data } = await axios.post(
+          `${process.env.REACT_APP_API_URL}/auth/reissue`,
+          {
+            accessToken,
+            refreshToken,
           },
-        });
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
 
+        console.log(data);
         const newAccessToken = data.data.accessToken;
         const newRefreshToken = data.data.refreshToken;
+        const newExp = data.data.accessTokenExpiresIn;
 
         if (request.headers) {
           request.headers['Authorization'] = `Bearer ${newAccessToken}`;
@@ -57,6 +59,7 @@ authInstance.interceptors.request.use(
 
         localStorage.setItem('member_access_token', newAccessToken);
         localStorage.setItem('member_refresh_token', newRefreshToken);
+        localStorage.setItem('member_token_exp', newExp);
       } catch (e) {
         authInstance.defaults.headers.common = {};
         throw new AxiosError('토큰이 만료되었습니다.');
