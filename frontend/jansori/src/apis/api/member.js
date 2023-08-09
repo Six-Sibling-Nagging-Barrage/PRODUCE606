@@ -11,7 +11,22 @@ export const createSignUp = async (user) => {
     });
     return data;
   } catch (e) {
-    console.log(e.response);
+    console.log(e);
+    return e.response;
+  }
+};
+
+// 닉네임 중복 검사
+export const getAvailableNickname = async (user) => {
+  try {
+    const { data } = await defaultInstance.get(`/members/nickname`, user, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return data;
+  } catch (e) {
+    console.log(e);
     return e.response;
   }
 };
@@ -26,7 +41,7 @@ export const createLogin = async (user) => {
     });
     return data;
   } catch (e) {
-    console.log(e.response);
+    console.log(e);
     return e.response;
   }
 };
@@ -52,7 +67,7 @@ export const getLogout = async () => {
     const { data } = await authInstance.get(`/logout`);
     return data;
   } catch (e) {
-    console.log(e.response);
+    console.log(e);
     return e.response;
   }
 };
@@ -67,7 +82,7 @@ export const createProfile = async (profile) => {
     });
     return data;
   } catch (e) {
-    console.log(e.response);
+    console.log(e);
     return e.response;
   }
 };
@@ -82,7 +97,7 @@ export const updateProfile = async (profile) => {
     });
     return data;
   } catch (e) {
-    console.log(e.response);
+    console.log(e);
     return e.response;
   }
 };
@@ -93,7 +108,7 @@ export const getMemberProfile = async (memberId) => {
     const { data } = await authInstance.get(`/members/${memberId}/profile`);
     return data;
   } catch (e) {
-    console.log(e.response);
+    console.log(e);
     return e.response;
   }
 };

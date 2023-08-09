@@ -48,7 +48,6 @@ const Feed = (props) => {
   );
 
   useEffect(() => {
-    console.log(specificTag);
     if (specificTag === -1) {
       param = { cursor: null, pageSize };
     } else {
@@ -59,7 +58,6 @@ const Feed = (props) => {
 
   const fetchMoreTodoPosts = async (pageParam) => {
     const data = await getFeedData(pageParam);
-    console.log(data.data);
     return data.data;
   };
 

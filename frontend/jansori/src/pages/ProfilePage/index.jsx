@@ -48,7 +48,12 @@ const ProfilePage = () => {
   return (
     <ProfileContainer>
       {profile && (
-        <ProfileDetail isMine={isMine} profile={profile} tags={tags} />
+        <ProfileDetail
+          isMine={isMine}
+          profile={profile}
+          tags={tags}
+          setTags={setTags}
+        />
       )}
       <TabContainer>
         <Tabs>

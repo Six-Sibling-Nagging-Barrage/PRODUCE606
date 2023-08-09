@@ -3,30 +3,41 @@ import { styled } from 'twin.macro';
 import HashTagItem from '../../../components/HashTag/HashTagItem';
 import ProfileImg from '../../../components/Profile/ProfileImg';
 import editImg from '../../../assets/edit_icon.png';
+import Modal from '../../../components/UI/Modal';
+import ProfileForm from '../../../components/Profile/ProfileForm';
 
 const ProfileDetail = (props) => {
   const { isMine, profile, nags, tags } = props;
 
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleEditProfile = () => {
+    setIsEditing(true);
+  };
+
   return (
-    <ProfileDetailContainer>
-      <Header>
-        {isMine && (
-          <button>
-            <img src={editImg} />
-          </button>
-        )}
-      </Header>
-      <ProfileImg profileImg={profile.imageUrl} size="120px" />
-      <Nickname>{profile.nickname}</Nickname>
-      <Bio>{profile.bio}</Bio>
-      <Wrapper>
-        <HashTagContainer>
-          {tags.map((tag) => {
-            return <HashTagItem key={tag.tagId} hashTag={tag} />;
-          })}
-        </HashTagContainer>
-      </Wrapper>
-    </ProfileDetailContainer>
+    <>
+      {isEditing && (
+        <Modal>
+          <ProfileForm tags={tags} setIsModalOpen={setIsEditing} />
+        </Modal>
+      )}
+      <ProfileDetailContainer>
+        <Header>
+          {isMine && <button onClick={handleEditProfile}>수정</button>}
+        </Header>
+        <ProfileImg profileImg={profile.imageUrl} size="120px" />
+        <Nickname>{profile.nickname}</Nickname>
+        <Bio>{profile.bio}</Bio>
+        <Wrapper>
+          <HashTagContainer>
+            {tags.map((tag) => {
+              return <HashTagItem key={tag.tagId} hashTag={tag} />;
+            })}
+          </HashTagContainer>
+        </Wrapper>
+      </ProfileDetailContainer>
+    </>
   );
 };
 

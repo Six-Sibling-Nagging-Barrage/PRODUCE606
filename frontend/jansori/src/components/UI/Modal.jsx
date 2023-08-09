@@ -12,11 +12,6 @@ const Modal = (props) => {
     <>
       <Background onClick={handleClose} />
       <ModalSection>
-        <Title>
-          {/* <CloseButton type='button' onClick={handleClose}>
-            X
-          </CloseButton> */}
-        </Title>
         <Content>{children}</Content>
       </ModalSection>
     </>
