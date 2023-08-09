@@ -1,21 +1,26 @@
 package com.a606.jansori.domain.nag.service;
 
 import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagBox;
 import com.a606.jansori.domain.nag.domain.NagLike;
 import com.a606.jansori.domain.nag.domain.NagUnlock;
+import com.a606.jansori.domain.nag.dto.GetMemberNagsOfReqDto;
 import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
+import com.a606.jansori.domain.nag.dto.GetNagsOfOtherResDto;
 import com.a606.jansori.domain.nag.dto.GetNagsOfResDto;
 import com.a606.jansori.domain.nag.dto.GetNagsOfNagBoxResDto;
 import com.a606.jansori.domain.nag.dto.GetNagsOfReqDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
 import com.a606.jansori.domain.nag.dto.NagDto;
+import com.a606.jansori.domain.nag.dto.NagOfProfileDto;
 import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
+import com.a606.jansori.domain.nag.exception.NagInvalidRequestException;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
 import com.a606.jansori.domain.nag.exception.NagUnlockBusinessException;
 import com.a606.jansori.domain.nag.repository.NagLikeRepository;
@@ -28,6 +33,7 @@ import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -113,6 +119,30 @@ public class NagService {
   }
 
   @Transactional(readOnly = true)
+  public GetNagsOfOtherResDto getMemberNagsByMemberId(GetMemberNagsOfReqDto getMemberNagsOfReqDto) {
+    Member viewer = securityUtil.getCurrentMemberByToken();
+    Member owner = memberRepository.findMemberById(getMemberNagsOfReqDto.getMemberId())
+        .orElseThrow(MemberNotFoundException::new);
+
+    if (Objects.equals(viewer.getId(), owner.getId())) {
+      throw new NagInvalidRequestException();
+    }
+
+    Long cursor = getMemberNagsOfReqDto.getCursor();
+    Integer size = getMemberNagsOfReqDto.getSize();
+
+    Slice<Nag> nags = nagRepository
+        .findByNagsWithLockStatusByMemberAndPages(viewer, owner, cursor, PageRequest.of(0, size));
+
+    Long nextCursor = nags.hasNext() ? nags.getContent().get(size - 1).getId() : null;
+
+    return GetNagsOfOtherResDto.ofOtherNagsList(nags.getContent()
+        .stream()
+        .map(nag -> NagOfProfileDto.ofNagAndTagAndNagUnlock(nag, nag.getTag()))
+        .collect(Collectors.toList()), nags.hasNext(), nextCursor);
+  }
+
+  @Transactional(readOnly = true)
   public GetNagOfMainPageResDto getRandomNagsOfMainPage() {
     return GetNagOfMainPageResDto.builder()
         .nags(nagRandomGenerator.getRandomNagsOfMainPage()
@@ -141,16 +171,6 @@ public class NagService {
     Long totalNagsCount = nagRepository.count();
 
     return GetNagBoxStatisticsResDto.of(totalMemberCount, totalDoneTodoCount, totalNagsCount);
-  }
-
-  @Transactional(readOnly = true)
-  public GetNagsOfResDto getNagsOfProfilePageByMemberId(
-       ) {
-
-    Member member = securityUtil.getCurrentMemberByToken();
-
-
-    return null;
   }
 
   private void decreaseNagLike(Nag nag, NagLike nagLike) {
