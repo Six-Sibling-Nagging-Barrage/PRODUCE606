@@ -17,8 +17,6 @@ public class SecurityUtil {
 
   private final MemberRepository memberRepository;
 
-  private static final String anonymousUser = "anonymousUser";
-
   public Member getCurrentMemberByToken() {
 
     final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

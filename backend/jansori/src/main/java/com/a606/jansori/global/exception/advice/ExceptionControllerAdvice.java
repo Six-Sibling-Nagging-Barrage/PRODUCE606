@@ -42,7 +42,7 @@ public class ExceptionControllerAdvice {
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public EnvelopeResponse RuntimeExceptionHandler(RuntimeException e) {
 
-    log.error(e.getMessage());
+    log.error("{} : {}", e.getClass().getName(), e.getMessage());
 
     return EnvelopeResponse.builder()
         .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
@@ -54,7 +54,7 @@ public class ExceptionControllerAdvice {
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public EnvelopeResponse NotFoundExceptionHandler(NotFoundException e) {
 
-    log.error(e.getMessage());
+    log.error("{} : {}", e.getClass().getName(), e.getMessage());
 
     return EnvelopeResponse.builder()
         .code(e.getCode())
@@ -66,7 +66,7 @@ public class ExceptionControllerAdvice {
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public EnvelopeResponse BadRequestExceptionHandler(BadRequestException e) {
 
-    log.error(e.getMessage());
+    log.error("{} : {}", e.getClass().getName(), e.getMessage());
 
     return EnvelopeResponse.builder()
         .code(e.getCode())
@@ -78,7 +78,7 @@ public class ExceptionControllerAdvice {
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   public EnvelopeResponse UnauthorizedExceptionHandler(UnauthorizedException e) {
 
-    log.error(e.getMessage());
+    log.error("{} : {}", e.getClass().getName(), e.getMessage());
 
     return EnvelopeResponse.builder()
         .code(e.getCode())
@@ -90,7 +90,7 @@ public class ExceptionControllerAdvice {
   @ResponseStatus(HttpStatus.FORBIDDEN)
   public EnvelopeResponse ForbiddenExceptionHandler(ForbiddenException e) {
 
-    log.error(e.getMessage());
+    log.error("{} : {}", e.getClass().getName(), e.getMessage());
 
     return EnvelopeResponse.builder()
         .code(e.getCode())
@@ -102,7 +102,7 @@ public class ExceptionControllerAdvice {
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public EnvelopeResponse InternalException(InternalException e) {
 
-    log.error(e.getMessage());
+    log.error("{} : {}", e.getClass().getName(), e.getMessage());
 
     return EnvelopeResponse.builder()
         .code(e.getCode())
@@ -114,7 +114,7 @@ public class ExceptionControllerAdvice {
   @ResponseStatus(HttpStatus.FORBIDDEN)
   public EnvelopeResponse BusinessExceptionHandler(BusinessException e) {
 
-    log.error(e.getMessage());
+    log.error("{} : {}", e.getClass().getName(), e.getMessage());
 
     return EnvelopeResponse.builder()
         .code(e.getCode())
