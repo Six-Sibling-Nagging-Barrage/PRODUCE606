@@ -13,5 +13,8 @@ public class RedisConfigProperty {
 
   private final String host;
 
+  private final String password;
+
   private final int port;
+
 }

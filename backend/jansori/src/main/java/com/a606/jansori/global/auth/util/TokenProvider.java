@@ -116,6 +116,7 @@ public class TokenProvider {
       if (redisUtil.isBlackList(token)) {
         return false;
       }
+
       return true;
     } catch (ExpiredJwtException e) {
       log.debug("토큰 만료 예외 발생 : {}", e.getMessage());

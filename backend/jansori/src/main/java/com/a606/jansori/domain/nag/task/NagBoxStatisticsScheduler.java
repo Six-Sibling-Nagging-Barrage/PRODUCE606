@@ -21,7 +21,7 @@ public class NagBoxStatisticsScheduler {
     nagBoxStatisticsResDtoMap.put(KEY_VALUE, this.nagService.getNagBoxStatisticsResDto());
   }
 
-  @Scheduled(cron = "0 0 6 * * *")
+  @Scheduled(fixedDelay = 5 * 60 * 1000)
   public void updateNagBoxStatistics() {
     nagBoxStatisticsResDtoMap.put(KEY_VALUE, nagService.getNagBoxStatisticsResDto());
   }
