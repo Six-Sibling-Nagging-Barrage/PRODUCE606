@@ -1,6 +1,6 @@
 package com.a606.jansori.infra.storage.exception;
 
-import com.a606.jansori.global.exception.InternalException;
+import com.a606.jansori.global.exception.domain.InternalException;
 import lombok.Getter;
 
 @Getter

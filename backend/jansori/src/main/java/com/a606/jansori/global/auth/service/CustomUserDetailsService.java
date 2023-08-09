@@ -1,22 +1,21 @@
 package com.a606.jansori.global.auth.service;
 
 import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
-import com.a606.jansori.global.auth.domain.PrincipalDetails;
-import com.a606.jansori.global.auth.exception.AuthMemberNotFoundException;
+import java.util.Collections;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
-public class PrincipalDetailsService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
   private final MemberRepository memberRepository;
 
@@ -25,16 +24,17 @@ public class PrincipalDetailsService implements UserDetailsService {
 
     return memberRepository.findMemberByEmail(email)
         .map(this::createUserDetails)
-        .orElseThrow(() -> new AuthMemberNotFoundException());
-
+        .orElseThrow(MemberNotFoundException::new);
   }
 
   private UserDetails createUserDetails(Member member) {
+    GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(
+        member.getMemberRole().toString());
 
-    GrantedAuthority grantedAuthority =
-        new SimpleGrantedAuthority(member.getMemberRole().toString());
-
-    return new PrincipalDetails(member);
-
+    return new User(
+        String.valueOf(member.getEmail()),
+        member.getPassword(),
+        Collections.singleton(grantedAuthority)
+    );
   }
 }

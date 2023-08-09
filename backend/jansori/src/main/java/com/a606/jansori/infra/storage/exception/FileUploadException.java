@@ -1,6 +1,6 @@
 package com.a606.jansori.infra.storage.exception;
 
-import com.a606.jansori.global.exception.BadRequestException;
+import com.a606.jansori.global.exception.domain.BadRequestException;
 import lombok.Getter;
 
 @Getter

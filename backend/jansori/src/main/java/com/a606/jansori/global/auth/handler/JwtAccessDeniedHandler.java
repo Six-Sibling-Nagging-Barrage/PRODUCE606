@@ -1,6 +1,6 @@
 package com.a606.jansori.global.auth.handler;
 
-import com.a606.jansori.global.auth.exception.AuthForbiddenException;
+import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.access.AccessDeniedException;
@@ -12,10 +12,9 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
   @Override
   public void handle(HttpServletRequest request, HttpServletResponse response,
-      AccessDeniedException accessDeniedException) {
+      AccessDeniedException accessDeniedException) throws IOException {
 
-    throw new AuthForbiddenException();
-
+    response.sendRedirect("/exception/access-denied");
   }
 
 }
