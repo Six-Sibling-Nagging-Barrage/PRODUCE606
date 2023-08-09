@@ -1,9 +1,7 @@
 package com.a606.jansori.global.auth.util;
 
 import com.a606.jansori.global.auth.dto.TokenResDto;
-import com.a606.jansori.global.auth.exception.AuthExpiredAccessTokenException;
-import com.a606.jansori.global.auth.exception.AuthInvalidAccessTokenException;
-import com.a606.jansori.global.auth.exception.AuthUnauthorizedException;
+import com.a606.jansori.global.exception.domain.UnauthorizedException;
 import com.a606.jansori.infra.redis.util.RedisUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -94,7 +92,7 @@ public class TokenProvider {
 
     if (claims.get(AUTHORITIES_KEY) == null) {
 
-      throw new AuthUnauthorizedException();
+      throw new UnauthorizedException();
 
     }
 
@@ -116,21 +114,15 @@ public class TokenProvider {
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 
       if (redisUtil.isBlackList(token)) {
-        throw new AuthInvalidAccessTokenException();
+        return false;
       }
-
       return true;
-
     } catch (ExpiredJwtException e) {
-
-      throw new AuthExpiredAccessTokenException();
-
+      log.debug("토큰 만료 예외 발생 : {}", e.getMessage());
     } catch (Exception e) {
-      e.printStackTrace();
-      throw new AuthInvalidAccessTokenException();
-
+      log.debug("인증 예외 발생 : {}", e.getMessage());
     }
-
+    return false;
   }
 
   public Long getExpiration(String accessToken) {
