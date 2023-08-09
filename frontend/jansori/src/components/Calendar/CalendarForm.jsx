@@ -4,7 +4,7 @@ import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
 import tw, { styled } from 'twin.macro';
 import { getTodoListByDate, getTodoListByDateByMember } from '../../apis/api/todo';
-import { useRecoilValue, useRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import { memberIdState } from '../../states/user';
 import {
   focusDateState,
@@ -20,8 +20,7 @@ const CalendarForm = () => {
   const [date, setDate] = useRecoilState(focusDateState);
   const [yearMonth, setYearMonth] = useRecoilState(focusYearMonthState);
   const [todoDays, setTodoDays] = useRecoilState(todoDaysState);
-  const [todoList, setTodoList] = useRecoilState(todoListState);
-  let marks = todoDays;
+  const setTodoList = useSetRecoilState(todoListState);
 
   const handleActiveStartDateChange = async (newStartDate) => {
     const newDate = moment(newStartDate.activeStartDate).format('YYYY-MM');
@@ -40,7 +39,6 @@ const CalendarForm = () => {
       if (response.code === '200') {
         // 데이터를 받아오는데 성공한 경우
         setTodoDays(response.data.dates);
-        marks = todoDays;
       }
     };
     fetchData();
@@ -48,10 +46,9 @@ const CalendarForm = () => {
 
   // 원하는 날 클릭할 경우 해당하는 todoList 호출하는 api
   useEffect(() => {
-    setDate(moment(focusDate).format('YYYY-MM-DD'));
+    const date = moment(focusDate).format('YYYY-MM-DD');
+    setDate(date);
     const fetchData = async () => {
-      const date = moment(focusDate).format('YYYY-MM-DD');
-
       const response = await getTodoListByDate(date);
       // TODO: recoil로 todoList부분 변경해주는 부분 설정
       if (response.code === '200') {
@@ -61,6 +58,10 @@ const CalendarForm = () => {
 
     fetchData();
   }, [focusDate]);
+
+  useEffect(() => {
+    setFocusDate(moment(date).toDate());
+  }, [date]);
 
   return (
     <CalendarCard>
@@ -73,7 +74,7 @@ const CalendarForm = () => {
         showNeighboringMonth={false}
         tileContent={({ date, view }) => {
           const dateStr = moment(date).format('YYYY-MM-DD');
-          if (marks.find((x) => x === dateStr)) {
+          if (Array.isArray(todoDays) && todoDays.find((x) => x === dateStr)) {
             return <Dot />;
           }
           return <NotDot />;
