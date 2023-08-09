@@ -3,6 +3,7 @@ import tw, { styled } from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import HashTag from '../../../components/HashTag/HashTag';
 import Button from '../../../components/UI/Button';
+import SnackBar from '../../../components/UI/SnackBar';
 import '@animxyz/core';
 import { XyzTransition } from '@animxyz/react';
 import { createNag } from '../../../apis/api/nag';
@@ -23,11 +24,20 @@ const NagForm = () => {
   } = useForm({ mode: 'onBlur' });
   const [hashTagList, setHashTagList] = useState([]);
   const [nagValue, setNagValue] = useState('');
+  const [showSnackBar, setShowSnackBar] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [checkSubmitted, setCheckSubmitted] = useState(false);
+
+  const handleSnackBarClose = () => {
+    setShowSnackBar(false);
+    setSnackBarMessage('');
+  };
 
   // 버튼을 클릭하여 사라지도록 처리하는 핸들러 함수
   const onSubmit = async (data) => {
-    if (nagValue === '' || hashTagList.length === 0) {
-      // TODO: 작은 경고 창 모달로 띄워주기!
+    setCheckSubmitted(true);
+    if (hashTagList.length === 0) {
       return;
     }
 
@@ -37,13 +47,14 @@ const NagForm = () => {
     };
     const response = await createNag(nag);
     if (response.code === '200') {
-      // TOO: 밑에 작은 알림으로 잔소리 전송에 성공하셨습니다. 알림 만들기
+      // TOO: 잔소리 전송에 성공하셨습니다. 알림 만들기
       console.log('success');
     } else {
-      // TODO: 밑에 작은 알림으로 잔소리 전송에 실패하셨습니다. 알림 만들기
+      // TODO: 잔소리 전송에 실패하셨습니다. 알림 만들기
       console.log('fail');
     }
-    // TODO: HASHTAG 초기화 하는 부분 추가
+    setCheckSubmitted(false); //원래 상태로 복구
+    setIsSubmitted(true);
     reset();
     setHashTagList([]);
   };
@@ -60,14 +71,20 @@ const NagForm = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {}, 500);
-
     return () => clearTimeout(timer);
   }, [nagValue]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsSubmitted(false);
+    }, 3000); // 3초 후에 애니메이션 클래스 제거
+    return () => clearTimeout(timer);
+  }, [isSubmitted]);
 
   return (
     <div>
       <XyzTransition appear duration='auto' xyz='fade up-100% duration-10'>
-        <NagFormWrap xyz='fade up-100%'>
+        <NagFormWrap xyz={isSubmitted ? 'exit fade out-100% duration-100' : 'fade up-100%'}>
           <NagFormTitle>잔소리 보내기</NagFormTitle>
           <NagFormContainer>
             {errors?.description ? (
@@ -76,8 +93,10 @@ const NagForm = () => {
               <>
                 {nagValue === '' ? (
                   <ErrorMessage>
-                    📛 상처가 되는 말 말고 자극 받을 수 있는 말을 적어주세요! 📛
+                    📛 상처를 주는 말 말고 자극 받을 수 있는 말을 적어주세요! 📛
                   </ErrorMessage>
+                ) : checkSubmitted && hashTagList.length === 0 ? (
+                  <ErrorMessage>🖋 해시태그를 입력해야 합니다 🖋</ErrorMessage>
                 ) : (
                   <ErrorMessage>💦 나쁜 말은 적지 않도록 항상 기억해주세요!! 💦</ErrorMessage>
                 )}
@@ -86,8 +105,9 @@ const NagForm = () => {
 
             <NagContent>
               <textarea
-                defaultValue=''
+                placeholder='잔소리를 작성해주세요'
                 {...register('description', {
+                  required: '❗ 잔소리를 입력해주세요 ❗',
                   minLength: {
                     value: 2,
                     message: '⚠ 잔소리는 2글자 이상으로 입력해주세요. ⚠',
@@ -105,6 +125,7 @@ const NagForm = () => {
             <HashTag
               editable={true}
               hashTagLimit={1}
+              setSpecificTag={0}
               hashTagList={hashTagList}
               setHashTagList={setHashTagList}
             />
@@ -112,6 +133,7 @@ const NagForm = () => {
           </NagFormContainer>
         </NagFormWrap>
       </XyzTransition>
+      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
     </div>
   );
 };
@@ -131,9 +153,9 @@ const NagFormContainer = styled.form`
 
 const NagContent = styled.div`
   width: 100%;
-  height: 1100%;
+  height: 100%;
   & > textarea {
-    padding: 5px;
+    padding: 3vh;
     border-radius: 5px;
     width: 100%;
     height: 100px;
