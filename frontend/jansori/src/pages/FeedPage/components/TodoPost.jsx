@@ -43,7 +43,9 @@ const TodoPost = (props) => {
     <li>
       <PostContainer>
         <PostHeader>
-          <ProfileLink href="#">
+          <ProfileLink
+            to={`/profile?id=${encodeURIComponent(post.member.memberId)}`}
+          >
             <ProfileImage src={post.member.imageUrl} width="48" height="48" />
           </ProfileLink>
           <div>
@@ -68,7 +70,7 @@ const TodoPost = (props) => {
             })}
           </HashTagContainer>
         </TodoContent>
-        <CommentsContainer>
+        <div>
           <NagCommentItem
             key={post.nag.nagId}
             isMemberNag={true}
@@ -76,7 +78,7 @@ const TodoPost = (props) => {
             nag={post.nag}
             toggleLike={toggleLike}
           />
-        </CommentsContainer>
+        </div>
       </PostContainer>
     </li>
   );
@@ -87,16 +89,27 @@ const PostContainer = styled.div`
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   margin: 10px;
 `;
+
 const PostHeader = styled.header`
   ${tw`flex gap-4`}
   position: relative;
 `;
-const ProfileLink = tw.a`relative inline-flex items-center justify-center w-12 h-12 text-white rounded-full`;
-const ProfileImage = tw.img`max-w-full rounded-full`;
+
+const ProfileLink = styled.Link`
+  relative inline-flex items-center justify-center w-12 h-12 text-white rounded-full
+`;
+
+const ProfileImage = styled.img`
+  max-w-full rounded-full
+`;
 const WriterName = styled.div`
   text-align: left;
 `;
-const CreateDate = tw.div`text-sm text-slate-400`;
+
+const CreateDate = styled.div`
+  text-sm text-slate-400
+`;
+
 const TodoContent = styled.div`
   text-align: center;
   margin: 10px;
@@ -104,7 +117,6 @@ const TodoContent = styled.div`
     margin: 10px 0;
   }
 `;
-const CommentsContainer = styled.div``;
 
 const HashTagContainer = styled.div`
   width: fit-content;
