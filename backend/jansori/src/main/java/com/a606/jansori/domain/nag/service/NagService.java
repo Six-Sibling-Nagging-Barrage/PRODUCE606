@@ -1,7 +1,6 @@
 package com.a606.jansori.domain.nag.service;
 
 import com.a606.jansori.domain.member.domain.Member;
-import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagBox;
@@ -29,6 +28,9 @@ import com.a606.jansori.domain.nag.repository.NagLikeRepository;
 import com.a606.jansori.domain.nag.repository.NagRepository;
 import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
 import com.a606.jansori.domain.nag.util.PreviewUtil;
+import com.a606.jansori.domain.notification.domain.NotificationType;
+import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
+import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagRepository;
@@ -61,6 +63,8 @@ public class NagService {
   private final NagRandomGenerator nagRandomGenerator;
   private final PreviewUtil previewUtil;
   private final SecurityUtil securityUtil;
+  private final NotificationTypeRepository notificationTypeRepository;
+  private final NotificationSettingRepository notificationSettingRepository;
 
   private final ApplicationEventPublisher publisher;
 
@@ -193,7 +197,12 @@ public class NagService {
 
   private void increaseNagLike(Nag nag, Member member) {
     nagLikeRepository.save(NagLike.builder().nag(nag).member(member).build());
+    NotificationType notificationType = notificationTypeRepository.findById(3L).orElseThrow();
     nag.increaseLikeCount();
-    publisher.publishEvent(new NagLikeEvent(member, nag));
+
+    // 알림설정이 수신 상태일 경우만 알림 이벤트 생성
+    if(notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member).getActivated()) {
+      publisher.publishEvent(new NagLikeEvent(member, nag, notificationType));
+    }
   }
 }

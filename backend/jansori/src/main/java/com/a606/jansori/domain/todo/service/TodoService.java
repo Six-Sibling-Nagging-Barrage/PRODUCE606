@@ -4,6 +4,9 @@ import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.service.NagRandomGenerator;
+import com.a606.jansori.domain.notification.domain.NotificationType;
+import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
+import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.domain.persona.domain.Persona;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.domain.persona.repository.PersonaRepository;
@@ -20,7 +23,7 @@ import com.a606.jansori.domain.todo.dto.GetTodoMonthlyExistenceResDto;
 import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
 import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
 import com.a606.jansori.domain.todo.dto.PostTodoResDto;
-import com.a606.jansori.domain.todo.event.TodoCompleteEvent;
+import com.a606.jansori.domain.todo.event.TodoAccomplishmentEvent;
 import com.a606.jansori.domain.todo.exception.TodoBusinessException;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
@@ -52,6 +55,10 @@ public class TodoService {
   private final NagRandomGenerator nagRandomGenerator;
 
   private final SecurityUtil securityUtil;
+
+  private final NotificationSettingRepository notificationSettingRepository;
+
+  private final NotificationTypeRepository notificationTypeRepository;
 
   private final ApplicationEventPublisher publisher;
 
@@ -128,15 +135,19 @@ public class TodoService {
   @Transactional
   public PatchTodoResDto patchTodoAccomplishment(Long todoId) {
 
-//    Member member = securityUtil.getCurrentMemberByToken();
-    Member member = memberRepository.findById(21L).orElseThrow(MemberNotFoundException::new);
-    Todo todo = todoRepository.findById(41L).orElseThrow(TodoNotFoundException::new);
+    Member member = securityUtil.getCurrentMemberByToken();
+    Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
+    NotificationType notificationType = notificationTypeRepository.findById(4L).orElseThrow();
 
     if (todo.getMember() != member) {
       throw new TodoUnauthorizedException();
     }
 
-    publisher.publishEvent(new TodoCompleteEvent(todo));
+    // 알림 수신 상태이고 투두 미완료 상태일 때만 알림 이벤트 발생
+    if(notificationSettingRepository.
+            findByNotificationTypeAndMember(notificationType, member).getActivated() && !todo.getFinished()) {
+      publisher.publishEvent(new TodoAccomplishmentEvent(todo, notificationType));
+    }
 
     return PatchTodoResDto.from(todo.toggleFinished());
   }
