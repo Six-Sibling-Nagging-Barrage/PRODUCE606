@@ -1,6 +1,6 @@
 package com.a606.jansori.domain.todo.exception;
 
-import com.a606.jansori.global.exception.UnauthorizedException;
+import com.a606.jansori.global.exception.domain.UnauthorizedException;
 
 public class TodoUnauthorizedException extends UnauthorizedException {
 

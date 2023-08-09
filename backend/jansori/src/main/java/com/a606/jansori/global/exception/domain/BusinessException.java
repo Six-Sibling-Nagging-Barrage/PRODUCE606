@@ -1,4 +1,4 @@
-package com.a606.jansori.global.exception;
+package com.a606.jansori.global.exception.domain;
 
 import lombok.Getter;
 

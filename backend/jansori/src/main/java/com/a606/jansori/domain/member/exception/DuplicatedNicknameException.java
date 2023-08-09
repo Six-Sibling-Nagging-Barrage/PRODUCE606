@@ -1,7 +1,6 @@
 package com.a606.jansori.domain.member.exception;
 
-import com.a606.jansori.global.exception.BadRequestException;
-import com.a606.jansori.global.exception.BusinessException;
+import com.a606.jansori.global.exception.domain.BadRequestException;
 import lombok.Getter;
 
 @Getter

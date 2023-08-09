@@ -1,6 +1,6 @@
 package com.a606.jansori.domain.persona.exception;
 
-import com.a606.jansori.global.exception.NotFoundException;
+import com.a606.jansori.global.exception.domain.NotFoundException;
 
 public class PersonaNotFoundException extends NotFoundException {
 

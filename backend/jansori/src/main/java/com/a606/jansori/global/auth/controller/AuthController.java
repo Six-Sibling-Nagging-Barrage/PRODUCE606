@@ -51,4 +51,11 @@ public class AuthController {
 
   }
 
+  @PostMapping("/logout")
+  public EnvelopeResponse<Void> logout(@RequestBody TokenReqDto tokenReqDto) {
+
+    authService.logout(tokenReqDto);
+
+    return EnvelopeResponse.<Void>builder().build();
+  }
 }
