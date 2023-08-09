@@ -54,10 +54,7 @@ const LoginPage = () => {
         ticket: res.data.ticket,
       });
       setMemberId(res.data.memberId);
-      // if (res.data.memberRole === 'GUEST') {
-      //   navigate('/initialprofile');
-      // } else navigate('/');
-      if (memberRole === 'GUEST') {
+      if (res.data.memberRole === 'GUEST') {
         navigate('/initialprofile');
       } else navigate('/');
     }
