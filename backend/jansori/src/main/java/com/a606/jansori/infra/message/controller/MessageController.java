@@ -1,13 +1,9 @@
 package com.a606.jansori.infra.message.controller;
 
 import com.a606.jansori.global.common.EnvelopeResponse;
-import com.a606.jansori.infra.message.dto.PostFcmTokenReqDto;
 import com.a606.jansori.infra.message.dto.PostMessageReqDto;
 import com.a606.jansori.infra.message.service.FcmService;
-import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Env;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,9 +18,9 @@ public class MessageController {
 
   @PostMapping("/token/register")
   private EnvelopeResponse<Void> registerMemberMessagingToken(
-      @RequestBody PostFcmTokenReqDto postFcmTokenReqDto) {
+      @RequestBody String fcmTokenFromClient) {
 
-    fcmService.registerToken(postFcmTokenReqDto);
+    fcmService.registerToken(fcmTokenFromClient);
 
     return EnvelopeResponse.<Void>builder().build();
   }

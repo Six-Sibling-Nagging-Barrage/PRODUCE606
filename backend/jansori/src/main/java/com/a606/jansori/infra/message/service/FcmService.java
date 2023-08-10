@@ -3,9 +3,8 @@ package com.a606.jansori.infra.message.service;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.global.auth.exception.InvalidTokenException;
 import com.a606.jansori.global.auth.util.SecurityUtil;
-import com.a606.jansori.infra.message.domain.FcmToken;
 import com.a606.jansori.infra.message.domain.FcmMessage;
-import com.a606.jansori.infra.message.dto.PostFcmTokenReqDto;
+import com.a606.jansori.infra.message.domain.FcmToken;
 import com.a606.jansori.infra.message.repository.FcmTokenRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,18 +27,30 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class FcmService {
 
   private final SecurityUtil securityUtil;
   private final FcmTokenRepository fcmTokenRepository;
   private final ObjectMapper objectMapper;
+  private final String API_URL;
+  private final String API_SCOPE;
+  private final String FIREBASE_CONFIG_PATH;
 
-  @Value("${fcm.api.url}")
-  private String API_URL;
+  public FcmService(@Value("${fcm.api.url}") String API_URL,
+      @Value("${fcm.config.path}") String FIREBASE_CONFIG_PATH,
+      @Value("${fcm.key.scope}") String API_SCOPE,
+      SecurityUtil securityUtil,
+      FcmTokenRepository fcmTokenRepository,
+      ObjectMapper objectMapper) {
 
-  @Value("${fcm.config.path}")
-  private String FIREBASE_CONFIG_PATH;
+    this.API_SCOPE = API_SCOPE;
+    this.API_URL = API_URL;
+    this.FIREBASE_CONFIG_PATH = FIREBASE_CONFIG_PATH;
+    this.securityUtil = securityUtil;
+    this.fcmTokenRepository = fcmTokenRepository;
+    this.objectMapper = objectMapper;
+
+  }
 
 
   public void sendMessageTo(String targetToken, String title, String body) {
@@ -100,7 +111,7 @@ public class FcmService {
 
     GoogleCredentials googleCredentials = GoogleCredentials
         .fromStream(new ClassPathResource(FIREBASE_CONFIG_PATH).getInputStream())
-        .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
+        .createScoped(List.of(API_SCOPE));
 
     googleCredentials.refreshIfExpired();
 
@@ -109,7 +120,7 @@ public class FcmService {
   }
 
   @Transactional
-  public void registerToken(PostFcmTokenReqDto postFcmTokenReqDto) {
+  public void registerToken(String fcmTokenFromClient) {
 
     Member member = securityUtil.getCurrentMemberByToken();
 
@@ -118,11 +129,11 @@ public class FcmService {
     boolean tokenExists = tokens
         .stream().anyMatch(fcmToken ->
             fcmToken.getFcmToken()
-                .equals(postFcmTokenReqDto.getFcmToken()));
+                .equals(fcmTokenFromClient));
 
     if (!tokenExists) {
       fcmTokenRepository.save(FcmToken.builder()
-          .fcmToken(postFcmTokenReqDto.getFcmToken())
+          .fcmToken(fcmTokenFromClient)
           .member(member)
           .build());
     }
