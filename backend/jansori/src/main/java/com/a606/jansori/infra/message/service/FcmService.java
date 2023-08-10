@@ -1,15 +1,15 @@
 package com.a606.jansori.infra.message.service;
 
 import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.global.auth.exception.InvalidTokenException;
 import com.a606.jansori.global.auth.util.SecurityUtil;
 import com.a606.jansori.infra.message.domain.FcmToken;
-import com.a606.jansori.infra.message.dto.FcmMessage;
+import com.a606.jansori.infra.message.domain.FcmMessage;
 import com.a606.jansori.infra.message.dto.PostFcmTokenReqDto;
 import com.a606.jansori.infra.message.repository.FcmTokenRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -18,43 +18,63 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.json.JsonParseException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FcmService {
 
   private final SecurityUtil securityUtil;
   private final FcmTokenRepository fcmTokenRepository;
-  private final String API_URL
-      = "https://fcm.googleapis.com/v1/projects/jansori-393804/messages:send";
   private final ObjectMapper objectMapper;
 
+  @Value("${fcm.api.url}")
+  private String API_URL;
 
-  public void sendMessageTo(String targetToken, String title, String body) throws IOException {
+  @Value("${fcm.config.path}")
+  private String FIREBASE_CONFIG_PATH;
+
+
+  public void sendMessageTo(String targetToken, String title, String body) {
+
     String message = makeMessage(targetToken, title, body);
 
     OkHttpClient client = new OkHttpClient();
     RequestBody requestBody = RequestBody
         .create(MediaType.parse("application/json; charset=utf-8"), message);
-    Request request = new Request.Builder()
-        .url(API_URL)
-        .post(requestBody)
-        .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
-        .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
-        .build();
 
-    Response response = client.newCall(request).execute();
+    Request request = null;
 
-    System.out.println(response.body().string());
+    try {
+
+      request = new Request.Builder()
+          .url(API_URL)
+          .post(requestBody)
+          .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+          .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
+          .build();
+
+      Response response = client.newCall(request).execute();
+
+      log.info(response.body().string());
+
+    } catch (IOException e) {
+
+      throw new InvalidTokenException();
+
+    }
+
   }
 
-  private String makeMessage(String targetToken, String title, String body)
-      throws JsonParseException, JsonProcessingException {
+  private String makeMessage(String targetToken, String title, String body) {
+
     FcmMessage fcmMessage = FcmMessage.builder()
         .message(FcmMessage.Message.builder()
             .token(targetToken)
@@ -65,18 +85,27 @@ public class FcmService {
                 .build()
             ).build()).validateOnly(false).build();
 
-    return objectMapper.writeValueAsString(fcmMessage);
+    try {
+
+      return objectMapper.writeValueAsString(fcmMessage);
+
+    } catch (JsonProcessingException e) {
+
+      throw new JsonParseException();
+
+    }
   }
 
   private String getAccessToken() throws IOException {
-    String firebaseConfigPath = "jansori-firebase-adminsdk-account.json";
 
     GoogleCredentials googleCredentials = GoogleCredentials
-        .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
+        .fromStream(new ClassPathResource(FIREBASE_CONFIG_PATH).getInputStream())
         .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
 
     googleCredentials.refreshIfExpired();
+
     return googleCredentials.getAccessToken().getTokenValue();
+
   }
 
   @Transactional

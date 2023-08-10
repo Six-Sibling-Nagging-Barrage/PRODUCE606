@@ -6,6 +6,7 @@ import com.a606.jansori.infra.message.dto.PostMessageReqDto;
 import com.a606.jansori.infra.message.service.FcmService;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Env;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,8 @@ public class MessageController {
   private final FcmService fcmService;
 
   @PostMapping("/token/register")
-  private EnvelopeResponse<Void> registerFcmMemberToken(PostFcmTokenReqDto postFcmTokenReqDto) {
+  private EnvelopeResponse<Void> registerMemberMessagingToken(
+      @RequestBody PostFcmTokenReqDto postFcmTokenReqDto) {
 
     fcmService.registerToken(postFcmTokenReqDto);
 
@@ -28,11 +30,12 @@ public class MessageController {
   }
 
   @PostMapping("/send")
-  public ResponseEntity pushMessage(@RequestBody PostMessageReqDto postMessageReqDto)
-      throws IOException {
+  public EnvelopeResponse<Void> pushMessage(@RequestBody PostMessageReqDto postMessageReqDto) {
+
     fcmService.sendMessageTo(postMessageReqDto.getFcmToken(), postMessageReqDto.getTitle(),
         postMessageReqDto.getBody());
-    return ResponseEntity.ok().build();
+
+    return EnvelopeResponse.<Void>builder().build();
   }
 
 }

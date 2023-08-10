@@ -1,4 +1,4 @@
-package com.a606.jansori.infra.message.dto;
+package com.a606.jansori.infra.message.domain;
 
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
