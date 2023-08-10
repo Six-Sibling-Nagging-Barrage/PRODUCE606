@@ -64,7 +64,6 @@ export const memberInfoState = atom({
     email: '',
     nickname: '',
     imageUrl: '',
-    ticket: 0,
   },
   effects_UNSTABLE: [persistAtom],
 });
@@ -78,5 +77,11 @@ export const memberIdState = atom({
 export const memberRoleState = atom({
   key: 'memberRoleState',
   default: 'GUEST',
+  effects_UNSTABLE: [persistAtom],
+});
+
+export const ticketState = atom({
+  key: 'ticketState',
+  default: 0,
   effects_UNSTABLE: [persistAtom],
 });

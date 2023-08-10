@@ -92,7 +92,7 @@ export const getNagBoxStatistics = async () => {
 export const updateNagUnlock = async (nagId) => {
   try {
     const { data } = await authInstance.put(`/nags/${nagId}/unlock`);
-    return data.data;
+    return data;
   } catch (e) {
     console.log(e);
     return e.response;

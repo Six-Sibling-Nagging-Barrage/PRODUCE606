@@ -7,6 +7,8 @@ import SnackBar from '../../../components/UI/SnackBar';
 import '@animxyz/core';
 import { XyzTransition } from '@animxyz/react';
 import { createNag } from '../../../apis/api/nag';
+import { useSetRecoilState } from 'recoil';
+import { ticketState } from '../../../states/user';
 
 const validateNag = (value) => {
   if (/\s{2,}|^\s|\s$/.test(value)) {
@@ -29,6 +31,8 @@ const NagForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [checkSubmitted, setCheckSubmitted] = useState(false);
 
+  const setTicket = useSetRecoilState(ticketState);
+
   const handleSnackBarClose = () => {
     setShowSnackBar(false);
     setSnackBarMessage('');
@@ -47,7 +51,9 @@ const NagForm = () => {
     };
     const response = await createNag(nag);
     if (response.code === '200') {
-      // TOO: 잔소리 전송에 성공하셨습니다. 알림 만들기
+      setTicket(response.data.ticketCount);
+      // TODO: 잔소리 전송에 성공하셨습니다. 알림 만들기
+      // TODO: 티켓 발급 알림
       console.log('success');
     } else {
       // TODO: 잔소리 전송에 실패하셨습니다. 알림 만들기
@@ -83,8 +89,10 @@ const NagForm = () => {
 
   return (
     <div>
-      <XyzTransition appear duration='auto' xyz='fade up-100% duration-10'>
-        <NagFormWrap xyz={isSubmitted ? 'exit fade out-100% duration-100' : 'fade up-100%'}>
+      <XyzTransition appear duration="auto" xyz="fade up-100% duration-10">
+        <NagFormWrap
+          xyz={isSubmitted ? 'exit fade out-100% duration-100' : 'fade up-100%'}
+        >
           <NagFormTitle>잔소리 보내기</NagFormTitle>
           <NagFormContainer>
             {errors?.description ? (
@@ -98,14 +106,16 @@ const NagForm = () => {
                 ) : checkSubmitted && hashTagList.length === 0 ? (
                   <ErrorMessage>✒️ 해시태그를 입력해야 합니다 ✒️</ErrorMessage>
                 ) : (
-                  <ErrorMessage>💦 나쁜 말은 적지 않도록 항상 기억해주세요!! 💦</ErrorMessage>
+                  <ErrorMessage>
+                    💦 나쁜 말은 적지 않도록 항상 기억해주세요!! 💦
+                  </ErrorMessage>
                 )}
               </>
             )}
 
             <NagContent>
               <textarea
-                placeholder='잔소리를 작성해주세요'
+                placeholder="잔소리를 작성해주세요"
                 {...register('description', {
                   required: '❗ 잔소리를 입력해주세요 ❗',
                   minLength: {
@@ -129,11 +139,17 @@ const NagForm = () => {
               hashTagList={hashTagList}
               setHashTagList={setHashTagList}
             />
-            <Button onClick={handleSubmit(onSubmit)} normal='true' label={'보내기'} />
+            <Button
+              onClick={handleSubmit(onSubmit)}
+              normal="true"
+              label={'보내기'}
+            />
           </NagFormContainer>
         </NagFormWrap>
       </XyzTransition>
-      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
+      {showSnackBar && (
+        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
+      )}
     </div>
   );
 };
