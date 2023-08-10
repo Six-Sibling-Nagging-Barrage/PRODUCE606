@@ -30,7 +30,6 @@ public class FcmService {
 
   private final SecurityUtil securityUtil;
   private final FcmTokenRepository fcmTokenRepository;
-  private final FirebaseMessaging firebaseMessaging;
   private final String API_URL
       = "https://fcm.googleapis.com/v1/projects/jansori-393804/messages:send";
   private final ObjectMapper objectMapper;
@@ -70,7 +69,7 @@ public class FcmService {
   }
 
   private String getAccessToken() throws IOException {
-    String firebaseConfigPath = "firebase/firebase_service_key.json";
+    String firebaseConfigPath = "jansori-firebase-adminsdk-account.json";
 
     GoogleCredentials googleCredentials = GoogleCredentials
         .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
@@ -81,7 +80,7 @@ public class FcmService {
   }
 
   @Transactional
-  public void registerToken(PostFcmTokenReqDto postFcmTokenReqDto){
+  public void registerToken(PostFcmTokenReqDto postFcmTokenReqDto) {
 
     Member member = securityUtil.getCurrentMemberByToken();
 
@@ -92,7 +91,7 @@ public class FcmService {
             fcmToken.getFcmToken()
                 .equals(postFcmTokenReqDto.getFcmToken()));
 
-    if(!tokenExists){
+    if (!tokenExists) {
       fcmTokenRepository.save(FcmToken.builder()
           .fcmToken(postFcmTokenReqDto.getFcmToken())
           .member(member)
@@ -100,34 +99,5 @@ public class FcmService {
     }
 
   }
-
-
-//  private final FirebaseMessaging firebaseMessaging;
-
-//  public String sendNotificationByToken(NotificationMessage notificationMessage) {
-//
-//    Notification notification = Notification.builder()
-//        .setTitle(notificationMessage.getTitle())
-//        .setBody(notificationMessage.getBody())
-//        .setImage(notificationMessage.getImage())
-//        .build();
-//
-//    Message message = Message.builder()
-//        .setToken(notificationMessage.getRecipientToken())
-//        .setNotification(notification)
-//        .putAllData(notificationMessage.getData())
-//        .build();
-//
-//    try {
-//      firebaseMessaging.send(message);
-//      return "Success Sending Notification";
-//    } catch (FirebaseMessagingException e) {
-//      e.printStackTrace();
-//      return "Error Sending Notification";
-//    }
-//
-//
-//  }
-
 
 }
