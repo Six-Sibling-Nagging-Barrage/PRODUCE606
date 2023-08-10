@@ -27,12 +27,7 @@ function App() {
             <PrivateRoute authenticated={token} component={<FeedPage />} />
           }
         />
-        <Route
-          path="/signup"
-          element={
-            <PrivateRoute authenticated={token} component={<SignUpPage />} />
-          }
-        />
+        <Route path="/signup" element={<SignUpPage />} />
         <Route
           path="/initialprofile"
           element={
