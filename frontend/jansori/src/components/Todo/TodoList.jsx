@@ -51,7 +51,7 @@ function TodoList() {
       <div>
         <TodoListWrap>
           <Mark label={'todo List'} />
-          {/* <TodoDateWrap>📅 {date}</TodoDateWrap> */}
+          <TodoDateWrap>📅 {date}</TodoDateWrap>
         </TodoListWrap>
       </div>
       {data?.todos && data?.todos.length > 0 ? (
@@ -78,7 +78,7 @@ const TodoListWrap = styled.div`
 `;
 
 const TodoDateWrap = styled.div`
-  ${tw`flex my-auto`}
+  ${tw`flex my-auto mr-3`}
   margin-left:auto
 `;
 
