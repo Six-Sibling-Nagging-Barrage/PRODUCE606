@@ -17,13 +17,11 @@ export const createSignUp = async (user) => {
 };
 
 // 닉네임 중복 검사
-export const getAvailableNickname = async (user) => {
+export const getAvailableNickname = async (nickname) => {
   try {
-    const { data } = await authInstance.get(`/members/nickname`, user, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const { data } = await defaultInstance.get(
+      `/members/nickname?nickname=${nickname}`
+    );
     return data;
   } catch (e) {
     console.log(e);

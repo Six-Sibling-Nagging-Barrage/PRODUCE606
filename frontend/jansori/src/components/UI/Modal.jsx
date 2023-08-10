@@ -49,6 +49,11 @@ const ModalSection = styled.div`
   box-shadow: 0 0 100px rgba(0, 0, 0, 0.3);
   overflow: auto;
   max-height: 85%;
+  /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none; /* 파이어폭스 */
 `;
 
 const Title = styled.div`

@@ -15,6 +15,8 @@ const ProfileDetail = (props) => {
     setIsEditing(true);
   };
 
+  console.log(profile.imageUrl);
+
   return (
     <>
       {isEditing && (
@@ -79,21 +81,21 @@ const Bio = styled.div`
 `;
 
 const Wrapper = styled.div`
-  width: 70%;
-  height: 90px;
+  width: fit-content;
+  max-width: 70%;
+  max-height: 90px;
   margin: 10px auto;
   padding: 10px;
   border-radius: 10px;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); /* 내부에 그림자 추가 */
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3); /* 내부에 그림자 추가 */
 `;
 
 const HashTagContainer = styled.div`
   transform: translateY(0%);
   height: 100%;
   display: flex;
-  overflow-x: auto;
+  overflow: auto;
   flex-wrap: wrap;
-  flex-direction: column;
   /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
   &::-webkit-scrollbar {
     display: none;

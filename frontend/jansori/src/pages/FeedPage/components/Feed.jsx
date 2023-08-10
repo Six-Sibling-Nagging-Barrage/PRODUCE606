@@ -58,7 +58,7 @@ const Feed = (props) => {
 
   const fetchMoreTodoPosts = async (pageParam) => {
     const data = await getFeedData(pageParam);
-    return data.data;
+    return data?.data;
   };
 
   const toggleLike = async (nagId) => {
