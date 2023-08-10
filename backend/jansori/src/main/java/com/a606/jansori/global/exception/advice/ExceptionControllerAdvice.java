@@ -63,7 +63,7 @@ public class ExceptionControllerAdvice {
   }
 
   @ExceptionHandler(BadRequestException.class)
-  @ResponseStatus(HttpStatus.NOT_FOUND)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   public EnvelopeResponse BadRequestExceptionHandler(BadRequestException e) {
 
     log.error("{} : {}", e.getClass().getName(), e.getMessage());

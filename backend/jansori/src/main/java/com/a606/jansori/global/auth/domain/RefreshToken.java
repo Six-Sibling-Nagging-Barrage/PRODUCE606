@@ -28,4 +28,7 @@ public class RefreshToken {
   @Column(name = "refresh_token_value")
   private String value;
 
+  public void setValue(String value) {
+    this.value = value;
+  }
 }
