@@ -20,6 +20,7 @@ import com.a606.jansori.domain.nag.dto.NagOfProfileDto;
 import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
+import com.a606.jansori.domain.nag.dto.PutNagUnlockResDto;
 import com.a606.jansori.domain.nag.exception.NagInvalidRequestException;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
 import com.a606.jansori.domain.nag.exception.NagUnlockBusinessException;
@@ -66,9 +67,14 @@ public class NagService {
     Member member = securityUtil.getCurrentMemberByToken();
     String preview = previewUtil.convertNagToPreview(postNagReqDto.getContent());
 
+    member.issuedTicketByCreateNag();
     Nag nag = Nag.ofMemberWithNagContentAndPreview(member, tag, postNagReqDto.getContent(),
         preview);
-    return PostNagResDto.builder().nagId(nagRepository.save(nag).getId()).build();
+
+    return PostNagResDto.builder()
+        .nagId(nagRepository.save(nag).getId())
+        .ticketCount(member.getTicket())
+        .build();
   }
 
   @Transactional
@@ -85,7 +91,7 @@ public class NagService {
   }
 
   @Transactional
-  public NagDto unlockNagPreviewByMemberTicket(Long nagId) {
+  public PutNagUnlockResDto unlockNagPreviewByMemberTicket(Long nagId) {
     Nag nag = nagRepository.findById(nagId).orElseThrow(NagNotFoundException::new);
     Member member = securityUtil.getCurrentMemberByToken();
 
@@ -97,7 +103,8 @@ public class NagService {
 
     member.consumeTicketToUnlockNag();
     nagUnlockRepository.save(NagUnlock.ofUnlockPreviewByNagAndMember(nag, member));
-    return NagDto.from(nag);
+
+    return PutNagUnlockResDto.ofNagUnlockWithTicketCount(nag, member.getTicket());
   }
 
   @Transactional(readOnly = true)
