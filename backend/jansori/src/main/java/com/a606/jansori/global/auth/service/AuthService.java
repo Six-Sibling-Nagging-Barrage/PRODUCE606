@@ -1,6 +1,7 @@
 package com.a606.jansori.global.auth.service;
 
 import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.domain.member.exception.DuplicatedEmailException;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.global.auth.domain.RefreshToken;
@@ -9,7 +10,6 @@ import com.a606.jansori.global.auth.dto.AuthSignupReqDto;
 import com.a606.jansori.global.auth.dto.AuthSignupResDto;
 import com.a606.jansori.global.auth.dto.TokenReqDto;
 import com.a606.jansori.global.auth.dto.TokenResDto;
-import com.a606.jansori.domain.member.exception.DuplicatedEmailException;
 import com.a606.jansori.global.auth.exception.InvalidTokenException;
 import com.a606.jansori.global.auth.repository.RefreshTokenRepository;
 import com.a606.jansori.global.auth.util.TokenProvider;
@@ -61,21 +61,22 @@ public class AuthService {
     UsernamePasswordAuthenticationToken authenticationToken = authLoginReqDto.toAuthentication();
 
     try {
+
+      Member member = memberRepository.findMemberByEmail(authLoginReqDto.getEmail())
+          .orElseThrow(MemberNotFoundException::new);
+
       Authentication authentication = authenticationManagerBuilder.getObject()
           .authenticate(authenticationToken);
 
-      RefreshToken refreshToken = RefreshToken.builder()
-          .email(authentication.getName())
-          .value(tokenProvider.generateRefreshTokenDto())
-          .build();
+      RefreshToken refreshToken = refreshTokenRepository.findByEmail(authLoginReqDto.getEmail())
+          .orElse(RefreshToken.builder().email(authLoginReqDto.getEmail()).build());
+
+      refreshToken.setValue(tokenProvider.generateRefreshTokenDto());
 
       refreshTokenRepository.save(refreshToken);
 
       TokenResDto tokenResDto = tokenProvider.generateAccessTokenDto(authentication,
           refreshToken.getValue());
-
-      Member member = memberRepository.findMemberByEmail(authLoginReqDto.getEmail())
-          .orElseThrow(MemberNotFoundException::new);
 
       tokenResDto.update(member);
 
