@@ -48,7 +48,7 @@ public class SecurityConfig {
         Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
     configuration.setAllowCredentials(true);
     configuration.setAllowedHeaders(Arrays.asList("Authorization", "accept", "Referer", "User-Agent"));
-    configuration.setExposedHeaders(Arrays.asList("X-Get-Header"));
+    configuration.setExposedHeaders(Arrays.asList("X-Get-Header", "Authorization"));
     configuration.setMaxAge(3600L);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -74,12 +74,11 @@ public class SecurityConfig {
         .and()
         .authorizeRequests()
         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-        .antMatchers("/login/**").permitAll()
         .antMatchers("/exception/**").permitAll()
-        .antMatchers("/signup/**").permitAll()
         .antMatchers("/auth/**").permitAll()
-        .antMatchers("/storage/**").permitAll()
+        .antMatchers("/members/nickname").permitAll()
         .antMatchers("/nags/main-page").permitAll()
+        .antMatchers("/health/**").permitAll()
         .anyRequest().authenticated()
 
         .and()

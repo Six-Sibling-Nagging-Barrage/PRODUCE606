@@ -56,7 +56,7 @@ public class Member extends BaseTimeEntity {
 
   @Column
   @Builder.Default
-  private Long ticket = 0L;
+  private Long ticket = 50L;
 
   @Override
   public boolean equals(Object obj) {
