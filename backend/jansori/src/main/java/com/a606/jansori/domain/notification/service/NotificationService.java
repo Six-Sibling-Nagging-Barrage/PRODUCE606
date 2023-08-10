@@ -17,6 +17,7 @@ import com.a606.jansori.domain.notification.repository.NotificationTypeRepositor
 import com.a606.jansori.domain.persona.domain.PersonaReaction;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.domain.todo.domain.Todo;
+import com.a606.jansori.domain.todo.event.NagGenerateEvent;
 import com.a606.jansori.domain.todo.event.PostPersonaReactionEvent;
 import com.a606.jansori.domain.todo.event.PostTodoEvent;
 import com.a606.jansori.domain.todo.event.TodoAccomplishmentEvent;
@@ -129,6 +130,19 @@ public class NotificationService {
         .build();
 
     notificationRepository.save(notification);
+  }
+
+  @EventListener(classes = {NagGenerateEvent.class})
+  public void createNotificationByNagGenerate(final NagGenerateEvent nagGenerateEvent){
+    Todo todo = nagGenerateEvent.getTodo();
+    NotificationType notificationType = nagGenerateEvent.getNotificationType();
+
+    final Notification notification = Notification.builder()
+        .notificationType(notificationType)
+        .content(todo.getMember().getNickname() + "님의 \""
+            + todo.getContent() +"\"에 잔소리를 남겼습니다.")
+        .receiver(todo.getNag().getMember())
+        .build();
   }
 
   @EventListener(classes = {NagLikeEvent.class})
