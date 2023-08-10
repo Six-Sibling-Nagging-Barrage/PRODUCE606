@@ -28,8 +28,8 @@ const SnackBarContainer = styled.div`
     bottom-2
     left-2
     p-4
-    bg-slate-500	
-    text-white
+    bg-zinc-500			
+    text-white	
     rounded-lg
     transition-opacity
     duration-300

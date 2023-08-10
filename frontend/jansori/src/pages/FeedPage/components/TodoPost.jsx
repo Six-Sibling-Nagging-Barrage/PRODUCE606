@@ -6,6 +6,7 @@ import commentIcon from '../../../assets/more_comment.png';
 import { getTodoDetail } from '../../../apis/api/todo';
 import { Link } from 'react-router-dom';
 import { altImageUrl } from '../../../constants/image';
+import { personas } from '../../../constants/persona';
 
 const TodoPost = (props) => {
   const {
@@ -15,6 +16,7 @@ const TodoPost = (props) => {
     setPersonaReaction,
     toggleLike,
     toggleUnlock,
+    randomPersona,
   } = props;
 
   const [showMoreSelected, setShowMoreSelected] = useState(false);
@@ -30,8 +32,8 @@ const TodoPost = (props) => {
     if (currentPostId === post.todoId) {
       return setCurrentPostId(-1);
     }
-    getPersonaReaction();
     setCurrentPostId(post.todoId);
+    getPersonaReaction();
   };
 
   const getPersonaReaction = () => {
@@ -62,12 +64,15 @@ const TodoPost = (props) => {
             <WriterName>{post.member.nickname}</WriterName>
             <CreateDate>{post.todoAt}</CreateDate>
           </div>
-          <PersonaReactionButton
-            selected={showMoreSelected}
-            onClick={handleClickShowMore}
-          >
-            <img src={commentIcon} />
-          </PersonaReactionButton>
+          {showMoreSelected ? (
+            <SelectedPersonaReactionButton onClick={handleClickShowMore}>
+              <img src={personas[randomPersona].imgUrl} />
+            </SelectedPersonaReactionButton>
+          ) : (
+            <PersonaReactionButton onClick={handleClickShowMore}>
+              <img src={personas[randomPersona].imgUrl} />
+            </PersonaReactionButton>
+          )}
         </PostHeader>
         <TodoContent>
           <div className="finished">{post.finished ? '✅' : '❌'}</div>
@@ -96,10 +101,12 @@ const TodoPost = (props) => {
 };
 
 const PostContainer = styled.div`
-  ${tw`p-4`}
+  ${tw`p-4 pb-1.5`}
   border-radius: 20px;
-  margin: 10px;
+  margin: 10px auto;
+  margin-bottom: 15px;
   background-color: white;
+  box-shadow: 0 0 10px rgba(163, 163, 163, 0.2);
 `;
 
 const PostHeader = styled.header`
@@ -136,16 +143,20 @@ const HashTagContainer = styled.div`
   display: flex;
 `;
 
-const PersonaReactionButton = styled.button(
-  ({ selected }) => `
-  width: 35px;
+const PersonaReactionButton = styled.button`
+  ${tw`w-12 h-12 rounded-full`}
   position: absolute;
   right: 0;
-  ${
-    selected &&
-    'filter: invert(47%) sepia(96%) saturate(5568%) hue-rotate(239deg) brightness(103%) contrast(101%);'
+  &:hover {
+    ${tw`w-14 h-14`}
   }
-`
-);
+`;
+
+const SelectedPersonaReactionButton = styled.button`
+  ${tw`w-12 h-12 rounded-full`}
+  position: absolute;
+  right: 0;
+  ${tw`w-14 h-14`}
+`;
 
 export default TodoPost;

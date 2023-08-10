@@ -1,5 +1,5 @@
 import React from 'react';
-import tw, { styled } from 'twin.macro';
+import tw, { css, styled } from 'twin.macro';
 import likeIcon from '../../../assets/like_icon.avif';
 import lockIcon from '../../../assets/lock_icon.png';
 import { altImageUrl } from '../../../constants/image';
@@ -7,7 +7,8 @@ import { altImageUrl } from '../../../constants/image';
 const NagCommentItem = (props) => {
   const { isMemberNag, todoId, nag, toggleLike, toggleUnlock } = props;
 
-  const handleLikeClick = () => {
+  const handleLikeClick = (unlocked) => {
+    if (!unlocked) return;
     toggleLike({ todoId, nagId: nag.nagId });
   };
 
@@ -22,35 +23,36 @@ const NagCommentItem = (props) => {
   return (
     <CommentContainer>
       <Profile>
-        <ProfileImg src={nag.nagMember.imageUrl} onError={handleImgError} />
-        <NickName>{nag.nagMember.nickname}</NickName>
+        <ProfileImg
+          isMemberNag={isMemberNag}
+          src={nag.nagMember.imageUrl}
+          onError={handleImgError}
+        />
+        <NickName>{isMemberNag && nag.nagMember.nickname}</NickName>
       </Profile>
-      <CommentContentWrapper>
-        <CommentContent>{nag.content}</CommentContent>
-      </CommentContentWrapper>
-      {isMemberNag && (
-        <ButtonGroup>
-          {!nag.unlocked && (
-            <ButtonItem onClick={() => handleUnlockNag(nag.nagId)}>
-              <UnlockImg src={lockIcon} />
-            </ButtonItem>
-          )}
-          <ButtonItem onClick={handleLikeClick}>
-            {nag.isLiked ? (
-              <LikeImg
-                src={likeIcon}
-                filter="invert(44%) sepia(58%) saturate(3914%) hue-rotate(335deg) brightness(100%) contrast(103%);"
-              />
-            ) : (
-              <LikeImg
-                src={likeIcon}
-                filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
-              />
+      <Bubble>
+        <CommentContentWrapper>{nag.content}</CommentContentWrapper>
+        {isMemberNag && (
+          <ButtonGroup>
+            {!nag.unlocked && (
+              <ButtonItem onClick={() => handleUnlockNag(nag.nagId)}>
+                <UnlockImg src={lockIcon} />
+              </ButtonItem>
             )}
-            <div>{nag.likeCount}</div>
-          </ButtonItem>
-        </ButtonGroup>
-      )}
+            <ButtonItem onClick={() => handleLikeClick(nag.unlocked)}>
+              {nag.isLiked ? (
+                <LikeImg src={likeIcon} />
+              ) : (
+                <LikeImg
+                  src={likeIcon}
+                  filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
+                />
+              )}
+              <LikeCount>{nag.likeCount}</LikeCount>
+            </ButtonItem>
+          </ButtonGroup>
+        )}
+      </Bubble>
     </CommentContainer>
   );
 };
@@ -61,54 +63,110 @@ const CommentContainer = styled.div`
   & .profile-img {
     width: 50px;
   }
+  margin: 10px 0;
 `;
 
 const Profile = styled.div`
-  width: 10%;
+  height: fit-content;
+  width: 15%;
 `;
 
 const NickName = styled.div`
-  font-size: 14px;
+  margin-top: 5px;
+  font-size: 12px;
 `;
 
 const ProfileImg = styled.img`
-  ${tw`w-8 h-8 rounded-full`}
+  ${(props) =>
+    props.isMemberNag
+      ? css`
+          ${tw`w-10 h-10 rounded-full`}
+        `
+      : css`
+          ${tw`w-14 h-14 rounded-full`}
+        `}
   margin: 0 auto;
 `;
 
 const CommentContentWrapper = styled.div`
   position: relative;
-  width: 80%;
+  width: 85%;
   line-height: 18px;
-  padding-left: 20px;
   text-align: left;
-  padding-right: 30px;
-`;
-
-const CommentContent = styled.div`
-  position: relative;
   top: 50%;
-  transform: translateY(-50%);
 `;
 
 const ButtonGroup = styled.div`
   position: absolute;
   display: flex;
-  right: 0;
+  right: 8px;
   height: 64px;
+  top: 50%;
+  transform: translateY(-50%);
 `;
 
 const ButtonItem = styled.button`
-  margin: 0 5px;
+  margin-right: 5px;
 `;
 
 const UnlockImg = styled.img`
-  width: 30px;
+  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%)
+    contrast(83%);
+  width: 40px;
+  padding: 8px;
+  &:hover {
+    animation: shake 0.2s ease-in-out infinite;
+  }
+
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-3px) rotate(-5deg);
+    }
+    75% {
+      transform: translateX(3px) rotate(5deg);
+    }
+  }
 `;
 
 const LikeImg = styled.img`
   filter: ${(props) => props.filter};
-  width: 25px;
+  width: 20px;
+  padding-top: 5px;
+`;
+
+const LikeCount = styled.div`
+  margin-top: 2px;
+  font-size: 12px;
+`;
+
+const Bubble = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-height: 60px;
+  height: fit-content;
+  margin-left: 10px;
+  width: 85%;
+  background-color: rgb(244, 244, 244);
+  border-radius: 20px;
+  padding: 10px 20px;
+  &:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-right-color: rgb(244, 244, 244);
+    border-left: 0;
+    margin-top: -8px;
+    margin-left: -8px;
+  }
 `;
 
 export default NagCommentItem;
