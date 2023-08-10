@@ -12,7 +12,7 @@ public interface TagFollowRepository extends JpaRepository<TagFollow, Long> {
 
   Optional<TagFollow> findTagFollowByTagAndMember(Tag tag, Member member);
 
-  @Query("select tf from tag_follow as tf left join fetch tf.tag")
+  @Query("select tf from tag_follow as tf join fetch tf.tag where tf.member = :member ")
   List<TagFollow> findTagFollowsByMember(Member member);
 
   @Query(value = "select tf from tag_follow tf join fetch tf.tag tg join fetch tf.member m where tf.member = :member")
