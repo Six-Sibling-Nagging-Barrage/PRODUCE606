@@ -2,6 +2,7 @@ package com.a606.jansori.dummy;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.nag.domain.Nag;
+import com.a606.jansori.domain.notification.domain.NotificationSetting;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.todo.domain.Todo;
@@ -31,6 +32,7 @@ public class Dummy implements CommandLineRunner {
   private final TodoWithTodoTagDummy todoWithTodoTagDummy;
   private final TodoPersonaDummy todoPersonaDummy;
   private final PersonaReactionDummy personaReactionDummy;
+  private final NotificationSettingDummy notificationSettingDummy;
 
   private void flushAndClear() {
     entityManager.flush();
@@ -46,6 +48,7 @@ public class Dummy implements CommandLineRunner {
     List<Tag> tags = tagDummy.createTags();
     tagFollowDummy.createTagFollows(tags, members);
     List<Nag> nags = nagWithNagTagDummy.createNags(members, tags);
+    notificationSettingDummy.createNotificationSettings(members);
     List<Todo> todos = todoWithTodoTagDummy.createTodosWithTodoTags(members, tags, nags);
     List<TodoPersona> todoPersonas = todoPersonaDummy.createTodoPersonas(todos);
     personaReactionDummy.createPersonaReactions(members,todoPersonas);
