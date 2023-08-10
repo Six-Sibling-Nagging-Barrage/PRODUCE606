@@ -113,11 +113,6 @@ const HashTagInput = styled.input`
   outline: none;
   cursor: text;
   margin-left: 4px;
-  &:hover {
-    .hashtag-container:has(&) {
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    }
-  }
 `;
 
 export default HashTag;

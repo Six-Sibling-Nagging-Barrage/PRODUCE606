@@ -73,17 +73,17 @@ const DropDownList = styled.ul`
   background-color: white;
   border-top: none;
   border-radius: 0 0 5px 5px;
-  box-shadow: 0 2px 10px rgb(0, 0, 0, 0.3);
   list-style-type: none;
   z-index: 3;
+  width: 195px;
+  font-size: 15px;
 `;
 
 const DropDownItem = styled.li`
   padding: 5px 10px;
-
   &:hover {
     cursor: pointer;
-    background-color: #dfdfdf;
+    background-color: #f0f0f0;
   }
 `;
 
