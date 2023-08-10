@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @RequiredArgsConstructor
@@ -72,6 +73,7 @@ public class SecurityConfig {
 
         .and()
         .authorizeRequests()
+        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
         .antMatchers("/login/**").permitAll()
         .antMatchers("/exception/**").permitAll()
         .antMatchers("/signup/**").permitAll()
