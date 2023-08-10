@@ -6,14 +6,6 @@ export const authInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
 
-// const accessToken = localStorage.getItem('member_access_token');
-
-// if (accessToken) {
-//   authInstance.defaults.headers.common[
-//     'Authorization'
-//   ] = `Bearer ${accessToken.replace('"', '')}`;
-// }
-
 authInstance.interceptors.request.use(
   async (request) => {
     const accessToken = localStorage
@@ -65,7 +57,6 @@ authInstance.interceptors.request.use(
         throw new AxiosError('토큰이 만료되었습니다.');
       }
     } else {
-      console.log('헤더에 토큰 넣기', accessToken);
       request.headers['Authorization'] = `Bearer ${accessToken}`;
       authInstance.defaults.headers.common[
         'Authorization'
