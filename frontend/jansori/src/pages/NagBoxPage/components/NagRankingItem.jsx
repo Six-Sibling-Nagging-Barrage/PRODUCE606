@@ -27,6 +27,7 @@ const NagRankingItemContainer = styled.button`
   ${tw`
 my-5
 relative
+w-4/5
 `}
 `;
 

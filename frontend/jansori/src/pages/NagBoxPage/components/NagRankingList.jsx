@@ -24,6 +24,7 @@ const NagRankingList = () => {
       await queryClient.cancelQueries(['nagRankings']);
       const prevNagRankings = queryClient.getQueryData(['nagRankings']);
       queryClient.setQueryData(['nagRankings'], (oldData) => {
+        console.log(oldData);
         const newData = oldData?.nags.map((nagRanking) => {
           if (nagRanking.nagId === nagId) {
             return {
@@ -37,9 +38,6 @@ const NagRankingList = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['nagRankings']);
-    },
-    onError: (error, context) => {
-      // queryClient.setQueryData(['nagRankings'], context?.prevFeed);
     },
   });
 
