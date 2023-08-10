@@ -15,13 +15,13 @@ import org.springframework.core.io.ClassPathResource;
 @Configuration
 public class FCMConfig {
 
-  @Value("${fcm.key.path}")
-  private String googleApplicationCredentials;
+//  @Value("${fcm.key.path}")
+//  private String googleApplicationCredentials;
 
   @Bean
   FirebaseMessaging firebaseMessaging() throws IOException {
 
-    ClassPathResource resource = new ClassPathResource("googleApplicationCredentials");
+    ClassPathResource resource = new ClassPathResource("jansori-firebase-adminsdk-account.json");
 
     InputStream refreshToken = resource.getInputStream();
 

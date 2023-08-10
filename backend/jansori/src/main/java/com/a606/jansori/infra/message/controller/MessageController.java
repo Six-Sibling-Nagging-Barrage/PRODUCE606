@@ -20,7 +20,7 @@ public class MessageController {
   private final FcmService fcmService;
 
   @PostMapping("/token/register")
-  private EnvelopeResponse<Void> registerMemberToken(PostFcmTokenReqDto postFcmTokenReqDto) {
+  private EnvelopeResponse<Void> registerFcmMemberToken(PostFcmTokenReqDto postFcmTokenReqDto) {
 
     fcmService.registerToken(postFcmTokenReqDto);
 
@@ -29,16 +29,10 @@ public class MessageController {
 
   @PostMapping("/send")
   public ResponseEntity pushMessage(@RequestBody PostMessageReqDto postMessageReqDto)
-    throws IOException {
+      throws IOException {
     fcmService.sendMessageTo(postMessageReqDto.getFcmToken(), postMessageReqDto.getTitle(),
         postMessageReqDto.getBody());
     return ResponseEntity.ok().build();
   }
-
-//  @PostMapping
-//  public String sendNotificationByToken(@RequestBody NotificationMessage notificationMessage){
-//    return firebaseMessagingService.sendNotificationByToken(notificationMessage);
-//  }
-
 
 }
