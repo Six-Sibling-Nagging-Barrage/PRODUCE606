@@ -14,8 +14,6 @@ import InitialProfilePage from './pages/InitialProfilePage';
 import PrivateRoute from './pages/PrivateRoute';
 
 function App() {
-  const token = localStorage.getItem('member_user_token');
-
   return (
     <div className="App">
       <NavBar />
@@ -24,36 +22,43 @@ function App() {
         <Route
           path="/feed"
           element={
-            <PrivateRoute authenticated={token} component={<FeedPage />} />
+            <PrivateRoute>
+              <FeedPage />
+            </PrivateRoute>
           }
         />
         <Route path="/signup" element={<SignUpPage />} />
         <Route
           path="/initialprofile"
           element={
-            <PrivateRoute
-              authenticated={token}
-              component={<InitialProfilePage />}
-            />
+            <PrivateRoute>
+              <InitialProfilePage />
+            </PrivateRoute>
           }
         />
         <Route path="/login" element={<LoginPage />} />
         <Route
           path="/nagbox"
           element={
-            <PrivateRoute authenticated={token} component={<NagBoxPage />} />
+            <PrivateRoute>
+              <NagBoxPage />
+            </PrivateRoute>
           }
         />
         <Route
           path="/nag"
           element={
-            <PrivateRoute authenticated={token} component={<NagPage />} />
+            <PrivateRoute>
+              <NagPage />
+            </PrivateRoute>
           }
         />
         <Route
           path="/profile"
           element={
-            <PrivateRoute authenticated={token} component={<ProfilePage />} />
+            <PrivateRoute>
+              <ProfilePage />
+            </PrivateRoute>
           }
         />
         <Route path="/characterinfo" element={<CharacterInfoPage />} />
