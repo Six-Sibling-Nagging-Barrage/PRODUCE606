@@ -8,6 +8,7 @@ import {
 } from '../../states/user';
 import { useNavigate } from 'react-router-dom';
 import { createLogout } from '../../apis/api/member';
+import { altImageUrl } from '../../constants/image';
 
 const DropdownProfileMenu = () => {
   const navigate = useNavigate();
@@ -32,12 +33,16 @@ const DropdownProfileMenu = () => {
     window.location.replace('/');
   };
 
+  const handleImgError = (e) => {
+    e.target.src = altImageUrl;
+  };
+
   return (
     <DropdownProfileMenuContainer>
       <BackgroundContainer />
       <DropdownMenuContent>
         <ItemContainer>
-          <Avatar src={member.imageUrl} alt="profile" />
+          <Avatar src={member.imageUrl} onError={handleImgError} />
           <MemberName>{member.nickname}</MemberName>
         </ItemContainer>
         <ItemContainer onClick={handleLogOut}>LOGOUT</ItemContainer>
@@ -80,7 +85,7 @@ const ItemContainer = styled.div`
 `;
 
 const Avatar = styled.img`
-  ${tw`w-8 h-8 rounded-full border-2 border-violet-300 mr-5`}
+  ${tw`w-8 h-8 rounded-full mr-5`}
 `;
 
 const MemberName = styled.span`

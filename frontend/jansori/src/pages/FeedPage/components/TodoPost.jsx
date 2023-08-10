@@ -5,6 +5,7 @@ import HashTagItem from '../../../components/HashTag/HashTagItem';
 import commentIcon from '../../../assets/more_comment.png';
 import { getTodoDetail } from '../../../apis/api/todo';
 import { Link } from 'react-router-dom';
+import { altImageUrl } from '../../../constants/image';
 
 const TodoPost = (props) => {
   const {
@@ -41,12 +42,21 @@ const TodoPost = (props) => {
     })();
   };
 
+  const handleImgError = (e) => {
+    e.target.src = altImageUrl;
+  };
+
   return (
     <li>
       <PostContainer>
         <PostHeader>
           <Link to={`/profile?id=${encodeURIComponent(post.member.memberId)}`}>
-            <ProfileImage src={post.member.imageUrl} width="48" height="48" />
+            <ProfileImage
+              src={post.member.imageUrl}
+              width="48"
+              height="48"
+              onError={handleImgError}
+            />
           </Link>
           <div>
             <WriterName>{post.member.nickname}</WriterName>
@@ -86,9 +96,10 @@ const TodoPost = (props) => {
 };
 
 const PostContainer = styled.div`
-  ${tw`p-4 rounded-lg`}
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  ${tw`p-4`}
+  border-radius: 20px;
   margin: 10px;
+  background-color: white;
 `;
 
 const PostHeader = styled.header`
@@ -101,14 +112,14 @@ const PostHeader = styled.header`
 // `;
 
 const ProfileImage = styled.img`
-  max-w-full rounded-full
+  ${tw`max-w-full rounded-full`}
 `;
 const WriterName = styled.div`
   text-align: left;
 `;
 
 const CreateDate = styled.div`
-  text-sm text-slate-400
+  ${tw`text-sm text-slate-400`}
 `;
 
 const TodoContent = styled.div`

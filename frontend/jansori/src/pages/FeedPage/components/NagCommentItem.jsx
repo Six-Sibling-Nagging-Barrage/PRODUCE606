@@ -2,6 +2,7 @@ import React from 'react';
 import tw, { styled } from 'twin.macro';
 import likeIcon from '../../../assets/like_icon.avif';
 import lockIcon from '../../../assets/lock_icon.png';
+import { altImageUrl } from '../../../constants/image';
 
 const NagCommentItem = (props) => {
   const { isMemberNag, todoId, nag, toggleLike, toggleUnlock } = props;
@@ -14,10 +15,14 @@ const NagCommentItem = (props) => {
     toggleUnlock({ todoId, nagId: nag.nagId });
   };
 
+  const handleImgError = (e) => {
+    e.target.src = altImageUrl;
+  };
+
   return (
     <CommentContainer>
       <Profile>
-        <ProfileImg src={nag.nagMember.imageUrl} />
+        <ProfileImg src={nag.nagMember.imageUrl} onError={handleImgError} />
         <NickName>{nag.nagMember.nickname}</NickName>
       </Profile>
       <CommentContentWrapper>

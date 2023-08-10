@@ -7,6 +7,7 @@ import { SiSamsung } from 'react-icons/si';
 import { TbTicket } from 'react-icons/tb';
 import { Link } from 'react-router-dom';
 import { memberIdState, ticketState } from '../../states/user';
+import { altImageUrl } from '../../constants/image';
 
 import {
   isLoginState,
@@ -31,6 +32,10 @@ const NavBar = () => {
 
   const handleProfileClick = () => {
     setIsProfileModalOpen(!isProfileModalOpen);
+  };
+
+  const handleImgError = (e) => {
+    e.target.src = altImageUrl;
   };
 
   return (
@@ -61,7 +66,7 @@ const NavBar = () => {
                 <ul>
                   <li>
                     <button onClick={handleProfileClick}>
-                      <Avatar src={profileImg} alt="profile" />
+                      <Avatar src={profileImg} onError={handleImgError} />
                     </button>
                   </li>
 
@@ -259,7 +264,7 @@ const AfterLoginWrap = styled.div`
 `;
 
 const Avatar = styled.img`
-  ${tw`w-8 h-8 ml-3 mr-3 rounded-full border-2 border-violet-200`}
+  ${tw`w-8 h-8 ml-3 mr-3 rounded-full `}
 `;
 
 const TicketWrap = styled.div`

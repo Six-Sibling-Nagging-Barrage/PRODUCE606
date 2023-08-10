@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ProfileDetail from './components/ProfileDetail';
 import { styled } from 'twin.macro';
-import profileImg from '../../assets/profile_img.jpeg';
 import TabItem from './components/TabItem';
 import NagHistory from './components/NagHistory';
 import { getMemberProfile } from '../../apis/api/member';

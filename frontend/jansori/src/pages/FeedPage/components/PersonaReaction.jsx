@@ -3,6 +3,7 @@ import { styled } from 'twin.macro';
 import profileImg from '../../../assets/profileImg.png';
 import NagCommentItem from './NagCommentItem';
 import { createPersonaReaction } from '../../../apis/api/todo';
+import { altImageUrl } from '../../../constants/image';
 
 const PersonaReaction = (props) => {
   const {
@@ -38,6 +39,10 @@ const PersonaReaction = (props) => {
     setCurrentPostId(-1);
   };
 
+  const handleImgError = (e) => {
+    e.target.src = altImageUrl;
+  };
+
   return (
     <PersonaReactionWrapper>
       <Header>
@@ -62,7 +67,7 @@ const PersonaReaction = (props) => {
                 <img
                   className="w-10 h-10 rounded-full"
                   src={profileImg} // TODO: 캐릭터 이미지
-                  alt="Rounded avatar"
+                  onError={handleImgError}
                 />
                 <CountBadge>
                   {reaction.likeCount < 100 ? reaction.likeCount : '99+'}
