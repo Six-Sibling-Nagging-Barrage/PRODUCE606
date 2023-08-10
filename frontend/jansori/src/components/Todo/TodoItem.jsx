@@ -5,10 +5,12 @@ import HashTagItem from '../HashTag/HashTagItem';
 import { getTodoDetail } from '../../apis/api/todo';
 import moment from 'moment';
 import SnackBar from '../UI/SnackBar';
+import TodoDetail from './TodoDetail';
 
 const TodoItem = (props) => {
   const { currentTodo, updateTodoCompleteMutation } = props;
   const [isDetailTodoItem, setIsDetailTodoItem] = useState(false);
+  const [todoItemDetail, setTodoItemDetail] = useState([]);
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
 
@@ -23,13 +25,11 @@ const TodoItem = (props) => {
   const handleTodoDetail = () => {
     setIsDetailTodoItem(true);
     getTodoDetails(currentTodo.todoId);
-    // 현재 todo 상세 내용 저장하는 부분 넣기
   };
 
   const getTodoDetails = async (todoId) => {
     const data = await getTodoDetail(todoId);
-    console.log(data);
-    // todo 배열에 저장해서 넘겨주자
+    setTodoItemDetail(data.data);
   };
 
   const handleSnackBarClose = () => {
@@ -41,7 +41,7 @@ const TodoItem = (props) => {
     <TodoContainer>
       {isDetailTodoItem && (
         <Modal setIsModalOpen={setIsDetailTodoItem}>
-          <div>{currentTodo.content}</div>
+          <TodoDetail todoItemDetail={todoItemDetail} />
         </Modal>
       )}
       <TodoDone>
@@ -63,7 +63,9 @@ const TodoItem = (props) => {
       </TodoExtendContent>
       <TodoExtendContent>
         {/* 상세 보기 */}
-        <button onClick={handleTodoDetail}>📖</button>
+        <button onClick={handleTodoDetail} todoItemDetail={todoItemDetail}>
+          📖
+        </button>
       </TodoExtendContent>
       {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
     </TodoContainer>
