@@ -28,12 +28,13 @@ public class CorsFilter implements Filter {
       throws IOException, ServletException {
     HttpServletResponse response = (HttpServletResponse) res;
     HttpServletRequest request = (HttpServletRequest) req;
+
     response.setHeader("Access-Control-Allow-Origin", "*");
     response.setHeader("Access-Control-Allow-Credentials", "true");
-    response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
+    response.setHeader("Access-Control-Allow-Methods", "HEAD, POST, GET, OPTIONS, DELETE, PUT, PATCH");
     response.setHeader("Access-Control-Max-Age", "3600");
     response.setHeader("Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept, Key, Authorization");
+        "Origin, X-Requested-With, Content-Type, Accept, Key, Authorization, Referer, User-Agent, accept");
 
     if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
 
@@ -58,8 +59,10 @@ public class CorsFilter implements Filter {
     return new WebMvcConfigurerAdapter() {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("http://i9a606.p.ssafy.io")
-            .allowedMethods("GET", "POST", "PUT", "DELETE");
+        registry.addMapping("/**")
+            .allowedOrigins("http://i9a606.p.ssafy.io", "http://localhost:3000",
+                "https://i9a606.p.ssafy.io")
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS");
 
 
       }

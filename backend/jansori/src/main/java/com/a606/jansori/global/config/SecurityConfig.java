@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @RequiredArgsConstructor
@@ -46,8 +47,8 @@ public class SecurityConfig {
     configuration.setAllowedMethods(
         Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
     configuration.setAllowCredentials(true);
-    configuration.setAllowedHeaders(Arrays.asList("Authorization", "Requestor-Type"));
-    configuration.setExposedHeaders(Arrays.asList("X-Get-Header"));
+    configuration.setAllowedHeaders(Arrays.asList("Authorization", "accept", "Referer", "User-Agent"));
+    configuration.setExposedHeaders(Arrays.asList("X-Get-Header", "Authorization"));
     configuration.setMaxAge(3600L);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -72,13 +73,13 @@ public class SecurityConfig {
 
         .and()
         .authorizeRequests()
-        .antMatchers("/login/**").permitAll()
-        .antMatchers("/signup/**").permitAll()
-        .antMatchers("/h2-console/**").permitAll()
-        .antMatchers("/api/members/**").permitAll()
-        .antMatchers("/api/auth/**").permitAll()
-        .antMatchers("/api/storage/**").permitAll()
-        .antMatchers("/").permitAll()
+        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+        .antMatchers("/exception/**").permitAll()
+        .antMatchers("/auth/**").permitAll()
+        .antMatchers("/members/nickname").permitAll()
+        .antMatchers("/nags/main-page").permitAll()
+        .antMatchers("/health/**").permitAll()
+        .anyRequest().authenticated()
 
         .and()
         .csrf().disable()

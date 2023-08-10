@@ -98,7 +98,7 @@ public class AuthService {
 
     // 로그아웃 된 사용자
     RefreshToken refreshToken = refreshTokenRepository.findByEmail(authentication.getName())
-        .orElseThrow(MemberNotFoundException::new);
+        .orElseThrow(InvalidTokenException::new);
 
     // 토근 유저 정보 불일치
     if (!refreshToken.getValue().equals(tokenReqDto.getRefreshToken())) {
