@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { styled } from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import profileImg from '../../../assets/profileImg.png';
 import NagCommentItem from './NagCommentItem';
 import { createPersonaReaction } from '../../../apis/api/todo';
+import { altImageUrl } from '../../../constants/image';
+import { personas } from '../../../constants/persona';
 
 const PersonaReaction = (props) => {
   const {
@@ -38,6 +40,10 @@ const PersonaReaction = (props) => {
     setCurrentPostId(-1);
   };
 
+  const handleImgError = (e) => {
+    e.target.src = altImageUrl;
+  };
+
   return (
     <PersonaReactionWrapper>
       <Header>
@@ -59,24 +65,25 @@ const PersonaReaction = (props) => {
                   );
                 }}
               >
-                <img
-                  className="w-10 h-10 rounded-full"
-                  src={profileImg} // TODO: 캐릭터 이미지
-                  alt="Rounded avatar"
+                <PersonaImg
+                  src={personas[reaction.personaId - 1].imgUrl} // TODO: 캐릭터 이미지
+                  onError={handleImgError}
                 />
-                <CountBadge>
+                {/* <CountBadge>
                   {reaction.likeCount < 100 ? reaction.likeCount : '99+'}
-                </CountBadge>
+                </CountBadge> */}
               </PersonaProfile>
             );
           })}
         </PersonaCounter>
         {personaIndex === -1 ? (
-          <PersonaBio>캐릭터를 클릭해 잔소리를 해주세요.</PersonaBio>
+          <PersonaBio personaId={-1}>
+            캐릭터를 클릭해 잔소리를 해주세요.
+          </PersonaBio>
         ) : (
-          <PersonaBio>
-            <div>{personaInfo[personaIndex].name}</div>
-            <div>{personaInfo[personaIndex].bio}</div>
+          <PersonaBio personaId={personaIndex}>
+            <div>{personas[personaIndex].name}</div>
+            <div>{personas[personaIndex].bio}</div>
           </PersonaBio>
         )}
         <div>
@@ -91,8 +98,8 @@ const PersonaReaction = (props) => {
                   likeCount: reaction.likeCount,
                   content: reaction.content,
                   nagMember: {
-                    nickname: personaInfo[reaction.personaId - 1].name,
-                    imageUrl: personaInfo[reaction.personaId - 1].img,
+                    nickname: personas[reaction.personaId - 1].name,
+                    imageUrl: personas[reaction.personaId - 1].imgUrl,
                   },
                 }}
               />
@@ -106,13 +113,18 @@ const PersonaReaction = (props) => {
 
 const PersonaReactionWrapper = styled.div`
   position: fixed;
-  top: 100px;
-  right: 30px;
+  top: 85px;
+  right: 20px;
   display: flex;
+  max-width: 31%;
 `;
 
 const PersonaReactionContainer = styled.div`
-  width: 350px;
+  width: fit-content;
+  background-color: white;
+  padding: 10px 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(163, 163, 163, 0.2);
 `;
 
 const Header = styled.div`
@@ -125,10 +137,14 @@ const CloseBtn = styled.button`
   right: 10px;
 `;
 
+const PersonaImg = styled.img`
+  ${tw`w-16 h-16 rounded-full`}
+`;
+
 const PersonaCounter = styled.div`
   display: flex;
   justify-content: space-evenly;
-  margin: 15px 0;
+  margin: 10px 0 45px 0;
 `;
 
 const PersonaProfile = styled.div`
@@ -141,8 +157,8 @@ const PersonaProfile = styled.div`
 
 const CountBadge = styled.div`
   position: absolute;
-  top: -10px;
-  left: 30px;
+  top: 0px;
+  left: 50px;
   background-color: rgb(255, 121, 121);
   padding: 0 5px;
   border-radius: 15px;
@@ -150,21 +166,34 @@ const CountBadge = styled.div`
 `;
 
 const PersonaBio = styled.div`
-  margin-top: 5px;
   position: relative;
-  height: 80px;
+  height: fit-content;
   padding: 15px;
-  background-color: rgb(238, 238, 238);
+  background-color: rgb(244, 244, 244);
   border-radius: 10px;
+  & > div:first-child {
+    font-size: 15px;
+    font-weight: bold;
+  }
+  & > div:nth-child(2) {
+    font-size: 14px;
+  }
   &:after {
     content: '';
     position: absolute;
     top: 0;
-    left: 5%;
+    ${({ personaId }) => {
+      if (personaId === -1 || personaId === 0) return 'left: 7%;';
+      else if (personaId === 1) return 'left: 24%;';
+      else if (personaId === 2) return 'left: 41%;';
+      else if (personaId === 3) return 'left: 57%;';
+      else if (personaId === 4) return 'left: 74%;';
+      else if (personaId === 5) return 'left: 90%;';
+    }};
     width: 0;
     height: 0;
     border: 13px solid transparent;
-    border-bottom-color: rgb(238, 238, 238);
+    border-bottom-color: rgb(244, 244, 244);
     border-top: 0;
     border-right: 0;
     margin-left: -6.5px;
@@ -173,42 +202,3 @@ const PersonaBio = styled.div`
 `;
 
 export default PersonaReaction;
-
-const personaInfo = [
-  {
-    id: 1,
-    name: '캐릭터1',
-    img: profileImg,
-    bio: '캐릭터1의 설명입니다',
-  },
-  {
-    id: 2,
-    name: '캐릭터2',
-    img: profileImg,
-    bio: '캐릭터2의 설명입니다',
-  },
-  {
-    id: 3,
-    name: '캐릭터3',
-    img: profileImg,
-    bio: '캐릭터3의 설명입니다',
-  },
-  {
-    id: 4,
-    name: '캐릭터4',
-    img: profileImg,
-    bio: '캐릭터4의 설명입니다',
-  },
-  {
-    id: 5,
-    name: '캐릭터5',
-    img: profileImg,
-    bio: '캐릭터5의 설명입니다',
-  },
-  {
-    id: 6,
-    name: '캐릭터6',
-    img: profileImg,
-    bio: '캐릭터6의 설명입니다',
-  },
-];

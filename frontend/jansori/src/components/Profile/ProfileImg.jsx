@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import tw, { styled } from 'twin.macro';
+import { altImageUrl } from '../../constants/image';
 
 const ProfileImg = (props) => {
   const { editable, profileImg, setProfileImg, size } = props;
@@ -20,22 +21,21 @@ const ProfileImg = (props) => {
 
   const handleProfileImgUpload = (event) => {
     // console.log(URL.createObjectURL(event.target.files[0]));
-    if (!event.target.files[0]) {
-      // 업로드 취소하면 기본 이미지 세팅
-      return setNewProfileImg(
-        'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
-      );
-    }
+    if (!event.target.files[0]) return;
     setNewProfileImg(URL.createObjectURL(event.target.files[0]));
     setProfileImg(event.target.files[0]);
+  };
+
+  const handleImgError = (e) => {
+    e.target.src = altImageUrl;
   };
 
   return (
     <ProfileImgContainer size={size}>
       <img
         src={newProfileImg}
-        alt="Rounded avatar"
         onClick={handleProfileImgClick}
+        onError={handleImgError}
       />
       <input
         type="file"

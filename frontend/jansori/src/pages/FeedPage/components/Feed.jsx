@@ -183,6 +183,7 @@ const Feed = (props) => {
                 setPersonaReaction={setPersonaReaction}
                 toggleLike={updateLikeMutation.mutate}
                 toggleUnlock={updateUnlockMutation.mutate}
+                randomPersona={post.todoId % 6}
               />
             );
           })
@@ -209,7 +210,7 @@ const Feed = (props) => {
 };
 
 const FeedContainer = styled.div`
-  ${tw`w-2/5`}
+  width: 35%;
   @media (min-width: 990px) and (max-width: 1200px) {
     width: 50%;
   }

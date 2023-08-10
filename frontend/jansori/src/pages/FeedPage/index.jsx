@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Feed from './components/Feed';
-import { styled } from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import { getFollowingFeed, getSpecificFeed } from '../../apis/api/todo';
 import HashTag from '../../components/HashTag/HashTag';
 import { memberIdState, memberRoleState } from '../../states/user';
@@ -40,39 +40,45 @@ const FeedPage = () => {
   };
 
   return (
-    <FeedContainer>
-      <Left>
-        <Search>
-          {specificTag !== -1 && (
-            <Follow>
-              <Button
-                normal
-                onClick={handleFollowHashTag}
-                label={isFollowingTag(specificTag) ? '구독취소' : '구독하기'}
-              ></Button>
-            </Follow>
-          )}
-          <SearchBar>
-            <div>
-              <HashTag
-                editable={true}
-                hashTagLimit={1}
-                hashTagList={hashTagList}
-                setHashTagList={setHashTagList}
-                setSpecificTag={setSpecificTag}
-              />
-            </div>
-          </SearchBar>
-        </Search>
-      </Left>
-      <Feed
-        specificTag={specificTag}
-        getFeedData={specificTag === -1 ? getFollowingFeed : getSpecificFeed}
-      />
-      <Right></Right>
-    </FeedContainer>
+    <FeedBody>
+      <FeedContainer>
+        <Left>
+          <Search>
+            {specificTag !== -1 && (
+              <Follow>
+                <Button
+                  normal
+                  onClick={handleFollowHashTag}
+                  label={isFollowingTag(specificTag) ? '구독취소' : '구독하기'}
+                ></Button>
+              </Follow>
+            )}
+            <SearchBar>
+              <div>
+                <HashTag
+                  editable={true}
+                  hashTagLimit={1}
+                  hashTagList={hashTagList}
+                  setHashTagList={setHashTagList}
+                  setSpecificTag={setSpecificTag}
+                />
+              </div>
+            </SearchBar>
+          </Search>
+        </Left>
+        <Feed
+          specificTag={specificTag}
+          getFeedData={specificTag === -1 ? getFollowingFeed : getSpecificFeed}
+        />
+        <Right></Right>
+      </FeedContainer>
+    </FeedBody>
   );
 };
+
+const FeedBody = styled.div`
+  background-color: #f4f4fa;
+`;
 
 const FeedContainer = styled.div`
   display: flex;
@@ -82,7 +88,7 @@ const FeedContainer = styled.div`
 
 const Left = styled.div`
   position: relative;
-  width: 30%;
+  width: 32%;
 `;
 
 const Search = styled.div`
@@ -90,7 +96,7 @@ const Search = styled.div`
   display: flex;
   position: absolute;
   top: 10px;
-  right: 10px;
+  right: 40px;
 `;
 
 const Follow = styled.div`
@@ -98,13 +104,28 @@ const Follow = styled.div`
 `;
 
 const SearchBar = styled.div`
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
-  border-radius: 5px;
+  border-radius: 20px;
   width: fit-content;
+  position: relative;
+  background: #ffffff;
+  border-radius: 0.4em;
+  &:after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border: 25px solid transparent;
+    border-left-color: #ffffff;
+    border-right: 0;
+    margin-top: -25px;
+    margin-right: -23px;
+  }
 `;
 
 const Right = styled.div`
-  width: 30%;
+  width: 32%;
 `;
 
 export default FeedPage;
