@@ -4,15 +4,18 @@ import Modal from '../UI/Modal';
 import HashTagItem from '../HashTag/HashTagItem';
 import { getTodoDetail } from '../../apis/api/todo';
 import moment from 'moment';
+import SnackBar from '../UI/SnackBar';
 
 const TodoItem = (props) => {
   const { currentTodo, updateTodoCompleteMutation } = props;
   const [isDetailTodoItem, setIsDetailTodoItem] = useState(false);
+  const [showSnackBar, setShowSnackBar] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState('');
 
   const handleTodoClick = () => {
     if (currentTodo.todoAt !== moment().format('YYYY-MM-DD')) {
-      // console.log('다른 날에는 안됨');
-      return;
+      setSnackBarMessage('투두 달성 여부는 당일에만 변경 가능합니다!');
+      return setShowSnackBar(true);
     }
     updateTodoCompleteMutation(currentTodo.todoId);
   };
@@ -27,6 +30,11 @@ const TodoItem = (props) => {
     const data = await getTodoDetail(todoId);
     console.log(data);
     // todo 배열에 저장해서 넘겨주자
+  };
+
+  const handleSnackBarClose = () => {
+    setShowSnackBar(false);
+    setSnackBarMessage('');
   };
 
   return (
@@ -57,6 +65,7 @@ const TodoItem = (props) => {
         {/* 상세 보기 */}
         <button onClick={handleTodoDetail}>📖</button>
       </TodoExtendContent>
+      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
     </TodoContainer>
   );
 };
