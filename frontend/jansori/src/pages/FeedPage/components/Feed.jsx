@@ -5,7 +5,7 @@ import PersonaReaction from './PersonaReaction';
 import TodoPost from './TodoPost';
 import { useQueryClient } from '@tanstack/react-query';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
-import { updateLikeNag } from '../../../apis/api/nag';
+import { updateLikeNag, updateNagUnlock } from '../../../apis/api/nag';
 
 const Feed = (props) => {
   const { specificTag, getFeedData } = props;
@@ -81,17 +81,61 @@ const Feed = (props) => {
                 if (post.id === postId) {
                   return {
                     ...post,
-                    isLiked: !post.nag.isLiked,
-                    likeCount: post.nag.isLiked
-                      ? post.nag.likeCount - 1
-                      : post.nag.likeCount + 1,
+                    nag: {
+                      ...post.nag,
+                      isLiked: !post.nag.isLiked,
+                      likeCount: post.nag.isLiked
+                        ? post.nag.likeCount - 1
+                        : post.nag.likeCount + 1,
+                    },
                   };
                 }
                 return post;
               }),
             };
           });
-          return { ...oldData, pages: newData };
+        });
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(['feed']);
+      },
+      onError: (err, variables, context) => {
+        queryClient.setQueryData(['feed'], context?.prevFeed);
+      },
+    }
+  );
+
+  const toggleUnlock = async (nagId) => {
+    // 잔소리 초성 해제 api
+    const data = await updateNagUnlock(nagId);
+    console.log(data);
+    return data;
+  };
+
+  const updateUnlockMutation = useMutation(
+    ({ postId, nagId }) => toggleUnlock(nagId),
+    {
+      onMutate: async ({ postId, nagId }) => {
+        await queryClient.cancelQueries(['feed']);
+        const prevFeed = queryClient.getQueryData(['feed']);
+        queryClient.setQueryData(['feed'], (oldData) => {
+          const newData = oldData?.pages?.map((page) => {
+            return {
+              ...page,
+              feed: page?.feed?.map((post) => {
+                if (post.id === postId) {
+                  return {
+                    ...post,
+                    nag: {
+                      ...post.nag,
+                      unlocked: true,
+                    },
+                  };
+                }
+                return post;
+              }),
+            };
+          });
         });
       },
       onSuccess: () => {
@@ -117,6 +161,7 @@ const Feed = (props) => {
                 setCurrentPostId={setCurrentPostId}
                 setPersonaReaction={setPersonaReaction}
                 toggleLike={updateLikeMutation.mutate}
+                toggleUnlock={updateUnlockMutation.mutate}
               />
             );
           })

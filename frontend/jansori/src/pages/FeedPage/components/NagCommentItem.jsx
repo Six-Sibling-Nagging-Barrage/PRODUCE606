@@ -1,12 +1,17 @@
 import React from 'react';
 import tw, { styled } from 'twin.macro';
 import likeIcon from '../../../assets/like_icon.avif';
+import lockIcon from '../../../assets/lock_icon.png';
 
 const NagCommentItem = (props) => {
-  const { isMemberNag, todoId, nag, toggleLike } = props;
+  const { isMemberNag, todoId, nag, toggleLike, toggleUnlock } = props;
 
   const handleLikeClick = () => {
     toggleLike({ todoId, nagId: nag.nagId });
+  };
+
+  const handleUnlockNag = async () => {
+    toggleUnlock({ todoId, nagId: nag.nagId });
   };
 
   return (
@@ -19,20 +24,27 @@ const NagCommentItem = (props) => {
         <CommentContent>{nag.content}</CommentContent>
       </CommentContentWrapper>
       {isMemberNag && (
-        <LikeButton onClick={handleLikeClick}>
-          {nag.isLiked ? (
-            <LikeImg
-              src={likeIcon}
-              filter="invert(44%) sepia(58%) saturate(3914%) hue-rotate(335deg) brightness(100%) contrast(103%);"
-            />
-          ) : (
-            <LikeImg
-              src={likeIcon}
-              filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
-            />
+        <ButtonGroup>
+          {!nag.unlocked && (
+            <ButtonItem onClick={() => handleUnlockNag(nag.nagId)}>
+              <UnlockImg src={lockIcon} />
+            </ButtonItem>
           )}
-          <div>{nag.likeCount}</div>
-        </LikeButton>
+          <ButtonItem onClick={handleLikeClick}>
+            {nag.isLiked ? (
+              <LikeImg
+                src={likeIcon}
+                filter="invert(44%) sepia(58%) saturate(3914%) hue-rotate(335deg) brightness(100%) contrast(103%);"
+              />
+            ) : (
+              <LikeImg
+                src={likeIcon}
+                filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
+              />
+            )}
+            <div>{nag.likeCount}</div>
+          </ButtonItem>
+        </ButtonGroup>
       )}
     </CommentContainer>
   );
@@ -74,17 +86,24 @@ const CommentContent = styled.div`
   transform: translateY(-50%);
 `;
 
-const LikeButton = styled.button`
+const ButtonGroup = styled.div`
   position: absolute;
+  display: flex;
   right: 0;
   height: 64px;
-  & > img {
-    width: 25px;
-  }
+`;
+
+const ButtonItem = styled.button`
+  margin: 0 5px;
+`;
+
+const UnlockImg = styled.img`
+  width: 30px;
 `;
 
 const LikeImg = styled.img`
   filter: ${(props) => props.filter};
+  width: 25px;
 `;
 
 export default NagCommentItem;
