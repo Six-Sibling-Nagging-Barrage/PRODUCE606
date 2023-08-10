@@ -4,6 +4,7 @@ import com.a606.jansori.global.auth.handler.JwtAccessDeniedHandler;
 import com.a606.jansori.global.auth.handler.JwtAuthenticationEntryPoint;
 import com.a606.jansori.global.auth.util.TokenProvider;
 import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @RequiredArgsConstructor
@@ -42,12 +44,24 @@ public class SecurityConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
 
-    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://i9a606.p.ssafy.io"));
+    configuration.setAllowedOrigins(
+        List.of("http://localhost:3000", "http://i9a606.p.ssafy.io", "https://i9a606.p.ssafy.io"));
+
     configuration.setAllowedMethods(
-        Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
+        List.of("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
+
+//    configuration.setAllowedHeaders(
+//        List.of("Authorization", "Content-Type", "X-Requested-With", "accept", "Origin",
+//            "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+//
+//    configuration.setExposedHeaders(
+//        List.of("X-Get-Header", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials",
+//            "Content-Type", "Authorization"));
+
+    configuration.setAllowedHeaders(List.of("*"));
+    configuration.setExposedHeaders(List.of("*"));
+
     configuration.setAllowCredentials(true);
-    configuration.setAllowedHeaders(Arrays.asList("Authorization", "Requestor-Type"));
-    configuration.setExposedHeaders(Arrays.asList("X-Get-Header"));
     configuration.setMaxAge(3600L);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -64,7 +78,6 @@ public class SecurityConfig {
         .accessDeniedHandler(jwtAccessDeniedHandler)
 
         .and()
-        .formLogin().disable()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
         .and()
@@ -72,15 +85,19 @@ public class SecurityConfig {
 
         .and()
         .authorizeRequests()
+        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
         .antMatchers("/login/**").permitAll()
         .antMatchers("/exception/**").permitAll()
         .antMatchers("/signup/**").permitAll()
         .antMatchers("/auth/**").permitAll()
         .antMatchers("/storage/**").permitAll()
+        .antMatchers("/nags/main-page").permitAll()
         .anyRequest().authenticated()
+
 
         .and()
         .csrf().disable()
+        .formLogin().disable()
         .headers().frameOptions().disable()
 
         .and()

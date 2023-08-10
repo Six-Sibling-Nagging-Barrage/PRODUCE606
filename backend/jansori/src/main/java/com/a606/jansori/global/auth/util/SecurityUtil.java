@@ -22,7 +22,6 @@ public class SecurityUtil {
     final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     if (authentication == null || authentication.getName() == null) {
-      log.error("security util error : {}", authentication.getName());
       throw new UnauthorizedException();
     }
 
