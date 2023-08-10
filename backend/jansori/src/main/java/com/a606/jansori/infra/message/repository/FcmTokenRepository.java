@@ -9,8 +9,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FcmTokenRepository extends JpaRepository<FcmToken, Long> {
-
-  Optional<FcmToken> findFcmTokenByMember(Member member);
   List<FcmToken> findAllByMember(Member member);
 
 }
