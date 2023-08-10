@@ -98,7 +98,7 @@ public class NotificationService {
   @EventListener(classes = {PostTodoEvent.class})
   public void createNotificationByWriteMemberNagOnTodo(final PostTodoEvent postTodoEvent){
     Todo todo = postTodoEvent.getTodo();
-    Nag nag = postTodoEvent.getNag();
+    Nag nag = postTodoEvent.getTodo().getNag();
     NotificationType notificationType = postTodoEvent.getNotificationType();
 
     final Notification notification = Notification.builder()

@@ -23,6 +23,7 @@ import com.a606.jansori.domain.todo.dto.GetTodoMonthlyExistenceResDto;
 import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
 import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
 import com.a606.jansori.domain.todo.dto.PostTodoResDto;
+import com.a606.jansori.domain.todo.event.NagGenerateEvent;
 import com.a606.jansori.domain.todo.event.PostTodoEvent;
 import com.a606.jansori.domain.todo.event.TodoAccomplishmentEvent;
 import com.a606.jansori.domain.todo.exception.TodoBusinessException;
@@ -70,7 +71,8 @@ public class TodoService {
 
     Todo todo = postTodoReqDto.getTodoWith(member);
 
-    NotificationType notificationType = notificationTypeRepository.findById(1L).orElseThrow();
+    NotificationType notificationType1 = notificationTypeRepository.findById(1L).orElseThrow();
+    NotificationType notificationType2 = notificationTypeRepository.findById(2L).orElseThrow();
 
     if (postTodoReqDto.getTags().isEmpty() || postTodoReqDto.getTags().size() > 3) {
       throw new TodoBusinessException();
@@ -95,10 +97,16 @@ public class TodoService {
       todoPersona.setTodo(todo);
     });
 
-    // 알림설정이 수신으로 되어 있을 경우에만 알림 이벤트 발생
-    if(notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member)
+    // 투두 주인의 알림설정이 수신으로 되어 있을 경우에  알림 이벤트 발생
+    if(notificationSettingRepository.findByNotificationTypeAndMember(notificationType1, member)
         .getActivated()){
-      publisher.publishEvent(new PostTodoEvent(todo, todo.getNag(), notificationType));
+      publisher.publishEvent(new PostTodoEvent(todo, notificationType1));
+    }
+
+    // 잔소리 주인의 알림설정이 수신으로 되어 있을 경우에 알림 이벤트 발생
+    if(notificationSettingRepository.findByNotificationTypeAndMember(notificationType2,
+        todo.getNag().getMember()).getActivated()){
+      publisher.publishEvent(new NagGenerateEvent(todo, notificationType2));
     }
 
     return PostTodoResDto.from(todoRepository.save(todo));

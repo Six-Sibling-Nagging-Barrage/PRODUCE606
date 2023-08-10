@@ -59,7 +59,7 @@ public class TodoPersonaService {
 
     Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
 
-    NotificationType notificationType = notificationTypeRepository.findById(2L).orElseThrow();
+    NotificationType notificationType = notificationTypeRepository.findById(1L).orElseThrow();
 
     TodoPersona todoPersona = todoPersonaRepository.findById(todoPersonaId)
         .orElseThrow(TodoPersonaNotFoundException::new);
