@@ -79,6 +79,12 @@ public class Member extends BaseTimeEntity {
     return Objects.hash(getId());
   }
 
+  public Member(String email, String password, MemberRole memberRole) {
+    this.email = email;
+    this.password = password;
+    this.memberRole = memberRole;
+  }
+
   public void update(String nickname, String bio, String imageUrl, MemberRole role) {
     this.nickname = nickname;
     this.bio = bio;
@@ -92,9 +98,7 @@ public class Member extends BaseTimeEntity {
     }
   }
 
-  public Member(String email, String password, MemberRole memberRole){
-    this.email = email;
-    this.password = password;
-    this.memberRole = memberRole;
+  public void issuedTicketByCreateNag() {
+    this.ticket += 1;
   }
 }

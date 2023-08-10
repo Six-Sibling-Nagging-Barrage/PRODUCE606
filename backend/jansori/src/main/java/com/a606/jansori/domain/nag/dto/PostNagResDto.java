@@ -8,4 +8,6 @@ import lombok.Getter;
 public class PostNagResDto {
 
     private Long nagId;
+
+    private Long ticketCount;
 }

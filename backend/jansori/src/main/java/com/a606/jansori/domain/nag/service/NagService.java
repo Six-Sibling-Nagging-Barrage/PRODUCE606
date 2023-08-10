@@ -66,9 +66,14 @@ public class NagService {
     Member member = securityUtil.getCurrentMemberByToken();
     String preview = previewUtil.convertNagToPreview(postNagReqDto.getContent());
 
+    member.issuedTicketByCreateNag();
     Nag nag = Nag.ofMemberWithNagContentAndPreview(member, tag, postNagReqDto.getContent(),
         preview);
-    return PostNagResDto.builder().nagId(nagRepository.save(nag).getId()).build();
+
+    return PostNagResDto.builder()
+        .nagId(nagRepository.save(nag).getId())
+        .ticketCount(member.getTicket())
+        .build();
   }
 
   @Transactional
