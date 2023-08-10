@@ -1,26 +1,36 @@
 import React from 'react';
 import tw, { styled } from 'twin.macro';
+import HashTagItem from '../HashTag/HashTagItem';
 import { useRecoilState } from 'recoil';
+import { updateTodoComplete } from '../../apis/api/todo';
 import { todoListState } from '../../states/todo';
 
 const TodoItem = (props) => {
-  const { currentTodo, onTodoStatusChange, index } = props;
+  const { currentTodo, onClick } = props;
   const [todoList, setTodoList] = useRecoilState(todoListState);
 
   const handleTodoClick = () => {
-    console.log(todoList);
-    onTodoStatusChange(index);
+    onClick();
   };
 
   return (
     <TodoContainer>
-      <TodoDone onClick={handleTodoClick}>
-        <div className='finished'>{currentTodo.finished ? '✅' : '❌'}</div>
+      <TodoDone>
+        <div className='finished' onClick={handleTodoClick}>
+          {currentTodo.finished ? '✅' : '❌'}
+        </div>
       </TodoDone>
       <TodoContent>
-        <div className='todo'>{currentTodo.content}</div>
-        <HashTagContent>해시태그</HashTagContent>
+        <TodoContentContainer>{currentTodo.content}</TodoContentContainer>
+        <HashTagContent>
+          {currentTodo.tags?.map((tag) => {
+            return <HashTagItem key={tag.tagId} hashTag={tag} editable={false} />;
+          })}
+        </HashTagContent>
       </TodoContent>
+      <TodoExtendContent>
+        <button>🔍</button>
+      </TodoExtendContent>
     </TodoContainer>
   );
 };
@@ -46,10 +56,23 @@ const TodoDone = styled.button`
 `;
 
 const TodoContent = styled.div`
-  ${tw`col-span-4
+  ${tw`col-span-3
   text-left`}
 `;
 
+const TodoContentContainer = styled.div`
+  ${tw`ml-1`}
+`;
+
 const HashTagContent = styled.div`
-  ${tw`text-xs`}
+  ${tw`text-xs flex`}
+`;
+
+const TodoExtendContent = styled.div`
+  ${tw`col-span-1
+  rounded-lg
+  mr-2
+items-center
+my-auto
+`}
 `;

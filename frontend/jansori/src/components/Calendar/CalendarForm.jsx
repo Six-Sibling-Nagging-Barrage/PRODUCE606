@@ -114,10 +114,9 @@ const NotDot = styled.div`
 const StyledCalendar = styled(Calendar)`
   ${tw`
     border-2
-    border-gray-300
+    border-gray-200
     py-5
     rounded-lg
-    shadow-sm
     bg-white
     w-full
   `}

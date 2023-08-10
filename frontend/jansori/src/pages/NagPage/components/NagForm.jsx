@@ -96,7 +96,7 @@ const NagForm = () => {
                     📛 상처를 주는 말 말고 자극 받을 수 있는 말을 적어주세요! 📛
                   </ErrorMessage>
                 ) : checkSubmitted && hashTagList.length === 0 ? (
-                  <ErrorMessage>🖋 해시태그를 입력해야 합니다 🖋</ErrorMessage>
+                  <ErrorMessage>✒️ 해시태그를 입력해야 합니다 ✒️</ErrorMessage>
                 ) : (
                   <ErrorMessage>💦 나쁜 말은 적지 않도록 항상 기억해주세요!! 💦</ErrorMessage>
                 )}
