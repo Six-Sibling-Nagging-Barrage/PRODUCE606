@@ -35,7 +35,7 @@ public class MemberController {
   // 닉네임 중복 검사
   @GetMapping("/nickname")
   public EnvelopeResponse<GetDuplicateNicknameResDto> checkNicknameAvailable(
-      @RequestBody GetDuplicateNicknameReqDto getDuplicateNicknameReqDto) {
+      @Valid GetDuplicateNicknameReqDto getDuplicateNicknameReqDto) {
 
     return EnvelopeResponse.<GetDuplicateNicknameResDto>builder()
         .data(memberService.checkNicknameIsDuplicated(getDuplicateNicknameReqDto))
