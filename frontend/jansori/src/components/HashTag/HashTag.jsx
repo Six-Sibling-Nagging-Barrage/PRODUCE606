@@ -14,9 +14,8 @@ const HashTag = (props) => {
 
   const [hashTagInput, setHashTagInput] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const [hashTagExists, setHashTagExists] = useState(false);
   const [hashTagCount, setHashTagCount] = useState(0);
-  const [currentHashTag, setCurrentHashTag] = useState(null);
+  const [autoCompleteList, setAutoCompleteList] = useState([]);
 
   useEffect(() => {
     if (!hashTagList) return;
@@ -32,8 +31,11 @@ const HashTag = (props) => {
     if (event.key === 'Enter') {
       event.preventDefault();
 
-      if (hashTagExists) {
-        addHashTag(currentHashTag);
+      const findTag = autoCompleteList.find(
+        (tag) => tag.tagName === hashTagInput
+      );
+      if (findTag) {
+        addHashTag(findTag);
         setIsOpen(false);
       }
     }
@@ -80,9 +82,9 @@ const HashTag = (props) => {
           setSearchValue={setHashTagInput}
           setIsOpen={setIsOpen}
           setSpecificTag={setSpecificTag}
-          setExists={setHashTagExists}
           addHashTag={addHashTag}
-          setCurrentHashTag={setCurrentHashTag}
+          autoCompleteList={autoCompleteList}
+          setAutoCompleteList={setAutoCompleteList}
         />
       )}
     </>
