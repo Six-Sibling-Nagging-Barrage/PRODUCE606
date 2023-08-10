@@ -13,6 +13,7 @@ import {
   memberInfoState,
   memberRoleState,
   memberIdState,
+  ticketState,
 } from '../../states/user';
 import { useNavigate } from 'react-router-dom';
 import { validateEmail } from '../../utils/validate';
@@ -32,6 +33,7 @@ const LoginPage = () => {
   const setMemberId = useSetRecoilState(memberIdState);
   const setMemberRefreshToken = useSetRecoilState(memberRefreshTokenState);
   const setmemberTokenExp = useSetRecoilState(memberTokenExpState);
+  const setTicket = useSetRecoilState(ticketState);
 
   const [loginError, setLoginError] = useState(false);
 
@@ -55,9 +57,9 @@ const LoginPage = () => {
         email: res.data.email,
         nickname: res.data.nickname,
         imageUrl: res.data.imageUrl,
-        ticket: res.data.ticket,
       });
       setMemberId(res.data.memberId);
+      setTicket(res.data.ticket);
       if (res.data.memberRole === 'GUEST') {
         navigate('/initialprofile');
       } else navigate('/');

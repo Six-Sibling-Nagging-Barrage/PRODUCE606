@@ -6,9 +6,13 @@ import { AiFillBell } from 'react-icons/ai';
 import { SiSamsung } from 'react-icons/si';
 import { TbTicket } from 'react-icons/tb';
 import { Link } from 'react-router-dom';
-import { memberIdState } from '../../states/user';
+import { memberIdState, ticketState } from '../../states/user';
 
-import { isLoginState, profileImgState, memberNameState } from '../../states/user';
+import {
+  isLoginState,
+  profileImgState,
+  memberNameState,
+} from '../../states/user';
 import DropdownProfileMenu from './DropdownProfileMenu';
 
 const NavBar = () => {
@@ -19,6 +23,7 @@ const NavBar = () => {
   const isLogin = useRecoilValue(isLoginState);
   const profileImg = useRecoilValue(profileImgState);
   const memberId = useRecoilValue(memberIdState);
+  const ticket = useRecoilValue(ticketState);
 
   const handleMenuClick = () => {
     setIsToggleOpen(!isToggleOpen);
@@ -33,8 +38,8 @@ const NavBar = () => {
       <Nav>
         {/* 로고 들어가는 부분 시작 */}
         <NavWrap>
-          <Logo href='/' onClick={() => setIsToggleOpen(false)}>
-            <SiSamsung size='50' />
+          <Logo href="/" onClick={() => setIsToggleOpen(false)}>
+            <SiSamsung size="50" />
             <LogoText>육남매 잔소리</LogoText>
           </Logo>
           {/* 오른쪽 로그인 버튼 부분 시작*/}
@@ -50,13 +55,13 @@ const NavBar = () => {
                       <TbTicket />
                     </TicketItemLogo>
                   </TicketItem>
-                  <TicketItem>137</TicketItem>
+                  <TicketItem>{ticket}</TicketItem>
                 </TicketWrap>
 
                 <ul>
                   <li>
                     <button onClick={handleProfileClick}>
-                      <Avatar src={profileImg} alt='profile' />
+                      <Avatar src={profileImg} alt="profile" />
                     </button>
                   </li>
 
@@ -71,32 +76,32 @@ const NavBar = () => {
               <>
                 <NavItemsUl>
                   <li>
-                    <NavItem to='/login'>로그인</NavItem>
+                    <NavItem to="/login">로그인</NavItem>
                   </li>
                   <li>
-                    <NavItem to='/signup'>회원가입</NavItem>
+                    <NavItem to="/signup">회원가입</NavItem>
                   </li>
                 </NavItemsUl>
               </>
             )}
             {/* 화면 작아졌을 때 햄버거 icon 시작 */}
             <HamburgerButton
-              type='button'
-              aria-controls='navbar-sticky'
+              type="button"
+              aria-controls="navbar-sticky"
               aria-expanded={isToggleOpen}
               onClick={handleMenuClick}
             >
-              <span className='sr-only'>Open</span>
-              <RxHamburgerMenu className='w-5 h-5' aria-hidden='true' />
+              <span className="sr-only">Open</span>
+              <RxHamburgerMenu className="w-5 h-5" aria-hidden="true" />
             </HamburgerButton>
             {/* 화면 작아졌을 때 햄버거 icon 끝 */}
           </RightButtons>
           {/* 오른쪽 로그인 버튼 부분 끝*/}
           {/* 네비게이션 리스트 부분 시작 */}
-          <NavItems id='navbar-sticky' isToggleOpen={isToggleOpen}>
+          <NavItems id="navbar-sticky" isToggleOpen={isToggleOpen}>
             <NavItemsUl>
               <li>
-                <NavItem to='/feed' onClick={() => setIsToggleOpen(false)}>
+                <NavItem to="/feed" onClick={() => setIsToggleOpen(false)}>
                   Feed
                 </NavItem>
               </li>
@@ -109,12 +114,15 @@ const NavBar = () => {
                 </NavItem>
               </li>
               <li>
-                <NavItem to='/nagbox' onClick={() => setIsToggleOpen(false)}>
+                <NavItem to="/nagbox" onClick={() => setIsToggleOpen(false)}>
                   잔소리함
                 </NavItem>
               </li>
               <li>
-                <NavItem to='characterinfo' onClick={() => setIsToggleOpen(false)}>
+                <NavItem
+                  to="characterinfo"
+                  onClick={() => setIsToggleOpen(false)}
+                >
                   About Us
                 </NavItem>
               </li>
