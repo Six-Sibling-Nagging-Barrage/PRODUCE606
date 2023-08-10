@@ -88,8 +88,8 @@ public class NagService {
   @Transactional
   public PostNagLikeResDto toggleNagLike(Long nagId) {
     Nag nag = nagRepository.findById(nagId).orElseThrow(NagNotFoundException::new);
-//    Member member = securityUtil.getCurrentMemberByToken();
-    Member member = memberRepository.findById(11L).orElseThrow();
+    Member member = securityUtil.getCurrentMemberByToken();
+//    Member member = memberRepository.findById(11L).orElseThrow();
     Optional<NagLike> nagLike = nagLikeRepository.findNagLikeByNagAndMember(nag, member);
 
     nagLike.ifPresentOrElse(like -> decreaseNagLike(nag, like),

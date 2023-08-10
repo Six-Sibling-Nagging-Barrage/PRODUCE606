@@ -96,7 +96,8 @@ public class TodoService {
     });
 
     // 알림설정이 수신으로 되어 있을 경우에만 알림 이벤트 발생
-    if(notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member).getActivated()){
+    if(notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member)
+        .getActivated()){
       publisher.publishEvent(new PostTodoEvent(todo, todo.getNag(), notificationType));
     }
 
@@ -151,9 +152,10 @@ public class TodoService {
       throw new TodoUnauthorizedException();
     }
 
-    // 알림 수신 상태이고 투두 미완료 상태일 때만 알림 이벤트 발생
+    // 알림 수신 상태이고 투두 미완료 상태에서 완료로 바뀔 때만 알림 이벤트 발생
     if(notificationSettingRepository.
-            findByNotificationTypeAndMember(notificationType, member).getActivated() && !todo.getFinished()) {
+            findByNotificationTypeAndMember(notificationType, todo.getNag().getMember()).getActivated()
+        && !todo.getFinished()) {
       publisher.publishEvent(new TodoAccomplishmentEvent(todo, notificationType));
     }
 

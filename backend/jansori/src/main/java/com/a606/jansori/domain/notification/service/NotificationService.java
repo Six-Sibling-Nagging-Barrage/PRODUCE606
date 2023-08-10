@@ -14,7 +14,10 @@ import com.a606.jansori.domain.notification.repository.NotificationBoxRepository
 import com.a606.jansori.domain.notification.repository.NotificationRepository;
 import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
 import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
+import com.a606.jansori.domain.persona.domain.PersonaReaction;
+import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.domain.todo.domain.Todo;
+import com.a606.jansori.domain.todo.event.PostPersonaReactionEvent;
 import com.a606.jansori.domain.todo.event.PostTodoEvent;
 import com.a606.jansori.domain.todo.event.TodoAccomplishmentEvent;
 import com.a606.jansori.global.auth.util.SecurityUtil;
@@ -64,6 +67,34 @@ public class NotificationService {
     return patchNotificationsResDtoFrom(size, readAt, pagedNotifications);
   }
 
+  private Slice<Notification> getPagedNotifications(Member member, Long cursor, Integer size) {
+
+    Pageable pageable = PageRequest.of(0, size);
+
+    return cursor != null ? notificationRepository
+        .findNotificationByReceiverAndLessThanCursorOrderByIdDesc(
+            member, cursor, pageable)
+        : notificationRepository.findByReceiverOrderByIdDesc(member, pageable);
+  }
+
+  private PatchNotificationsResDto patchNotificationsResDtoFrom(Integer size,
+      LocalDateTime lastReadAt,
+      Slice<Notification> pagedNotifications) {
+
+    Boolean hasNext = pagedNotifications.hasNext();
+    Long nextCursor = hasNext ? pagedNotifications.getContent().get(size - 1).getId() : null;
+    List<Notification> notifications = pagedNotifications.getContent();
+
+    return PatchNotificationsResDto.builder()
+        .notifications(notifications.stream()
+            .map(NotificationDto::from)
+            .collect(Collectors.toList()))
+        .lastReadAt(lastReadAt)
+        .nextCursor(nextCursor)
+        .hasNext(hasNext)
+        .build();
+  }
+
   @EventListener(classes = {PostTodoEvent.class})
   public void createNotificationByWriteMemberNagOnTodo(final PostTodoEvent postTodoEvent){
     Todo todo = postTodoEvent.getTodo();
@@ -72,7 +103,8 @@ public class NotificationService {
 
     final Notification notification = Notification.builder()
             .notificationType(notificationType)
-            .content(nag.getMember().getNickname() + "님이 " + "\"" + todo.getContent() + "\"에 잔소리를 남겼습니다.")
+            .content(nag.getMember().getNickname() + "님이 "
+                + "\"" + todo.getContent() + "\"에 잔소리를 남겼습니다.")
             .talkerId(nag.getMember().getId())
             .talkerType(TalkerType.MEMBER)
             .receiver(todo.getMember())
@@ -81,10 +113,23 @@ public class NotificationService {
     notificationRepository.save(notification);
   }
 
-//  @EventListener(classes = {WritePersonaNagOnTodoEvent.class})
-//  public void createNotificationByWritePersonaNagOnTodo(final WritePersonaNagOnTodoEvent writePersonaNagOnTodoEvent){
-//
-//  }
+  @EventListener(classes = {PostPersonaReactionEvent.class})
+  public void createNotificationByWritePersonaNagOnTodo(final PostPersonaReactionEvent postPersonaReactionEvent){
+
+    TodoPersona todoPersona = postPersonaReactionEvent.getTodoPersona();
+    NotificationType notificationType = postPersonaReactionEvent.getNotificationType();
+
+    final Notification notification = Notification.builder()
+        .notificationType(notificationType)
+        .content(todoPersona.getPersona().getName()+"가 \""
+            + todoPersona.getTodo().getContent() + "\"에 잔소리를 남겼습니다.")
+        .talkerId(todoPersona.getPersona().getId())
+        .talkerType(TalkerType.PERSONA)
+        .receiver(todoPersona.getTodo().getMember())
+        .build();
+
+    notificationRepository.save(notification);
+  }
 
   @EventListener(classes = {NagLikeEvent.class})
   public void createNotificationByNagLike(final NagLikeEvent nagLikeEvent){
@@ -120,31 +165,4 @@ public class NotificationService {
     notificationRepository.save(notification);
   }
 
-  private Slice<Notification> getPagedNotifications(Member member, Long cursor, Integer size) {
-
-    Pageable pageable = PageRequest.of(0, size);
-
-    return cursor != null ? notificationRepository
-        .findNotificationByReceiverAndLessThanCursorOrderByIdDesc(
-            member, cursor, pageable)
-        : notificationRepository.findByReceiverOrderByIdDesc(member, pageable);
-  }
-
-  private PatchNotificationsResDto patchNotificationsResDtoFrom(Integer size,
-      LocalDateTime lastReadAt,
-      Slice<Notification> pagedNotifications) {
-
-    Boolean hasNext = pagedNotifications.hasNext();
-    Long nextCursor = hasNext ? pagedNotifications.getContent().get(size - 1).getId() : null;
-    List<Notification> notifications = pagedNotifications.getContent();
-
-    return PatchNotificationsResDto.builder()
-        .notifications(notifications.stream()
-            .map(NotificationDto::from)
-            .collect(Collectors.toList()))
-        .lastReadAt(lastReadAt)
-        .nextCursor(nextCursor)
-        .hasNext(hasNext)
-        .build();
-  }
 }
