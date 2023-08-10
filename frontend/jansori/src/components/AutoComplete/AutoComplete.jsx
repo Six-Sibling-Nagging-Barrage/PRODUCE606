@@ -8,12 +8,10 @@ const AutoComplete = (props) => {
     setSearchValue,
     setIsOpen,
     setSpecificTag,
-    setExists,
     addHashTag,
-    setCurrentHashTag,
+    autoCompleteList,
+    setAutoCompleteList,
   } = props;
-
-  const [autoCompleteList, setAutoCompleteList] = useState([]);
 
   useEffect(() => {
     let timerId;
@@ -25,19 +23,9 @@ const AutoComplete = (props) => {
       timerId = setTimeout(async () => {
         // 태그 자동완성 검색 api 호출
         const data = await getTagsAutoComplete(searchValue);
-
         if (!data) return;
-        if (typeof setExists === 'function') {
-          const existingTag = data?.tags.find(
-            (tag) => tag.tagName === searchValue
-          );
-          if (existingTag) {
-            setCurrentHashTag(existingTag);
-            setExists(true);
-          }
-        }
         setAutoCompleteList(data?.tags);
-      }, 100); // 지연 시간 설정 (300ms)
+      }, 100);
 
       // Cleanup 함수에서 타이머 해제
       return () => {
