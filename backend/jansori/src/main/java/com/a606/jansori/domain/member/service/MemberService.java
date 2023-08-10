@@ -2,7 +2,6 @@ package com.a606.jansori.domain.member.service;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.MemberRole;
-import com.a606.jansori.domain.member.dto.GetDuplicateNicknameReqDto;
 import com.a606.jansori.domain.member.dto.GetDuplicateNicknameResDto;
 import com.a606.jansori.domain.member.dto.GetMemberProfileResDto;
 import com.a606.jansori.domain.member.dto.PostMemberInfoReqDto;
@@ -33,9 +32,9 @@ public class MemberService {
 
   @Transactional(readOnly = true)
   public GetDuplicateNicknameResDto checkNicknameIsDuplicated(
-      GetDuplicateNicknameReqDto getDuplicateNicknameReqDto) {
+      String nickname) {
 
-    Boolean isExist = memberRepository.existsByNickname(getDuplicateNicknameReqDto.getNickname());
+    Boolean isExist = memberRepository.existsByNickname(nickname);
     if (isExist) {
       throw new DuplicatedNicknameException();
     }
