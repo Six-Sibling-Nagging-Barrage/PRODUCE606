@@ -33,7 +33,7 @@ public class CorsFilter implements Filter {
     response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT, PATCH");
     response.setHeader("Access-Control-Max-Age", "3600");
     response.setHeader("Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept, Key, Authorization");
+        "Origin, X-Requested-With, Content-Type, Accept, Key, Authorization, Referer, User-Agent, accept");
 
     if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
 
@@ -58,8 +58,8 @@ public class CorsFilter implements Filter {
     return new WebMvcConfigurerAdapter() {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("http://i9a606.p.ssafy.io")
-            .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH");
+        registry.addMapping("/**").allowedOrigins("http://i9a606.p.ssafy.io", "http://localhost:3000")
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS");
 
 
       }
