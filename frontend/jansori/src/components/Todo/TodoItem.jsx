@@ -1,20 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import tw, { styled } from 'twin.macro';
+import Modal from '../UI/Modal';
 import HashTagItem from '../HashTag/HashTagItem';
-import { useRecoilState } from 'recoil';
-import { updateTodoComplete } from '../../apis/api/todo';
-import { todoListState } from '../../states/todo';
+import { getTodoDetail } from '../../apis/api/todo';
+import moment from 'moment';
 
 const TodoItem = (props) => {
-  const { currentTodo, onClick } = props;
-  const [todoList, setTodoList] = useRecoilState(todoListState);
+  const { currentTodo, updateTodoCompleteMutation } = props;
+  const [isDetailTodoItem, setIsDetailTodoItem] = useState(false);
 
   const handleTodoClick = () => {
-    onClick();
+    if (currentTodo.todoAt !== moment().format('YYYY-MM-DD')) {
+      // console.log('다른 날에는 안됨');
+      return;
+    }
+    updateTodoCompleteMutation(currentTodo.todoId);
+  };
+
+  const handleTodoDetail = () => {
+    setIsDetailTodoItem(true);
+    getTodoDetails(currentTodo.todoId);
+    // 현재 todo 상세 내용 저장하는 부분 넣기
+  };
+
+  const getTodoDetails = async (todoId) => {
+    const data = await getTodoDetail(todoId);
+    console.log(data);
+    // todo 배열에 저장해서 넘겨주자
   };
 
   return (
     <TodoContainer>
+      {isDetailTodoItem && (
+        <Modal setIsModalOpen={setIsDetailTodoItem}>
+          <div>{currentTodo.content}</div>
+        </Modal>
+      )}
       <TodoDone>
         <div className='finished' onClick={handleTodoClick}>
           {currentTodo.finished ? '✅' : '❌'}
@@ -29,7 +50,12 @@ const TodoItem = (props) => {
         </HashTagContent>
       </TodoContent>
       <TodoExtendContent>
-        <button>🔍</button>
+        {/* input으로 복사 */}
+        <button>📋</button>
+      </TodoExtendContent>
+      <TodoExtendContent>
+        {/* 상세 보기 */}
+        <button onClick={handleTodoDetail}>📖</button>
       </TodoExtendContent>
     </TodoContainer>
   );
@@ -40,7 +66,7 @@ export default TodoItem;
 const TodoContainer = styled.div`
   ${tw`
 grid
-grid-cols-5
+grid-cols-7
 gap-4
 border-2
 rounded
@@ -56,12 +82,12 @@ const TodoDone = styled.button`
 `;
 
 const TodoContent = styled.div`
-  ${tw`col-span-3
+  ${tw`col-span-4
   text-left`}
 `;
 
 const TodoContentContainer = styled.div`
-  ${tw`ml-1`}
+  ${tw`ml-1 mt-1 mb-2`}
 `;
 
 const HashTagContent = styled.div`
