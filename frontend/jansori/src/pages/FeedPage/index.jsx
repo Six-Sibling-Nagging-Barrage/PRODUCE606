@@ -21,7 +21,6 @@ const FeedPage = () => {
     (async () => {
       const data = await getFollowTagList(memberId);
       setFollowingTags(data.tags);
-      console.log(data.tags);
     })();
   }, []);
 

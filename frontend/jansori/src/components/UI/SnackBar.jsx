@@ -28,13 +28,14 @@ const SnackBarContainer = styled.div`
     bottom-2
     left-2
     p-4
-    bg-gray-300
+    bg-slate-500	
     text-white
     rounded-lg
     transition-opacity
     duration-300
   `}
-  ${(props) => (props.show ? tw`opacity-100` : tw`opacity-0 pointer-events-none`)}
+  ${(props) =>
+    props.show ? tw`opacity-100` : tw`opacity-0 pointer-events-none`}
 `;
 
 const SnackBarContent = styled.div`

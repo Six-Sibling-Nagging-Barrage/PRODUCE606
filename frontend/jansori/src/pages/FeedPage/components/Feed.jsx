@@ -6,12 +6,18 @@ import TodoPost from './TodoPost';
 import { useQueryClient } from '@tanstack/react-query';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { updateLikeNag, updateNagUnlock } from '../../../apis/api/nag';
+import { useRecoilState } from 'recoil';
+import { ticketState } from '../../../states/user';
+import SnackBar from '../../../components/UI/SnackBar';
 
 const Feed = (props) => {
   const { specificTag, getFeedData } = props;
 
   const [currentPostId, setCurrentPostId] = useState(-1);
   const [personaReaction, setPersonaReaction] = useState([]);
+  const [ticket, setTicket] = useRecoilState(ticketState);
+  const [showSnackBar, setShowSnackBar] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState('');
 
   const queryClient = useQueryClient();
 
@@ -105,10 +111,25 @@ const Feed = (props) => {
     }
   );
 
+  const handleSnackBarClose = () => {
+    setShowSnackBar(false);
+    setSnackBarMessage('');
+  };
+
   const toggleUnlock = async (nagId) => {
+    if (ticket < 1) {
+      setSnackBarMessage(
+        '티켓이 부족해 잔소리를 열어볼 수 없어요! 잔소리를 작성하면 티켓을 얻을 수 있어요.'
+      );
+      return setShowSnackBar(true);
+    }
     // 잔소리 초성 해제 api
     const data = await updateNagUnlock(nagId);
-    console.log(data);
+    if (data.code === '200') {
+      setTicket(data.data.ticketCount);
+      setSnackBarMessage('티켓 1개를 소모해 잔소리를 열었어요.');
+      setShowSnackBar(true);
+    }
     return data;
   };
 
@@ -179,6 +200,9 @@ const Feed = (props) => {
           setCurrentPostId={setCurrentPostId}
           currentPostId={currentPostId}
         />
+      )}
+      {showSnackBar && (
+        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
       )}
     </FeedContainer>
   );
