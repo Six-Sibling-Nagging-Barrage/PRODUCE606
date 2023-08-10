@@ -1,6 +1,6 @@
 package com.a606.jansori.domain.notification.exception;
 
-import com.a606.jansori.global.exception.NotFoundException;
+import com.a606.jansori.global.exception.domain.NotFoundException;
 
 public class NotificationNotFoundException extends NotFoundException {
 
