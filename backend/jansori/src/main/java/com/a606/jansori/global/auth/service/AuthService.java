@@ -1,6 +1,7 @@
 package com.a606.jansori.global.auth.service;
 
 import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.domain.member.exception.DuplicatedEmailException;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.global.auth.domain.RefreshToken;
@@ -9,13 +10,11 @@ import com.a606.jansori.global.auth.dto.AuthSignupReqDto;
 import com.a606.jansori.global.auth.dto.AuthSignupResDto;
 import com.a606.jansori.global.auth.dto.TokenReqDto;
 import com.a606.jansori.global.auth.dto.TokenResDto;
-import com.a606.jansori.domain.member.exception.DuplicatedEmailException;
 import com.a606.jansori.global.auth.exception.InvalidTokenException;
 import com.a606.jansori.global.auth.repository.RefreshTokenRepository;
 import com.a606.jansori.global.auth.util.TokenProvider;
 import com.a606.jansori.global.exception.domain.UnauthorizedException;
 import com.a606.jansori.infra.redis.util.RedisUtil;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -78,7 +77,6 @@ public class AuthService {
 
       TokenResDto tokenResDto = tokenProvider.generateAccessTokenDto(authentication,
           refreshToken.getValue());
-
 
       tokenResDto.update(member);
 
