@@ -48,7 +48,7 @@ const ProfileForm = (props) => {
     if (nicknameValue === '') return setIsAvailable(false);
     let timerId = setTimeout(async () => {
       // 닉네임 중복 검사 api 호출
-      const data = await getAvailableNickname({ nickname: nicknameValue });
+      const data = await getAvailableNickname(nicknameValue);
       if (data.code === '200') {
         setIsAvailable(true);
       }
@@ -60,7 +60,7 @@ const ProfileForm = (props) => {
   }, [nicknameValue]);
 
   const handleUpdateProfile = async (data) => {
-    if (!checked) return setCheckError(true);
+    if (initial && !checked) return setCheckError(true);
 
     const profile = {
       nickname: data.nickname,
@@ -72,7 +72,7 @@ const ProfileForm = (props) => {
 
     const formData = new FormData();
 
-    // formData.append('imageFile', profileImg);
+    formData.append('imageFile', profileImg);
     formData.append('memberInfo', JSON.stringify(profile));
 
     // 유저 정보 수정 api 호출
@@ -103,7 +103,7 @@ const ProfileForm = (props) => {
   };
 
   return (
-    <form>
+    <FormContainer>
       <ProfileImg
         editable={true}
         profileImg={profileImg}
@@ -206,11 +206,15 @@ const ProfileForm = (props) => {
           label={'완료'}
         />
       </Footer>
-    </form>
+    </FormContainer>
   );
 };
 
 export default ProfileForm;
+
+const FormContainer = styled.form`
+  width: 40vw;
+`;
 
 const Label = styled.div`
   font-size: 14px;
