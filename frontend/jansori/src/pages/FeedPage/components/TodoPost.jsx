@@ -13,6 +13,7 @@ const TodoPost = (props) => {
     setCurrentPostId,
     setPersonaReaction,
     toggleLike,
+    toggleUnlock,
   } = props;
 
   const [showMoreSelected, setShowMoreSelected] = useState(false);
@@ -59,7 +60,7 @@ const TodoPost = (props) => {
           </PersonaReactionButton>
         </PostHeader>
         <TodoContent>
-          <div className="finished">{post.finished ? '❌' : '✅'}</div>
+          <div className="finished">{post.finished ? '✅' : '❌'}</div>
           <div className="todo">{post.content}</div>
           <HashTagContainer>
             {post.tags?.map((tag) => {
@@ -76,6 +77,7 @@ const TodoPost = (props) => {
             todoId={post.todoId}
             nag={post.nag}
             toggleLike={toggleLike}
+            toggleUnlock={toggleUnlock}
           />
         </div>
       </PostContainer>

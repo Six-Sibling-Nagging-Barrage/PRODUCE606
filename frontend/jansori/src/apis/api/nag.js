@@ -89,7 +89,7 @@ export const getNagBoxStatistics = async () => {
 };
 
 // 잔소리 초성 해제
-export const updateNagLock = async (nagId) => {
+export const updateNagUnlock = async (nagId) => {
   try {
     const { data } = await authInstance.put(`/nags/${nagId}/unlock`);
     return data.data;
