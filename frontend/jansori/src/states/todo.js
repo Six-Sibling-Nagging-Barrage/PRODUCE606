@@ -1,10 +1,11 @@
 import { atom, useRecoilState } from 'recoil';
+import moment from 'moment';
 
 // ------------------------ 날짜 ------------------------
 //클릭하고 있는 날
 export const focusDateState = atom({
   key: 'focusDateState',
-  default: '',
+  default: moment().format('YYYY-MM-DD'),
 });
 
 // 클릭하고 있는 달

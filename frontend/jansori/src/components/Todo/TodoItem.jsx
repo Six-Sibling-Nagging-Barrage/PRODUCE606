@@ -6,11 +6,11 @@ import { updateTodoComplete } from '../../apis/api/todo';
 import { todoListState } from '../../states/todo';
 
 const TodoItem = (props) => {
-  const { currentTodo, onClick } = props;
+  const { currentTodo, updateTodoCompleteMutation } = props;
   const [todoList, setTodoList] = useRecoilState(todoListState);
 
   const handleTodoClick = () => {
-    onClick();
+    updateTodoCompleteMutation(currentTodo.todoId);
   };
 
   return (

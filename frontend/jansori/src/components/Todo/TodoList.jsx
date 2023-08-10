@@ -1,35 +1,66 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import tw, { styled } from 'twin.macro';
 import TodoItem from './TodoItem';
 import Mark from '../UI/Mark';
-import { useRecoilState } from 'recoil';
-import { useTodoList, focusDateState } from '../../states/todo';
-import { updateTodoComplete } from '../../apis/api/todo';
+import { useRecoilValue } from 'recoil';
+import { focusDateState } from '../../states/todo';
+import { updateTodoComplete, getTodoListByDate } from '../../apis/api/todo';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 function TodoList() {
-  const { todoList, toggleTodo } = useTodoList();
-  // const date = focusDateState();
-  const [date, setDate] = useRecoilState(focusDateState);
-  const handleToggle = async (todoId) => {
-    console.log(todoId);
-    toggleTodo(todoId);
+  const queryClient = useQueryClient();
 
-    // TODO: 토글된 정보를 백엔드로 전송하는 코드 추가
-    const updatedTodo = await updateTodoComplete(todoId);
-    // fetch 또는 axios 등을 사용하여 백엔드로 전송 가능
+  const date = useRecoilValue(focusDateState);
+
+  const fetchTodoList = async (date) => {
+    if (!date) return;
+    const data = await getTodoListByDate(date);
+    return data.data;
   };
+
+  const { data } = useQuery(['todoList', date], () => fetchTodoList(date));
+
+  const toggleTodoComplete = async (todoId) => {
+    const data = await updateTodoComplete(todoId);
+    return data;
+  };
+
+  const updateTodoCompleteMutation = useMutation((todoId) => toggleTodoComplete(todoId), {
+    onMutate: async (todoId) => {
+      await queryClient.cancelQueries(['todoList']);
+      const prevTodoList = queryClient.getQueryData(['todoList']);
+      queryClient.setQueryData(['todoList'], (oldData) => {
+        const newData = oldData?.todos.map((todoItem) => {
+          if (todoItem.toodId === todoId) {
+            return {
+              ...todoItem,
+              finished: !todoItem.finished,
+            };
+          }
+          return todoItem;
+        });
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['todoList']);
+    },
+  });
 
   return (
     <TodoContainer>
       <div>
         <TodoListWrap>
           <Mark label={'todo List'} />
-          <TodoDateWrap>📅 {date}</TodoDateWrap>
+          {/* <TodoDateWrap>📅 {date}</TodoDateWrap> */}
         </TodoListWrap>
       </div>
-      {todoList && todoList.length > 0 ? (
-        todoList.map((todo) => (
-          <TodoItem key={todo.id} onClick={() => handleToggle(todo.todoId)} currentTodo={todo} />
+      {data?.todos && data?.todos.length > 0 ? (
+        data?.todos.map((todo) => (
+          <TodoItem
+            key={todo.id}
+            currentTodo={todo}
+            updateTodoCompleteMutation={updateTodoCompleteMutation.mutate}
+          />
         ))
       ) : (
         <>
