@@ -31,7 +31,7 @@ function TodoList() {
       const prevTodoList = queryClient.getQueryData(['todoList']);
       queryClient.setQueryData(['todoList'], (oldData) => {
         const newData = oldData?.todos.map((todoItem) => {
-          if (todoItem.toodId === todoId) {
+          if (todoItem.todoId === todoId) {
             return {
               ...todoItem,
               finished: !todoItem.finished,
