@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
@@ -17,7 +18,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
   @Modifying
   @Query(value = "update member m set m.createdAt = :date, m.modifiedAt = :date where m = :member")
-  Integer updateDate(Member member, LocalDateTime date);
+  Integer updateDate(@Param("member") Member member,@Param("date") LocalDateTime date);
 
   Optional<Member> findMemberByEmail(String email);
 
