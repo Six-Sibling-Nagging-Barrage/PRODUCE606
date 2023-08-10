@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RedisUtil {
+public class BlackListUtil {
 
   private final RedisTemplate<String, Object> redisTemplate;
 

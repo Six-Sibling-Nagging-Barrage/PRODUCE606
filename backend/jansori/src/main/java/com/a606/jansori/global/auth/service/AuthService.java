@@ -14,7 +14,7 @@ import com.a606.jansori.global.auth.exception.InvalidTokenException;
 import com.a606.jansori.global.auth.repository.RefreshTokenRepository;
 import com.a606.jansori.global.auth.util.TokenProvider;
 import com.a606.jansori.global.exception.domain.UnauthorizedException;
-import com.a606.jansori.infra.redis.util.RedisUtil;
+import com.a606.jansori.infra.redis.util.BlackListUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,7 +36,7 @@ public class AuthService {
   private final TokenProvider tokenProvider;
   private final RefreshTokenRepository refreshTokenRepository;
 
-  private final RedisUtil redisUtil;
+  private final BlackListUtil redisBlackListUtil;
 
   @Transactional
   public AuthSignupResDto signup(AuthSignupReqDto authSignupReqDto) {
@@ -128,7 +128,7 @@ public class AuthService {
 
     refreshTokenRepository.deleteByEmail(authentication.getName());
 
-    redisUtil.setBlackList(tokenReqDto.getAccessToken(), "accessToken", tokenProvider.getExpiration(
+    redisBlackListUtil.setBlackList(tokenReqDto.getAccessToken(), "accessToken", tokenProvider.getExpiration(
         tokenReqDto.getAccessToken()));
   }
 }
