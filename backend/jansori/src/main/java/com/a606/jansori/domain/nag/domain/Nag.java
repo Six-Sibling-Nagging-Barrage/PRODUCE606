@@ -59,10 +59,11 @@ public class Nag extends BaseTimeEntity {
   private Set<NagUnlock> nagUnlocks = new HashSet<>();
 
   public static Nag ofMemberWithNagContentAndPreview(Member member, Tag tag,
-      String preview) {
+      String content, String preview) {
     return Nag.builder()
         .member(member)
         .tag(tag)
+        .content(content)
         .preview(preview)
         .build();
   }

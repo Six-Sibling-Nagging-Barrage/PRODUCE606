@@ -66,7 +66,8 @@ public class NagService {
     Member member = securityUtil.getCurrentMemberByToken();
     String preview = previewUtil.convertNagToPreview(postNagReqDto.getContent());
 
-    Nag nag = Nag.ofMemberWithNagContentAndPreview(member, tag, preview);
+    Nag nag = Nag.ofMemberWithNagContentAndPreview(member, tag, postNagReqDto.getContent(),
+        preview);
     return PostNagResDto.builder().nagId(nagRepository.save(nag).getId()).build();
   }
 
