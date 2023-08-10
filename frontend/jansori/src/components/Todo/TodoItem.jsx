@@ -21,7 +21,7 @@ const TodoItem = (props) => {
         </div>
       </TodoDone>
       <TodoContent>
-        <div className='todo'>{currentTodo.content}</div>
+        <TodoContentContainer>{currentTodo.content}</TodoContentContainer>
         <HashTagContent>
           {currentTodo.tags?.map((tag) => {
             return <HashTagItem key={tag.tagId} hashTag={tag} editable={false} />;
@@ -60,15 +60,19 @@ const TodoContent = styled.div`
   text-left`}
 `;
 
+const TodoContentContainer = styled.div`
+  ${tw`ml-1`}
+`;
+
 const HashTagContent = styled.div`
-  ${tw`text-xs`}
+  ${tw`text-xs flex`}
 `;
 
 const TodoExtendContent = styled.div`
   ${tw`col-span-1
-  bg-slate-300
   rounded-lg
   mr-2
 items-center
+my-auto
 `}
 `;

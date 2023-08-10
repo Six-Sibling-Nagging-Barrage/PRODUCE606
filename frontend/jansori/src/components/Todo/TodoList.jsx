@@ -22,8 +22,10 @@ function TodoList() {
   return (
     <TodoContainer>
       <div>
-        <Mark label={'todo List'} />
-        <span>{date}</span>
+        <TodoListWrap>
+          <Mark label={'todo List'} />
+          <TodoDateWrap>📅 {date}</TodoDateWrap>
+        </TodoListWrap>
       </div>
       {todoList && todoList.length > 0 ? (
         todoList.map((todo) => (
@@ -39,6 +41,16 @@ function TodoList() {
 }
 
 export default TodoList;
+
+const TodoListWrap = styled.div`
+  ${tw`flex`}
+`;
+
+const TodoDateWrap = styled.div`
+  ${tw`flex my-auto`}
+  margin-left:auto
+`;
+
 const TodoContainer = styled.div`
   ${tw`
   bg-white
