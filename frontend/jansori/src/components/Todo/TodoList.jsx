@@ -2,23 +2,34 @@ import React, { useEffect } from 'react';
 import tw, { styled } from 'twin.macro';
 import TodoItem from './TodoItem';
 import Mark from '../UI/Mark';
-import { useRecoilValue } from 'recoil';
-import { focusDateState } from '../../states/todo';
-import { updateTodoComplete, getTodoListByDate } from '../../apis/api/todo';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { focusDateState, todoListState } from '../../states/todo';
+import { memberIdState } from '../../states/user';
+import { updateTodoComplete, getTodoListByDate, getTodoListOtherByDate } from '../../apis/api/todo';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-function TodoList() {
+const TodoList = (props) => {
+  const { id } = props;
   const queryClient = useQueryClient();
 
   const date = useRecoilValue(focusDateState);
+  const memberId = useRecoilValue(memberIdState);
+  const [todoList, setTodoList] = useRecoilState(todoListState);
 
   const fetchTodoList = async (date) => {
     if (!date) return;
-    const data = await getTodoListByDate(date);
+    let data;
+    if (id === memberId) {
+      // 내꺼 투두 불러올 때
+      data = await getTodoListByDate(date);
+    } else {
+      // 다른 사람의 투두를 불러오는 부분
+      data = await getTodoListOtherByDate(id, date);
+    }
     return data.data;
   };
 
-  const { data } = useQuery(['todoList', date], () => fetchTodoList(date));
+  const { data } = useQuery(['todoList', todoList], () => fetchTodoList(date));
 
   const toggleTodoComplete = async (todoId) => {
     const data = await updateTodoComplete(todoId);
@@ -58,6 +69,7 @@ function TodoList() {
         data?.todos.map((todo) => (
           <TodoItem
             key={todo.id}
+            id={id}
             currentTodo={todo}
             updateTodoCompleteMutation={updateTodoCompleteMutation.mutate}
           />
@@ -69,12 +81,13 @@ function TodoList() {
       )}
     </TodoContainer>
   );
-}
+};
 
 export default TodoList;
 
 const TodoListWrap = styled.div`
   ${tw`flex`}
+  height : 100%;
 `;
 
 const TodoDateWrap = styled.div`

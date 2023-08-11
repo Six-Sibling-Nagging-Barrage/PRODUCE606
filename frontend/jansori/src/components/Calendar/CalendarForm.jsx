@@ -3,7 +3,11 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
 import tw, { styled } from 'twin.macro';
-import { getTodoListByDate, getTodoListByDateByMember } from '../../apis/api/todo';
+import {
+  getTodoListByDate,
+  getTodoListByDateByMember,
+  getTodoListOtherByDate,
+} from '../../apis/api/todo';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import { memberIdState } from '../../states/user';
 import {
@@ -13,7 +17,8 @@ import {
   todoListState,
 } from '../../states/todo';
 
-const CalendarForm = () => {
+const CalendarForm = (props) => {
+  const { id } = props;
   const [focusDate, setFocusDate] = useState(new Date());
   const [monthYear, setMonthYear] = useState(moment().format('YYYY-MM'));
   const memberId = useRecoilValue(memberIdState);
@@ -30,14 +35,21 @@ const CalendarForm = () => {
   // 달 이동할 때 해당하는 api 호출하는 부분
   useEffect(() => {
     setYearMonth(monthYear);
-    // TODO: 달 이동할 경우 그 달에 해당하는 TODO 입력된 값들 불러오는 API 호출
     const fetchData = async () => {
-      const response = await getTodoListByDateByMember({
-        memberId: memberId,
-        date: monthYear,
-      });
+      let response;
+      if (id === memberId) {
+        response = await getTodoListByDateByMember({
+          memberId: memberId,
+          date: monthYear,
+        });
+      } else {
+        response = await getTodoListByDateByMember({
+          memberId: id,
+          date: monthYear,
+        });
+      }
+
       if (response.code === '200') {
-        // 데이터를 받아오는데 성공한 경우
         setTodoDays(response.data.dates);
       }
     };
@@ -49,8 +61,14 @@ const CalendarForm = () => {
     const date = moment(focusDate).format('YYYY-MM-DD');
     setDate(date);
     const fetchData = async () => {
-      const response = await getTodoListByDate(date);
-      // TODO: recoil로 todoList부분 변경해주는 부분 설정
+      let response;
+      if (id === memberId) {
+        // 내꺼 투두 불러올 때
+        response = await getTodoListByDate(date);
+      } else {
+        // 다른 사람의 투두를 불러오는 부분
+        response = await getTodoListOtherByDate(id, date);
+      }
       if (response.code === '200') {
         setTodoList(response.data.todos);
       }

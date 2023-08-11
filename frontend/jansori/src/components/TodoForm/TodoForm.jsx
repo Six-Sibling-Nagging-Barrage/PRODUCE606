@@ -34,6 +34,7 @@ const TodoForm = () => {
   const [todoList, setTodoList] = useRecoilState(todoListState);
 
   const todoFormSubmit = async (data) => {
+    if (hashTagList.length === 0) return;
     const todo = {
       content: data.content,
       display: isPublic,
@@ -76,7 +77,9 @@ const TodoForm = () => {
 
   return (
     <TodoFormContainer>
-      <Mark label={'todo'} />
+      <MarkWrap>
+        <Mark label={'todo'} />
+      </MarkWrap>
       <TodoFormBox>
         <TodoFormLabel>TO-DO</TodoFormLabel>
         <TodoFormInput>
@@ -145,11 +148,11 @@ const TodoForm = () => {
 export default TodoForm;
 
 const TodoFormContainer = styled.div`
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(163, 163, 163, 0.2);
   ${tw`
     relative
     bg-white
-    rounded-lg
-    border-2
     mb-3
     pb-8`}
 `;
@@ -159,6 +162,11 @@ const TodoFormBox = styled.form`
   w-11/12
   mx-auto
   `}
+`;
+
+const MarkWrap = styled.div`
+  padding-top: 0.5vh;
+  padding-left: 0.5vh;
 `;
 
 const TodoFormLabel = styled.label`

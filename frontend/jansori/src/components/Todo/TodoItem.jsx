@@ -2,38 +2,54 @@ import React, { useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import Modal from '../UI/Modal';
 import HashTagItem from '../HashTag/HashTagItem';
+import { useRecoilValue } from 'recoil';
 import { getTodoDetail } from '../../apis/api/todo';
+import { memberIdState } from '../../states/user';
 import moment from 'moment';
+import SnackBar from '../UI/SnackBar';
+import TodoDetail from './TodoDetail';
 
 const TodoItem = (props) => {
-  const { currentTodo, updateTodoCompleteMutation } = props;
+  const { currentTodo, updateTodoCompleteMutation, id } = props;
   const [isDetailTodoItem, setIsDetailTodoItem] = useState(false);
+  const [todoItemDetail, setTodoItemDetail] = useState(null);
+  const [showSnackBar, setShowSnackBar] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState('');
+  const memberId = useRecoilValue(memberIdState);
 
   const handleTodoClick = () => {
+    if (memberId !== id) return;
     if (currentTodo.todoAt !== moment().format('YYYY-MM-DD')) {
-      // console.log('다른 날에는 안됨');
-      return;
+      setSnackBarMessage('투두 달성 여부는 당일에만 변경 가능합니다!');
+      return setShowSnackBar(true);
     }
     updateTodoCompleteMutation(currentTodo.todoId);
   };
 
   const handleTodoDetail = () => {
-    setIsDetailTodoItem(true);
     getTodoDetails(currentTodo.todoId);
-    // 현재 todo 상세 내용 저장하는 부분 넣기
   };
 
   const getTodoDetails = async (todoId) => {
     const data = await getTodoDetail(todoId);
-    console.log(data);
-    // todo 배열에 저장해서 넘겨주자
+    setTodoItemDetail(data.data);
+    setIsDetailTodoItem(true);
+  };
+
+  const handleSnackBarClose = () => {
+    setShowSnackBar(false);
+    setSnackBarMessage('');
+  };
+
+  const handleModalOpen = () => {
+    setIsDetailTodoItem(false);
   };
 
   return (
     <TodoContainer>
       {isDetailTodoItem && (
-        <Modal setIsModalOpen={setIsDetailTodoItem}>
-          <div>{currentTodo.content}</div>
+        <Modal setIsModalOpen={handleModalOpen}>
+          <TodoDetail todoItemDetail={todoItemDetail} />
         </Modal>
       )}
       <TodoDone>
@@ -55,8 +71,11 @@ const TodoItem = (props) => {
       </TodoExtendContent>
       <TodoExtendContent>
         {/* 상세 보기 */}
-        <button onClick={handleTodoDetail}>📖</button>
+        <button onClick={handleTodoDetail} todoItemDetail={todoItemDetail}>
+          📖
+        </button>
       </TodoExtendContent>
+      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
     </TodoContainer>
   );
 };
