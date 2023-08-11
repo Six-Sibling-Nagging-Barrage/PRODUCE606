@@ -85,3 +85,9 @@ export const ticketState = atom({
   default: 0,
   effects_UNSTABLE: [persistAtom],
 });
+
+export const navBarState = atom({
+  key: 'navBarState',
+  default: -1,
+  effects_UNSTABLE: [persistAtom],
+});
