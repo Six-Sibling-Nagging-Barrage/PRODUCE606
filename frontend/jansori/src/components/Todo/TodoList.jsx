@@ -69,6 +69,7 @@ const TodoList = (props) => {
         data?.todos.map((todo) => (
           <TodoItem
             key={todo.id}
+            id={id}
             currentTodo={todo}
             updateTodoCompleteMutation={updateTodoCompleteMutation.mutate}
           />

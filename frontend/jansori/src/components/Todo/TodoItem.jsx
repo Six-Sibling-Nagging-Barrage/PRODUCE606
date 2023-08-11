@@ -2,19 +2,23 @@ import React, { useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import Modal from '../UI/Modal';
 import HashTagItem from '../HashTag/HashTagItem';
+import { useRecoilValue } from 'recoil';
 import { getTodoDetail } from '../../apis/api/todo';
+import { memberIdState } from '../../states/user';
 import moment from 'moment';
 import SnackBar from '../UI/SnackBar';
 import TodoDetail from './TodoDetail';
 
 const TodoItem = (props) => {
-  const { currentTodo, updateTodoCompleteMutation } = props;
+  const { currentTodo, updateTodoCompleteMutation, id } = props;
   const [isDetailTodoItem, setIsDetailTodoItem] = useState(false);
   const [todoItemDetail, setTodoItemDetail] = useState(null);
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
+  const memberId = useRecoilValue(memberIdState);
 
   const handleTodoClick = () => {
+    if (memberId !== id) return;
     if (currentTodo.todoAt !== moment().format('YYYY-MM-DD')) {
       setSnackBarMessage('투두 달성 여부는 당일에만 변경 가능합니다!');
       return setShowSnackBar(true);
