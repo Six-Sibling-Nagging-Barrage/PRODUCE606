@@ -10,7 +10,7 @@ import TodoDetail from './TodoDetail';
 const TodoItem = (props) => {
   const { currentTodo, updateTodoCompleteMutation } = props;
   const [isDetailTodoItem, setIsDetailTodoItem] = useState(false);
-  const [todoItemDetail, setTodoItemDetail] = useState([]);
+  const [todoItemDetail, setTodoItemDetail] = useState(null);
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
 
@@ -23,13 +23,13 @@ const TodoItem = (props) => {
   };
 
   const handleTodoDetail = () => {
-    setIsDetailTodoItem(true);
     getTodoDetails(currentTodo.todoId);
   };
 
   const getTodoDetails = async (todoId) => {
     const data = await getTodoDetail(todoId);
     setTodoItemDetail(data.data);
+    setIsDetailTodoItem(true);
   };
 
   const handleSnackBarClose = () => {
@@ -37,10 +37,14 @@ const TodoItem = (props) => {
     setSnackBarMessage('');
   };
 
+  const handleModalOpen = () => {
+    setIsDetailTodoItem(false);
+  };
+
   return (
     <TodoContainer>
       {isDetailTodoItem && (
-        <Modal setIsModalOpen={setIsDetailTodoItem}>
+        <Modal setIsModalOpen={handleModalOpen}>
           <TodoDetail todoItemDetail={todoItemDetail} />
         </Modal>
       )}

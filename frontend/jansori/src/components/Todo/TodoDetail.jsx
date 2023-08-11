@@ -1,15 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import tw, { styled } from 'twin.macro';
 import Mark from '../UI/Mark';
 import HashTagItem from '../HashTag/HashTagItem';
+import NagCommentItem from '../../pages/FeedPage/components/NagCommentItem';
+import { personas } from '../../constants/persona';
 
 const TodoDetail = (props) => {
   const { todoItemDetail } = props;
-
-  const tags = todoItemDetail.tags;
-  const personas = todoItemDetail.personas;
-
-  console.log(personas);
 
   return (
     <TodoItemDetailWrap>
@@ -18,19 +15,44 @@ const TodoDetail = (props) => {
           <MarkWrap>
             <Mark label={'Todo Detail'} />
           </MarkWrap>
-          <DateHeader>{todoItemDetail.todoAt}</DateHeader>
+          <DateHeader>{todoItemDetail?.todoAt}</DateHeader>
         </Header>
         <TodoWrap>
-          <TodoFinishedWrap>{todoItemDetail.finished ? '✅' : '❌'}</TodoFinishedWrap>
-          <div>{todoItemDetail.content}</div>
+          <TodoFinishedWrap>{todoItemDetail?.finished ? '✅' : '❌'}</TodoFinishedWrap>
+          <div>{todoItemDetail?.content}</div>
           <HashTagContent>
-            {tags?.map((tag) => {
+            {todoItemDetail?.tags?.map((tag) => {
               return <HashTagItem key={tag.tagId} hashTag={tag} />;
             })}
           </HashTagContent>
         </TodoWrap>
         <NagListWrap>
-          <NagWrap></NagWrap>
+          <NagWrap>
+            <NagCommentItem
+              key={todoItemDetail?.nag.nagId}
+              isMemberNag={true}
+              todoId={todoItemDetail?.todoId}
+              nag={todoItemDetail?.nag}
+            />
+            {todoItemDetail?.personas?.map((persona) => {
+              if (!persona.content) return;
+              return (
+                <NagCommentItem
+                  key={persona.todoPersonaId}
+                  isMemberNag={false}
+                  nag={{
+                    nagId: persona.todoPersonaId,
+                    likeCount: persona.likeCount,
+                    content: persona.content,
+                    nagMember: {
+                      nickname: personas[persona.personaId - 1].name,
+                      imageUrl: personas[persona.personaId - 1].imgUrl,
+                    },
+                  }}
+                />
+              );
+            })}
+          </NagWrap>
         </NagListWrap>
       </TodoItemDetailTodoContainer>
     </TodoItemDetailWrap>
@@ -102,4 +124,7 @@ const NagListWrap = styled.div`
   }
 `;
 
-const NagWrap = styled.div``;
+const NagWrap = styled.div`
+  width: 95%;
+  margin: 0 auto;
+`;
