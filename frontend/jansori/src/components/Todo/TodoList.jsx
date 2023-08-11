@@ -80,6 +80,7 @@ export default TodoList;
 
 const TodoListWrap = styled.div`
   ${tw`flex`}
+  height : 100%;
 `;
 
 const TodoDateWrap = styled.div`

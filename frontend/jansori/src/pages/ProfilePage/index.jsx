@@ -43,14 +43,7 @@ const ProfilePage = () => {
 
   return (
     <ProfileContainer>
-      {profile && (
-        <ProfileDetail
-          isMine={isMine}
-          profile={profile}
-          tags={tags}
-          setTags={setTags}
-        />
-      )}
+      {profile && <ProfileDetail isMine={isMine} profile={profile} tags={tags} setTags={setTags} />}
       <TabContainer>
         <Tabs>
           {tabs.map((tab, index) => (
@@ -66,7 +59,7 @@ const ProfilePage = () => {
         </Tabs>
         <TabContent>
           {currentTab === 0 ? (
-            <TodoHistory></TodoHistory>
+            <TodoHistory isMine={isMine} id={id}></TodoHistory>
           ) : (
             <NagHistory isMine={isMine} id={id}></NagHistory>
           )}
@@ -114,9 +107,7 @@ const Glider = styled.span`
   border-radius: 10px 10px 0 0;
   transition: 0.25s ease-out;
   ${({ currentTab }) =>
-    currentTab === 0
-      ? `transform: translateX(-50%);`
-      : `transform: translateX(50%);`}
+    currentTab === 0 ? `transform: translateX(-50%);` : `transform: translateX(50%);`}
 `;
 
 export default ProfilePage;
