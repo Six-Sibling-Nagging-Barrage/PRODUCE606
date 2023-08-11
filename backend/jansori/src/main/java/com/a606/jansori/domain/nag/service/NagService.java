@@ -166,8 +166,9 @@ public class NagService {
 
     List<Nag> nags = nagRepository.findByNagsOfNagBox(PageRequest.of(0, NAG_BOX_COUNT));
     List<NagUnlock> nagUnlocks = nagUnlockRepository.findNagUnlocksByNagIsInAndMember(nags, member);
+    List<NagLike> nagLikes = nagLikeRepository.findNagLikesByNagIsInAndMember(nags, member);
 
-    NagBox nagBox = new NagBox(nags, nagUnlocks);
+    NagBox nagBox = new NagBox(nags, nagUnlocks, nagLikes);
 
     return GetNagsOfNagBoxResDto.fromNagsOfNagBox(nagBox.getNags());
   }

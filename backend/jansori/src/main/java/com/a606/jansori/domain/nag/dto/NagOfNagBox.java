@@ -15,6 +15,8 @@ public class NagOfNagBox extends NagDto {
 
   private Integer likeCount;
 
+  private Boolean isLiked;
+
   @JsonProperty(value = "nagMember")
   private NagMember nagMember;
 
@@ -26,11 +28,16 @@ public class NagOfNagBox extends NagDto {
         .preview(nag.getPreview())
         .unlocked(false)
         .likeCount(nag.getLikeCount())
+        .isLiked(false)
         .nagMember(NagMember.from(nag.getMember()))
         .build();
   }
 
   public void changeUnlocked() {
     this.unlocked = !this.unlocked;
+  }
+
+  public void changeIsLikedStatus() {
+    this.isLiked = !this.isLiked;
   }
 }
