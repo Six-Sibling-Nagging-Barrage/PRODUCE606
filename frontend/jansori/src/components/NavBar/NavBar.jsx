@@ -3,11 +3,11 @@ import { useRecoilValue } from 'recoil';
 import tw, { styled } from 'twin.macro';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { AiFillBell } from 'react-icons/ai';
-import { SiSamsung } from 'react-icons/si';
 import { TbTicket } from 'react-icons/tb';
 import { Link } from 'react-router-dom';
 import { memberIdState, ticketState } from '../../states/user';
 import { altImageUrl } from '../../constants/image';
+import logoImg from '../../assets/jansori-logo-eating-removebg-preview.png';
 
 import {
   isLoginState,
@@ -44,8 +44,8 @@ const NavBar = () => {
         {/* 로고 들어가는 부분 시작 */}
         <NavWrap>
           <Logo href="/" onClick={() => setIsToggleOpen(false)}>
-            <SiSamsung size="50" />
-            <LogoText>육남매 잔소리</LogoText>
+            <img src={logoImg} style={{ width:`80px`, height:`80px`}} />
+            <LogoText>JANSORI</LogoText>
           </Logo>
           {/* 오른쪽 로그인 버튼 부분 시작*/}
           <RightButtons>
