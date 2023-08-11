@@ -14,17 +14,17 @@ const NagBoxPage = () => {
     {
       startSentence: '현재 총',
       expression: ' 개',
-      endSentence: '잔소리가 작성되었습니다.',
+      endSentence: '잔소리가 쌓였어요.',
     },
     {
       startSentence: '지금까지',
       expression: ' 개',
-      endSentence: 'todo가 달성했습니다.',
+      endSentence: 'TODO가 작성되었어요.',
     },
     {
       startSentence: '현재 총',
       expression: ' 명',
-      endSentence: '사용하고 있습니다.',
+      endSentence: '이 사용 중이에요.',
     },
   ];
 

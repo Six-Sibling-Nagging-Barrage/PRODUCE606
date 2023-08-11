@@ -26,12 +26,12 @@ const BoxContainer = styled.div`
 
 const Background = styled.div`
   ${tw`
-    rounded
     w-full
     h-full
     bg-white
     opacity-50
     absolute`}
+  border-radius: 40px;
 `;
 
 const BoxContent = styled.div`

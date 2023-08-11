@@ -274,7 +274,7 @@ const TicketWrap = styled.div`
   padding: 0 10px;
   height: 40px;
   font-size: 15px;
-  font-weight: bold;
+  font-weight: 500;
   color: rgb(91, 43, 134);
   border: 1.5px solid rgb(91, 43, 134);
   & > img {
