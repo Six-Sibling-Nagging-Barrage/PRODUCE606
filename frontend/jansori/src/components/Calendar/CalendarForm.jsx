@@ -49,8 +49,6 @@ const CalendarForm = (props) => {
         });
       }
 
-      console.log(id, response);
-
       if (response.code === '200') {
         setTodoDays(response.data.dates);
       }
