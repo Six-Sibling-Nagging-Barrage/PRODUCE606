@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import tw, { styled } from 'twin.macro';
 import TodoItem from './TodoItem';
 import Mark from '../UI/Mark';
-import { useRecoilValue } from 'recoil';
-import { focusDateState } from '../../states/todo';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { focusDateState, todoListState } from '../../states/todo';
 import { updateTodoComplete, getTodoListByDate } from '../../apis/api/todo';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -11,6 +11,11 @@ function TodoList() {
   const queryClient = useQueryClient();
 
   const date = useRecoilValue(focusDateState);
+  const [todoList, setTodoList] = useRecoilState(todoListState);
+
+  useEffect(() => {
+    console.log('변경감지');
+  }, [todoList]);
 
   const fetchTodoList = async (date) => {
     if (!date) return;
@@ -18,7 +23,7 @@ function TodoList() {
     return data.data;
   };
 
-  const { data } = useQuery(['todoList', date], () => fetchTodoList(date));
+  const { data } = useQuery(['todoList', todoList], () => fetchTodoList(date));
 
   const toggleTodoComplete = async (todoId) => {
     const data = await updateTodoComplete(todoId);
