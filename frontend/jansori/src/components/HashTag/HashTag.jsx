@@ -73,6 +73,7 @@ const HashTag = (props) => {
             value={hashTagInput}
             onKeyPress={handleKeyPress}
             onBlur={() => setIsOpen(false)}
+            onFocus={() => setIsOpen(true)}
           />
         )}
       </HashTagContainer>
@@ -107,7 +108,7 @@ const HashTagContainer = styled.div`
 
 const HashTagInput = styled.input`
   display: inline-flex;
-  min-width: 100px;
+  width: 176px;
   background: transparent;
   border: none;
   outline: none;

@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import tw, { styled } from 'twin.macro';
+import tw, { css, styled } from 'twin.macro';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { AiFillBell } from 'react-icons/ai';
 import { TbTicket } from 'react-icons/tb';
 import { Link } from 'react-router-dom';
-import { memberIdState, ticketState } from '../../states/user';
+import { memberIdState, ticketState, navBarState } from '../../states/user';
 import { altImageUrl } from '../../constants/image';
 import logoImg from '../../assets/jansori-logo-eating-removebg-preview.png';
+import notificationIcon from '../../assets/notification_icon.webp';
+import { menus } from '../../constants/nav';
 
 import {
   isLoginState,
@@ -20,6 +22,7 @@ const NavBar = () => {
   const [isToggleOpen, setIsToggleOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [currentMenu, setCurrentMenu] = useRecoilState(navBarState);
 
   const isLogin = useRecoilValue(isLoginState);
   const profileImg = useRecoilValue(profileImgState);
@@ -28,7 +31,7 @@ const NavBar = () => {
   const setNickname = useSetRecoilState(memberNicknameState);
   const setProfileImg = useSetRecoilState(profileImgState);
 
-  const handleMenuClick = () => {
+  const handleHamburgerMenuClick = () => {
     setIsToggleOpen(!isToggleOpen);
   };
 
@@ -40,44 +43,44 @@ const NavBar = () => {
     e.target.src = altImageUrl;
   };
 
+  const handleMenuClick = (index) => {
+    setIsToggleOpen(false);
+    setCurrentMenu(index);
+  };
+
   return (
     <>
       <Nav>
         {/* 로고 들어가는 부분 시작 */}
         <NavWrap>
-          <Logo href="/" onClick={() => setIsToggleOpen(false)}>
-            <img src={logoImg} style={{ width: `80px` }} />
-            <LogoText>JANSORI</LogoText>
+          <Logo href="/" onClick={() => handleMenuClick(-1)}>
+            <img src={logoImg} />
           </Logo>
           {/* 오른쪽 로그인 버튼 부분 시작*/}
           <RightButtons>
             {isLogin ? (
               <AfterLoginWrap>
-                <button>
-                  <AiFillBell style={{ marginRight: '8px' }} />
-                </button>
                 <TicketWrap>
-                  <TicketItem>
-                    <TicketItemLogo>
-                      <TbTicket />
-                    </TicketItemLogo>
-                  </TicketItem>
+                  <TicketItemLogo>
+                    <TbTicket />
+                  </TicketItemLogo>
                   <TicketItem>{ticket}</TicketItem>
                 </TicketWrap>
-
                 <ul>
                   <li>
                     <Avatar onClick={handleProfileClick}>
                       <img src={profileImg} onError={handleImgError} />
                     </Avatar>
                   </li>
-
                   {isProfileModalOpen && (
                     <li>
                       <DropdownProfileMenu />
                     </li>
                   )}
                 </ul>
+                <button>
+                  <img src={notificationIcon} width="25px" />
+                </button>
               </AfterLoginWrap>
             ) : (
               <>
@@ -96,7 +99,7 @@ const NavBar = () => {
               type="button"
               aria-controls="navbar-sticky"
               aria-expanded={isToggleOpen}
-              onClick={handleMenuClick}
+              onClick={handleHamburgerMenuClick}
             >
               <span className="sr-only">Open</span>
               <RxHamburgerMenu className="w-5 h-5" aria-hidden="true" />
@@ -107,32 +110,23 @@ const NavBar = () => {
           {/* 네비게이션 리스트 부분 시작 */}
           <NavItems id="navbar-sticky" isToggleOpen={isToggleOpen}>
             <NavItemsUl>
-              <li>
-                <NavItem to="/feed" onClick={() => setIsToggleOpen(false)}>
-                  Feed
-                </NavItem>
-              </li>
-              <li>
-                <NavItem
-                  to={`/profile?id=${encodeURIComponent(memberId)}`}
-                  onClick={() => setIsToggleOpen(false)}
-                >
-                  Profile
-                </NavItem>
-              </li>
-              <li>
-                <NavItem to="/nagbox" onClick={() => setIsToggleOpen(false)}>
-                  잔소리함
-                </NavItem>
-              </li>
-              <li>
-                <NavItem
-                  to="characterinfo"
-                  onClick={() => setIsToggleOpen(false)}
-                >
-                  About Us
-                </NavItem>
-              </li>
+              {menus.map((menu, index) => {
+                const url =
+                  menu.to === '/profile'
+                    ? `${menu.to}?id=${encodeURIComponent(memberId)}`
+                    : menu.to;
+                return (
+                  <li>
+                    <NavItem
+                      to={url}
+                      onClick={() => handleMenuClick(index)}
+                      active={currentMenu === index ? 'active' : null}
+                    >
+                      {menu.name}
+                    </NavItem>
+                  </li>
+                );
+              })}
             </NavItemsUl>
           </NavItems>
           {/* 네비게이션 리스트 부분 끝 */}
@@ -154,18 +148,18 @@ const Nav = styled.nav`
   left-0
   `}
   backdrop-filter:  blur(5px);
-  padding: 0 10px;
 `;
 
 const NavWrap = styled.div`
   ${tw`
-  max-w-screen-2xl
-flex
-flex-wrap
-items-center
-justify-between
-mx-auto
-p-4`}
+    max-w-screen-2xl
+    flex
+    flex-wrap
+    mx-auto
+    p-4
+  `}
+  width: 100%;
+  position: relative;
 `;
 
 const Logo = styled.a`
@@ -173,20 +167,21 @@ const Logo = styled.a`
   flex
   items-center
   `}
-`;
-
-const LogoText = styled.span`
-  ${tw`
-self-center
-text-2xl
-font-semibold
-whitespace-nowrap
-ml-3`}
+  position: absolute;
+  left: 20px;
+  & > img {
+    width: 75px;
+  }
 `;
 
 const RightButtons = styled.div`
-  ${tw`flex
-md:order-2`}
+  ${tw`
+    flex
+    md:order-2
+  `}
+  position: absolute;
+  right: 20px;
+  height: 40px;
 `;
 
 const HamburgerButton = styled.button`
@@ -206,11 +201,6 @@ const HamburgerButton = styled.button`
   `}
 `;
 
-const LoginButton = styled.button`
-  ${tw`text-base
-text-blue-600`}
-`;
-
 const NavItems = styled.div(({ isToggleOpen }) => [
   tw`
     items-center
@@ -219,7 +209,11 @@ const NavItems = styled.div(({ isToggleOpen }) => [
     hidden
     md:flex
     md:w-auto
-    md:order-1`,
+    md:order-1
+  `,
+  css`
+    margin: 0 auto;
+  `,
   isToggleOpen && tw`flex`,
 ]);
 
@@ -247,19 +241,19 @@ const NavItem = styled(Link)`
     block
     text-gray-900
     rounded
-    md:py-2
-    md:px-2
+    py-2
+    lg:px-3
   `}
   border-radius: 30px;
   &:hover {
     cursor: pointer;
-    background-color: rgba(100, 100, 100, 0.3);
+    background-color: rgba(125, 125, 125, 0.3);
   }
-`;
-
-const LoginTitle = styled.div`
-  font-size: 18px;
-  margin-bottom: 20px;
+  ${({ active }) =>
+    active === 'active' &&
+    `
+  background-color: rgba(125, 125, 125, 0.3);
+  `}
 `;
 
 const AfterLoginWrap = styled.div`
@@ -268,19 +262,31 @@ const AfterLoginWrap = styled.div`
 
 const Avatar = styled.button`
   line-height: 50px;
+  margin: 0 10px;
   & > img {
     ${tw`w-10 h-10 rounded-full `}
   }
 `;
 
 const TicketWrap = styled.div`
-  ${tw`flex items-center m-1`}
+  ${tw`flex items-center`}
+  border-radius: 20px;
+  padding: 0 10px;
+  height: 40px;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgb(91, 43, 134);
+  border: 1.5px solid rgb(91, 43, 134);
+  & > img {
+    width: 20px;
+  }
 `;
 
 const TicketItem = styled.div`
-  ${tw`flex items-center mr-2`}
+  ${tw`flex items-center`}
 `;
 
 const TicketItemLogo = styled.div`
   transform: rotate(-30deg);
+  margin-right: 10px;
 `;

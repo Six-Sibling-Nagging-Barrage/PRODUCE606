@@ -16,28 +16,28 @@ export default SpeechBubble;
 const BubbleSpeech = styled.div`
   position: relative;
   background-color: white;
-  border-radius: 30px;
-  padding: 15px;
+  border-radius: 50px;
+  padding: 20px;
   margin-bottom: 10px;
-  box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   // 말풍선 위쪽
   ${(props) =>
     props.normal &&
     `
       font-weight: bold;
-      font-size: 20px;
+      font-size: 18px;
         &:after {
           border-top: 0px solid transparent;
-          border-left: 10px solid transparent;
-          border-right: 10px solid transparent;
-          border-bottom: 10px solid white;
+          border-left: 12px solid transparent;
+          border-right: 12px solid transparent;
+          border-bottom: 12px solid white;
           content: '';
           position: absolute;
-          top: -10px;
+          top: -11px;
           left: 40px;
         }
         &:hover {
-          transform: scale(1.02);
+          transform: scale(1.03);
         }
       `}
 

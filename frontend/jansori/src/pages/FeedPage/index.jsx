@@ -9,6 +9,8 @@ import { getFollowTagList, createFollowTag } from '../../apis/api/tag';
 import { followingTagsState } from '../../states/tag';
 import PersonaReaction from './components/PersonaReaction';
 import SnackBar from '../../components/UI/SnackBar';
+import Button from '../../components/UI/Button';
+import FeedBackground from '../../components/UI/FeedBackground';
 
 const FeedPage = () => {
   const [specificTag, setSpecificTag] = useState(-1);
@@ -59,19 +61,20 @@ const FeedPage = () => {
 
   return (
     <FeedBody>
+      <FeedBackground />
       <FeedContainer>
         <Left>
           <Search>
             {specificTag !== -1 && (
               <Follow>
                 {isFollowing ? (
-                  <FollowButton cancel onClick={handleFollowHashTag}>
-                    태그 구독 취소할래요!
-                  </FollowButton>
+                  <Button cancel onClick={handleFollowHashTag}>
+                    이 태그 구독 취소할래요...
+                  </Button>
                 ) : (
-                  <FollowButton onClick={handleFollowHashTag}>
-                    태그 구독할래요!
-                  </FollowButton>
+                  <Button normal onClick={handleFollowHashTag}>
+                    이 태그 구독할래요!
+                  </Button>
                 )}
               </Follow>
             )}
@@ -114,8 +117,7 @@ const FeedPage = () => {
 };
 
 const FeedBody = styled.div`
-  background-color: #f4f4fa;
-  min-height: 100vh;
+  height: 100%;
 `;
 
 const FeedContainer = styled.div`
@@ -138,7 +140,7 @@ const Search = styled.div`
 `;
 
 const Follow = styled.div`
-  margin: 6px 20px;
+  margin: 6px 15px;
 `;
 
 const SearchBar = styled.div`
@@ -165,14 +167,6 @@ const SearchBar = styled.div`
 const Right = styled.div`
   position: relative;
   width: 32%;
-`;
-
-const FollowButton = styled.button`
-  color: white;
-  font-size: 14px;
-  padding: 10px;
-  border-radius: 20px;
-  background-color: ${({ cancel }) => (cancel ? '#bababa' : '#b197fc')};
 `;
 
 export default FeedPage;

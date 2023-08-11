@@ -11,9 +11,6 @@ import { createLogout } from '../../apis/api/member';
 import { altImageUrl } from '../../constants/image';
 
 const DropdownProfileMenu = () => {
-  const navigate = useNavigate();
-
-  const profileImg = useRecoilValue(profileImgState);
   const member = useRecoilValue(memberInfoState);
   const setIsLogin = useSetRecoilState(isLoginState);
 
@@ -58,20 +55,20 @@ export default DropdownProfileMenu;
 const DropdownProfileMenuContainer = styled.div`
   ${tw`
   absolute 
-  right-5 
+  right-1 
   mt-3 
-  w-44`};
+  w-40`};
 `;
 
 const BackgroundContainer = styled.div`
   ${tw`
   z-40
   bg-white
-  rounded-lg
   absolute
   w-full
   h-full`}
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2)
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
 const DropdownMenuContent = styled.div`
@@ -83,7 +80,7 @@ const ItemContainer = styled.div`
 `;
 
 const Avatar = styled.img`
-  ${tw`w-8 h-8 rounded-full mr-5`}
+  ${tw`w-8 h-8 rounded-full mr-2`}
 `;
 
 const MemberName = styled.span`

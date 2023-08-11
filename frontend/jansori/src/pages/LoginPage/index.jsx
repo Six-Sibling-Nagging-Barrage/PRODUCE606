@@ -88,7 +88,7 @@ const LoginPage = () => {
         <form>
           <InfoContainer>
             <Label>이메일</Label>
-            <Email
+            <Input
               placeholder="이메일을 입력해주세요."
               {...register('email', {
                 required: '이메일을 입력해주세요.',
@@ -102,7 +102,7 @@ const LoginPage = () => {
           </InfoContainer>
           <InfoContainer>
             <Label>비밀번호</Label>
-            <Password
+            <Input
               type="password"
               placeholder="비밀번호를 입력해주세요."
               {...register('password', {
@@ -130,7 +130,7 @@ const LoginPage = () => {
 
 const SignUpContainer = styled.div`
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
   width: 30%;
   @media (min-width: 980px) and (max-width: 1200px) {
@@ -146,18 +146,18 @@ const SignUpContainer = styled.div`
     width: 70%;
   }
   transform: translate(-50%, -50%);
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.6);
   padding: 10px 60px;
   z-index: 99;
   backdrop-filter: blur(10px);
-  border-radius: 5px;
-  box-shadow: 0 0 100px rgba(0, 0, 0, 0.2);
+  border-radius: 30px;
+  box-shadow: 0 0 100px rgba(0, 0, 0, 0.3);
 `;
 
 const SignUpTitle = styled.div`
   margin: 20px;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 20px;
 `;
 
 const Label = styled.div`
@@ -171,40 +171,17 @@ const Label = styled.div`
 
 const InfoContainer = styled.div`
   margin-bottom: 15px;
-  & > input {
-    height: 40px;
-  }
 `;
 
-const Email = styled.input`
+const Input = styled.input`
   width: 100%;
+  height: 50px;
   padding: 5px;
-  border-radius: 5px;
+  border-radius: 30px;
   text-align: center;
   &:focus {
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   }
-`;
-
-const Password = styled.input`
-  width: 100%;
-  padding: 5px;
-  border-radius: 5px;
-  text-align: center;
-  &:focus {
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  }
-`;
-
-const GuideMessage = styled.div`
-  font-size: 14px;
-  color: #757575;
-  margin-top: 5px;
-  ${({ granted }) =>
-    granted &&
-    `
-      color: #66bb6a
-    `}
 `;
 
 const ErrorMessage = styled.div`

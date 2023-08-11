@@ -165,7 +165,7 @@ const CountBadge = styled.div`
 
 const PersonaBio = styled.div`
   position: relative;
-  width: 400px;
+  width: 380px;
   height: fit-content;
   padding: 15px;
   background-color: rgb(244, 244, 244);

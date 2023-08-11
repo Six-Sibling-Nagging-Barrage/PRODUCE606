@@ -131,7 +131,7 @@ const motionAnimation = keyframes`
     margin-top: 0px;
   }
   100% {
-    margin-top: 10px;
+    margin-top: 15px;
   }
 `;
 const Wrap = styled.div`
@@ -145,8 +145,8 @@ const ContentContainer = styled.div`
   margin-top: 0;
   -webkit-animation: ${motionAnimation} 1s linear 0s infinite alternate;
   margin-top: 0;
-  font-weight: bold;
   color: #efefef;
+  font-weight: 600;
 `;
 
 const NagsContainer = styled.div`

@@ -186,7 +186,7 @@ const ErrorMessage = styled.div`
 
 const NagFormWrap = styled.div`
   position: absolute;
-  top: 55%;
+  top: 45%;
   left: 50%;
   width: 40%;
   @media screen and (max-width: 768px) {
