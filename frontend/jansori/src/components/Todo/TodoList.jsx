@@ -4,22 +4,28 @@ import TodoItem from './TodoItem';
 import Mark from '../UI/Mark';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { focusDateState, todoListState } from '../../states/todo';
-import { updateTodoComplete, getTodoListByDate } from '../../apis/api/todo';
+import { memberIdState } from '../../states/user';
+import { updateTodoComplete, getTodoListByDate, getTodoListOtherByDate } from '../../apis/api/todo';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-function TodoList() {
+const TodoList = (props) => {
+  const { id } = props;
   const queryClient = useQueryClient();
 
   const date = useRecoilValue(focusDateState);
+  const memberId = useRecoilValue(memberIdState);
   const [todoList, setTodoList] = useRecoilState(todoListState);
-
-  useEffect(() => {
-    console.log('변경감지');
-  }, [todoList]);
 
   const fetchTodoList = async (date) => {
     if (!date) return;
-    const data = await getTodoListByDate(date);
+    let data;
+    if (id === memberId) {
+      // 내꺼 투두 불러올 때
+      data = await getTodoListByDate(date);
+    } else {
+      // 다른 사람의 투두를 불러오는 부분
+      data = await getTodoListOtherByDate(id, date);
+    }
     return data.data;
   };
 
@@ -74,7 +80,7 @@ function TodoList() {
       )}
     </TodoContainer>
   );
-}
+};
 
 export default TodoList;
 

@@ -18,10 +18,10 @@ const TodoHistory = (props) => {
     <TodoHistoryContainer>
       <TodoHistoryLeftContainer ref={leftContainerRef}>
         {isMine && <TodoForm />}
-        <CalendarForm />
+        <CalendarForm id={id} />
       </TodoHistoryLeftContainer>
       <TodoHistoryRightContainer style={{ height: `${rightContainerHeight}px` }}>
-        <TodoList />
+        <TodoList id={id} />
       </TodoHistoryRightContainer>
     </TodoHistoryContainer>
   );
