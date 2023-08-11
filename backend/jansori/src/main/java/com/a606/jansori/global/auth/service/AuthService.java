@@ -4,6 +4,11 @@ import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.exception.DuplicatedEmailException;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
+import com.a606.jansori.domain.notification.domain.NotificationBox;
+import com.a606.jansori.domain.notification.domain.NotificationSetting;
+import com.a606.jansori.domain.notification.repository.NotificationBoxRepository;
+import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
+import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.global.auth.domain.RefreshToken;
 import com.a606.jansori.global.auth.dto.AuthLoginReqDto;
 import com.a606.jansori.global.auth.dto.AuthSignupReqDto;
@@ -40,6 +45,12 @@ public class AuthService {
   private final BlackListUtil redisBlackListUtil;
 
   private final JwtConfigProperty jwtConfigProperty;
+  private final NotificationBoxRepository notificationBoxRepository;
+  private final NotificationSettingRepository notificationSettingRepository;
+  private final NotificationTypeRepository notificationTypeRepository;
+  private final Long NOTIFICATION_TYPE_COUNTS = 4L;
+
+
 
   @Transactional
   public AuthSignupResDto signup(AuthSignupReqDto authSignupReqDto) {
@@ -53,6 +64,16 @@ public class AuthService {
     Member member = authSignupReqDto.toMember(passwordEncoder);
 
     memberRepository.save(member);
+
+    notificationBoxRepository.save(NotificationBox.builder().member(member).build());
+
+    for (Long type = 1L; type <= NOTIFICATION_TYPE_COUNTS; type++){
+      notificationSettingRepository.save(NotificationSetting.builder()
+          .member(member)
+          .notificationType(notificationTypeRepository.getReferenceById(type))
+          .activated(true)
+          .build());
+    }
 
     return AuthSignupResDto.from(member);
 
@@ -79,7 +100,9 @@ public class AuthService {
       TokenResDto tokenResDto = tokenProvider.generateAccessTokenDto(authentication,
           refreshToken.getRefreshToken());
 
-      tokenResDto.update(member);
+//      notificationBoxRepository.findByMember(member).
+
+//      tokenResDto.of(member);
 
       return tokenResDto;
 
@@ -113,7 +136,7 @@ public class AuthService {
     Member member = memberRepository.findMemberByEmail(authentication.getName())
         .orElseThrow(MemberNotFoundException::new);
 
-    tokenResDto.update(member);
+//    tokenResDto.of(member, );
 
     return tokenResDto;
   }

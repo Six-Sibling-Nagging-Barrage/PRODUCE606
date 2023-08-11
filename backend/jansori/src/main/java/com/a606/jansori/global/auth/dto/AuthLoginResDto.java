@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TokenResDto {
-
+public class AuthLoginResDto {
   private String grantType;
 
   private String accessToken;
