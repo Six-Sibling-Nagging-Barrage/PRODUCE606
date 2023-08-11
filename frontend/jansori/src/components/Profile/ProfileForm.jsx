@@ -81,15 +81,13 @@ const ProfileForm = (props) => {
       tags: hashTagList.length > 0 ? hashTagList.map((tag) => tag.tagId) : [-1],
     };
 
-    console.log(profile);
-
     const formData = new FormData();
 
     formData.append('imageFile', profileImg);
     formData.append('memberInfo', JSON.stringify(profile));
 
     // 유저 정보 수정 api 호출
-    const res = await updateProfile(profile);
+    const res = await updateProfile(formData);
     console.log(res);
     if (res.code === '200') {
       setMemberRole('USER');
@@ -116,7 +114,7 @@ const ProfileForm = (props) => {
   };
 
   return (
-    <FormContainer>
+    <FormContainer enctype="multipart/form-data">
       <ProfileImg
         editable={true}
         profileImg={profileImg}
