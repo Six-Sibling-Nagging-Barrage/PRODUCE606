@@ -8,10 +8,13 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { getFollowTagList, createFollowTag } from '../../apis/api/tag';
 import { followingTagsState } from '../../states/tag';
 import Button from '../../components/UI/Button';
+import PersonaReaction from './components/PersonaReaction';
 
 const FeedPage = () => {
   const [specificTag, setSpecificTag] = useState(-1);
   const [hashTagList, setHashTagList] = useState([]);
+  const [currentPostId, setCurrentPostId] = useState(-1);
+  const [personaReaction, setPersonaReaction] = useState([]);
 
   const memberId = useRecoilValue(memberIdState);
   const [followingTags, setFollowingTags] = useRecoilState(followingTagsState);
@@ -69,8 +72,20 @@ const FeedPage = () => {
         <Feed
           specificTag={specificTag}
           getFeedData={specificTag === -1 ? getFollowingFeed : getSpecificFeed}
+          setPersonaReaction={setPersonaReaction}
+          setCurrentPostId={setCurrentPostId}
+          currentPostId={currentPostId}
         />
-        <Right></Right>
+        <Right>
+          {currentPostId > -1 && (
+            <PersonaReaction
+              personaReaction={personaReaction}
+              setPersonaReaction={setPersonaReaction}
+              setCurrentPostId={setCurrentPostId}
+              currentPostId={currentPostId}
+            />
+          )}
+        </Right>
       </FeedContainer>
     </FeedBody>
   );
@@ -125,6 +140,7 @@ const SearchBar = styled.div`
 `;
 
 const Right = styled.div`
+  position: relative;
   width: 32%;
 `;
 

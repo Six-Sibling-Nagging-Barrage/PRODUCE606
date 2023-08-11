@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from './InfiniteScroll';
 import tw, { styled } from 'twin.macro';
-import PersonaReaction from './PersonaReaction';
 import TodoPost from './TodoPost';
 import { useQueryClient } from '@tanstack/react-query';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
@@ -11,10 +10,14 @@ import { ticketState } from '../../../states/user';
 import SnackBar from '../../../components/UI/SnackBar';
 
 const Feed = (props) => {
-  const { specificTag, getFeedData } = props;
+  const {
+    specificTag,
+    getFeedData,
+    currentPostId,
+    setCurrentPostId,
+    setPersonaReaction,
+  } = props;
 
-  const [currentPostId, setCurrentPostId] = useState(-1);
-  const [personaReaction, setPersonaReaction] = useState([]);
   const [ticket, setTicket] = useRecoilState(ticketState);
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
@@ -194,14 +197,6 @@ const Feed = (props) => {
         hasNextPage={hasNextPage}
         isFetchingNextPage={isFetchingNextPage}
       />
-      {currentPostId > -1 && (
-        <PersonaReaction
-          personaReaction={personaReaction}
-          setPersonaReaction={setPersonaReaction}
-          setCurrentPostId={setCurrentPostId}
-          currentPostId={currentPostId}
-        />
-      )}
       {showSnackBar && (
         <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
       )}

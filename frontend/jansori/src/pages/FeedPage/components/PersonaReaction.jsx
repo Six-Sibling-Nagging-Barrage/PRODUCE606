@@ -66,7 +66,7 @@ const PersonaReaction = (props) => {
                 }}
               >
                 <PersonaImg
-                  src={personas[reaction.personaId - 1].imgUrl} // TODO: 캐릭터 이미지
+                  src={personas[reaction.personaId - 1].imgUrl}
                   onError={handleImgError}
                 />
                 {/* <CountBadge>
@@ -116,7 +116,6 @@ const PersonaReactionWrapper = styled.div`
   top: 85px;
   right: 20px;
   display: flex;
-  max-width: 31%;
 `;
 
 const PersonaReactionContainer = styled.div`
@@ -138,17 +137,16 @@ const CloseBtn = styled.button`
 `;
 
 const PersonaImg = styled.img`
-  ${tw`w-16 h-16 rounded-full`}
+  ${tw`w-16 h-16`}
 `;
 
 const PersonaCounter = styled.div`
   display: flex;
   justify-content: space-evenly;
-  margin: 10px 0 45px 0;
+  margin: 10px 0 20px 0;
 `;
 
 const PersonaProfile = styled.div`
-  height: 40px;
   &:hover {
     cursor: pointer;
   }
@@ -167,6 +165,7 @@ const CountBadge = styled.div`
 
 const PersonaBio = styled.div`
   position: relative;
+  width: 400px;
   height: fit-content;
   padding: 15px;
   background-color: rgb(244, 244, 244);
