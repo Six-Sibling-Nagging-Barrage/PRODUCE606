@@ -64,7 +64,8 @@ export const updateProfile = async (profile) => {
   try {
     const { data } = await authInstance.post(`/members/update`, profile, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-type': 'multipart/form-data',
+        Accept: '*/*',
       },
     });
     return data;

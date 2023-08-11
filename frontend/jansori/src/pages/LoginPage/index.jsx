@@ -26,7 +26,7 @@ const LoginPage = () => {
     handleSubmit,
   } = useForm({ mode: 'onBlur' });
 
-  const setMemberToken = useSetRecoilState(memberTokenState);
+  const [memberToken, setMemberToken] = useRecoilState(memberTokenState);
   const setMemberInfo = useSetRecoilState(memberInfoState);
   const setIsLogin = useSetRecoilState(isLoginState);
   const [memberRole, setMemberRole] = useRecoilState(memberRoleState);
@@ -60,8 +60,9 @@ const LoginPage = () => {
       });
       setMemberId(res.data.memberId);
       setTicket(res.data.ticket);
+      console.log(res.data.memberRole);
       if (res.data.memberRole === 'GUEST') {
-        navigate('/initialprofile');
+        navigate('/initialprofile', { state: res.data.accessToken });
       } else navigate('/');
     } else {
       setLoginError(true);

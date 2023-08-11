@@ -33,9 +33,9 @@ export const profileImgState = atom({
   effects_UNSTABLE: [persistAtom],
 });
 
-export const memberNameState = atom({
-  key: 'memberNameState',
-  default: 'membername',
+export const memberNicknameState = atom({
+  key: 'memberNicknameState',
+  default: '',
   effects_UNSTABLE: [persistAtom],
 });
 
