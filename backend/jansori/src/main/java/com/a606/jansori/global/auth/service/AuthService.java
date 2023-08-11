@@ -11,10 +11,11 @@ import com.a606.jansori.global.auth.dto.AuthSignupResDto;
 import com.a606.jansori.global.auth.dto.TokenReqDto;
 import com.a606.jansori.global.auth.dto.TokenResDto;
 import com.a606.jansori.global.auth.exception.InvalidTokenException;
-import com.a606.jansori.global.auth.repository.RefreshTokenRepository;
 import com.a606.jansori.global.auth.util.TokenProvider;
+import com.a606.jansori.global.config.property.JwtConfigProperty;
 import com.a606.jansori.global.exception.domain.UnauthorizedException;
-import com.a606.jansori.infra.redis.util.RedisUtil;
+import com.a606.jansori.infra.redis.util.BlackListUtil;
+import com.a606.jansori.infra.redis.util.RefreshTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,9 +35,11 @@ public class AuthService {
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final TokenProvider tokenProvider;
-  private final RefreshTokenRepository refreshTokenRepository;
+  private final RefreshTokenUtil refreshTokenUtil;
 
-  private final RedisUtil redisUtil;
+  private final BlackListUtil redisBlackListUtil;
+
+  private final JwtConfigProperty jwtConfigProperty;
 
   @Transactional
   public AuthSignupResDto signup(AuthSignupReqDto authSignupReqDto) {
@@ -68,15 +71,13 @@ public class AuthService {
       Authentication authentication = authenticationManagerBuilder.getObject()
           .authenticate(authenticationToken);
 
-      RefreshToken refreshToken = refreshTokenRepository.findByEmail(authLoginReqDto.getEmail())
-          .orElse(RefreshToken.builder().email(authLoginReqDto.getEmail()).build());
+      RefreshToken refreshToken = new RefreshToken(member.getEmail(),
+          tokenProvider.generateRefreshTokenDto());
 
-      refreshToken.setValue(tokenProvider.generateRefreshTokenDto());
-
-      refreshTokenRepository.save(refreshToken);
+      refreshTokenUtil.save(refreshToken, jwtConfigProperty.getRefreshTokenExpireTime());
 
       TokenResDto tokenResDto = tokenProvider.generateAccessTokenDto(authentication,
-          refreshToken.getValue());
+          refreshToken.getRefreshToken());
 
       tokenResDto.update(member);
 
@@ -98,16 +99,16 @@ public class AuthService {
         tokenReqDto.getAccessToken());
 
     // 로그아웃 된 사용자
-    RefreshToken refreshToken = refreshTokenRepository.findByEmail(authentication.getName())
+    RefreshToken refreshToken = refreshTokenUtil.findByEmail(authentication.getName())
         .orElseThrow(InvalidTokenException::new);
 
     // 토근 유저 정보 불일치
-    if (!refreshToken.getValue().equals(tokenReqDto.getRefreshToken())) {
+    if (!refreshToken.getRefreshToken().equals(tokenReqDto.getRefreshToken())) {
       throw new UnauthorizedException();
     }
 
     TokenResDto tokenResDto = tokenProvider.generateAccessTokenDto(authentication,
-        refreshToken.getValue());
+        refreshToken.getRefreshToken());
 
     Member member = memberRepository.findMemberByEmail(authentication.getName())
         .orElseThrow(MemberNotFoundException::new);
@@ -126,9 +127,9 @@ public class AuthService {
 
     Authentication authentication = tokenProvider.getAuthentication(tokenReqDto.getAccessToken());
 
-    refreshTokenRepository.deleteByEmail(authentication.getName());
+    refreshTokenUtil.deleteByEmail(authentication.getName());
 
-    redisUtil.setBlackList(tokenReqDto.getAccessToken(), "accessToken", tokenProvider.getExpiration(
+    redisBlackListUtil.setBlackList(tokenReqDto.getAccessToken(), "accessToken", tokenProvider.getExpiration(
         tokenReqDto.getAccessToken()));
   }
 }

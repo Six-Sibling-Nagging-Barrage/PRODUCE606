@@ -2,7 +2,7 @@ package com.a606.jansori.global.auth.util;
 
 import com.a606.jansori.global.auth.dto.TokenResDto;
 import com.a606.jansori.global.exception.domain.UnauthorizedException;
-import com.a606.jansori.infra.redis.util.RedisUtil;
+import com.a606.jansori.infra.redis.util.BlackListUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -41,7 +41,7 @@ public class TokenProvider {
   private final Key key;
 
   @Autowired
-  private RedisUtil redisUtil;
+  private BlackListUtil redisBlackListUtil;
 
   public TokenProvider(@Value("${jwt.secret}") String secretKey) {
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
@@ -113,7 +113,7 @@ public class TokenProvider {
 
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 
-      if (redisUtil.isBlackList(token)) {
+      if (redisBlackListUtil.isBlackList(token)) {
         return false;
       }
 
