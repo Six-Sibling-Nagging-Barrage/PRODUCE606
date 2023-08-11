@@ -44,7 +44,7 @@ const NavBar = () => {
         {/* 로고 들어가는 부분 시작 */}
         <NavWrap>
           <Logo href="/" onClick={() => setIsToggleOpen(false)}>
-            <img src={logoImg} style={{ width:`80px`, height:`80px`}} />
+            <img src={logoImg} style={{ width: `80px` }} />
             <LogoText>JANSORI</LogoText>
           </Logo>
           {/* 오른쪽 로그인 버튼 부분 시작*/}
