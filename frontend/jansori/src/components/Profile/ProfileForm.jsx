@@ -15,6 +15,10 @@ import { getAvailableNickname } from '../../apis/api/member';
 import ProfileImg from '../../components/Profile/ProfileImg';
 import { styled } from 'twin.macro';
 
+const DUPLICATED = 'duplicated';
+const NORMAL = 'normal';
+const AVAILABLE = 'available';
+
 const ProfileForm = (props) => {
   const { initial, prevNickname, prevBio, tags } = props;
 
@@ -22,7 +26,7 @@ const ProfileForm = (props) => {
   const [checked, setChecked] = useState(false);
   const [checkError, setCheckError] = useState(false);
   const [nicknameValue, setNicknameValue] = useState('');
-  const [isAvailable, setIsAvailable] = useState(false);
+  const [isDuplicated, setIsDuplicated] = useState(NORMAL);
 
   const navigate = useNavigate();
 
@@ -45,14 +49,15 @@ const ProfileForm = (props) => {
   }, []);
 
   useEffect(() => {
-    if (nicknameValue === '') return setIsAvailable(false);
+    setIsDuplicated(NORMAL);
+    if (nicknameValue === '') return;
     let timerId = setTimeout(async () => {
       // 닉네임 중복 검사 api 호출
       const data = await getAvailableNickname(nicknameValue);
       if (data.code === '200') {
-        setIsAvailable(true);
+        setIsDuplicated(AVAILABLE);
       } else {
-        setIsAvailable(false);
+        setIsDuplicated(DUPLICATED);
       }
     }, 500);
 
@@ -132,11 +137,11 @@ const ProfileForm = (props) => {
           <ErrorMessage>{errors?.nickname?.message}</ErrorMessage>
         ) : (
           <>
-            {nicknameValue === '' && !isAvailable ? (
+            {nicknameValue === '' || isDuplicated === NORMAL ? (
               <GuideMessage>1~11자 닉네임을 지어주세요.</GuideMessage>
             ) : (
               <>
-                {isAvailable ? (
+                {isDuplicated === AVAILABLE ? (
                   <GuideMessage granted="true">
                     사용 가능한 닉네임이에요!
                   </GuideMessage>
