@@ -2,15 +2,15 @@ import React from 'react';
 import tw, { css, styled } from 'twin.macro';
 
 const Button = (props) => {
-  const { label, normal, cancel, onClick, disabled } = props;
+  const { children, normal, cancel, onClick, disabled } = props;
   return (
     <ButtonWrap
       onClick={onClick}
       disabled={disabled}
       normal={normal}
-      cancle={cancel}
+      cancel={cancel}
     >
-      {label}
+      {children}
     </ButtonWrap>
   );
 };
@@ -21,17 +21,15 @@ const ButtonWrap = styled.button(({ normal, cancel }) => [
   css`
     border-radius: 50px;
     padding: 8px 18px;
-    color: rgb(86, 86, 86);
-    font-weight: bold;
-    font-size: 15px;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+    color: white;
+    font-size: 14px;
   `,
   normal &&
     css`
-      background-color: rgba(255, 255, 255);
+      background-color: rgb(91, 43, 134);
     `,
   cancel &&
     css`
-      background-color: rgba(183, 183, 183, 0.6);
+      background-color: rgb(148, 148, 148);
     `,
 ]);
