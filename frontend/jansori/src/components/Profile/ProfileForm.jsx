@@ -15,26 +15,29 @@ import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
 import { getAvailableNickname } from '../../apis/api/member';
 import ProfileImg from '../../components/Profile/ProfileImg';
 import { styled } from 'twin.macro';
+import { altImageUrl } from '../../constants/image';
 
 const DUPLICATED = 'duplicated';
 const NORMAL = 'normal';
 const AVAILABLE = 'available';
 
 const ProfileForm = (props) => {
-  const { initial, prevNickname, prevBio, tags } = props;
+  const { initial, prevNickname, prevBio, tags, setIsEditing, setIsEdited } =
+    props;
 
   const [hashTagList, setHashTagList] = useState([]);
   const [checked, setChecked] = useState(false);
   const [checkError, setCheckError] = useState(false);
   const [nicknameValue, setNicknameValue] = useState('');
   const [isDuplicated, setIsDuplicated] = useState(NORMAL);
+  const [profileImg, setProfileImg] = useState(null);
 
   const navigate = useNavigate();
 
   const isLogin = useRecoilValue(isLoginState);
   const setMemberRole = useSetRecoilState(memberRoleState);
-  const [profileImg, setProfileImg] = useRecoilState(profileImgState);
-  const memberInfo = useRecoilValue(memberInfoState);
+  // const [profileImg, setProfileImg] = useRecoilState(profileImgState);
+  const [memberInfo, setMemberInfo] = useRecoilState(memberInfoState);
 
   const {
     register,
@@ -81,18 +84,35 @@ const ProfileForm = (props) => {
       tags: hashTagList.length > 0 ? hashTagList.map((tag) => tag.tagId) : [-1],
     };
 
+    console.log(profile);
+
     const formData = new FormData();
+    console.log(profileImg);
 
-    formData.append('imageFile', profileImg);
-    formData.append('memberInfo', JSON.stringify(profile));
-
+    if (profileImg !== altImageUrl) formData.append('imageFile', profileImg);
+    formData.append(
+      'memberInfo',
+      new Blob([JSON.stringify(profile)], {
+        type: 'application/json',
+      })
+    );
     // 유저 정보 수정 api 호출
     const res = await updateProfile(formData);
     console.log(res);
     if (res.code === '200') {
-      setMemberRole('USER');
-      if (isLogin) navigate('/');
-      else navigate('/login');
+      setMemberInfo((prev) => {
+        return {
+          ...prev,
+          nickname: res.data.nickname,
+          imageUrl: res.data.imageUrl,
+        };
+      });
+      if (initial) {
+        setMemberRole('USER');
+        return navigate('/');
+      }
+      setIsEdited((prev) => !prev);
+      setIsEditing(false);
     }
   };
 
@@ -137,7 +157,7 @@ const ProfileForm = (props) => {
           onChange={handleNicknameInputChange}
           onKeyDown={handleFormKeyDown}
         />
-        {errors.nickname && nicknameValue === '' ? (
+        {errors.nickname || nicknameValue === '' ? (
           <ErrorMessage>{errors?.nickname?.message}</ErrorMessage>
         ) : (
           <>
@@ -225,6 +245,7 @@ export default ProfileForm;
 
 const FormContainer = styled.form`
   width: 40vw;
+  margin: 0 auto;
 `;
 
 const Label = styled.div`

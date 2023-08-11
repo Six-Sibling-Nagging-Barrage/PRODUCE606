@@ -3,11 +3,9 @@ import ProfileDetail from './components/ProfileDetail';
 import { styled } from 'twin.macro';
 import TabItem from './components/TabItem';
 import NagHistory from './components/NagHistory';
-import { getMemberProfile } from '../../apis/api/member';
 import TodoHistory from './components/TodoHistory';
 import { useRecoilValue } from 'recoil';
 import { memberIdState } from '../../states/user';
-import { getFollowTagList } from '../../apis/api/tag';
 import { useLocation } from 'react-router-dom';
 
 const tabs = ['TODO', '잔소리'];
@@ -17,10 +15,7 @@ const ProfilePage = () => {
 
   const memberId = useRecoilValue(memberIdState);
 
-  const [profile, setProfile] = useState(null);
-  const [tags, setTags] = useState([]);
   const [isMine, setIsMine] = useState(false);
-  const [nags, setNags] = useState([]);
 
   const location = useLocation();
   const query = new URLSearchParams(location.search);
@@ -31,19 +26,11 @@ const ProfilePage = () => {
   useEffect(() => {
     console.log(id, memberId);
     if (id === memberId) setIsMine(true);
-    // 유저 프로필 조회 api 호출
-    // TODO: 유저가 팔로우한 해시태그 조회 api 호출
-    (async () => {
-      const profileRes = await getMemberProfile(id);
-      setProfile(profileRes?.data);
-      const tagRes = await getFollowTagList(id);
-      setTags(tagRes?.tags);
-    })();
   }, [id]);
 
   return (
     <ProfileContainer>
-      {profile && <ProfileDetail isMine={isMine} profile={profile} tags={tags} setTags={setTags} />}
+      <ProfileDetail isMine={isMine} id={id} />
       <TabContainer>
         <Tabs>
           {tabs.map((tab, index) => (

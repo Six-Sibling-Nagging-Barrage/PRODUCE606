@@ -5,7 +5,7 @@ import { altImageUrl } from '../../constants/image';
 const ProfileImg = (props) => {
   const { editable, profileImg, setProfileImg, size } = props;
 
-  const [newProfileImg, setNewProfileImg] = useState();
+  const [newProfileImg, setNewProfileImg] = useState(null);
   const profileImgInput = useRef(null);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const ProfileImg = (props) => {
 
   const handleProfileImgUpload = (event) => {
     // console.log(URL.createObjectURL(event.target.files[0]));
-    if (!event.target.files[0]) return;
+    if (!event.target.files[0]) return setNewProfileImg(altImageUrl);
     setNewProfileImg(URL.createObjectURL(event.target.files[0]));
     setProfileImg(event.target.files[0]);
   };

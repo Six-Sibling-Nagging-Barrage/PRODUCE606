@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import tw, { styled } from 'twin.macro';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { AiFillBell } from 'react-icons/ai';
@@ -12,7 +12,7 @@ import logoImg from '../../assets/jansori-logo-eating-removebg-preview.png';
 import {
   isLoginState,
   profileImgState,
-  memberNameState,
+  memberNicknameState,
 } from '../../states/user';
 import DropdownProfileMenu from './DropdownProfileMenu';
 
@@ -25,6 +25,8 @@ const NavBar = () => {
   const profileImg = useRecoilValue(profileImgState);
   const memberId = useRecoilValue(memberIdState);
   const ticket = useRecoilValue(ticketState);
+  const setNickname = useSetRecoilState(memberNicknameState);
+  const setProfileImg = useSetRecoilState(profileImgState);
 
   const handleMenuClick = () => {
     setIsToggleOpen(!isToggleOpen);
@@ -245,11 +247,10 @@ const NavItem = styled(Link)`
     block
     text-gray-900
     rounded
-    md:py-1
+    md:py-2
     md:px-2
-    rounded-lg
-
   `}
+  border-radius: 30px;
   &:hover {
     cursor: pointer;
     background-color: rgba(100, 100, 100, 0.3);

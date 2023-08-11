@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { styled } from 'twin.macro';
+import LoadingShimmer from '../../../components/UI/LoadingShimmer';
 
 const InfiniteScroll = (props) => {
   const { fetchNextPage, hasNextPage, isFetchingNextPage } = props;
@@ -28,7 +29,7 @@ const InfiniteScroll = (props) => {
       {hasNextPage && (
         <>
           {isFetchingNextPage ? (
-            <div>피드를 불러오는 중...</div>
+            <LoadingShimmer />
           ) : (
             <Target ref={target}></Target>
           )}

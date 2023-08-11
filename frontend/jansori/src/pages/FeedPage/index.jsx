@@ -115,6 +115,7 @@ const FeedPage = () => {
 
 const FeedBody = styled.div`
   background-color: #f4f4fa;
+  min-height: 100vh;
 `;
 
 const FeedContainer = styled.div`
