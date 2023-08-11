@@ -8,6 +8,7 @@ import { updateLikeNag, updateNagUnlock } from '../../../apis/api/nag';
 import { useRecoilState } from 'recoil';
 import { ticketState } from '../../../states/user';
 import SnackBar from '../../../components/UI/SnackBar';
+import LoadingShimmer from '../../../components/UI/LoadingShimmer';
 
 const Feed = (props) => {
   const {
@@ -173,7 +174,7 @@ const Feed = (props) => {
 
   return (
     <FeedContainer>
-      {isLoading && <div>피드 불러 오는 중.......</div>}
+      {isLoading && <LoadingShimmer />}
       <ul>
         {data?.pages?.map((page) =>
           page?.feed?.map((post) => {
