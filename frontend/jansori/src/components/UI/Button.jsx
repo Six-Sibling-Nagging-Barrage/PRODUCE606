@@ -1,10 +1,15 @@
 import React from 'react';
-import tw, { styled } from 'twin.macro';
+import tw, { css, styled } from 'twin.macro';
 
 const Button = (props) => {
   const { label, normal, cancel, onClick, disabled } = props;
   return (
-    <ButtonWrap onClick={onClick} disabled={disabled} normal={normal} cancle={cancel}>
+    <ButtonWrap
+      onClick={onClick}
+      disabled={disabled}
+      normal={normal}
+      cancle={cancel}
+    >
       {label}
     </ButtonWrap>
   );
@@ -13,7 +18,20 @@ const Button = (props) => {
 export default Button;
 
 const ButtonWrap = styled.button(({ normal, cancel }) => [
-  tw`text-lg p-1 px-5 text-sm font-bold rounded-md mt-3`,
-  normal && tw`drop-shadow-lg bg-violet-400 text-white`,
-  cancel && tw`drop-shadow-lg bg-gray-200 text-slate-500`,
+  css`
+    border-radius: 50px;
+    padding: 8px 18px;
+    color: rgb(86, 86, 86);
+    font-weight: bold;
+    font-size: 15px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+  `,
+  normal &&
+    css`
+      background-color: rgba(255, 255, 255);
+    `,
+  cancel &&
+    css`
+      background-color: rgba(183, 183, 183, 0.6);
+    `,
 ]);
