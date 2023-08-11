@@ -39,7 +39,7 @@ const ProfilePage = () => {
       const tagRes = await getFollowTagList(id);
       setTags(tagRes?.tags);
     })();
-  }, []);
+  }, [id]);
 
   return (
     <ProfileContainer>
