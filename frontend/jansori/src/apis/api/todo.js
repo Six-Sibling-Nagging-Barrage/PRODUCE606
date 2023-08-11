@@ -26,12 +26,21 @@ export const getTodoListByDate = async (date) => {
   }
 };
 
+// 멤버의 투두 조회
+export const getTodoListOtherByDate = async (memberId, date) => {
+  try {
+    const { data } = await authInstance.get(`/todos/members/${memberId}?date=${date}`);
+    return data;
+  } catch (e) {
+    console.log(e);
+    return e.response;
+  }
+};
+
 // 멤버의 월별 투두 존재 여부 확인
 export const getTodoListByDateByMember = async ({ memberId, date }) => {
   try {
-    const { data } = await authInstance.get(
-      `/todos/members/${memberId}/monthly?yearMonth=${date}`
-    );
+    const { data } = await authInstance.get(`/todos/members/${memberId}/monthly?yearMonth=${date}`);
     return data;
   } catch (e) {
     console.log(e);
@@ -92,9 +101,7 @@ export const updateTodoComplete = async (todoId) => {
 // Todo 캐릭터 반응하기
 export const createPersonaReaction = async ({ todoId, todoPersonaId }) => {
   try {
-    const { data } = await authInstance.post(
-      `/todos/${todoId}/${todoPersonaId}`
-    );
+    const { data } = await authInstance.post(`/todos/${todoId}/${todoPersonaId}`);
     return data;
   } catch (e) {
     console.log(e.response);
