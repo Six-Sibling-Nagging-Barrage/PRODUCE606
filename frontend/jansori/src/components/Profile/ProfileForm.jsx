@@ -6,6 +6,7 @@ import { updateProfile } from '../../apis/api/member';
 import { useNavigate } from 'react-router';
 import {
   isLoginState,
+  memberInfoState,
   memberRoleState,
   profileImgState,
 } from '../../states/user';
@@ -33,6 +34,7 @@ const ProfileForm = (props) => {
   const isLogin = useRecoilValue(isLoginState);
   const setMemberRole = useSetRecoilState(memberRoleState);
   const [profileImg, setProfileImg] = useRecoilState(profileImgState);
+  const memberInfo = useRecoilValue(memberInfoState);
 
   const {
     register,
@@ -50,7 +52,11 @@ const ProfileForm = (props) => {
 
   useEffect(() => {
     setIsDuplicated(NORMAL);
-    if (nicknameValue === '') return;
+    console.log(memberInfo.nickname);
+
+    if (nicknameValue === '' || nicknameValue.trim() === memberInfo.nickname) {
+      return;
+    }
     let timerId = setTimeout(async () => {
       // 닉네임 중복 검사 api 호출
       const data = await getAvailableNickname(nicknameValue);
