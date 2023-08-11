@@ -65,9 +65,9 @@ const NavBar = () => {
 
                 <ul>
                   <li>
-                    <button onClick={handleProfileClick}>
-                      <Avatar src={profileImg} onError={handleImgError} />
-                    </button>
+                    <Avatar onClick={handleProfileClick}>
+                      <img src={profileImg} onError={handleImgError} />
+                    </Avatar>
                   </li>
 
                   {isProfileModalOpen && (
@@ -242,16 +242,18 @@ md:border-0
 
 const NavItem = styled(Link)`
   ${tw`
-block
-py-2
-pl-3
-pr-4
-text-gray-900
-rounded
-md:hover:bg-transparent
-md:hover:text-blue-700
-md:p-0
-`}
+    block
+    text-gray-900
+    rounded
+    md:py-1
+    md:px-2
+    rounded-lg
+
+  `}
+  &:hover {
+    cursor: pointer;
+    background-color: rgba(100, 100, 100, 0.3);
+  }
 `;
 
 const LoginTitle = styled.div`
@@ -263,8 +265,11 @@ const AfterLoginWrap = styled.div`
   ${tw`flex`}
 `;
 
-const Avatar = styled.img`
-  ${tw`w-8 h-8 ml-3 mr-3 rounded-full `}
+const Avatar = styled.button`
+  line-height: 50px;
+  & > img {
+    ${tw`w-10 h-10 rounded-full `}
+  }
 `;
 
 const TicketWrap = styled.div`
@@ -272,7 +277,7 @@ const TicketWrap = styled.div`
 `;
 
 const TicketItem = styled.div`
-  ${tw`flex items-center text-purple-600 mr-2`}
+  ${tw`flex items-center mr-2`}
 `;
 
 const TicketItemLogo = styled.div`

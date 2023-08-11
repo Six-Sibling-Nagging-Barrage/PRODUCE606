@@ -45,7 +45,9 @@ const DropdownProfileMenu = () => {
           <Avatar src={member.imageUrl} onError={handleImgError} />
           <MemberName>{member.nickname}</MemberName>
         </ItemContainer>
-        <ItemContainer onClick={handleLogOut}>LOGOUT</ItemContainer>
+        <ItemContainer onClick={handleLogOut}>
+          <Logout>LOGOUT</Logout>
+        </ItemContainer>
       </DropdownMenuContent>
     </DropdownProfileMenuContainer>
   );
@@ -56,32 +58,28 @@ export default DropdownProfileMenu;
 const DropdownProfileMenuContainer = styled.div`
   ${tw`
   absolute 
-  right-10 
+  right-5 
   mt-3 
-  w-48`};
+  w-44`};
 `;
 
 const BackgroundContainer = styled.div`
   ${tw`
   z-40
   bg-white
-  opacity-50
-  drop-shadow-lg
   rounded-lg
   absolute
   w-full
   h-full`}
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2)
 `;
 
 const DropdownMenuContent = styled.div`
-  ${tw`relative z-50 py-4`};
+  ${tw`relative z-50 pt-1`};
 `;
 
 const ItemContainer = styled.div`
-  ${tw`flex justify-center items-center p-2`}
-  &:hover {
-    cursor: pointer;
-  }
+  ${tw`flex justify-center items-center m-4`}
 `;
 
 const Avatar = styled.img`
@@ -90,4 +88,14 @@ const Avatar = styled.img`
 
 const MemberName = styled.span`
   ${tw`text-base`}
+`;
+
+const Logout = styled.div`
+  width: fit-content;
+  padding: 5px 15px;
+  border-radius: 20px;
+  &:hover {
+    cursor: pointer;
+    background-color: rgb(220, 220, 220);
+  }
 `;
