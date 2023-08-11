@@ -51,6 +51,8 @@ const ProfileForm = (props) => {
       const data = await getAvailableNickname(nicknameValue);
       if (data.code === '200') {
         setIsAvailable(true);
+      } else {
+        setIsAvailable(false);
       }
     }, 500);
 
@@ -130,7 +132,7 @@ const ProfileForm = (props) => {
           <ErrorMessage>{errors?.nickname?.message}</ErrorMessage>
         ) : (
           <>
-            {nicknameValue === '' || !isAvailable ? (
+            {nicknameValue === '' && !isAvailable ? (
               <GuideMessage>1~11자 닉네임을 지어주세요.</GuideMessage>
             ) : (
               <>
