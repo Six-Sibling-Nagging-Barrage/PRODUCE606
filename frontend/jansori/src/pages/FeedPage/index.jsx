@@ -7,8 +7,8 @@ import { memberIdState, memberRoleState } from '../../states/user';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { getFollowTagList, createFollowTag } from '../../apis/api/tag';
 import { followingTagsState } from '../../states/tag';
-import Button from '../../components/UI/Button';
 import PersonaReaction from './components/PersonaReaction';
+import SnackBar from '../../components/UI/SnackBar';
 
 const FeedPage = () => {
   const [specificTag, setSpecificTag] = useState(-1);
@@ -18,6 +18,9 @@ const FeedPage = () => {
 
   const memberId = useRecoilValue(memberIdState);
   const [followingTags, setFollowingTags] = useRecoilState(followingTagsState);
+  const [showSnackBar, setShowSnackBar] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState('');
+  const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
     // 팔로우 중인 해시태그 api 호출
@@ -28,18 +31,30 @@ const FeedPage = () => {
   }, []);
 
   useEffect(() => {
+    setIsFollowing(followingTags.some((item) => item.tagId === specificTag));
+  }, [specificTag]);
+
+  useEffect(() => {
     if (hashTagList.length === 0) return setSpecificTag(-1);
     setSpecificTag(hashTagList[0].tagId);
   }, [hashTagList]);
 
   const handleFollowHashTag = async () => {
     const data = await createFollowTag(specificTag);
-    console.log(data);
+    if (data.data.isFollowed) {
+      setSnackBarMessage('태그를 구독했어요.');
+      setIsFollowing(true);
+      return setShowSnackBar(true);
+    } else {
+      setSnackBarMessage('태그 구독을 취소했어요.');
+      setIsFollowing(false);
+      return setShowSnackBar(true);
+    }
   };
 
-  const isFollowingTag = (tagId) => {
-    console.log(followingTags);
-    return followingTags.some((item) => item.tagId === tagId);
+  const handleSnackBarClose = () => {
+    setShowSnackBar(false);
+    setSnackBarMessage('');
   };
 
   return (
@@ -49,11 +64,15 @@ const FeedPage = () => {
           <Search>
             {specificTag !== -1 && (
               <Follow>
-                <Button
-                  normal
-                  onClick={handleFollowHashTag}
-                  label={isFollowingTag(specificTag) ? '구독취소' : '구독하기'}
-                ></Button>
+                {isFollowing ? (
+                  <FollowButton cancel onClick={handleFollowHashTag}>
+                    태그 구독 취소할래요!
+                  </FollowButton>
+                ) : (
+                  <FollowButton onClick={handleFollowHashTag}>
+                    태그 구독할래요!
+                  </FollowButton>
+                )}
               </Follow>
             )}
             <SearchBar>
@@ -87,6 +106,9 @@ const FeedPage = () => {
           )}
         </Right>
       </FeedContainer>
+      {showSnackBar && (
+        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
+      )}
     </FeedBody>
   );
 };
@@ -115,7 +137,7 @@ const Search = styled.div`
 `;
 
 const Follow = styled.div`
-  margin: 0 20px;
+  margin: 6px 20px;
 `;
 
 const SearchBar = styled.div`
@@ -142,6 +164,14 @@ const SearchBar = styled.div`
 const Right = styled.div`
   position: relative;
   width: 32%;
+`;
+
+const FollowButton = styled.button`
+  color: white;
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 20px;
+  background-color: ${({ cancel }) => (cancel ? '#bababa' : '#b197fc')};
 `;
 
 export default FeedPage;

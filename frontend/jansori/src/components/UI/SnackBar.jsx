@@ -25,8 +25,8 @@ export default SnackBar;
 const SnackBarContainer = styled.div`
   ${tw`
     fixed
-    bottom-2
-    left-2
+    bottom-6
+    left-6
     p-4
     bg-zinc-500			
     text-white	
