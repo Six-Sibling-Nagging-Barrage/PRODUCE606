@@ -9,7 +9,7 @@ import { memberIdState, ticketState, navBarState } from '../../states/user';
 import { altImageUrl } from '../../constants/image';
 import logoImg from '../../assets/jansori-logo-eating-removebg-preview.png';
 import notificationIcon from '../../assets/notification_icon.webp';
-import { menus } from '../../constants/nav';
+import { menus, beforeLoginMenus } from '../../constants/nav';
 
 import {
   isLoginState,
@@ -56,6 +56,29 @@ const NavBar = () => {
           <Logo href="/" onClick={() => handleMenuClick(-1)}>
             <img src={logoImg} />
           </Logo>
+          {/* 네비게이션 리스트 부분 시작 */}
+          <NavItems id="navbar-sticky" isToggleOpen={isToggleOpen}>
+            <NavItemsUl>
+              {menus.map((menu, index) => {
+                const url =
+                  menu.to === '/profile'
+                    ? `${menu.to}?id=${encodeURIComponent(memberId)}`
+                    : menu.to;
+                return (
+                  <li>
+                    <NavItem
+                      to={url}
+                      onClick={() => handleMenuClick(index)}
+                      active={currentMenu === index ? 'active' : null}
+                    >
+                      {menu.name}
+                    </NavItem>
+                  </li>
+                );
+              })}
+            </NavItemsUl>
+          </NavItems>
+          {/* 네비게이션 리스트 부분 끝 */}
           {/* 오른쪽 로그인 버튼 부분 시작*/}
           <RightButtons>
             {isLogin ? (
@@ -85,12 +108,19 @@ const NavBar = () => {
             ) : (
               <>
                 <NavItemsUl>
-                  <li>
-                    <NavItem to="/login">로그인</NavItem>
-                  </li>
-                  <li>
-                    <NavItem to="/signup">회원가입</NavItem>
-                  </li>
+                  {beforeLoginMenus.map((menu, index) => {
+                    return (
+                      <li>
+                        <NavItem
+                          to={menu.to}
+                          onClick={() => handleMenuClick(menu.index)}
+                          active={currentMenu === menu.index ? 'active' : null}
+                        >
+                          {menu.name}
+                        </NavItem>
+                      </li>
+                    );
+                  })}
                 </NavItemsUl>
               </>
             )}
@@ -107,29 +137,6 @@ const NavBar = () => {
             {/* 화면 작아졌을 때 햄버거 icon 끝 */}
           </RightButtons>
           {/* 오른쪽 로그인 버튼 부분 끝*/}
-          {/* 네비게이션 리스트 부분 시작 */}
-          <NavItems id="navbar-sticky" isToggleOpen={isToggleOpen}>
-            <NavItemsUl>
-              {menus.map((menu, index) => {
-                const url =
-                  menu.to === '/profile'
-                    ? `${menu.to}?id=${encodeURIComponent(memberId)}`
-                    : menu.to;
-                return (
-                  <li>
-                    <NavItem
-                      to={url}
-                      onClick={() => handleMenuClick(index)}
-                      active={currentMenu === index ? 'active' : null}
-                    >
-                      {menu.name}
-                    </NavItem>
-                  </li>
-                );
-              })}
-            </NavItemsUl>
-          </NavItems>
-          {/* 네비게이션 리스트 부분 끝 */}
         </NavWrap>
         {/* 로고 들어가는 부분 끝 */}
       </Nav>
