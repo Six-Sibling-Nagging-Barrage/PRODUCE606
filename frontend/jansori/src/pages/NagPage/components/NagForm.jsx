@@ -139,11 +139,11 @@ const NagForm = () => {
               hashTagList={hashTagList}
               setHashTagList={setHashTagList}
             />
-            <Button
-              onClick={handleSubmit(onSubmit)}
-              normal="true"
-              label={'보내기'}
-            />
+            <Footer>
+              <Button onClick={handleSubmit(onSubmit)} normal="true">
+                보내기
+              </Button>
+            </Footer>
           </NagFormContainer>
         </NagFormWrap>
       </XyzTransition>
@@ -202,4 +202,9 @@ const NagFormWrap = styled.div`
   backdrop-filter: blur(10px);
   border-radius: 5px;
   box-shadow: 0 0 100px rgba(0, 0, 0, 0.3);
+`;
+
+const Footer = styled.div`
+  margin-top: 30px;
+  margin-bottom: 20px;
 `;

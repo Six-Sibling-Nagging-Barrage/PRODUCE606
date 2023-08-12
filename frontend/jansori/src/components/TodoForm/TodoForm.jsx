@@ -136,9 +136,8 @@ const TodoForm = () => {
           <Button
             onClick={handleSubmit(todoFormSubmit)}
             disabled={isSubmitting && content === ''}
-            label={'Add'}
             normal
-          />
+          >등록</Button>
         </ButtonLocation>
       </TodoFormBox>
     </TodoFormContainer>

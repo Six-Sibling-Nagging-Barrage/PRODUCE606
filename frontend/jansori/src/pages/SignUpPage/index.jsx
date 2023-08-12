@@ -112,8 +112,9 @@ const SignUpPage = () => {
               onClick={handleSubmit(signUpSubmit)}
               disabled={isSubmitting}
               normal
-              label={'완료'}
-            />
+            >
+              완료
+            </Button>
           </Footer>
         </form>
       </SignUpContainer>
@@ -190,7 +191,8 @@ const MatchingMessage = styled.div`
 `;
 
 const Footer = styled.div`
-  margin: 10px 0 20px;
+  margin-top: 30px;
+  margin-bottom: 20px;
 `;
 
 export default SignUpPage;

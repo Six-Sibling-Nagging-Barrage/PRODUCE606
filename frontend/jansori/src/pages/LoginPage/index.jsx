@@ -119,8 +119,9 @@ const LoginPage = () => {
               onClick={handleSubmit(loginSubmit)}
               disabled={isSubmitting}
               normal
-              label={'완료'}
-            />
+            >
+              완료
+            </Button>
           </Footer>
         </form>
       </SignUpContainer>
@@ -191,7 +192,8 @@ const ErrorMessage = styled.div`
 `;
 
 const Footer = styled.div`
-  margin: 10px 0 20px;
+  margin-top: 30px;
+  margin-bottom: 20px;
 `;
 
 export default LoginPage;

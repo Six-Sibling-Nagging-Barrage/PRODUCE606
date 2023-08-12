@@ -231,11 +231,9 @@ const ProfileForm = (props) => {
         </>
       )}
       <Footer>
-        <Button
-          onClick={handleSubmit(handleUpdateProfile)}
-          normal="true"
-          label={'완료'}
-        />
+        <Button onClick={handleSubmit(handleUpdateProfile)} normal="true">
+          완료
+        </Button>
       </Footer>
     </FormContainer>
   );
@@ -362,5 +360,6 @@ const CheckboxLabel = styled.label`
 `;
 
 const Footer = styled.div`
-  margin: 10px 0 20px;
+  margin-top: 30px;
+  margin-bottom: 10px;
 `;
