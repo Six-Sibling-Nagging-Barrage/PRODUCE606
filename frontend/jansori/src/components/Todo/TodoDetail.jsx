@@ -1,5 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import tw, { styled } from 'twin.macro';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { updateLikeNag, updateNagUnlock } from '../../apis/api/nag';
+import { getTodoDetail } from '../../apis/api/todo';
+import { useTodoDetailState } from '../../states/todo';
+import { ticketState } from '../../states/user';
 import Mark from '../UI/Mark';
 import HashTagItem from '../HashTag/HashTagItem';
 import NagCommentItem from '../../pages/FeedPage/components/NagCommentItem';
@@ -7,6 +13,85 @@ import { personas } from '../../constants/persona';
 
 const TodoDetail = (props) => {
   const { todoItemDetail } = props;
+  const todoDetailItem = useRecoilValue(useTodoDetailState);
+  const [ticket, setTicket] = useRecoilState(ticketState);
+  const [showSnackBar, setShowSnackBar] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState('');
+
+  const queryClient = useQueryClient();
+  const { data: todoDetailData } = useQuery(['todoDetailItem', todoDetailItem], () =>
+    fetchTodoDetail(todoItemDetail.todoId)
+  );
+
+  const fetchTodoDetail = async (todoId) => {
+    const data = await getTodoDetail(todoId);
+    return data.data;
+  };
+
+  //좋아요 처리를 위한 useMutation
+  const updateLikeMutation = useMutation((nagId) => toggleLike(nagId), {
+    onMutate: async (nagId) => {
+      await queryClient.cancelQueries(['todoDetailItem']);
+      const prevTodoDetail = queryClient.getQueryData(['todoDetailItem']);
+      queryClient.setQueryData(['todoDetailItem', todoDetailItem], (oldData) => {
+        const updatedNag = {
+          ...oldData.nag,
+          isLiked: !oldData.nag.isLiked,
+          likeCount: oldData.nag.isLiked ? oldData.nag.likeCount - 1 : oldData.nag.likeCount + 1,
+        };
+        return {
+          ...oldData,
+          nag: updatedNag,
+        };
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['todoDetailItem']);
+    },
+  });
+
+  const toggleLike = async (nag) => {
+    // 잔소리 좋아요 api 호출
+    const data = await updateLikeNag(nag.nagId);
+    return data.data;
+  };
+
+  const toggleUnlock = async (nag) => {
+    if (ticket < 1) {
+      setSnackBarMessage(
+        '티켓이 부족해 잔소리를 열어볼 수 없어요! 잔소리를 작성하면 티켓을 얻을 수 있어요.'
+      );
+      return setShowSnackBar(true);
+    }
+    // 잔소리 초성 해제 api
+    const data = await updateNagUnlock(nag.nagId);
+    if (data.code === '200') {
+      setTicket(data.data.ticketCount);
+      setSnackBarMessage('티켓 1개를 소모해 잔소리를 열었어요.');
+      setShowSnackBar(true);
+    }
+    return data;
+  };
+
+  const updateUnlockMutation = useMutation((nagId) => toggleUnlock(nagId), {
+    onMutate: async (nagId) => {
+      await queryClient.cancelQueries(['todoDetailItem']);
+      const prevTodoDetail = queryClient.getQueryData(['todoDetailItem']);
+      queryClient.setQueryData(['todoDetailItem', todoDetailItem], (oldData) => {
+        const updatedNag = {
+          ...oldData.nag,
+          unlocked: true,
+        };
+        return {
+          ...oldData,
+          nag: updatedNag,
+        };
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['todoDetailItem']);
+    },
+  });
 
   return (
     <TodoItemDetailWrap>
@@ -15,44 +100,48 @@ const TodoDetail = (props) => {
           <MarkWrap>
             <Mark label={'Todo Detail'} />
           </MarkWrap>
-          <DateHeader>{todoItemDetail?.todoAt}</DateHeader>
+          <DateHeader>{todoDetailData?.todoAt}</DateHeader>
         </Header>
         <TodoWrap>
-          <TodoFinishedWrap>{todoItemDetail?.finished ? '✅' : '❌'}</TodoFinishedWrap>
-          <div>{todoItemDetail?.content}</div>
+          <TodoFinishedWrap>{todoDetailData?.finished ? '✅' : '❌'}</TodoFinishedWrap>
+          <div>{todoDetailData?.content}</div>
           <HashTagContent>
-            {todoItemDetail?.tags?.map((tag) => {
+            {todoDetailData?.tags?.map((tag) => {
               return <HashTagItem key={tag.tagId} hashTag={tag} />;
             })}
           </HashTagContent>
         </TodoWrap>
         <NagListWrap>
-          <NagWrap>
-            <NagCommentItem
-              key={todoItemDetail?.nag.nagId}
-              isMemberNag={true}
-              todoId={todoItemDetail?.todoId}
-              nag={todoItemDetail?.nag}
-            />
-            {todoItemDetail?.personas?.map((persona) => {
-              if (!persona.content) return;
-              return (
-                <NagCommentItem
-                  key={persona.todoPersonaId}
-                  isMemberNag={false}
-                  nag={{
-                    nagId: persona.todoPersonaId,
-                    likeCount: persona.likeCount,
-                    content: persona.content,
-                    nagMember: {
-                      nickname: personas[persona.personaId - 1].name,
-                      imageUrl: personas[persona.personaId - 1].imgUrl,
-                    },
-                  }}
-                />
-              );
-            })}
-          </NagWrap>
+          {todoDetailData && (
+            <NagWrap>
+              <NagCommentItem
+                key={todoDetailData.nag.nagId}
+                isMemberNag={true}
+                todoId={todoDetailData.todoId}
+                nag={todoDetailData.nag}
+                toggleLike={updateLikeMutation.mutate}
+                toggleUnlock={updateUnlockMutation.mutate}
+              />
+              {todoDetailData?.personas?.map((persona) => {
+                if (!persona.content) return;
+                return (
+                  <NagCommentItem
+                    key={persona.todoPersonaId}
+                    isMemberNag={false}
+                    nag={{
+                      nagId: persona.todoPersonaId,
+                      likeCount: persona.likeCount,
+                      content: persona.content,
+                      nagMember: {
+                        nickname: personas[persona.personaId - 1].name,
+                        imageUrl: personas[persona.personaId - 1].imgUrl,
+                      },
+                    }}
+                  />
+                );
+              })}
+            </NagWrap>
+          )}
         </NagListWrap>
       </TodoItemDetailTodoContainer>
     </TodoItemDetailWrap>
