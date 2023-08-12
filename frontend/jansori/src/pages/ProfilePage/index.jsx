@@ -24,7 +24,6 @@ const ProfilePage = () => {
   const id = parseInt(query.get('id'));
 
   useEffect(() => {
-    console.log(id, memberId);
     if (id === memberId) setIsMine(true);
   }, [id]);
 
