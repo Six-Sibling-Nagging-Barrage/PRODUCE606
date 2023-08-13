@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import tw, { css, styled } from 'twin.macro';
 import { useRecoilValue } from 'recoil';
 import { memberIdState } from '../../../states/user';
@@ -6,13 +6,20 @@ import likeIcon from '../../../assets/like_icon.avif';
 import lockIcon from '../../../assets/lock_icon.png';
 import { altImageUrl } from '../../../constants/image';
 import SpeechBubble from '../../../components/UI/SpeechBubble';
+import SnackBar from '../../../components/UI/SnackBar';
 
 const NagRankingItem = (props) => {
   const { nag, isodd, toggleLike, toggleUnlock } = props;
   const memberId = useRecoilValue(memberIdState);
+  const [showSnackBar, setShowSnackBar] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState('');
 
   const handleLikeClick = () => {
-    if (!nag.unlocked) return;
+    if (!nag.unlocked) {
+      setSnackBarMessage('잔소리 잠금해제를 해야 좋아요를 누를 수 있어요..');
+      setShowSnackBar(true);
+      return;
+    }
     toggleLike({ nagId: nag.nagId });
   };
 
@@ -22,6 +29,11 @@ const NagRankingItem = (props) => {
 
   const handleImgError = (e) => {
     e.target.src = altImageUrl;
+  };
+
+  const handleSnackBarClose = () => {
+    setShowSnackBar(false);
+    setSnackBarMessage('');
   };
 
   return (
@@ -56,6 +68,7 @@ const NagRankingItem = (props) => {
           </ButtonGroup>
         </SpeechBubbleWrap>
       </SpeechBubble>
+      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
     </NagRankingItemContainer>
   );
 };

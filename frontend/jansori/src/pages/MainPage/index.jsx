@@ -2,12 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import StartButton from './components/StartButton';
 import Background from '../../components/UI/Background';
-import { getMainNags } from '../../apis/api/nag';
+import { getMainNags, getNagBoxStatistics } from '../../apis/api/nag';
 
 const MainPage = () => {
   // 문장을 뿌려줄 좌표를 저장하는 상태
   const [positions, setPositions] = useState([]);
   const [randomNags, setRandomNags] = useState([]);
+  const [totalNagCount, setTotalNagCount] = useState('');
 
   // startButton의 ref
   const startButtonWrapRef = useRef(null);
@@ -15,15 +16,16 @@ const MainPage = () => {
   useEffect(() => {
     (async () => {
       const data = await getMainNags();
+      const dataStatic = await getNagBoxStatistics();
       setRandomNags(data?.nags);
+      setTotalNagCount(dataStatic.totalNagsCount);
     })();
   }, []);
 
   // 랜덤 잔소리를 가져오면 랜덤한 좌표를 생성하여 상태에 저장
   useEffect(() => {
     if (!randomNags) return;
-    const startButtonWrapRect =
-      startButtonWrapRef.current.getBoundingClientRect();
+    const startButtonWrapRect = startButtonWrapRef.current.getBoundingClientRect();
 
     // 사분면에 랜덤으로 배치
     const getQuadrantPosition = (index) => {
@@ -36,8 +38,7 @@ const MainPage = () => {
 
       // 시작 버튼 y좌표값 위 아래
       const startButtonBottom = startButtonWrapRect.bottom;
-      const startButtonTop =
-        startButtonWrapRect.top - startButtonWrapRect.height;
+      const startButtonTop = startButtonWrapRect.top - startButtonWrapRect.height;
 
       // 중복 체크하는 함수
       const checkPosition = (y) => {
@@ -94,7 +95,7 @@ const MainPage = () => {
   return (
     <Background>
       <StartButtonWrap ref={startButtonWrapRef}>
-        <StartButton nagCount={'172032'} />
+        <StartButton nagCount={totalNagCount} />
       </StartButtonWrap>
       <NagsContainer>
         {randomNags &&

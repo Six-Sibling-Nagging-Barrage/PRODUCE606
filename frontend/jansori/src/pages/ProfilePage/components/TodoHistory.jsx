@@ -30,7 +30,7 @@ const TodoHistory = (props) => {
 export default TodoHistory;
 
 const TodoHistoryContainer = styled.div`
-  ${tw`grid grid-cols-2 gap-4
+  ${tw`grid grid-cols-1 gap-1 md:grid-cols-2 md:gap-4
   `}
   height: fit-content
 `;
