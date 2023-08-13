@@ -58,7 +58,9 @@ const NagBoxPage = () => {
       {/* 잔소리 버튼 */}
       <SpeechBubbleContainer>
         <Link to='/nag'>
-          <SpeechBubble text='잔소리 하러 가기' normal />
+          <SpeechBubble normal='tre' >
+          잔소리 하러 가기
+          </SpeechBubble>
         </Link>
       </SpeechBubbleContainer>
 
@@ -101,7 +103,9 @@ const SpeechBubbleContainer = styled.div`
 `;
 
 const NagRannkingContainer = styled.div`
-  ${tw`w-1/2
+  ${tw`
+  w-4/5
+  md:w-1/2
   mx-auto`}
 `;
 

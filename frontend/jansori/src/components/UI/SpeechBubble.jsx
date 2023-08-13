@@ -2,11 +2,11 @@ import React from 'react';
 import { styled } from 'twin.macro';
 
 const SpeechBubble = (props) => {
-  const { text, normal, isOdd } = props;
+  const { children, normal, isodd } = props;
 
   return (
-    <BubbleSpeech normal={normal} isOdd={isOdd}>
-      {text}
+    <BubbleSpeech normal={normal} isodd={isodd}>
+      {children}
     </BubbleSpeech>
   );
 };
@@ -43,33 +43,39 @@ const BubbleSpeech = styled.div`
 
   //말풍선 왼쪽(홀수)
 ${(props) =>
-    props.isOdd &&
+    props.isodd &&
     `
-        &:after {
-          border-top:15px solid white;
-          border-left: 15px solid transparent;
-          border-right: 15px solid transparent;
-          border-bottom: 0px solid transparent;
-          content:"";
-          position:absolute;
-          top:8px;
-          left:-13px;
-        }
+    &:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 0;
+      height: 0;
+      border: 8px solid transparent;
+      border-right-color: rgb(255, 255, 255);
+      border-left: 0;
+      margin-top: -8px;
+      margin-left: -6px;
+    }
       `}
        //말풍선 오른쪽(짝수)
        ${(props) =>
-    !props.isOdd &&
+    !props.isodd &&
     !props.normal &&
     `
-        &:after {
-          border-top:15px solid white;
-          border-left:15px solid transparent;
-          border-right: 15px solid transparent;
-          border-bottom: 0px solid transparent;
-          content:"";
-          position:absolute;
-          top:8px;
-          right:-13px;
-        }
+    &:before {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      width: 0;
+      height: 0;
+      border: 8px solid transparent;
+      border-left-color: rgb(255, 255, 255);
+      border-right: 0;
+      margin-top: -8px;
+      margin-right: -6px;
+    }
       `}
 `;
