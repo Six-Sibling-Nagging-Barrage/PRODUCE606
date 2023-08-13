@@ -41,6 +41,7 @@ public class NotificationService {
   private final NotificationRepository notificationRepository;
   private final NotificationBoxRepository notificationBoxRepository;
   private final SecurityUtil securityUtil;
+  private StringBuilder sb;
 
   private final Clock clock;
 
@@ -100,11 +101,12 @@ public class NotificationService {
     Nag nag = postTodoEvent.getTodo().getNag();
     NotificationType notificationType = postTodoEvent.getNotificationType();
     NotificationBox notificationBox = notificationBoxRepository.findByMember(todo.getMember());
+    sb.setLength(0);
 
     final Notification notification = Notification.builder()
         .notificationType(notificationType)
-        .content(nag.getMember().getNickname() + "님이 "
-            + "\"" + todo.getContent() + "\"에 잔소리를 남겼습니다.")
+        .content(sb.append(nag.getMember().getNickname()).append("님이 \"")
+            .append(todo.getContent()).append("\"에 잔소리를 남겼습니다.").toString())
         .talkerId(nag.getMember().getId())
         .talkerType(TalkerType.MEMBER)
         .receiver(todo.getMember())
@@ -123,11 +125,12 @@ public class NotificationService {
     NotificationType notificationType = postPersonaReactionEvent.getNotificationType();
     NotificationBox notificationBox =
         notificationBoxRepository.findByMember(todoPersona.getTodo().getMember());
+    sb.setLength(0);
 
     final Notification notification = Notification.builder()
         .notificationType(notificationType)
-        .content(todoPersona.getPersona().getName() + "가 \""
-            + todoPersona.getTodo().getContent() + "\"에 잔소리를 남겼습니다.")
+        .content(sb.append(todoPersona.getPersona().getName()).append("가 \"")
+            .append(todoPersona.getTodo().getContent()).append("\"에 잔소리를 남겼습니다.").toString())
         .talkerId(todoPersona.getPersona().getId())
         .talkerType(TalkerType.PERSONA)
         .receiver(todoPersona.getTodo().getMember())
@@ -143,11 +146,12 @@ public class NotificationService {
     NotificationType notificationType = nagGenerateEvent.getNotificationType();
     NotificationBox notificationBox =
         notificationBoxRepository.findByMember(todo.getNag().getMember());
+    sb.setLength(0);
 
     final Notification notification = Notification.builder()
         .notificationType(notificationType)
-        .content(todo.getMember().getNickname() + "님의 \""
-            + todo.getContent() + "\"에 잔소리를 남겼습니다.")
+        .content(sb.append(todo.getMember().getNickname()).append("님의 \"")
+            .append(todo.getContent()).append("\"에 잔소리를 남겼습니다.").toString())
         .receiver(todo.getNag().getMember())
         .build();
 
@@ -162,10 +166,12 @@ public class NotificationService {
     Nag nag = nagLikeEvent.getNag();
     NotificationType notificationType = nagLikeEvent.getNotificationType();
     NotificationBox notificationBox = notificationBoxRepository.findByMember(nag.getMember());
+    sb.setLength(0);
 
     final Notification notification = Notification.builder()
         .notificationType(notificationType)
-        .content(member.getNickname() + "님이 " + nag.getMember().getNickname() + "님의 잔소리를 좋아합니다.")
+        .content(sb.append(member.getNickname()).append("님이 ")
+            .append(nag.getMember().getNickname()).append("님의 잔소리를 좋아합니다.").toString())
         .receiver(nag.getMember())
         .createdAt(LocalDateTime.now(clock))
         .build();
@@ -181,12 +187,13 @@ public class NotificationService {
     NotificationType notificationType = todoAccomplishmentEvent.getNotificationType();
     NotificationBox notificationBox =
         notificationBoxRepository.findByMember(todo.getNag().getMember());
+    sb.setLength(0);
 
     final Notification notification = Notification.builder()
         .notificationType(notificationType)
-        .content(todo.getNag().getMember().getNickname() + "님의 잔소리가 남겨진 "
-            + todo.getMember().getNickname() + "님의 Todo \""
-            + todo.getContent() + "\"가 완료되었습니다.")
+        .content(sb.append(todo.getNag().getMember().getNickname()).append("님의 잔소리가 남겨진 ")
+            .append(todo.getMember().getNickname()).append("님의 Todo \"")
+            .append(todo.getContent()).append("\"가 완료되었습니다.").toString())
         .receiver(todo.getNag().getMember())
         .createdAt(LocalDateTime.now(clock))
         .build();
