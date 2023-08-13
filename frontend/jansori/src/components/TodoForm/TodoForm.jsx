@@ -128,7 +128,9 @@ const TodoForm = () => {
           ) : (
             <>
               <ErrorText>
-                {isHashTagList && isSubmitted ? '해시태그 없졍' : '👊 열심히 달성해보아요! 👊'}
+                {isHashTagList && isSubmitted
+                  ? '💥 해시태그가 없어요 💥'
+                  : '👊 열심히 달성해보아요! 👊'}
               </ErrorText>
             </>
           )}
