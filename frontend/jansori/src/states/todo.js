@@ -38,3 +38,8 @@ export function useTodoList() {
   };
   return { todoList, toggleTodo };
 }
+
+export const useTodoDetailState = atom({
+  key: 'todoDetailState',
+  default: [],
+});

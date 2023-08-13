@@ -22,7 +22,7 @@ const validateBio = (value) => {
 const TodoForm = () => {
   const {
     register,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitted },
     handleSubmit,
     reset,
   } = useForm({ mode: 'onBlur' });
@@ -30,11 +30,14 @@ const TodoForm = () => {
   const [content, setContent] = useState();
   const [isPublic, setIsPublic] = useState(true);
   const [hashTagList, setHashTagList] = useState([]);
+  const [isHashTagList, setIsHashTagList] = useState(false);
   const [date, setDate] = useRecoilState(focusDateState);
   const [todoList, setTodoList] = useRecoilState(todoListState);
 
   const todoFormSubmit = async (data) => {
-    if (hashTagList.length === 0) return;
+    setIsHashTagList(true);
+    if (content === '' || hashTagList.length === 0) return;
+    setIsHashTagList(false);
     const todo = {
       content: data.content,
       display: isPublic,
@@ -125,19 +128,17 @@ const TodoForm = () => {
           ) : (
             <>
               <ErrorText>
-                {content === '' && isSubmitting
-                  ? '⭐ todo는 2글자에서 30글자 이하로 작성해주세요! ⭐'
+                {isHashTagList && isSubmitted
+                  ? '💥 해시태그가 없어요 💥'
                   : '👊 열심히 달성해보아요! 👊'}
               </ErrorText>
             </>
           )}
         </ErrorMessage>
         <ButtonLocation>
-          <Button
-            onClick={handleSubmit(todoFormSubmit)}
-            disabled={isSubmitting && content === ''}
-            normal
-          >등록</Button>
+          <Button onClick={handleSubmit(todoFormSubmit)} normal='true'>
+            등록
+          </Button>
         </ButtonLocation>
       </TodoFormBox>
     </TodoFormContainer>

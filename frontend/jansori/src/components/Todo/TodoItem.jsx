@@ -1,24 +1,28 @@
 import React, { useState } from 'react';
 import tw, { styled } from 'twin.macro';
-import Modal from '../UI/Modal';
-import HashTagItem from '../HashTag/HashTagItem';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { getTodoDetail } from '../../apis/api/todo';
 import { memberIdState } from '../../states/user';
+import { useTodoDetailState } from '../../states/todo';
 import moment from 'moment';
+import Modal from '../UI/Modal';
+import HashTagItem from '../HashTag/HashTagItem';
 import SnackBar from '../UI/SnackBar';
 import TodoDetail from './TodoDetail';
 
 const TodoItem = (props) => {
   const { currentTodo, updateTodoCompleteMutation, id } = props;
   const [isDetailTodoItem, setIsDetailTodoItem] = useState(false);
-  const [todoItemDetail, setTodoItemDetail] = useState(null);
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
   const memberId = useRecoilValue(memberIdState);
+  const [todoItemDetail, setTodoItemDetail] = useRecoilState(useTodoDetailState);
 
   const handleTodoClick = () => {
-    if (memberId !== id) return;
+    if (memberId !== id) {
+      setSnackBarMessage('다른 사람 todo는 변경 못해요..!');
+      return setShowSnackBar(true);
+    }
     if (currentTodo.todoAt !== moment().format('YYYY-MM-DD')) {
       setSnackBarMessage('투두 달성 여부는 당일에만 변경 가능합니다!');
       return setShowSnackBar(true);
@@ -83,12 +87,13 @@ const TodoItem = (props) => {
 export default TodoItem;
 
 const TodoContainer = styled.div`
+  border-radius: 20px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(163, 163, 163, 0.2);
   ${tw`
 grid
 grid-cols-7
-gap-4
 border-2
-rounded
 mt-1
 py-2
 bg-white`}
