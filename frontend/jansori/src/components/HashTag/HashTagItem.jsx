@@ -3,6 +3,12 @@ import { styled } from 'twin.macro';
 
 const HashTagItem = (props) => {
   const { hashTag, editable, setHashTagList } = props;
+  const backgroundColors = [
+    'rgba(173, 0, 255, 0.18)',
+    'rgba(136, 118, 247, 0.3)',
+    'rgba(0,148,255,0.18)',
+  ];
+  const fontColors = ['rgb(173, 0, 255)', 'rgb(136, 118, 247)', 'rgb(0,148,255)'];
 
   const handleRemoveHashTag = () => {
     setHashTagList((prev) => {
@@ -10,8 +16,16 @@ const HashTagItem = (props) => {
     });
   };
 
+  const getRandomColor = () => {
+    return backgroundColors[hashTag.tagId % 3];
+  };
+
+  const getRandomFontColor = () => {
+    return fontColors[hashTag.tagId % 3];
+  };
+
   return (
-    <HashTag>
+    <HashTag style={{ backgroundColor: getRandomColor(), color: getRandomFontColor() }}>
       <Text>{hashTag.tagName}</Text>
       {editable && <RemoveButton onClick={handleRemoveHashTag}>X</RemoveButton>}
     </HashTag>
@@ -24,7 +38,6 @@ const HashTag = styled.div`
   justify-content: space-between;
   margin: 2px;
   padding: 5px 7px;
-  background-color: #b197fc;
   border-radius: 5px;
   color: white;
   font-size: 13px;
@@ -32,7 +45,9 @@ const HashTag = styled.div`
   height: fit-content;
 `;
 
-const Text = styled.span``;
+const Text = styled.span`
+  font-weight: bold;
+`;
 
 const RemoveButton = styled.div`
   cursor: pointer;

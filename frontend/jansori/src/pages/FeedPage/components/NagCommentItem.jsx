@@ -1,14 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import tw, { css, styled } from 'twin.macro';
 import likeIcon from '../../../assets/like_icon.avif';
 import lockIcon from '../../../assets/lock_icon.png';
 import { altImageUrl } from '../../../constants/image';
+import SnackBar from '../../../components/UI/SnackBar';
 
 const NagCommentItem = (props) => {
   const { isMemberNag, todoId, nag, toggleLike, toggleUnlock } = props;
+  const [showSnackBar, setShowSnackBar] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState('');
 
   const handleLikeClick = (unlocked) => {
-    if (!unlocked) return;
+    if (!unlocked) {
+      setSnackBarMessage('잔소리 잠금해제를 해야 좋아요를 누를 수 있어요..');
+      setShowSnackBar(true);
+      return;
+    }
     toggleLike({ todoId, nagId: nag.nagId });
   };
 
@@ -18,6 +25,11 @@ const NagCommentItem = (props) => {
 
   const handleImgError = (e) => {
     e.target.src = altImageUrl;
+  };
+
+  const handleSnackBarClose = () => {
+    setShowSnackBar(false);
+    setSnackBarMessage('');
   };
 
   return (
@@ -45,7 +57,7 @@ const NagCommentItem = (props) => {
               ) : (
                 <LikeImg
                   src={likeIcon}
-                  filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
+                  filter='invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);'
                 />
               )}
               <LikeCount>{nag.likeCount}</LikeCount>
@@ -53,6 +65,7 @@ const NagCommentItem = (props) => {
           </ButtonGroup>
         )}
       </Bubble>
+      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
     </CommentContainer>
   );
 };
@@ -110,8 +123,7 @@ const ButtonItem = styled.button`
 `;
 
 const UnlockImg = styled.img`
-  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%)
-    contrast(83%);
+  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%) contrast(83%);
   width: 40px;
   padding: 8px;
   &:hover {
