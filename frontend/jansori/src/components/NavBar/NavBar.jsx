@@ -13,9 +13,14 @@ import { isLoginState, profileImgState } from '../../states/user';
 import DropdownProfileMenu from './DropdownProfileMenu';
 import { altImageUrl } from '../../constants/image';
 
+import { isLoginState, profileImgState } from '../../states/user';
+import DropdownProfileMenu from './DropdownProfileMenu';
+import NotificationList from './NotificationList';
+
 const NavBar = () => {
   const [istoggleopen, setIsToggleOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [currentMenu, setCurrentMenu] = useRecoilState(navBarState);
 
   const isLogin = useRecoilValue(isLoginState);
@@ -31,6 +36,14 @@ const NavBar = () => {
 
   const handleProfileClick = () => {
     setIsProfileModalOpen(!isProfileModalOpen);
+  };
+
+  const handleNotificationClick = () => {
+    setIsNotificationModalOpen(!isNotificationModalOpen);
+  };
+
+  const handleImgError = (e) => {
+    e.target.src = altImageUrl;
   };
 
   const handleMenuClick = (index) => {
@@ -94,9 +107,18 @@ const NavBar = () => {
                     </li>
                   )}
                 </ul>
-                <button>
-                  <img src={notificationIcon} width="25px" />
-                </button>
+                <ul>
+                  <li>
+                    <button onClick={handleNotificationClick}>
+                      <img src={notificationIcon} width='25px' />
+                    </button>
+                  </li>
+                  {isNotificationModalOpen && (
+                    <li>
+                      <NotificationList />
+                    </li>
+                  )}
+                </ul>
               </AfterLoginWrap>
             ) : (
               <>
