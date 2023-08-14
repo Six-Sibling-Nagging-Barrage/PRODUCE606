@@ -41,5 +41,6 @@ public class NotificationBox {
   public void updateReadAt(LocalDateTime now){
     this.readAt = now;
   }
+  public void updateModifiedAt(LocalDateTime now) { this.modifiedAt = now; }
 
 }
