@@ -37,6 +37,12 @@ const HashTag = (props) => {
       if (findTag) {
         addHashTag(findTag);
         setIsOpen(false);
+      } else {
+        addHashTag({
+          tagId: -1,
+          tagName: hashTagInput,
+        });
+        setIsOpen(false);
       }
     }
   };

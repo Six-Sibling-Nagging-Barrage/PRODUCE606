@@ -12,11 +12,11 @@ const HashTagItem = (props) => {
   };
 
   const getRandomColor = () => {
-    return hashTagColor[hashTag?.tagId % 3].background;
+    return hashTagColor[Math.abs(hashTag?.tagId) % 3].background;
   };
 
   const getRandomFontColor = () => {
-    return hashTagColor[hashTag?.tagId % 3].font;
+    return hashTagColor[Math.abs(hashTag?.tagId) % 3].font;
   };
 
   return (
