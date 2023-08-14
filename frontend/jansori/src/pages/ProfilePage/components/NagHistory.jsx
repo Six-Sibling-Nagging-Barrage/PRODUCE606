@@ -83,6 +83,44 @@ const NagHistory = (props) => {
     return data;
   };
 
+  const toggleLike = async (nagId) => {
+    // 잔소리 좋아요 api 호출
+    const data = await updateLikeNag(nagId);
+    return data;
+  };
+
+  const updateLikeMutation = useMutation(({ nagId }) => toggleLike(nagId), {
+    onMutate: async ({ nagId }) => {
+      await queryClient.cancelQueries(['nags']);
+      const prevNags = queryClient.getQueryData(['nags']);
+      queryClient.setQueryData(['nags'], (oldData) => {
+        const newData = oldData?.pages?.map((page) => {
+          return {
+            ...page,
+            feed: page?.nags?.map((nag) => {
+              if (nag.nagId === nagId) {
+                return {
+                  ...nag,
+                  isLiked: !nag.isLiked,
+                  likeCount: nag.isLiked
+                    ? nag.likeCount - 1
+                    : nag.likeCount + 1,
+                };
+              }
+              return nag;
+            }),
+          };
+        });
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['nags']);
+    },
+    onError: (err, variables, context) => {
+      queryClient.setQueryData(['nags'], context?.prevNags);
+    },
+  });
+
   const updateUnlockMutation = useMutation(({ nagId }) => toggleUnlock(nagId), {
     onMutate: async ({ nagId }) => {
       await queryClient.cancelQueries(['nags']);

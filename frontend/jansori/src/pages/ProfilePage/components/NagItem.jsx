@@ -1,15 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled } from 'twin.macro';
 import HashTagItem from '../../../components/HashTag/HashTagItem';
 import likeIcon from '../../../assets/like_icon.avif';
 import lockIcon from '../../../assets/lock_icon.png';
 import sendIcon from '../../../assets/send_icon.png';
+import SnackBar from '../../../components/UI/SnackBar';
 
 const NagItem = (props) => {
-  const { isMine, nag, toggleUnlock } = props;
+  const { isMine, nag, toggleLike, toggleUnlock } = props;
+
+  const [showSnackBar, setShowSnackBar] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState('');
+
+  const handleLikeClick = (unlocked) => {
+    if (isMine) return;
+    if (!unlocked) {
+      setSnackBarMessage('잔소리 잠금해제를 해야 좋아요를 누를 수 있어요..');
+      setShowSnackBar(true);
+      return;
+    }
+    toggleLike({ nagId: nag.nagId });
+  };
 
   const handleUnlockNag = async () => {
     toggleUnlock({ nagId: nag.nagId });
+  };
+
+  const handleSnackBarClose = () => {
+    setShowSnackBar(false);
+    setSnackBarMessage('');
   };
 
   return (
@@ -31,7 +50,17 @@ const NagItem = (props) => {
           )}
           <Counter>
             <div>
-              <img src={likeIcon} />
+              <button onClick={() => handleLikeClick(nag.unlocked)}>
+                {/* {isMine || nag.isLiked ? (
+                <LikeImg src={likeIcon} />
+              ) : (
+                <LikeImg
+                  src={likeIcon}
+                  filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
+                />
+              )} */}
+                <img src={likeIcon} />
+              </button>
               <span>{nag.likeCount}</span>
             </div>
             <div>
@@ -40,6 +69,9 @@ const NagItem = (props) => {
             </div>
           </Counter>
         </Nag>
+      )}
+      {showSnackBar && (
+        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
       )}
     </>
   );
@@ -102,6 +134,12 @@ const UnlockImg = styled.img`
       transform: translateX(3px) rotate(5deg);
     }
   }
+`;
+
+const LikeImg = styled.img`
+  filter: ${(props) => props.filter};
+  width: 20px;
+  padding-top: 5px;
 `;
 
 export default NagItem;
