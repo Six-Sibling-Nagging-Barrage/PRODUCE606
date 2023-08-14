@@ -78,6 +78,7 @@ public class SecurityConfig {
         .antMatchers("/auth/**").permitAll()
         .antMatchers("/members/nickname").permitAll()
         .antMatchers("/nags/main-page").permitAll()
+        .antMatchers("/nags/nag-box/statistics").permitAll()
         .antMatchers("/health/**").permitAll()
         .anyRequest().authenticated()
 
