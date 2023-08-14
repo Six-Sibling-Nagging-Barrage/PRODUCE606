@@ -1,6 +1,5 @@
 import { atom } from 'recoil';
 import { recoilPersist } from 'recoil-persist';
-import profileImg from '../assets/profileImg.png';
 
 // // localStorage에 저장되며, key 이름은 'recoil-persist'
 const { persistAtom } = recoilPersist();
@@ -30,12 +29,6 @@ export const profileImgState = atom({
   key: 'profileImgState',
   default:
     'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
-  effects_UNSTABLE: [persistAtom],
-});
-
-export const memberNicknameState = atom({
-  key: 'memberNicknameState',
-  default: '',
   effects_UNSTABLE: [persistAtom],
 });
 

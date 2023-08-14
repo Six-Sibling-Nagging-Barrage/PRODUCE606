@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import tw, { styled } from 'twin.macro';
-import profileImg from '../../../assets/profileImg.png';
 import NagCommentItem from './NagCommentItem';
 import { createPersonaReaction } from '../../../apis/api/todo';
-import { altImageUrl } from '../../../constants/image';
 import { personas } from '../../../constants/persona';
+import { useImageErrorHandler } from '../../../hooks/useImageErrorHandler';
 
 const PersonaReaction = (props) => {
   const {
@@ -15,6 +14,8 @@ const PersonaReaction = (props) => {
   } = props;
 
   const [personaIndex, setPersonaIndex] = useState(-1);
+
+  const handleImgError = useImageErrorHandler();
 
   const handlePersonaHover = (personaId) => {
     setPersonaIndex(personaId - 1);
@@ -38,10 +39,6 @@ const PersonaReaction = (props) => {
 
   const handleClosePersona = () => {
     setCurrentPostId(-1);
-  };
-
-  const handleImgError = (e) => {
-    e.target.src = altImageUrl;
   };
 
   return (

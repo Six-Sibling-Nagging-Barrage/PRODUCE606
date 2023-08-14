@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import { personas } from '../../constants/persona';
-import { altImageUrl } from '../../constants/image';
 import logoImg from '../../assets/jansori-logo-eating-removebg-preview.png';
+import { useImageErrorHandler } from '../../hooks/useImageErrorHandler';
 
 const CharacterInfoPage = () => {
   const [personaIndex, setPersonaIndex] = useState(-1);
 
+  const handleImgError = useImageErrorHandler();
+
   const handlePersonaHover = (personaId) => {
     setPersonaIndex(personaId - 1);
-  };
-
-  const handleImgError = (e) => {
-    e.target.src = altImageUrl;
   };
 
   return (
@@ -23,7 +21,10 @@ const CharacterInfoPage = () => {
           <LogoImg src={logoImg} />
         ) : (
           <PersonaProfile key={personas[personaIndex].id}>
-            <PersonaBigImg src={personas[personaIndex].gifUrl} onError={handleImgError} />
+            <PersonaBigImg
+              src={personas[personaIndex].gifUrl}
+              onError={handleImgError}
+            />
           </PersonaProfile>
         )}
       </PersonaGifContainer>
@@ -31,7 +32,10 @@ const CharacterInfoPage = () => {
       <PersonaSmallImgContainer>
         {personas.map((persona) => {
           return (
-            <PersonaProfile key={persona.id} onMouseEnter={() => handlePersonaHover(persona.id)}>
+            <PersonaProfile
+              key={persona.id}
+              onMouseEnter={() => handlePersonaHover(persona.id)}
+            >
               <PersonaImg src={persona.imgUrl} onError={handleImgError} />
             </PersonaProfile>
           );
@@ -52,7 +56,9 @@ const CharacterInfoPage = () => {
                 <div>{personas[personaIndex].bio}</div>
               </PersonaDetailDescBio>
               <PersonaDetailDescBehind>
-                <PersonaDetailDescTitle>🫢 비하인드 스토리</PersonaDetailDescTitle>
+                <PersonaDetailDescTitle>
+                  🫢 비하인드 스토리
+                </PersonaDetailDescTitle>
                 <div>{personas[personaIndex].behindStory}</div>
               </PersonaDetailDescBehind>
             </PersonaDetailDesc>

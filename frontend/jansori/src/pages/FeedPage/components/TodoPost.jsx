@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import NagCommentItem from './NagCommentItem';
 import HashTagItem from '../../../components/HashTag/HashTagItem';
-import commentIcon from '../../../assets/more_comment.png';
 import { getTodoDetail } from '../../../apis/api/todo';
 import { Link } from 'react-router-dom';
-import { altImageUrl } from '../../../constants/image';
 import { personas } from '../../../constants/persona';
+import { useImageErrorHandler } from '../../../hooks/useImageErrorHandler';
+import { altImageUrl } from '../../../constants/image';
 
 const TodoPost = (props) => {
   const {
@@ -20,6 +20,8 @@ const TodoPost = (props) => {
   } = props;
 
   const [showMoreSelected, setShowMoreSelected] = useState(false);
+
+  const handleImgError = useImageErrorHandler();
 
   useEffect(() => {
     if (currentPostId === post.todoId) {
@@ -44,17 +46,13 @@ const TodoPost = (props) => {
     })();
   };
 
-  const handleImgError = (e) => {
-    e.target.src = altImageUrl;
-  };
-
   return (
     <li>
       <PostContainer>
         <PostHeader>
           <Link to={`/profile?id=${encodeURIComponent(post.member.memberId)}`}>
             <ProfileImage
-              src={post.member.imageUrl}
+              src={post.member.imageUrl ? post.member.imageUrl : altImageUrl}
               width="48"
               height="48"
               onError={handleImgError}

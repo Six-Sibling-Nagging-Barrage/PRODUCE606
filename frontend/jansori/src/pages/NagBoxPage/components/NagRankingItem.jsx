@@ -4,15 +4,18 @@ import { useRecoilValue } from 'recoil';
 import { memberIdState } from '../../../states/user';
 import likeIcon from '../../../assets/like_icon.avif';
 import lockIcon from '../../../assets/lock_icon.png';
-import { altImageUrl } from '../../../constants/image';
 import SpeechBubble from '../../../components/UI/SpeechBubble';
 import SnackBar from '../../../components/UI/SnackBar';
+import { useImageErrorHandler } from '../../../hooks/useImageErrorHandler';
+import { altImageUrl } from '../../../constants/image';
 
 const NagRankingItem = (props) => {
   const { nag, isodd, toggleLike, toggleUnlock } = props;
   const memberId = useRecoilValue(memberIdState);
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
+
+  const handleImgError = useImageErrorHandler();
 
   const handleLikeClick = () => {
     if (!nag.unlocked) {
@@ -27,10 +30,6 @@ const NagRankingItem = (props) => {
     toggleUnlock({ nagId: nag.nagId });
   };
 
-  const handleImgError = (e) => {
-    e.target.src = altImageUrl;
-  };
-
   const handleSnackBarClose = () => {
     setShowSnackBar(false);
     setSnackBarMessage('');
@@ -41,11 +40,18 @@ const NagRankingItem = (props) => {
       <SpeechBubble isodd={isodd}>
         <SpeechBubbleWrap>
           <Profile>
-            <ProfileImg src={nag.nagMember.imageUrl} onError={handleImgError} />
+            <ProfileImg
+              src={
+                nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl
+              }
+              onError={handleImgError}
+            />
             <NickName>{nag.nagMember.nickname}</NickName>
           </Profile>
           <CommentContentWrapper>
-            {memberId === nag.nagMember.memberId || nag.unlocked ? nag.content : nag.preview}
+            {memberId === nag.nagMember.memberId || nag.unlocked
+              ? nag.content
+              : nag.preview}
           </CommentContentWrapper>
           <ButtonGroup>
             {memberId === nag.nagMember.memberId ||
@@ -60,7 +66,7 @@ const NagRankingItem = (props) => {
               ) : (
                 <LikeImg
                   src={likeIcon}
-                  filter='invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);'
+                  filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
                 />
               )}
               <LikeCount>{nag.likeCount}</LikeCount>
@@ -68,7 +74,9 @@ const NagRankingItem = (props) => {
           </ButtonGroup>
         </SpeechBubbleWrap>
       </SpeechBubble>
-      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
+      {showSnackBar && (
+        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
+      )}
     </NagRankingItemContainer>
   );
 };
@@ -136,7 +144,8 @@ const ButtonItem = styled.button`
 `;
 
 const UnlockImg = styled.img`
-  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%) contrast(83%);
+  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%)
+    contrast(83%);
   width: 40px;
   padding: 8px;
   &:hover {
