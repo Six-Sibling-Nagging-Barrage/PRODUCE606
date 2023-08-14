@@ -19,7 +19,7 @@ const NagBoxPage = () => {
     {
       startSentence: '지금까지',
       expression: ' 개',
-      endSentence: 'TODO가 작성되었어요.',
+      endSentence: 'TODO가 완료되었어요.',
     },
     {
       startSentence: '현재 총',
@@ -47,7 +47,9 @@ const NagBoxPage = () => {
               <CountBox
                 key={index}
                 startSentence={nagSentence.startSentence}
-                count={counts[Object.keys(counts)[index]] + nagSentence.expression}
+                count={
+                  counts[Object.keys(counts)[index]] + nagSentence.expression
+                }
                 endSentence={nagSentence.endSentence}
               />
             ))}
@@ -57,10 +59,8 @@ const NagBoxPage = () => {
 
       {/* 잔소리 버튼 */}
       <SpeechBubbleContainer>
-        <Link to='/nag'>
-          <SpeechBubble normal='tre' >
-          잔소리 하러 가기
-          </SpeechBubble>
+        <Link to="/nag">
+          <SpeechBubble normal="tre">잔소리 하러 가기</SpeechBubble>
         </Link>
       </SpeechBubbleContainer>
 
