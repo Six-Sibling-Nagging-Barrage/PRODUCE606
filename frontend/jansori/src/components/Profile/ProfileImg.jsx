@@ -39,7 +39,7 @@ const ProfileImg = (props) => {
         onChange={handleProfileImgUpload}
         ref={profileImgInput}
       />
-      {newProfileImg && newProfileImg !== altImageUrl && (
+      {editable && newProfileImg && newProfileImg !== altImageUrl && (
         <RemoveImg onClick={handleRemoveImg}>이미지 삭제</RemoveImg>
       )}
     </ProfileImgContainer>
