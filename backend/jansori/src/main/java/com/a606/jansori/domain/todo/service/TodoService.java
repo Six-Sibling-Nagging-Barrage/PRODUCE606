@@ -29,6 +29,7 @@ import com.a606.jansori.domain.todo.dto.PostTodoResDto;
 import com.a606.jansori.domain.todo.event.NagGenerateEvent;
 import com.a606.jansori.domain.todo.event.PostTodoEvent;
 import com.a606.jansori.domain.todo.event.TodoAccomplishmentEvent;
+import com.a606.jansori.domain.todo.event.TodoWaitingNagEvent;
 import com.a606.jansori.domain.todo.exception.TodoBusinessException;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
@@ -90,7 +91,18 @@ public class TodoService {
           todoTag.setTodo(todo);
         });
 
-    todo.setNag(nagRandomGenerator.getRandomNagWithTags(member, todo.getTodoTags()));
+    if (!postTodoReqDto.isAllNewTags()) {
+      todo.setNag(nagRandomGenerator.getRandomNagWithTags(member, todo.getTodoTags()));
+
+      // 잔소리 주인의 알림설정이 수신으로 되어 있을 경우에 알림 이벤트 발생
+      if (isNotificationSettingOn(notificationType2, todo.getNag().getMember())) {
+        publisher.publishEvent(new NagGenerateEvent(todo, notificationType2));
+      }
+      // 투두 주인의 알림설정이 수신으로 되어 있을 경우에  알림 이벤트 발생
+      if (isNotificationSettingOn(notificationType1, member)) {
+        publisher.publishEvent(new PostTodoEvent(todo, notificationType1));
+      }
+    }
 
     List<Persona> personas = personaRepository.findAll();
 
@@ -102,17 +114,13 @@ public class TodoService {
       todoPersona.setTodo(todo);
     });
 
-    // 투두 주인의 알림설정이 수신으로 되어 있을 경우에  알림 이벤트 발생
-    if(isNotificationSettingOn(notificationType1, member)){
-      publisher.publishEvent(new PostTodoEvent(todo, notificationType1));
+    Todo savedTodo = todoRepository.save(todo);
+
+    if (postTodoReqDto.isAllNewTags()) {
+      publisher.publishEvent(new TodoWaitingNagEvent(savedTodo));
     }
 
-    // 잔소리 주인의 알림설정이 수신으로 되어 있을 경우에 알림 이벤트 발생
-    if(isNotificationSettingOn(notificationType2, todo.getNag().getMember())){
-      publisher.publishEvent(new NagGenerateEvent(todo, notificationType2));
-    }
-
-    return PostTodoResDto.from(todoRepository.save(todo));
+    return PostTodoResDto.from(savedTodo);
   }
 
   @Transactional(readOnly = true)
@@ -165,7 +173,7 @@ public class TodoService {
     }
 
     // 알림 수신 상태이고 투두 미완료 상태에서 완료로 바뀔 때만 알림 이벤트 발생
-    if(isNotificationSettingOn(notificationType, member) && !todo.getFinished()) {
+    if (isNotificationSettingOn(notificationType, member) && !todo.getFinished()) {
       publisher.publishEvent(new TodoAccomplishmentEvent(todo, notificationType));
     }
 
@@ -206,12 +214,12 @@ public class TodoService {
 
   }
 
-  private Boolean isNotificationSettingOn(NotificationType notificationType, Member member){
+  private Boolean isNotificationSettingOn(NotificationType notificationType, Member member) {
 
     NotificationSetting notificationSetting =
         notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member);
 
-    if(notificationSetting == null){
+    if (notificationSetting == null) {
       throw new NotificationSettingNotFoundException();
     }
 

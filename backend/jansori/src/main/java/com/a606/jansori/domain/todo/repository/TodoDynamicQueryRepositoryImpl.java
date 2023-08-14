@@ -34,7 +34,7 @@ public class TodoDynamicQueryRepositoryImpl implements TodoDynamicQueryRepositor
 
     Root<Todo> todo = cq.from(Todo.class);
 
-    todo.join("nag", JoinType.INNER);
+    todo.join("nag", JoinType.LEFT);
     todo.join("member", JoinType.INNER);
     Join<Todo, TodoTag> todoTags = todo.join("todoTags", JoinType.INNER);
     todoTags.join("tag", JoinType.INNER);
