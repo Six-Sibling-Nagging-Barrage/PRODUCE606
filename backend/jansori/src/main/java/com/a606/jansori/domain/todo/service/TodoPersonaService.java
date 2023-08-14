@@ -3,6 +3,7 @@ package com.a606.jansori.domain.todo.service;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.nag.service.NagRandomGenerator;
 import com.a606.jansori.domain.notification.domain.NotificationType;
+import com.a606.jansori.domain.notification.domain.NotificationTypeName;
 import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
 import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.domain.persona.domain.PersonaReaction;
@@ -59,7 +60,8 @@ public class TodoPersonaService {
 
     Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
 
-    NotificationType notificationType = notificationTypeRepository.findById(1L).orElseThrow();
+    NotificationType notificationType = notificationTypeRepository
+        .findByType(NotificationTypeName.NAGONMYTODO);
 
     TodoPersona todoPersona = todoPersonaRepository.findById(todoPersonaId)
         .orElseThrow(TodoPersonaNotFoundException::new);

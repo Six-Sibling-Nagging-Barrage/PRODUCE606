@@ -5,6 +5,7 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.service.NagRandomGenerator;
 import com.a606.jansori.domain.notification.domain.NotificationType;
+import com.a606.jansori.domain.notification.domain.NotificationTypeName;
 import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
 import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.domain.persona.domain.Persona;
@@ -71,8 +72,10 @@ public class TodoService {
 
     Todo todo = postTodoReqDto.getTodoWith(member);
 
-    NotificationType notificationType1 = notificationTypeRepository.findById(1L).orElseThrow();
-    NotificationType notificationType2 = notificationTypeRepository.findById(2L).orElseThrow();
+    NotificationType notificationType1 = notificationTypeRepository
+        .findByType(NotificationTypeName.NAGONMYTODO);
+    NotificationType notificationType2 = notificationTypeRepository
+        .findByType(NotificationTypeName.MYNAGOTODO);
 
     if (postTodoReqDto.getTags().isEmpty() || postTodoReqDto.getTags().size() > 3) {
       throw new TodoBusinessException();
@@ -154,7 +157,8 @@ public class TodoService {
 
     Member member = securityUtil.getCurrentMemberByToken();
     Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
-    NotificationType notificationType = notificationTypeRepository.findById(4L).orElseThrow();
+    NotificationType notificationType = notificationTypeRepository
+        .findByType(NotificationTypeName.TODOACCOMPLISHMENT);
 
     if (todo.getMember() != member) {
       throw new TodoUnauthorizedException();

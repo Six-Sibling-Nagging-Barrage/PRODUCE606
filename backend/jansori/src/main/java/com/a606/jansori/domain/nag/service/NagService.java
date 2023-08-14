@@ -30,6 +30,7 @@ import com.a606.jansori.domain.nag.repository.NagRepository;
 import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
 import com.a606.jansori.domain.nag.util.PreviewUtil;
 import com.a606.jansori.domain.notification.domain.NotificationType;
+import com.a606.jansori.domain.notification.domain.NotificationTypeName;
 import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
 import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
@@ -90,7 +91,6 @@ public class NagService {
   public PostNagLikeResDto toggleNagLike(Long nagId) {
     Nag nag = nagRepository.findById(nagId).orElseThrow(NagNotFoundException::new);
     Member member = securityUtil.getCurrentMemberByToken();
-//    Member member = memberRepository.findById(11L).orElseThrow();
     Optional<NagLike> nagLike = nagLikeRepository.findNagLikeByNagAndMember(nag, member);
 
     nagLike.ifPresentOrElse(like -> decreaseNagLike(nag, like),
@@ -198,7 +198,8 @@ public class NagService {
 
   private void increaseNagLike(Nag nag, Member member) {
     nagLikeRepository.save(NagLike.builder().nag(nag).member(member).build());
-    NotificationType notificationType = notificationTypeRepository.findById(3L).orElseThrow();
+    NotificationType notificationType = notificationTypeRepository
+        .findByType(NotificationTypeName.NAGREACTION);
     nag.increaseLikeCount();
 
     // 알림설정이 수신 상태일 경우만 알림 이벤트 생성
