@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import InfiniteScroll from './InfiniteScroll';
 import tw, { styled } from 'twin.macro';
 import TodoPost from './TodoPost';
-import { useQueryClient } from '@tanstack/react-query';
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import {
+  useQueryClient,
+  useInfiniteQuery,
+  useMutation,
+} from '@tanstack/react-query';
 import { updateLikeNag, updateNagUnlock } from '../../../apis/api/nag';
 import { useRecoilState } from 'recoil';
 import { ticketState } from '../../../states/user';
@@ -26,8 +29,8 @@ const Feed = (props) => {
   const queryClient = useQueryClient();
 
   const pageSize = 10;
-
   let param;
+
   if (specificTag === -1) {
     param = { cursor: null, pageSize };
   } else {
