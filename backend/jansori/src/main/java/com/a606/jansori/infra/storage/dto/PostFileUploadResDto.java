@@ -7,7 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 public class PostFileUploadResDto {
 
-    private String imageName;
-    private String imageDir;
+    private String imageUrl;
 
 }

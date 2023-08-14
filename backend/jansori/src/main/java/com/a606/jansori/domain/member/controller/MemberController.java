@@ -5,20 +5,17 @@ import com.a606.jansori.domain.member.dto.GetDuplicateNicknameResDto;
 import com.a606.jansori.domain.member.dto.GetMemberProfileResDto;
 import com.a606.jansori.domain.member.dto.PostMemberInfoReqDto;
 import com.a606.jansori.domain.member.dto.PostMemberInfoResDto;
-import com.a606.jansori.infra.storage.exception.FileUploadException;
 import com.a606.jansori.domain.member.service.MemberService;
 import com.a606.jansori.global.common.EnvelopeResponse;
 import com.a606.jansori.infra.storage.Service.AwsS3Service;
 import com.a606.jansori.infra.storage.dto.PostFileUploadReqDto;
 import com.a606.jansori.infra.storage.dto.PostFileUploadResDto;
-import java.io.IOException;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,13 +61,13 @@ public class MemberController {
       PostFileUploadResDto postFileUploadResDto =
           null;
 
-      postFileUploadResDto = awsS3Service.uploadFile(
+      postFileUploadResDto = awsS3Service.uploadImageFileToS3(
           PostFileUploadReqDto
               .builder()
               .multipartFile(multipartFile)
               .build());
 
-      imageName = postFileUploadResDto.getImageName();
+      imageName = postFileUploadResDto.getImageUrl();
 
     }
 

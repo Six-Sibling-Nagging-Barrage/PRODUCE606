@@ -4,21 +4,17 @@ import com.a606.jansori.infra.storage.dto.DeleteFileReqDto;
 import com.a606.jansori.infra.storage.dto.DeleteFileResDto;
 import com.a606.jansori.infra.storage.dto.PostFileUploadReqDto;
 import com.a606.jansori.infra.storage.dto.PostFileUploadResDto;
-import com.a606.jansori.infra.storage.exception.FileConversionException;
 import com.a606.jansori.infra.storage.exception.FileUploadException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Optional;
+import java.io.InputStream;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,73 +23,53 @@ import org.springframework.web.multipart.MultipartFile;
 public class AwsS3Service {
 
   private final AmazonS3 amazonS3;
-  private final ResourceLoader resourceLoader;
-  private final String UPLOAD_DIR = "upload";
-
   @Value("${cloud.aws.s3.bucket}")
   private String bucket;
 
-  public PostFileUploadResDto uploadFile(PostFileUploadReqDto postFileUploadReqDto) {
+  public PostFileUploadResDto uploadImageFileToS3(PostFileUploadReqDto postFileUploadReqDto) {
 
     MultipartFile multipartFile = postFileUploadReqDto.getMultipartFile();
 
-    File file = null;
+    String fileName = createFileName(multipartFile.getOriginalFilename());
 
-    try {
+    ObjectMetadata objectMetadata = new ObjectMetadata();
+    objectMetadata.setContentLength(multipartFile.getSize());
+    objectMetadata.setContentType("image/jpeg");
 
-      file = convertMultipartFileToFile(multipartFile)
-          .orElseThrow(FileConversionException::new);
-
+    try (InputStream inputStream = multipartFile.getInputStream()) {
+      uploadToS3(inputStream, objectMetadata, fileName);
     } catch (IOException e) {
-
       throw new FileUploadException();
-
     }
 
-    String key = UPLOAD_DIR + "/" + UUID.randomUUID() + file.getName();
-    String path = putS3(file, key);
-
-    file.delete();
+    String imageUrl = getFileUrl(fileName);
 
     return PostFileUploadResDto.builder()
-        .imageName(key)
-        .imageDir(path)
+        .imageUrl(imageUrl)
         .build();
 
   }
 
-  public Optional<File> convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
+  private String createFileName(String originalFileName) {
+    return UUID.randomUUID().toString().concat(getFileExtension(originalFileName));
+  }
 
-    String staticFolderPath = Paths.get(resourceLoader.
-        getResource("classpath:static/tmp/").getURI()).toString();
-
-    File tmpDir = new File(staticFolderPath);
-    if (!tmpDir.exists()) {
-      Files.createDirectories(tmpDir.toPath());
+  private String getFileExtension(String fileName) {
+    try {
+      return fileName.substring(fileName.lastIndexOf("."));
+    } catch (StringIndexOutOfBoundsException e) {
+      throw new FileUploadException();
     }
-
-    String fileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
-
-    File file = new File(tmpDir, fileName);
-    Files.copy(multipartFile.getInputStream(), file.toPath());
-
-    return Optional.of(file);
-
   }
 
-  private String putS3(File uploadFile, String fileName) {
-
-    amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile)
-        .withCannedAcl(CannedAccessControlList.PublicRead));
-
-    return getS3(bucket, fileName);
-
+  public void uploadToS3(InputStream inputStream, ObjectMetadata objectMetadata, String fileName) {
+    amazonS3.putObject(
+        new PutObjectRequest(bucket, fileName, inputStream, objectMetadata).withCannedAcl(
+            CannedAccessControlList.PublicRead));
   }
 
-  private String getS3(String bucket, String fileName) {
-
-    return amazonS3.getUrl(bucket, fileName).toString();
-
+  public String getFileUrl(String fileName) {
+    return String.valueOf(amazonS3.getUrl(bucket, fileName));
   }
 
   public DeleteFileResDto removeUploadedFile(DeleteFileReqDto deleteFileReqDto) {
