@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import { altImageUrl } from '../../constants/image';
 import { useImageErrorHandler } from '../../hooks/useImageErrorHandler';
@@ -7,6 +7,8 @@ const ProfileImg = (props) => {
   const { editable, newProfileImg, setNewProfileImg, size } = props;
 
   const profileImgInput = useRef(null);
+
+  const [currentProfileImg, setCurrentProfileImg] = useState(newProfileImg);
 
   const handleImgError = useImageErrorHandler();
 
@@ -17,24 +19,26 @@ const ProfileImg = (props) => {
 
   const handleProfileImgUpload = (event) => {
     if (!event.target.files[0]) return setNewProfileImg(altImageUrl);
-    setNewProfileImg(URL.createObjectURL(event.target.files[0]));
+    setNewProfileImg(event.target.files[0]);
+    setCurrentProfileImg(URL.createObjectURL(event.target.files[0]));
   };
 
   const handleRemoveImg = () => {
     setNewProfileImg(altImageUrl);
+    setCurrentProfileImg(altImageUrl);
     profileImgInput.current.value = '';
   };
 
   return (
     <ProfileImgContainer size={size}>
       <img
-        src={newProfileImg ? newProfileImg : altImageUrl}
+        src={currentProfileImg ? currentProfileImg : altImageUrl}
         onClick={handleProfileImgClick}
         onError={handleImgError}
       />
       <input
         type="file"
-        accept="image/jpg,impge/png,image/jpeg"
+        accept="image/jpg,image/png,image/jpeg"
         name="profile-img"
         onChange={handleProfileImgUpload}
         ref={profileImgInput}

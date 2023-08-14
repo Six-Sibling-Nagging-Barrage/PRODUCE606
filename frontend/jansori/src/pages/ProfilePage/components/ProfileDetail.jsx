@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { styled } from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import HashTagItem from '../../../components/HashTag/HashTagItem';
-import ProfileImg from '../../../components/Profile/ProfileImg';
 import editImg from '../../../assets/edit_icon.png';
 import Modal from '../../../components/UI/Modal';
 import ProfileForm from '../../../components/Profile/ProfileForm';
 import { getMemberProfile } from '../../../apis/api/member';
 import { getFollowTagList } from '../../../apis/api/tag';
+import { altImageUrl } from '../../../constants/image';
+import { useImageErrorHandler } from '../../../hooks/useImageErrorHandler';
 
 const ProfileDetail = (props) => {
   const { isMine, id } = props;
@@ -16,12 +17,15 @@ const ProfileDetail = (props) => {
   const [profile, setProfile] = useState(null);
   const [tags, setTags] = useState([]);
 
+  const handleImgError = useImageErrorHandler();
+
   useEffect(() => {
     // 유저 프로필 조회 api 호출
     // 유저가 팔로우한 해시태그 조회 api 호출
     (async () => {
       const profileRes = await getMemberProfile(id);
       setProfile(profileRes?.data);
+      console.log(profileRes?.data);
       const tagRes = await getFollowTagList(id);
       setTags(tagRes?.tags);
     })();
@@ -53,7 +57,12 @@ const ProfileDetail = (props) => {
               </button>
             )}
           </Header>
-          <ProfileImg newProfileImg={profile.imageUrl} size="120px" />
+          <ProfileImg>
+            <img
+              src={profile.imageUrl ? profile.imageUrl : altImageUrl}
+              onError={handleImgError}
+            />
+          </ProfileImg>
           <Nickname>{profile.nickname}</Nickname>
           <Bio>{profile.bio}</Bio>
           <Wrapper>
@@ -68,6 +77,18 @@ const ProfileDetail = (props) => {
     </>
   );
 };
+
+const ProfileImg = styled.div`
+  width: fit-content;
+  margin: 0 auto;
+  margin-bottom: 15px;
+  & > img {
+    ${tw`rounded-full`}
+    object-fit: cover;
+    width: 120px;
+    height: 120px;
+  }
+`;
 
 const ProfileDetailContainer = styled.div`
   text-align: center;
