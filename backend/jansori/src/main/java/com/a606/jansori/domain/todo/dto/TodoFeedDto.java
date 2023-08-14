@@ -20,8 +20,10 @@ public class TodoFeedDto extends TodoDto{
     super(todo);
 
     this.feedMemberDto = FeedMemberDto.from(todo.getMember());
-    this.feedNagDto = FeedNagDto.fromNagAndUnlockedAndIsLiked(todo.getNag(), unlocked, isLiked);
 
+    if(todo.getNag() != null) {
+      this.feedNagDto = FeedNagDto.fromNagAndUnlockedAndIsLiked(todo.getNag(), unlocked, isLiked);
+    }
   }
 
   public static TodoFeedDto from(Todo todo, Boolean unlocked, Boolean isLiked) {

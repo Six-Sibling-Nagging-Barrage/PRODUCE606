@@ -32,4 +32,17 @@ public class PostTodoReqDto {
         .content(this.getContent())
         .build();
   }
+
+  public boolean isAllNewTags() {
+    boolean isAllNew = true;
+
+    for(TagDto tagDto : tags) {
+      if(tagDto.getTagId() != -1) {
+        isAllNew = false;
+        break;
+      }
+    }
+
+    return isAllNew;
+  }
 }

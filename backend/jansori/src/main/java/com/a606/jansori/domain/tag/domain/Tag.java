@@ -35,6 +35,13 @@ public class Tag {
     }
   }
 
+  public static Tag createTag(String name) {
+    return Tag.builder()
+        .name(name)
+        .followCount(1)
+        .build();
+  }
+
   public void increaseFollowCount() {
     followCount += 1;
   }
