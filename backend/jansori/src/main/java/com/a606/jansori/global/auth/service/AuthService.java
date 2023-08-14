@@ -54,7 +54,6 @@ public class AuthService {
   private final NotificationSettingRepository notificationSettingRepository;
   private final NotificationTypeRepository notificationTypeRepository;
   private final Clock clock;
-  private final Long NOTIFICATION_TYPE_COUNTS = 4L;
 
 
 
@@ -170,10 +169,7 @@ public class AuthService {
     Member member = memberRepository.findMemberByEmail(authentication.getName())
         .orElseThrow(MemberNotFoundException::new);
 
-    boolean isUnreadNotificationLeft = notificationBoxRepository
-        .findUnreadNotificationByMember(member).isPresent();
-
-    tokenResDto.of(member, isUnreadNotificationLeft);
+    tokenResDto.from(member);
 
     return tokenResDto;
   }
