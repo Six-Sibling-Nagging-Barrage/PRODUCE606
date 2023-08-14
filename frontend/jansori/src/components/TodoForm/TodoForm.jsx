@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import tw, { styled } from 'twin.macro';
 import moment from 'moment';
@@ -7,8 +7,13 @@ import Button from '../UI/Button';
 import Toggle from '../UI/Toggle';
 import HashTag from '../HashTag/HashTag';
 import { createTodo, getTodoListByDate } from '../../apis/api/todo';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { focusDateState, todoListState } from '../../states/todo';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import {
+  focusDateState,
+  todoListState,
+  todoInputFormContent,
+  todoInputFormHashTag,
+} from '../../states/todo';
 
 const validateBio = (value) => {
   if (/\s{2,}|^\s|\s$/.test(value)) {
@@ -31,8 +36,15 @@ const TodoForm = () => {
   const [isPublic, setIsPublic] = useState(true);
   const [hashTagList, setHashTagList] = useState([]);
   const [isHashTagList, setIsHashTagList] = useState(false);
-  const [date, setDate] = useRecoilState(focusDateState);
-  const [todoList, setTodoList] = useRecoilState(todoListState);
+  const setDate = useRecoilValue(focusDateState);
+  const setTodoList = useRecoilValue(todoListState);
+  const todoInputFormContentValue = useRecoilValue(todoInputFormContent);
+  const todoInputFormHasTagValue = useRecoilValue(todoInputFormHashTag);
+
+  useEffect(() => {
+    setContent(todoInputFormContentValue);
+    setHashTagList(todoInputFormHasTagValue);
+  }, [todoInputFormContentValue]);
 
   const todoFormSubmit = async (data) => {
     setIsHashTagList(true);
@@ -100,6 +112,7 @@ const TodoForm = () => {
               },
               validate: validateBio,
             })}
+            value={content}
             onChange={handleContentInputChange}
             onKeyDown={handleFormKeyDown}
           />

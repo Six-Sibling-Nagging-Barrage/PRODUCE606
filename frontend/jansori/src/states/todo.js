@@ -43,3 +43,13 @@ export const useTodoDetailState = atom({
   key: 'todoDetailState',
   default: [],
 });
+
+export const todoInputFormContent = atom({
+  key: 'todoInputFormContent',
+  default: '',
+});
+
+export const todoInputFormHashTag = atom({
+  key: 'todoInputFormHashTag',
+  default: [],
+});
