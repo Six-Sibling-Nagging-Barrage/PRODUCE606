@@ -29,6 +29,7 @@ import com.a606.jansori.domain.todo.dto.PostTodoResDto;
 import com.a606.jansori.domain.todo.event.NagGenerateEvent;
 import com.a606.jansori.domain.todo.event.PostTodoEvent;
 import com.a606.jansori.domain.todo.event.TodoAccomplishmentEvent;
+import com.a606.jansori.domain.todo.event.TodoWaitingNagEvent;
 import com.a606.jansori.domain.todo.exception.TodoBusinessException;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
@@ -112,7 +113,13 @@ public class TodoService {
       publisher.publishEvent(new NagGenerateEvent(todo, notificationType2));
     }
 
-    return PostTodoResDto.from(todoRepository.save(todo));
+    Todo savedTodo = todoRepository.save(todo);
+
+    if (postTodoReqDto.isAllNewTags()) {
+      publisher.publishEvent(new TodoWaitingNagEvent(savedTodo));
+    }
+
+    return PostTodoResDto.from(savedTodo);
   }
 
   @Transactional(readOnly = true)
