@@ -47,7 +47,6 @@ const ModalSection = styled.div`
   backdrop-filter: blur(3px);
   border-radius: 5px;
   box-shadow: 0 0 100px rgba(0, 0, 0, 0.3);
-  overflow: auto;
   max-height: 85%;
   /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
   &::-webkit-scrollbar {
