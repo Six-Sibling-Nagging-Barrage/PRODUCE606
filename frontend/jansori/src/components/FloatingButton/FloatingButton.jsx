@@ -14,7 +14,7 @@ const FloatingButton = () => {
 
   return (
     <FloatingButtonContainer onClick={handleFloatingButton}>
-      💬
+      <img src={nagIcon}></img>
     </FloatingButtonContainer>
   );
 };
@@ -30,8 +30,4 @@ const FloatingButtonContainer = styled.div`
   font-size: 40px;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  & img {
-    filter: invert(30%) sepia(0%) saturate(0%) hue-rotate(50deg)
-      brightness(104%) contrast(86%);
-  }
 `;
