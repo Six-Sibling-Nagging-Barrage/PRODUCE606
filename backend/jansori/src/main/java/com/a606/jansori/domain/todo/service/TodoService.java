@@ -4,8 +4,10 @@ import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.service.NagRandomGenerator;
+import com.a606.jansori.domain.notification.domain.NotificationSetting;
 import com.a606.jansori.domain.notification.domain.NotificationType;
 import com.a606.jansori.domain.notification.domain.NotificationTypeName;
+import com.a606.jansori.domain.notification.exception.NotificationSettingNotFoundException;
 import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
 import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.domain.persona.domain.Persona;
@@ -73,9 +75,9 @@ public class TodoService {
     Todo todo = postTodoReqDto.getTodoWith(member);
 
     NotificationType notificationType1 = notificationTypeRepository
-        .findByType(NotificationTypeName.NAGONMYTODO);
+        .findByTypeName(NotificationTypeName.NAGONMYTODO);
     NotificationType notificationType2 = notificationTypeRepository
-        .findByType(NotificationTypeName.MYNAGOTODO);
+        .findByTypeName(NotificationTypeName.MYNAGOTODO);
 
     if (postTodoReqDto.getTags().isEmpty() || postTodoReqDto.getTags().size() > 3) {
       throw new TodoBusinessException();
@@ -101,14 +103,12 @@ public class TodoService {
     });
 
     // 투두 주인의 알림설정이 수신으로 되어 있을 경우에  알림 이벤트 발생
-    if(notificationSettingRepository.findByNotificationTypeAndMember(notificationType1, member)
-        .getActivated()){
+    if(isNotificationSettingOn(notificationType1, member)){
       publisher.publishEvent(new PostTodoEvent(todo, notificationType1));
     }
 
     // 잔소리 주인의 알림설정이 수신으로 되어 있을 경우에 알림 이벤트 발생
-    if(notificationSettingRepository.findByNotificationTypeAndMember(notificationType2,
-        todo.getNag().getMember()).getActivated()){
+    if(isNotificationSettingOn(notificationType2, todo.getNag().getMember())){
       publisher.publishEvent(new NagGenerateEvent(todo, notificationType2));
     }
 
@@ -158,16 +158,14 @@ public class TodoService {
     Member member = securityUtil.getCurrentMemberByToken();
     Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
     NotificationType notificationType = notificationTypeRepository
-        .findByType(NotificationTypeName.TODOACCOMPLISHMENT);
+        .findByTypeName(NotificationTypeName.TODOACCOMPLISHMENT);
 
     if (todo.getMember() != member) {
       throw new TodoUnauthorizedException();
     }
 
     // 알림 수신 상태이고 투두 미완료 상태에서 완료로 바뀔 때만 알림 이벤트 발생
-    if(notificationSettingRepository.
-            findByNotificationTypeAndMember(notificationType, todo.getNag().getMember()).getActivated()
-        && !todo.getFinished()) {
+    if(isNotificationSettingOn(notificationType, member) && !todo.getFinished()) {
       publisher.publishEvent(new TodoAccomplishmentEvent(todo, notificationType));
     }
 
@@ -206,5 +204,17 @@ public class TodoService {
             .collect(Collectors.toList())
     );
 
+  }
+
+  private Boolean isNotificationSettingOn(NotificationType notificationType, Member member){
+
+    NotificationSetting notificationSetting =
+        notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member);
+
+    if(notificationSetting == null){
+      throw new NotificationSettingNotFoundException();
+    }
+
+    return notificationSetting.getActivated();
   }
 }

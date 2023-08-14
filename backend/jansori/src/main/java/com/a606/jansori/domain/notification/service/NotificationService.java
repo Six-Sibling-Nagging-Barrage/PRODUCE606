@@ -41,7 +41,7 @@ public class NotificationService {
   private final NotificationRepository notificationRepository;
   private final NotificationBoxRepository notificationBoxRepository;
   private final SecurityUtil securityUtil;
-  private StringBuilder sb;
+  private StringBuilder sb = new StringBuilder();
 
   private final Clock clock;
 
@@ -173,7 +173,6 @@ public class NotificationService {
         .content(sb.append(member.getNickname()).append("님이 ")
             .append(nag.getMember().getNickname()).append("님의 잔소리를 좋아합니다.").toString())
         .receiver(nag.getMember())
-        .createdAt(LocalDateTime.now(clock))
         .build();
 
     notificationRepository.save(notification);
@@ -195,7 +194,6 @@ public class NotificationService {
             .append(todo.getMember().getNickname()).append("님의 Todo \"")
             .append(todo.getContent()).append("\"가 완료되었습니다.").toString())
         .receiver(todo.getNag().getMember())
-        .createdAt(LocalDateTime.now(clock))
         .build();
 
     notificationRepository.save(notification);

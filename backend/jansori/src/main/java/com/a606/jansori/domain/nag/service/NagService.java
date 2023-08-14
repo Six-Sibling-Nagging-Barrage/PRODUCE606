@@ -29,8 +29,10 @@ import com.a606.jansori.domain.nag.repository.NagLikeRepository;
 import com.a606.jansori.domain.nag.repository.NagRepository;
 import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
 import com.a606.jansori.domain.nag.util.PreviewUtil;
+import com.a606.jansori.domain.notification.domain.NotificationSetting;
 import com.a606.jansori.domain.notification.domain.NotificationType;
 import com.a606.jansori.domain.notification.domain.NotificationTypeName;
+import com.a606.jansori.domain.notification.exception.NotificationSettingNotFoundException;
 import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
 import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
@@ -199,12 +201,24 @@ public class NagService {
   private void increaseNagLike(Nag nag, Member member) {
     nagLikeRepository.save(NagLike.builder().nag(nag).member(member).build());
     NotificationType notificationType = notificationTypeRepository
-        .findByType(NotificationTypeName.NAGREACTION);
+        .findByTypeName(NotificationTypeName.NAGREACTION);
     nag.increaseLikeCount();
 
     // 알림설정이 수신 상태일 경우만 알림 이벤트 생성
-    if(notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member).getActivated()) {
+    if(isNotificationSettingOn(notificationType, member)) {
       publisher.publishEvent(new NagLikeEvent(member, nag, notificationType));
     }
+  }
+
+  private Boolean isNotificationSettingOn(NotificationType notificationType, Member member){
+
+    NotificationSetting notificationSetting =
+        notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member);
+
+    if(notificationSetting == null){
+      throw new NotificationSettingNotFoundException();
+    }
+
+    return notificationSetting.getActivated();
   }
 }
