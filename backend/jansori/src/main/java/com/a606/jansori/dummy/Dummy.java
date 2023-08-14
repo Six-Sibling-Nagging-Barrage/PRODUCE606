@@ -34,6 +34,7 @@ public class Dummy implements CommandLineRunner {
   private final PersonaReactionDummy personaReactionDummy;
   private final NotificationSettingDummy notificationSettingDummy;
   private final NotificationBoxDummy notificationBoxDummy;
+  private final NotificationTypeDummy notificationTypeDummy;
 
   private void flushAndClear() {
     entityManager.flush();
@@ -49,6 +50,7 @@ public class Dummy implements CommandLineRunner {
     List<Tag> tags = tagDummy.createTags();
     tagFollowDummy.createTagFollows(tags, members);
     List<Nag> nags = nagWithNagTagDummy.createNags(members, tags);
+    notificationTypeDummy.createNotificationType();
     notificationBoxDummy.createNotificationBox(members);
     notificationSettingDummy.createNotificationSettings(members);
     List<Todo> todos = todoWithTodoTagDummy.createTodosWithTodoTags(members, tags, nags);
