@@ -1,30 +1,37 @@
 package com.a606.jansori.domain.nag.dto;
 
 import com.a606.jansori.domain.nag.domain.Nag;
-import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.dto.TagDto;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 @Getter
-public class NagOfProfileDto extends NagDetailDto {
+public class NagOfProfile extends NagDetailDto {
 
   private String preview;
   private Boolean unlocked;
   private Boolean isLiked;
 
-  public static NagOfProfileDto ofOtherNagsInformation(Nag nag, Tag tag) {
-    return NagOfProfileDto.builder()
+  public static NagOfProfile ofOtherNagsInformation(Nag nag) {
+    return NagOfProfile.builder()
         .nagId(nag.getId())
         .content(nag.getContent())
         .createAt(nag.getCreatedAt())
         .likeCount(nag.getLikeCount())
-        .tag(TagDto.from(tag))
+        .tag(TagDto.from(nag.getTag()))
         .deliveredCount(nag.getTodos().size())
         .preview(nag.getPreview())
-        .unlocked(nag.getNagUnlocks().size() > 0)
-        .isLiked(nag.getNagLikes().size() > 0)
+        .unlocked(false)
+        .isLiked(false)
         .build();
+  }
+
+  public void changeUnlocked() {
+    this.unlocked = !this.unlocked;
+  }
+
+  public void changeIsLikedStatus() {
+    this.isLiked = !isLiked;
   }
 }
