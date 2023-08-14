@@ -34,7 +34,7 @@ const HashTag = styled.div`
   align-items: center;
   justify-content: space-between;
   margin: 2px;
-  padding: 5px 7px;
+  padding: 6px 8px;
   border-radius: 10px;
   color: white;
   font-size: 13px;

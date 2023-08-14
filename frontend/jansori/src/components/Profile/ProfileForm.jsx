@@ -4,7 +4,12 @@ import HashTag from '../../components/HashTag/HashTag';
 import Button from '../../components/UI/Button';
 import { updateProfile } from '../../apis/api/member';
 import { useNavigate } from 'react-router';
-import { isLoginState, memberInfoState, memberRoleState, profileImgState } from '../../states/user';
+import {
+  isLoginState,
+  memberInfoState,
+  memberRoleState,
+  profileImgState,
+} from '../../states/user';
 import { validateNickname, validateBio } from '../../utils/validate';
 import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
 import { getAvailableNickname } from '../../apis/api/member';
@@ -17,20 +22,20 @@ const NORMAL = 'normal';
 const AVAILABLE = 'available';
 
 const ProfileForm = (props) => {
-  const { initial, prevNickname, prevBio, tags, setIsEditing, setIsEdited } = props;
+  const { initial, prevNickname, prevBio, tags, setIsEditing, setIsEdited } =
+    props;
 
   const [hashTagList, setHashTagList] = useState([]);
   const [checked, setChecked] = useState(false);
   const [checkError, setCheckError] = useState(false);
   const [nicknameValue, setNicknameValue] = useState('');
   const [isDuplicated, setIsDuplicated] = useState(NORMAL);
-  const [profileImg, setProfileImg] = useState(null);
 
   const navigate = useNavigate();
 
   const isLogin = useRecoilValue(isLoginState);
   const setMemberRole = useSetRecoilState(memberRoleState);
-  // const [profileImg, setProfileImg] = useRecoilState(profileImgState);
+  const [profileImg, setProfileImg] = useRecoilState(profileImgState);
   const [memberInfo, setMemberInfo] = useRecoilState(memberInfoState);
 
   const {
@@ -49,7 +54,6 @@ const ProfileForm = (props) => {
 
   useEffect(() => {
     setIsDuplicated(NORMAL);
-    console.log(memberInfo.nickname);
 
     if (nicknameValue === '' || nicknameValue.trim() === memberInfo.nickname) {
       return;
@@ -78,10 +82,7 @@ const ProfileForm = (props) => {
       tags: hashTagList.length > 0 ? hashTagList.map((tag) => tag.tagId) : [-1],
     };
 
-    console.log(profile);
-
     const formData = new FormData();
-    console.log(profileImg);
 
     if (profileImg !== altImageUrl) formData.append('imageFile', profileImg);
     formData.append(
@@ -104,6 +105,7 @@ const ProfileForm = (props) => {
         setMemberRole('USER');
         return navigate('/');
       }
+      setProfileImg(res.data.imageUrl);
       setIsEdited((prev) => !prev);
       setIsEditing(false);
     }
@@ -127,17 +129,17 @@ const ProfileForm = (props) => {
   };
 
   return (
-    <FormContainer enctype='multipart/form-data'>
+    <FormContainer enctype="multipart/form-data">
       <ProfileImg
         editable={true}
         profileImg={profileImg}
         setProfileImg={setProfileImg}
-        size='80px'
+        size="80px"
       />
       <InfoContainer>
         <Label>닉네임</Label>
         <Nickname
-          placeholder='닉네임을 입력해주세요.'
+          placeholder="닉네임을 입력해주세요."
           {...register('nickname', {
             defaultValue: prevNickname ? prevNickname : '',
             required: '닉네임을 입력해주세요.',
@@ -159,7 +161,9 @@ const ProfileForm = (props) => {
             ) : (
               <>
                 {isDuplicated === AVAILABLE ? (
-                  <GuideMessage granted='true'>사용 가능한 닉네임이에요!</GuideMessage>
+                  <GuideMessage granted="true">
+                    사용 가능한 닉네임이에요!
+                  </GuideMessage>
                 ) : (
                   <ErrorMessage>이미 사용 중인 닉네임이에요...</ErrorMessage>
                 )}
@@ -171,7 +175,7 @@ const ProfileForm = (props) => {
       <InfoContainer>
         <Label>소개글</Label>
         <Bio
-          placeholder='소개글을 입력해주세요.'
+          placeholder="소개글을 입력해주세요."
           {...register('bio', {
             defaultValue: prevBio ? prevBio : '',
             maxLength: {
@@ -195,17 +199,25 @@ const ProfileForm = (props) => {
         hashTagList={hashTagList}
         setHashTagList={setHashTagList}
       />
-      {initial && <GuideMessage>회원가입 시에는 최대 3개까지 등록할 수 있어요.</GuideMessage>}
+      {initial && (
+        <GuideMessage>
+          회원가입 시에는 최대 3개까지 등록할 수 있어요.
+        </GuideMessage>
+      )}
       {initial && (
         <>
           <RequestMessage>
-            🌟 부적절한 언어나 다른 이용자들이 불쾌할 수 있는 잔소리는 삼가주세요! 🌟
+            🌟 부적절한 언어나 다른 이용자들이 불쾌할 수 있는 잔소리는
+            삼가주세요! 🌟
           </RequestMessage>
           <CheckboxContainer>
-            <Checkbox type='checkbox' checked={checked} />
+            <Checkbox type="checkbox" checked={checked} />
             <CustomCheckbox>
-              <CheckboxLabel onClick={handleClickCheckboxLabel} checked={checked}></CheckboxLabel>
-              <div className='label' onClick={handleClickCheckboxLabel}>
+              <CheckboxLabel
+                onClick={handleClickCheckboxLabel}
+                checked={checked}
+              ></CheckboxLabel>
+              <div className="label" onClick={handleClickCheckboxLabel}>
                 확인했어요 ✔
               </div>
             </CustomCheckbox>
@@ -214,7 +226,7 @@ const ProfileForm = (props) => {
         </>
       )}
       <Footer>
-        <Button onClick={handleSubmit(handleUpdateProfile)} normal='true'>
+        <Button onClick={handleSubmit(handleUpdateProfile)} normal="true">
           완료
         </Button>
       </Footer>

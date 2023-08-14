@@ -90,12 +90,12 @@ const Header = styled.div`
 
 const Nickname = styled.div`
   font-weight: bold;
+  font-size: 18px;
 `;
 
 const Bio = styled.div`
-  font-size: 14px;
-  width: 70%;
-  margin: 0 auto;
+  width: 50%;
+  margin: 10px auto;
 `;
 
 const Wrapper = styled.div`
@@ -105,7 +105,6 @@ const Wrapper = styled.div`
   margin: 10px auto;
   padding: 10px;
   border-radius: 10px;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
 `;
 
 const HashTagContainer = styled.div`
