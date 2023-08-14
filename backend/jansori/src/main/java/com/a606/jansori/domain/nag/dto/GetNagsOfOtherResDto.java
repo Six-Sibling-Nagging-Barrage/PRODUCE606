@@ -8,14 +8,14 @@ import lombok.Getter;
 @Getter
 public class GetNagsOfOtherResDto {
 
-  List<NagOfProfileDto> nags;
+  List<NagOfProfile> nags;
 
   private Boolean hasNext;
 
   private Long nextCursor;
 
   public static GetNagsOfOtherResDto ofOtherNagsList(
-      List<NagOfProfileDto> nags,
+      List<NagOfProfile> nags,
       Boolean hasNext,
       Long nextCursor) {
     return GetNagsOfOtherResDto.builder()
