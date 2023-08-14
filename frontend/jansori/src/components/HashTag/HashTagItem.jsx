@@ -12,11 +12,12 @@ const HashTagItem = (props) => {
   };
 
   const getRandomColor = () => {
-    return hashTagColor[Math.abs(hashTag?.tagId) % 3].background;
+    return hashTagColor[Math.abs(hashTag?.tagId) % hashTagColor.length]
+      .background;
   };
 
   const getRandomFontColor = () => {
-    return hashTagColor[Math.abs(hashTag?.tagId) % 3].font;
+    return hashTagColor[Math.abs(hashTag?.tagId) % hashTagColor.length].font;
   };
 
   return (
@@ -37,13 +38,13 @@ const HashTag = styled.div`
   padding: 6px 8px;
   border-radius: 10px;
   color: white;
-  font-size: 13px;
+  font-size: 14px;
   width: fit-content;
   height: fit-content;
 `;
 
 const Text = styled.span`
-  font-weight: bold;
+  font-weight: 600;
 `;
 
 const RemoveButton = styled.div`
