@@ -55,6 +55,18 @@ public class AuthService {
   @Transactional
   public AuthSignupResDto signup(AuthSignupReqDto authSignupReqDto) {
 
+    Member member = makeNewMember(authSignupReqDto);
+
+    makeNotificationBoxOfNewMember(member);
+
+    makeNotificationSettingOfNewMember(member);
+
+    return AuthSignupResDto.from(member);
+
+  }
+
+  public Member makeNewMember(AuthSignupReqDto authSignupReqDto){
+
     if (memberRepository.existsByEmail(authSignupReqDto.getEmail())) {
 
       throw new DuplicatedEmailException();
@@ -65,7 +77,14 @@ public class AuthService {
 
     memberRepository.save(member);
 
+    return member;
+  }
+
+  public void makeNotificationBoxOfNewMember(Member member){
     notificationBoxRepository.save(NotificationBox.builder().member(member).build());
+  }
+
+  public void makeNotificationSettingOfNewMember(Member member){
 
     for (Long type = 1L; type <= NOTIFICATION_TYPE_COUNTS; type++){
       notificationSettingRepository.save(NotificationSetting.builder()
@@ -74,8 +93,6 @@ public class AuthService {
           .activated(true)
           .build());
     }
-
-    return AuthSignupResDto.from(member);
 
   }
 
@@ -100,9 +117,10 @@ public class AuthService {
       TokenResDto tokenResDto = tokenProvider.generateAccessTokenDto(authentication,
           refreshToken.getRefreshToken());
 
-//      notificationBoxRepository.findByMember(member).
+      boolean isUnreadNotificationLeft = notificationBoxRepository
+          .findUnreadNotificationByMember(member).isPresent();
 
-//      tokenResDto.of(member);
+      tokenResDto.of(member, isUnreadNotificationLeft);
 
       return tokenResDto;
 
@@ -136,7 +154,10 @@ public class AuthService {
     Member member = memberRepository.findMemberByEmail(authentication.getName())
         .orElseThrow(MemberNotFoundException::new);
 
-//    tokenResDto.of(member, );
+    boolean isUnreadNotificationLeft = notificationBoxRepository
+        .findUnreadNotificationByMember(member).isPresent();
+
+    tokenResDto.of(member, isUnreadNotificationLeft);
 
     return tokenResDto;
   }
