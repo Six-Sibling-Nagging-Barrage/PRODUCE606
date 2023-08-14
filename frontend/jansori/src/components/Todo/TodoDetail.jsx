@@ -13,7 +13,7 @@ import { personas } from '../../constants/persona';
 import SnackBar from '../UI/SnackBar';
 
 const TodoDetail = (props) => {
-  const { todoItemDetail } = props;
+  const { todoItemDetail, onClose } = props;
   const todoDetailItem = useRecoilValue(useTodoDetailState);
   const [ticket, setTicket] = useRecoilState(ticketState);
   const [showSnackBar, setShowSnackBar] = useState(false);
@@ -109,7 +109,8 @@ const TodoDetail = (props) => {
   };
 
   return (
-    <TodoItemDetailWrap>
+    <>
+      <Background onClick={onClose} />
       <TodoItemDetailTodoContainer>
         <Header>
           <MarkWrap>
@@ -166,17 +167,27 @@ const TodoDetail = (props) => {
       {showSnackBar && (
         <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
       )}
-    </TodoItemDetailWrap>
+    </>
   );
 };
 
 export default TodoDetail;
 
-const TodoItemDetailWrap = styled.div`
-  width: 40vw;
+const Background = styled.div`
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 99;
 `;
 
 const TodoItemDetailTodoContainer = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 38vw;
   height: 65vh;
   border-radius: 10px;
@@ -184,6 +195,8 @@ const TodoItemDetailTodoContainer = styled.div`
   background-color: #fff;
   box-shadow: 5px 5px 20px #928f8f;
   display: flex;
+  z-index: 99;
+  box-shadow: 0 0 100px rgba(0, 0, 0, 0.3);
   flex-direction: column;
 `;
 

@@ -3,12 +3,18 @@ import tw, { styled } from 'twin.macro';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { getTodoDetail } from '../../apis/api/todo';
 import { memberIdState } from '../../states/user';
-import { useTodoDetailState, todoInputFormContent, todoInputFormHashTag } from '../../states/todo';
+import {
+  useTodoDetailState,
+  todoInputFormContent,
+  todoInputFormHashTag,
+} from '../../states/todo';
 import moment from 'moment';
 import Modal from '../UI/Modal';
 import HashTagItem from '../HashTag/HashTagItem';
 import SnackBar from '../UI/SnackBar';
 import TodoDetail from './TodoDetail';
+import detailIcon from '../../assets/detail_icon.png';
+import copyIcon from '../../assets/copy_icon.webp';
 
 const TodoItem = (props) => {
   const { currentTodo, updateTodoCompleteMutation, id } = props;
@@ -16,7 +22,8 @@ const TodoItem = (props) => {
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
   const memberId = useRecoilValue(memberIdState);
-  const [todoItemDetail, setTodoItemDetail] = useRecoilState(useTodoDetailState);
+  const [todoItemDetail, setTodoItemDetail] =
+    useRecoilState(useTodoDetailState);
   const setTodoInputFormContent = useSetRecoilState(todoInputFormContent);
   const setTodoInputFormHashTag = useSetRecoilState(todoInputFormHashTag);
 
@@ -61,12 +68,10 @@ const TodoItem = (props) => {
   return (
     <TodoContainer>
       {isDetailTodoItem && (
-        <Modal setIsModalOpen={handleModalOpen}>
-          <TodoDetail todoItemDetail={todoItemDetail} />
-        </Modal>
+        <TodoDetail onClose={handleModalOpen} todoItemDetail={todoItemDetail} />
       )}
       <TodoDone>
-        <div className='finished' onClick={handleTodoClick}>
+        <div className="finished" onClick={handleTodoClick}>
           {currentTodo.finished ? '✅' : '❌'}
         </div>
       </TodoDone>
@@ -74,21 +79,27 @@ const TodoItem = (props) => {
         <TodoContentContainer>{currentTodo.content}</TodoContentContainer>
         <HashTagContent>
           {currentTodo.tags?.map((tag) => {
-            return <HashTagItem key={tag.tagId} hashTag={tag} editable={false} />;
+            return (
+              <HashTagItem key={tag.tagId} hashTag={tag} editable={false} />
+            );
           })}
         </HashTagContent>
       </TodoContent>
       <TodoExtendContent>
         {/* input으로 복사 */}
-        <button onClick={handleTodoCopy}>📋</button>
+        <button onClick={handleTodoCopy}>
+          <img src={copyIcon} width="25px" />
+        </button>
       </TodoExtendContent>
       <TodoExtendContent>
         {/* 상세 보기 */}
         <button onClick={handleTodoDetail} todoItemDetail={todoItemDetail}>
-          📖
+          <img src={detailIcon} width="25px" />
         </button>
       </TodoExtendContent>
-      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
+      {showSnackBar && (
+        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
+      )}
     </TodoContainer>
   );
 };
@@ -130,7 +141,7 @@ const HashTagContent = styled.div`
 const TodoExtendContent = styled.div`
   ${tw`col-span-1
   rounded-lg
-  mr-2
+  mr-1
 items-center
 my-auto
 `}
