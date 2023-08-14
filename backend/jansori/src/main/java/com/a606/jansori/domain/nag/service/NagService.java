@@ -7,6 +7,7 @@ import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagBox;
 import com.a606.jansori.domain.nag.domain.NagLike;
 import com.a606.jansori.domain.nag.domain.NagUnlock;
+import com.a606.jansori.domain.nag.domain.Nags;
 import com.a606.jansori.domain.nag.dto.GetMemberNagsOfReqDto;
 import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
@@ -16,14 +17,12 @@ import com.a606.jansori.domain.nag.dto.GetNagsOfReqDto;
 import com.a606.jansori.domain.nag.dto.GetNagsOfResDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
 import com.a606.jansori.domain.nag.dto.NagDto;
-import com.a606.jansori.domain.nag.dto.NagOfProfileDto;
 import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.dto.PutNagUnlockResDto;
-import com.a606.jansori.domain.nag.event.NagPublishedTodoEvent;
-import com.a606.jansori.domain.nag.exception.NagInvalidRequestException;
 import com.a606.jansori.domain.nag.event.NagLikeEvent;
+import com.a606.jansori.domain.nag.event.NagPublishedTodoEvent;
 import com.a606.jansori.domain.nag.exception.NagInvalidRequestException;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
 import com.a606.jansori.domain.nag.exception.NagUnlockBusinessException;
@@ -167,12 +166,17 @@ public class NagService {
 
     Slice<Nag> nags = nagRepository
         .findByNagsWithLockStatusByMemberAndPages(viewer, owner, cursor, PageRequest.of(0, size));
+    List<NagUnlock> nagUnlocks = nagUnlockRepository
+        .findNagUnlocksByNagIsInAndMember(nags.getContent(), viewer);
+    List<NagLike> nagLikes = nagLikeRepository
+        .findNagLikesByNagIsInAndMember(nags.getContent(), viewer);
+
+    Nags nagsOfMemberProfile = new Nags(nags.getContent(), nagUnlocks, nagLikes);
+
     Long nextCursor = nags.hasNext() ? nags.getContent().get(size - 1).getId() : null;
 
-    return GetNagsOfOtherResDto.ofOtherNagsList(nags.getContent()
-        .stream()
-        .map(nag -> NagOfProfileDto.ofOtherNagsInformation(nag, nag.getTag()))
-        .collect(Collectors.toList()), nags.hasNext(), nextCursor);
+    return GetNagsOfOtherResDto
+        .ofOtherNagsList(nagsOfMemberProfile.getNags(), nags.hasNext(), nextCursor);
   }
 
   @Transactional(readOnly = true)
