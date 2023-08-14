@@ -10,10 +10,10 @@ import com.a606.jansori.domain.nag.domain.NagUnlock;
 import com.a606.jansori.domain.nag.dto.GetMemberNagsOfReqDto;
 import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
-import com.a606.jansori.domain.nag.dto.GetNagsOfOtherResDto;
-import com.a606.jansori.domain.nag.dto.GetNagsOfResDto;
 import com.a606.jansori.domain.nag.dto.GetNagsOfNagBoxResDto;
+import com.a606.jansori.domain.nag.dto.GetNagsOfOtherResDto;
 import com.a606.jansori.domain.nag.dto.GetNagsOfReqDto;
+import com.a606.jansori.domain.nag.dto.GetNagsOfResDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
 import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.NagOfProfileDto;
@@ -24,6 +24,7 @@ import com.a606.jansori.domain.nag.dto.PutNagUnlockResDto;
 import com.a606.jansori.domain.nag.event.NagPublishedTodoEvent;
 import com.a606.jansori.domain.nag.exception.NagInvalidRequestException;
 import com.a606.jansori.domain.nag.event.NagLikeEvent;
+import com.a606.jansori.domain.nag.exception.NagInvalidRequestException;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
 import com.a606.jansori.domain.nag.exception.NagUnlockBusinessException;
 import com.a606.jansori.domain.nag.repository.NagLikeRepository;
@@ -166,12 +167,11 @@ public class NagService {
 
     Slice<Nag> nags = nagRepository
         .findByNagsWithLockStatusByMemberAndPages(viewer, owner, cursor, PageRequest.of(0, size));
-
     Long nextCursor = nags.hasNext() ? nags.getContent().get(size - 1).getId() : null;
 
     return GetNagsOfOtherResDto.ofOtherNagsList(nags.getContent()
         .stream()
-        .map(nag -> NagOfProfileDto.ofNagAndTagAndNagUnlock(nag, nag.getTag()))
+        .map(nag -> NagOfProfileDto.ofOtherNagsInformation(nag, nag.getTag()))
         .collect(Collectors.toList()), nags.hasNext(), nextCursor);
   }
 

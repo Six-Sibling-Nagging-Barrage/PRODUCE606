@@ -12,8 +12,9 @@ public class NagOfProfileDto extends NagDetailDto {
 
   private String preview;
   private Boolean unlocked;
+  private Boolean isLiked;
 
-  public static NagOfProfileDto ofNagAndTagAndNagUnlock(Nag nag, Tag tag) {
+  public static NagOfProfileDto ofOtherNagsInformation(Nag nag, Tag tag) {
     return NagOfProfileDto.builder()
         .nagId(nag.getId())
         .content(nag.getContent())
@@ -23,6 +24,7 @@ public class NagOfProfileDto extends NagDetailDto {
         .deliveredCount(nag.getTodos().size())
         .preview(nag.getPreview())
         .unlocked(nag.getNagUnlocks().size() > 0)
+        .isLiked(nag.getNagLikes().size() > 0)
         .build();
   }
 }
