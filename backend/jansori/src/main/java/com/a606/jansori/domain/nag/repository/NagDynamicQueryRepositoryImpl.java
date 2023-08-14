@@ -2,7 +2,6 @@ package com.a606.jansori.domain.nag.repository;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.nag.domain.Nag;
-import com.a606.jansori.domain.nag.domain.NagUnlock;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -10,7 +9,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -59,8 +57,8 @@ public class NagDynamicQueryRepositoryImpl implements NagDynamicQueryRepository 
 
     nag.fetch("tag", JoinType.INNER);
     nag.fetch("todos", JoinType.LEFT);
-    Join<Nag, NagUnlock> nagUnlocks = nag.join("nagUnlocks", JoinType.LEFT);
-    nagUnlocks.on(cb.equal(nagUnlocks.get("member"), viewer));
+    nag.fetch("nagLikes", JoinType.LEFT);
+    nag.fetch("nagUnlocks", JoinType.LEFT);
 
     List<Predicate> predicates = new ArrayList<>();
 
