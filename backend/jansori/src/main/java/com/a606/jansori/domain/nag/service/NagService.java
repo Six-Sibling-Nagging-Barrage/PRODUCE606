@@ -74,8 +74,16 @@ public class NagService {
 
   @Transactional
   public PostNagResDto createNag(PostNagReqDto postNagReqDto) {
-    Tag tag = tagRepository.findById(postNagReqDto.getTagId())
-        .orElseThrow(TagNotFoundException::new);
+    Tag tag = null;
+
+    if(postNagReqDto.getTagId() >= 0) {
+      tag = tagRepository.findById(postNagReqDto.getTagId())
+          .orElseThrow(TagNotFoundException::new);
+    }else if(postNagReqDto.getTagId() == -1) {
+      tag = Tag.createTag(postNagReqDto.getTagName());
+      tagRepository.save(tag);
+    }
+
     Member member = securityUtil.getCurrentMemberByToken();
     String preview = previewUtil.convertNagToPreview(postNagReqDto.getContent());
 
