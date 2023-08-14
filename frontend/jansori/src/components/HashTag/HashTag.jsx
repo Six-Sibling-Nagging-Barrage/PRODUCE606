@@ -51,7 +51,7 @@ const HashTag = (props) => {
 
   const addHashTag = (item) => {
     for (const tag of hashTagList) {
-      if (tag.tagId === item.tagId) return setHashTagInput('');
+      if (tag.tagName === item.tagName) return setHashTagInput('');
     }
     setHashTagList((prev) => {
       return [...prev, item];
@@ -66,7 +66,7 @@ const HashTag = (props) => {
         {hashTagList?.map((hashTag, index) => {
           return (
             <HashTagItem
-              key={hashTag.tagId}
+              key={index}
               hashTag={hashTag}
               editable={editable}
               setHashTagList={setHashTagList}
