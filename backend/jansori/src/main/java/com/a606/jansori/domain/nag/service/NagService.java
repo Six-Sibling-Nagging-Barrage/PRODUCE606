@@ -22,12 +22,19 @@ import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.dto.PutNagUnlockResDto;
 import com.a606.jansori.domain.nag.exception.NagInvalidRequestException;
+import com.a606.jansori.domain.nag.event.NagLikeEvent;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
 import com.a606.jansori.domain.nag.exception.NagUnlockBusinessException;
 import com.a606.jansori.domain.nag.repository.NagLikeRepository;
 import com.a606.jansori.domain.nag.repository.NagRepository;
 import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
 import com.a606.jansori.domain.nag.util.PreviewUtil;
+import com.a606.jansori.domain.notification.domain.NotificationSetting;
+import com.a606.jansori.domain.notification.domain.NotificationType;
+import com.a606.jansori.domain.notification.domain.NotificationTypeName;
+import com.a606.jansori.domain.notification.exception.NotificationSettingNotFoundException;
+import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
+import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagRepository;
@@ -39,6 +46,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -59,6 +67,10 @@ public class NagService {
   private final NagRandomGenerator nagRandomGenerator;
   private final PreviewUtil previewUtil;
   private final SecurityUtil securityUtil;
+  private final NotificationTypeRepository notificationTypeRepository;
+  private final NotificationSettingRepository notificationSettingRepository;
+
+  private final ApplicationEventPublisher publisher;
 
   @Transactional
   public PostNagResDto createNag(PostNagReqDto postNagReqDto) {
@@ -81,7 +93,6 @@ public class NagService {
   public PostNagLikeResDto toggleNagLike(Long nagId) {
     Nag nag = nagRepository.findById(nagId).orElseThrow(NagNotFoundException::new);
     Member member = securityUtil.getCurrentMemberByToken();
-
     Optional<NagLike> nagLike = nagLikeRepository.findNagLikeByNagAndMember(nag, member);
 
     nagLike.ifPresentOrElse(like -> decreaseNagLike(nag, like),
@@ -189,6 +200,25 @@ public class NagService {
 
   private void increaseNagLike(Nag nag, Member member) {
     nagLikeRepository.save(NagLike.builder().nag(nag).member(member).build());
+    NotificationType notificationType = notificationTypeRepository
+        .findByTypeName(NotificationTypeName.NAGREACTION);
     nag.increaseLikeCount();
+
+    // 알림설정이 수신 상태일 경우만 알림 이벤트 생성
+    if(isNotificationSettingOn(notificationType, member)) {
+      publisher.publishEvent(new NagLikeEvent(member, nag, notificationType));
+    }
+  }
+
+  private Boolean isNotificationSettingOn(NotificationType notificationType, Member member){
+
+    NotificationSetting notificationSetting =
+        notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member);
+
+    if(notificationSetting == null){
+      throw new NotificationSettingNotFoundException();
+    }
+
+    return notificationSetting.getActivated();
   }
 }
