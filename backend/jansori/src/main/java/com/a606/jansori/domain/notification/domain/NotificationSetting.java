@@ -35,6 +35,7 @@ public class NotificationSetting {
   private NotificationType notificationType;
 
   @Column
-  private Boolean activated;
+  @Builder.Default
+  private Boolean activated = Boolean.TRUE;
 
 }

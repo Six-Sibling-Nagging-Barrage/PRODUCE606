@@ -6,6 +6,7 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.notification.domain.NotificationBox;
 import com.a606.jansori.domain.notification.domain.NotificationSetting;
+import com.a606.jansori.domain.notification.domain.NotificationType;
 import com.a606.jansori.domain.notification.repository.NotificationBoxRepository;
 import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
 import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
@@ -21,6 +22,10 @@ import com.a606.jansori.global.config.property.JwtConfigProperty;
 import com.a606.jansori.global.exception.domain.UnauthorizedException;
 import com.a606.jansori.infra.redis.util.BlackListUtil;
 import com.a606.jansori.infra.redis.util.RefreshTokenUtil;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -48,6 +53,7 @@ public class AuthService {
   private final NotificationBoxRepository notificationBoxRepository;
   private final NotificationSettingRepository notificationSettingRepository;
   private final NotificationTypeRepository notificationTypeRepository;
+  private final Clock clock;
   private final Long NOTIFICATION_TYPE_COUNTS = 4L;
 
 
@@ -81,18 +87,28 @@ public class AuthService {
   }
 
   public void makeNotificationBoxOfNewMember(Member member){
-    notificationBoxRepository.save(NotificationBox.builder().member(member).build());
+    notificationBoxRepository.save(NotificationBox.builder()
+        .member(member)
+        .readAt(LocalDateTime.now(clock))
+        .modifiedAt(LocalDateTime.now(clock))
+        .build());
   }
 
   public void makeNotificationSettingOfNewMember(Member member){
 
-    for (Long type = 1L; type <= NOTIFICATION_TYPE_COUNTS; type++){
-      notificationSettingRepository.save(NotificationSetting.builder()
+    List<NotificationType> notificationTypes = notificationTypeRepository.findAll();
+
+    List<NotificationSetting> settings = new ArrayList<>();
+
+    for (NotificationType notificationType : notificationTypes){
+      settings.add(NotificationSetting.builder()
           .member(member)
-          .notificationType(notificationTypeRepository.getReferenceById(type))
-          .activated(true)
+          .notificationType(notificationType)
           .build());
     }
+
+    notificationSettingRepository.saveAll(settings);
+
 
   }
 
