@@ -7,13 +7,14 @@ import Button from '../UI/Button';
 import Toggle from '../UI/Toggle';
 import HashTag from '../HashTag/HashTag';
 import { createTodo, getTodoListByDate } from '../../apis/api/todo';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useSetRecoilState, useRecoilValue } from 'recoil';
 import {
   focusDateState,
   todoListState,
   todoInputFormContent,
   todoInputFormHashTag,
 } from '../../states/todo';
+import SnackBar from '../../components/UI/SnackBar';
 
 const validateBio = (value) => {
   if (/\s{2,}|^\s|\s$/.test(value)) {
@@ -36,10 +37,13 @@ const TodoForm = () => {
   const [isPublic, setIsPublic] = useState(true);
   const [hashTagList, setHashTagList] = useState([]);
   const [isHashTagList, setIsHashTagList] = useState(false);
-  const setDate = useRecoilValue(focusDateState);
-  const setTodoList = useRecoilValue(todoListState);
+  const setDate = useSetRecoilState(focusDateState);
+  const setTodoList = useSetRecoilState(todoListState);
   const todoInputFormContentValue = useRecoilValue(todoInputFormContent);
   const todoInputFormHasTagValue = useRecoilValue(todoInputFormHashTag);
+
+  const [showSnackBar, setShowSnackBar] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState('');
 
   useEffect(() => {
     setContent(todoInputFormContentValue);
@@ -61,6 +65,9 @@ const TodoForm = () => {
     };
     const response = await createTodo(todo);
     if (response.code === '200') {
+      setSnackBarMessage('TODO가 등록되었어요. 파이팅!');
+      setShowSnackBar(true);
+      console.log(response);
       const newDate = moment(new Date()).format('YYYY-MM-DD');
       setDate(newDate);
       // 변경에 해당하는 api 호출
@@ -69,7 +76,6 @@ const TodoForm = () => {
         setTodoList(result.data.todos);
       }
     }
-    // TODO: 성공했을 경우 밑에 등록되었다는 모달 띄우기(3초 후에 제거)
     reset();
     setHashTagList([]);
     setIsPublic(true);
@@ -90,6 +96,11 @@ const TodoForm = () => {
     }
   };
 
+  const handleSnackBarClose = () => {
+    setShowSnackBar(false);
+    setSnackBarMessage('');
+  };
+
   return (
     <TodoFormContainer>
       <MarkWrap>
@@ -99,7 +110,7 @@ const TodoForm = () => {
         <TodoFormLabel>TO-DO</TodoFormLabel>
         <TodoFormInput>
           <TodoInput
-            placeholder='Todo를 입력해주세요.'
+            placeholder="Todo를 입력해주세요."
             {...register('content', {
               required: 'Todo를 입력해주세요.',
               minLength: {
@@ -121,6 +132,7 @@ const TodoForm = () => {
         <TodoFormInput>
           <HashTag
             editable={true}
+            creatable={true}
             hashTagLimit={3}
             hashTagList={hashTagList}
             setHashTagList={setHashTagList}
@@ -149,11 +161,14 @@ const TodoForm = () => {
           )}
         </ErrorMessage>
         <ButtonLocation>
-          <Button onClick={handleSubmit(todoFormSubmit)} normal='true'>
+          <Button onClick={handleSubmit(todoFormSubmit)} normal="true">
             등록
           </Button>
         </ButtonLocation>
       </TodoFormBox>
+      {showSnackBar && (
+        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
+      )}
     </TodoFormContainer>
   );
 };

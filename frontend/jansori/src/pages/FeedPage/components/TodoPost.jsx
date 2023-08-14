@@ -84,14 +84,16 @@ const TodoPost = (props) => {
           </HashTagContainer>
         </TodoContent>
         <div>
-          <NagCommentItem
-            key={post.nag.nagId}
-            isMemberNag={true}
-            todoId={post.todoId}
-            nag={post.nag}
-            toggleLike={toggleLike}
-            toggleUnlock={toggleUnlock}
-          />
+          {post.nag && (
+            <NagCommentItem
+              key={post.nag.nagId}
+              isMemberNag={true}
+              todoId={post.todoId}
+              nag={post.nag}
+              toggleLike={toggleLike}
+              toggleUnlock={toggleUnlock}
+            />
+          )}
         </div>
       </PostContainer>
     </li>
