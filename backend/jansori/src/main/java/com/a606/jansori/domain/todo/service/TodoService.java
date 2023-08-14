@@ -77,7 +77,7 @@ public class TodoService {
     NotificationType notificationType1 = notificationTypeRepository
         .findByTypeName(NotificationTypeName.NAGONMYTODO);
     NotificationType notificationType2 = notificationTypeRepository
-        .findByTypeName(NotificationTypeName.MYNAGOTODO);
+        .findByTypeName(NotificationTypeName.MYNAGONTODO);
 
     if (postTodoReqDto.getTags().isEmpty() || postTodoReqDto.getTags().size() > 3) {
       throw new TodoBusinessException();
