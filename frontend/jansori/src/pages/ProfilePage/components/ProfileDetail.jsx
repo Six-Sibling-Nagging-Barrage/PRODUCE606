@@ -105,7 +105,7 @@ const Wrapper = styled.div`
   margin: 10px auto;
   padding: 10px;
   border-radius: 10px;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3); /* 내부에 그림자 추가 */
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
 `;
 
 const HashTagContainer = styled.div`
