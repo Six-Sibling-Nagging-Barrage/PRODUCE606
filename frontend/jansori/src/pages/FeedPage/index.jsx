@@ -87,6 +87,7 @@ const FeedPage = () => {
                   hashTagList={hashTagList}
                   setHashTagList={setHashTagList}
                   setSpecificTag={setSpecificTag}
+                  absolute={true}
                 />
               </div>
             </SearchBar>

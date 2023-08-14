@@ -89,7 +89,7 @@ const DropDownList = styled.ul`
   border-top: none;
   border-radius: 0 0 5px 5px;
   list-style-type: none;
-  z-index: 1000;
+  z-index: 5;
   min-width: 200px;
   font-size: 15px;
   max-height: 30vh;

@@ -11,12 +11,14 @@ const HashTag = (props) => {
     setSpecificTag,
     hashTagList,
     setHashTagList,
+    absolute,
   } = props;
 
   const [hashTagInput, setHashTagInput] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [hashTagCount, setHashTagCount] = useState(0);
   const [autoCompleteList, setAutoCompleteList] = useState([]);
+  const [lengthError, setLengthError] = useState(false);
 
   useEffect(() => {
     if (!hashTagList) return;
@@ -31,10 +33,16 @@ const HashTag = (props) => {
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault();
+      const tagInput = hashTagInput.trim();
 
-      const findTag = autoCompleteList.find(
-        (tag) => tag.tagName === hashTagInput.trim()
-      );
+      if (!tagInput) return;
+      if (tagInput.length < 2 || tagInput.length > 8) {
+        setIsOpen(false);
+        return setLengthError(true);
+      }
+
+      setLengthError(false);
+      const findTag = autoCompleteList.find((tag) => tag.tagName === tagInput);
       if (findTag) {
         addHashTag(findTag);
         setIsOpen(false);
@@ -42,7 +50,7 @@ const HashTag = (props) => {
         if (!creatable) return;
         addHashTag({
           tagId: -1,
-          tagName: hashTagInput.trim(),
+          tagName: tagInput,
         });
         setIsOpen(false);
       }
@@ -50,6 +58,7 @@ const HashTag = (props) => {
   };
 
   const addHashTag = (item) => {
+    setLengthError(false);
     for (const tag of hashTagList) {
       if (tag.tagName === item.tagName) return setHashTagInput('');
     }
@@ -85,6 +94,11 @@ const HashTag = (props) => {
           />
         )}
       </HashTagContainer>
+      {lengthError && (
+        <ErrorMessage absolute={absolute}>
+          태그는 2-8자로 입력해주세요.
+        </ErrorMessage>
+      )}
       {isOpen && (
         <AutoComplete
           searchValue={hashTagInput}
@@ -123,6 +137,14 @@ const HashTagInput = styled.input`
   outline: none;
   cursor: text;
   margin-left: 4px;
+`;
+
+const ErrorMessage = styled.div`
+  ${({ absolute }) => absolute && 'position: absolute'};
+  font-size: 14px;
+  color: #ff6c6c;
+  padding: 0 15px;
+  width: fit-content;
 `;
 
 export default HashTag;
