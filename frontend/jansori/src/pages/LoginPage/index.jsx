@@ -14,6 +14,7 @@ import {
   memberRoleState,
   memberIdState,
   ticketState,
+  profileImgState,
 } from '../../states/user';
 import { useNavigate } from 'react-router-dom';
 import { validateEmail } from '../../utils/validate';
@@ -34,6 +35,7 @@ const LoginPage = () => {
   const setMemberRefreshToken = useSetRecoilState(memberRefreshTokenState);
   const setmemberTokenExp = useSetRecoilState(memberTokenExpState);
   const setTicket = useSetRecoilState(ticketState);
+  const setProfileImg = useSetRecoilState(profileImgState);
 
   const [loginError, setLoginError] = useState(false);
 
@@ -58,6 +60,7 @@ const LoginPage = () => {
         nickname: res.data.nickname,
         imageUrl: res.data.imageUrl,
       });
+      setProfileImg(res.data.imageUrl);
       setMemberId(res.data.memberId);
       setTicket(res.data.ticket);
       console.log(res.data.memberRole);

@@ -1,18 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import tw, { styled } from 'twin.macro';
 import { altImageUrl } from '../../constants/image';
+import { useImageErrorHandler } from '../../hooks/useImageErrorHandler';
 
 const ProfileImg = (props) => {
-  const { editable, profileImg, setProfileImg, size } = props;
+  const { editable, newProfileImg, setNewProfileImg, size } = props;
 
-  const [newProfileImg, setNewProfileImg] = useState(null);
   const profileImgInput = useRef(null);
 
-  useEffect(() => {
-    if (profileImg) {
-      setNewProfileImg(profileImg);
-    }
-  }, []);
+  const handleImgError = useImageErrorHandler();
 
   const handleProfileImgClick = () => {
     if (!editable) return;
@@ -20,20 +16,19 @@ const ProfileImg = (props) => {
   };
 
   const handleProfileImgUpload = (event) => {
-    // console.log(URL.createObjectURL(event.target.files[0]));
     if (!event.target.files[0]) return setNewProfileImg(altImageUrl);
     setNewProfileImg(URL.createObjectURL(event.target.files[0]));
-    setProfileImg(event.target.files[0]);
   };
 
-  const handleImgError = (e) => {
-    e.target.src = altImageUrl;
+  const handleRemoveImg = () => {
+    setNewProfileImg(altImageUrl);
+    profileImgInput.current.value = '';
   };
 
   return (
     <ProfileImgContainer size={size}>
       <img
-        src={newProfileImg}
+        src={newProfileImg ? newProfileImg : altImageUrl}
         onClick={handleProfileImgClick}
         onError={handleImgError}
       />
@@ -44,6 +39,9 @@ const ProfileImg = (props) => {
         onChange={handleProfileImgUpload}
         ref={profileImgInput}
       />
+      {newProfileImg && newProfileImg !== altImageUrl && (
+        <RemoveImg onClick={handleRemoveImg}>이미지 삭제</RemoveImg>
+      )}
     </ProfileImgContainer>
   );
 };
@@ -61,6 +59,13 @@ const ProfileImgContainer = styled.div`
   & > input {
     display: none;
   }
+`;
+
+const RemoveImg = styled.div`
+  cursor: pointer;
+  margin: 10px 0;
+  color: gray;
+  font-size: 14px;
 `;
 
 export default ProfileImg;

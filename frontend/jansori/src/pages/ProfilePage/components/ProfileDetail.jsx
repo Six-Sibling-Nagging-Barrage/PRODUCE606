@@ -53,7 +53,7 @@ const ProfileDetail = (props) => {
               </button>
             )}
           </Header>
-          <ProfileImg profileImg={profile.imageUrl} size="120px" />
+          <ProfileImg newProfileImg={profile.imageUrl} size="120px" />
           <Nickname>{profile.nickname}</Nickname>
           <Bio>{profile.bio}</Bio>
           <Wrapper>

@@ -25,18 +25,19 @@ const ProfileForm = (props) => {
   const { initial, prevNickname, prevBio, tags, setIsEditing, setIsEdited } =
     props;
 
+  const isLogin = useRecoilValue(isLoginState);
+  const setMemberRole = useSetRecoilState(memberRoleState);
+  const [profileImg, setProfileImg] = useRecoilState(profileImgState);
+  const [memberInfo, setMemberInfo] = useRecoilState(memberInfoState);
+
   const [hashTagList, setHashTagList] = useState([]);
   const [checked, setChecked] = useState(false);
   const [checkError, setCheckError] = useState(false);
   const [nicknameValue, setNicknameValue] = useState('');
   const [isDuplicated, setIsDuplicated] = useState(NORMAL);
+  const [newProfileImg, setNewProfileImg] = useState(profileImg);
 
   const navigate = useNavigate();
-
-  const isLogin = useRecoilValue(isLoginState);
-  const setMemberRole = useSetRecoilState(memberRoleState);
-  const [profileImg, setProfileImg] = useRecoilState(profileImgState);
-  const [memberInfo, setMemberInfo] = useRecoilState(memberInfoState);
 
   const {
     register,
@@ -84,7 +85,9 @@ const ProfileForm = (props) => {
 
     const formData = new FormData();
 
-    if (profileImg !== altImageUrl) formData.append('imageFile', profileImg);
+    console.log(newProfileImg);
+    if (newProfileImg !== altImageUrl)
+      formData.append('imageFile', newProfileImg);
     formData.append(
       'memberInfo',
       new Blob([JSON.stringify(profile)], {
@@ -132,9 +135,9 @@ const ProfileForm = (props) => {
     <FormContainer enctype="multipart/form-data">
       <ProfileImg
         editable={true}
-        profileImg={profileImg}
-        setProfileImg={setProfileImg}
         size="80px"
+        newProfileImg={newProfileImg}
+        setNewProfileImg={setNewProfileImg}
       />
       <InfoContainer>
         <Label>닉네임</Label>

@@ -1,22 +1,20 @@
 import React, { useState } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import tw, { css, styled } from 'twin.macro';
 import { RxHamburgerMenu } from 'react-icons/rx';
-import { AiFillBell } from 'react-icons/ai';
 import { TbTicket } from 'react-icons/tb';
 import { Link } from 'react-router-dom';
 import { memberIdState, ticketState, navBarState } from '../../states/user';
-import { altImageUrl } from '../../constants/image';
 import logoImg from '../../assets/jansori-logo-eating-removebg-preview.png';
 import notificationIcon from '../../assets/notification_icon.webp';
 import { menus, beforeLoginMenus } from '../../constants/nav';
-
-import { isLoginState, profileImgState, memberNicknameState } from '../../states/user';
+import { useImageErrorHandler } from '../../hooks/useImageErrorHandler';
+import { isLoginState, profileImgState } from '../../states/user';
 import DropdownProfileMenu from './DropdownProfileMenu';
+import { altImageUrl } from '../../constants/image';
 
 const NavBar = () => {
   const [istoggleopen, setIsToggleOpen] = useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [currentMenu, setCurrentMenu] = useRecoilState(navBarState);
 
@@ -24,8 +22,8 @@ const NavBar = () => {
   const profileImg = useRecoilValue(profileImgState);
   const memberId = useRecoilValue(memberIdState);
   const ticket = useRecoilValue(ticketState);
-  const setNickname = useSetRecoilState(memberNicknameState);
-  const setProfileImg = useSetRecoilState(profileImgState);
+
+  const handleImgError = useImageErrorHandler();
 
   const handleHamburgerMenuClick = () => {
     setIsToggleOpen(!istoggleopen);
@@ -33,10 +31,6 @@ const NavBar = () => {
 
   const handleProfileClick = () => {
     setIsProfileModalOpen(!isProfileModalOpen);
-  };
-
-  const handleImgError = (e) => {
-    e.target.src = altImageUrl;
   };
 
   const handleMenuClick = (index) => {
@@ -49,11 +43,11 @@ const NavBar = () => {
       <Nav>
         {/* 로고 들어가는 부분 시작 */}
         <NavWrap>
-          <Logo href='/' onClick={() => handleMenuClick(-1)}>
+          <Logo href="/" onClick={() => handleMenuClick(-1)}>
             <img src={logoImg} />
           </Logo>
           {/* 네비게이션 리스트 부분 시작 */}
-          <NavItems id='navbar-sticky' istoggleopen={istoggleopen}>
+          <NavItems id="navbar-sticky" istoggleopen={istoggleopen}>
             <NavItemsUl>
               {menus.map((menu, index) => {
                 const url =
@@ -88,7 +82,10 @@ const NavBar = () => {
                 <ul>
                   <li>
                     <Avatar onClick={handleProfileClick}>
-                      <img src={profileImg} onError={handleImgError} />
+                      <img
+                        src={profileImg ? profileImg : altImageUrl}
+                        onError={handleImgError}
+                      />
                     </Avatar>
                   </li>
                   {isProfileModalOpen && (
@@ -98,7 +95,7 @@ const NavBar = () => {
                   )}
                 </ul>
                 <button>
-                  <img src={notificationIcon} width='25px' />
+                  <img src={notificationIcon} width="25px" />
                 </button>
               </AfterLoginWrap>
             ) : (
@@ -122,13 +119,13 @@ const NavBar = () => {
             )}
             {/* 화면 작아졌을 때 햄버거 icon 시작 */}
             <HamburgerButton
-              type='button'
-              aria-controls='navbar-sticky'
+              type="button"
+              aria-controls="navbar-sticky"
               aria-expanded={istoggleopen}
               onClick={handleHamburgerMenuClick}
             >
-              <span className='sr-only'>Open</span>
-              <RxHamburgerMenu className='w-5 h-5' aria-hidden='true' />
+              <span className="sr-only">Open</span>
+              <RxHamburgerMenu className="w-5 h-5" aria-hidden="true" />
             </HamburgerButton>
             {/* 화면 작아졌을 때 햄버거 icon 끝 */}
           </RightButtons>
