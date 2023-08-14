@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import tw, { styled } from 'twin.macro';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { getTodoDetail } from '../../apis/api/todo';
 import { memberIdState } from '../../states/user';
-import { useTodoDetailState } from '../../states/todo';
+import { useTodoDetailState, todoInputFormContent, todoInputFormHashTag } from '../../states/todo';
 import moment from 'moment';
 import Modal from '../UI/Modal';
 import HashTagItem from '../HashTag/HashTagItem';
@@ -17,6 +17,8 @@ const TodoItem = (props) => {
   const [snackBarMessage, setSnackBarMessage] = useState('');
   const memberId = useRecoilValue(memberIdState);
   const [todoItemDetail, setTodoItemDetail] = useRecoilState(useTodoDetailState);
+  const setTodoInputFormContent = useSetRecoilState(todoInputFormContent);
+  const setTodoInputFormHashTag = useSetRecoilState(todoInputFormHashTag);
 
   const handleTodoClick = () => {
     if (memberId !== id) {
@@ -49,6 +51,13 @@ const TodoItem = (props) => {
     setIsDetailTodoItem(false);
   };
 
+  const handleTodoCopy = () => {
+    setTodoInputFormContent(currentTodo.content);
+    setTodoInputFormHashTag(currentTodo.tags);
+    setSnackBarMessage('투두가 복사되었습니다.');
+    return setShowSnackBar(true);
+  };
+
   return (
     <TodoContainer>
       {isDetailTodoItem && (
@@ -71,7 +80,7 @@ const TodoItem = (props) => {
       </TodoContent>
       <TodoExtendContent>
         {/* input으로 복사 */}
-        <button>📋</button>
+        <button onClick={handleTodoCopy}>📋</button>
       </TodoExtendContent>
       <TodoExtendContent>
         {/* 상세 보기 */}
