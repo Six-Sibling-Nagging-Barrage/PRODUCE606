@@ -3,12 +3,18 @@ import styled, { keyframes } from 'styled-components';
 import StartButton from './components/StartButton';
 import Background from '../../components/UI/Background';
 import { getMainNags, getNagBoxStatistics } from '../../apis/api/nag';
+import { navBarState } from '../../states/user';
+import { useSetRecoilState } from 'recoil';
 
 const MainPage = () => {
   // 문장을 뿌려줄 좌표를 저장하는 상태
   const [positions, setPositions] = useState([]);
   const [randomNags, setRandomNags] = useState([]);
   const [totalNagCount, setTotalNagCount] = useState('');
+
+  const setNavBar = useSetRecoilState(navBarState);
+
+  setNavBar(-1);
 
   // startButton의 ref
   const startButtonWrapRef = useRef(null);
