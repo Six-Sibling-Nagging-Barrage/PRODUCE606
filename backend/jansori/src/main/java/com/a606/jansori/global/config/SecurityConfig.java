@@ -43,7 +43,10 @@ public class SecurityConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
 
-    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://i9a606.p.ssafy.io"));
+    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000",
+        "http://i9a606.p.ssafy.io",
+        "https://i9a606.p.ssafy.io",
+        "https://www.jansori.site"));
     configuration.setAllowedMethods(
         Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
     configuration.setAllowCredentials(true);
