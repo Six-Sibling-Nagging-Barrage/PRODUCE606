@@ -6,66 +6,159 @@ import { getMemberNagList, getMyNagList } from '../../../apis/api/nag';
 import StartButton from '../../MainPage/components/StartButton';
 import { personas } from '../../../constants/persona';
 import LoadingShimmer from '../../../components/UI/LoadingShimmer';
+import {
+  useQueryClient,
+  useInfiniteQuery,
+  useMutation,
+} from '@tanstack/react-query';
+import { ticketState } from '../../../states/user';
+import { updateLikeNag, updateNagUnlock } from '../../../apis/api/nag';
+import { useRecoilState } from 'recoil';
+import SnackBar from '../../../components/UI/SnackBar';
 
 const NagHistory = (props) => {
   const { isMine, id } = props;
 
-  const [items, setItems] = useState([]);
-  const [nextCursor, setNextCursor] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasNext, setHasNext] = useState(true);
+  const queryClient = useQueryClient();
+
+  const [ticket, setTicket] = useRecoilState(ticketState);
+
+  const [showSnackBar, setShowSnackBar] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState('');
 
   const pageSize = 10;
+  let param;
+
+  if (isMine) {
+    param = { cursor: null, pageSize };
+  } else {
+    param = { cursor: null, memberId: id, pageSize };
+  }
+
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isError,
+    isLoading,
+    refetch,
+  } = useInfiniteQuery(
+    ['nags'],
+    ({ pageParam = param }) => fetchMoreNags(pageParam),
+    {
+      getNextPageParam: (lastPage) => {
+        if (!lastPage?.hasNext) return null;
+        if (isMine) {
+          return { cursor: lastPage.nextCursor, pageSize };
+        } else {
+          return { memberId: id, cursor: lastPage.nextCursor, pageSize };
+        }
+      },
+    }
+  );
 
   useEffect(() => {
-    handleGetNags();
-  }, []);
+    if (isMine) {
+      param = { cursor: null, pageSize };
+    } else {
+      param = { cursor: null, memberId: id, pageSize };
+    }
+  }, [isMine]);
 
-  const handleGetNags = async () => {
-    if (isLoading) return; // 이미 로딩 중이면 중복 요청 방지
-    if (!hasNext) return;
+  const toggleUnlock = async (nagId) => {
+    if (ticket < 1) {
+      setSnackBarMessage(
+        '티켓이 부족해 잔소리를 열어볼 수 없어요! 잔소리를 작성하면 티켓을 얻을 수 있어요.'
+      );
+      return setShowSnackBar(true);
+    }
+    // 잔소리 초성 해제 api
+    const data = await updateNagUnlock(nagId);
+    if (data.code === '200') {
+      setTicket(data.data.ticketCount);
+      setSnackBarMessage('티켓 1개를 소모해 잔소리를 열었어요.');
+      setShowSnackBar(true);
+    }
+    return data;
+  };
 
-    setIsLoading(true);
+  const updateUnlockMutation = useMutation(({ nagId }) => toggleUnlock(nagId), {
+    onMutate: async ({ nagId }) => {
+      await queryClient.cancelQueries(['nags']);
+      const prevNags = queryClient.getQueryData(['nags']);
+      queryClient.setQueryData(['nags'], (oldData) => {
+        const newData = oldData?.pages?.map((page) => {
+          return {
+            ...page,
+            nags: page?.nags?.map((nag) => {
+              if (nag.nagId === nagId) {
+                return {
+                  ...nag,
+                  unlocked: true,
+                };
+              }
+              return nag;
+            }),
+          };
+        });
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['nags']);
+    },
+    onError: (err, variables, context) => {
+      queryClient.setQueryData(['nags'], context?.prevNags);
+    },
+  });
+
+  const fetchMoreNags = async (pageParam) => {
     let data;
     // 내가 보낸 잔소리 목록 조회 api
-    if (isMine) data = await getMyNagList({ cursor: nextCursor, pageSize });
+    if (isMine) data = await getMyNagList(pageParam);
     // 다른 사람이 보낸 잔소리 목록 조회 api
-    else
-      data = await getMemberNagList({
-        memberId: id,
-        cursor: nextCursor,
-        pageSize,
-      });
-    setItems((prev) => [...prev, ...data.data.nags]);
-    setNextCursor(data.data.nextCursor);
-    setHasNext(data.data.hasNext);
-    setIsLoading(false);
-    console.log(items);
+    else data = await getMemberNagList(pageParam);
+    return data?.data;
+  };
+
+  const handleFetchMoreNags = () => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
   };
 
   const randomIndex = () => {
     return Math.floor(Math.random() * 6);
   };
 
+  const handleSnackBarClose = () => {
+    setShowSnackBar(false);
+    setSnackBarMessage('');
+  };
+
   return (
     <>
       {isLoading ? (
-        <>
-          <LoadingShimmer />
-        </>
+        <LoadingShimmer />
       ) : (
         <>
-          {items && items.length > 0 ? (
+          {data && data.pages[0]?.nags.length > 0 ? (
             <MasonryInfiniteGrid
               align="center"
               gap={10}
-              onRequestAppend={handleGetNags}
-              loading={isLoading}
+              onRequestAppend={handleFetchMoreNags}
+              loading={isFetchingNextPage}
             >
-              {items &&
-                items.map((nag, index) => (
-                  <NagItem key={index} isMine={isMine} nag={nag} />
-                ))}
+              {data.pages.flatMap((page, index) =>
+                page.nags.map((nag, nagIndex) => (
+                  <NagItem
+                    key={`${index}_${nagIndex}`}
+                    isMine={isMine}
+                    nag={nag}
+                    toggleUnlock={updateUnlockMutation.mutate}
+                  />
+                ))
+              )}
             </MasonryInfiniteGrid>
           ) : (
             <StartButtonWrapper>
@@ -77,6 +170,9 @@ const NagHistory = (props) => {
             </StartButtonWrapper>
           )}
         </>
+      )}
+      {showSnackBar && (
+        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
       )}
     </>
   );

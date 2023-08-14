@@ -2,10 +2,15 @@ import React from 'react';
 import { styled } from 'twin.macro';
 import HashTagItem from '../../../components/HashTag/HashTagItem';
 import likeIcon from '../../../assets/like_icon.avif';
+import lockIcon from '../../../assets/lock_icon.png';
 import sendIcon from '../../../assets/send_icon.png';
 
 const NagItem = (props) => {
-  const { isMine, nag } = props;
+  const { isMine, nag, toggleUnlock } = props;
+
+  const handleUnlockNag = async () => {
+    toggleUnlock({ nagId: nag.nagId });
+  };
 
   return (
     <>
@@ -13,6 +18,11 @@ const NagItem = (props) => {
         <Nag>
           <Header>
             <HashTagItem editable={false} hashTag={nag.tag} />
+            {!isMine && !nag.unlocked && (
+              <button onClick={() => handleUnlockNag(nag.nagId)}>
+                <UnlockImg src={lockIcon} />
+              </button>
+            )}
           </Header>
           {isMine ? (
             <NagContent>{nag.content}</NagContent>
@@ -37,6 +47,7 @@ const NagItem = (props) => {
 
 const Header = styled.div`
   display: flex;
+  justify-content: space-between;
 `;
 
 const Nag = styled.div`
@@ -52,7 +63,7 @@ const Nag = styled.div`
 const NagContent = styled.div`
   width: 100%;
   text-align: center;
-  padding-bottom: 10px;
+  padding: 10px;
   margin-bottom: 30px;
 `;
 
@@ -69,6 +80,28 @@ const Counter = styled.div`
   }
   position: absolute;
   bottom: 20px;
+`;
+
+const UnlockImg = styled.img`
+  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%)
+    contrast(83%);
+  width: 20px;
+  &:hover {
+    animation: shake 0.2s ease-in-out infinite;
+  }
+
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-3px) rotate(-5deg);
+    }
+    75% {
+      transform: translateX(3px) rotate(5deg);
+    }
+  }
 `;
 
 export default NagItem;
