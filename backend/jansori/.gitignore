@@ -101,3 +101,7 @@ $RECYCLE.BIN/
 
 # Mock Data SQL
 *.sql
+
+# fcm properties
+*.json
+
