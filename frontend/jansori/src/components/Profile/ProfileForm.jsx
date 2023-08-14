@@ -146,9 +146,13 @@ const ProfileForm = (props) => {
           {...register('nickname', {
             defaultValue: prevNickname ? prevNickname : '',
             required: '닉네임을 입력해주세요.',
+            minLength: {
+              value: 2,
+              message: '2-11자 이하로 입력해주세요.',
+            },
             maxLength: {
               value: 11,
-              message: '11자 이하로 입력해주세요.',
+              message: '2-11자 이하로 입력해주세요.',
             },
             validate: validateNickname,
           })}
