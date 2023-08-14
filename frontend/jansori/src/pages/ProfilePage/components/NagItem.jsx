@@ -8,26 +8,30 @@ const NagItem = (props) => {
   const { isMine, nag } = props;
 
   return (
-    <Nag>
-      <Header>
-        <HashTagItem editable={false} hashTag={{ tagName: nag.tagName }} />
-      </Header>
-      {isMine ? (
-        <NagContent>{nag.content}</NagContent>
-      ) : (
-        <NagContent>{nag.unlocked ? nag.content : nag.preview}</NagContent>
+    <>
+      {nag && (
+        <Nag>
+          <Header>
+            <HashTagItem editable={false} hashTag={nag.tag} />
+          </Header>
+          {isMine ? (
+            <NagContent>{nag.content}</NagContent>
+          ) : (
+            <NagContent>{nag.unlocked ? nag.content : nag.preview}</NagContent>
+          )}
+          <Counter>
+            <div>
+              <img src={likeIcon} />
+              <span>{nag.likeCount}</span>
+            </div>
+            <div>
+              <img src={sendIcon} />
+              <span>{nag.deliveredCount}</span>
+            </div>
+          </Counter>
+        </Nag>
       )}
-      <Counter>
-        <div>
-          <img src={likeIcon} />
-          <span>{nag.likeCount}</span>
-        </div>
-        <div>
-          <img src={sendIcon} />
-          <span>{nag.deliveredCount}</span>
-        </div>
-      </Counter>
-    </Nag>
+    </>
   );
 };
 
@@ -48,7 +52,7 @@ const Nag = styled.div`
 const NagContent = styled.div`
   width: 100%;
   text-align: center;
-  padding: 10px 0;
+  padding-bottom: 10px;
   margin-bottom: 30px;
 `;
 
@@ -59,8 +63,9 @@ const Counter = styled.div`
     margin-right: 20px;
   }
   & img {
-    width: 25px;
-    margin-right: 5px;
+    width: 20px;
+    height: 20px;
+    margin-right: 7px;
   }
   position: absolute;
   bottom: 20px;

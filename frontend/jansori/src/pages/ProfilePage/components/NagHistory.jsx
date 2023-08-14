@@ -3,8 +3,9 @@ import NagItem from './NagItem';
 import { styled } from 'twin.macro';
 import { MasonryInfiniteGrid } from '@egjs/react-infinitegrid';
 import { getMemberNagList, getMyNagList } from '../../../apis/api/nag';
-import { useRecoilValue } from 'recoil';
-import { memberIdState } from '../../../states/user';
+import StartButton from '../../MainPage/components/StartButton';
+import { personas } from '../../../constants/persona';
+import LoadingShimmer from '../../../components/UI/LoadingShimmer';
 
 const NagHistory = (props) => {
   const { isMine, id } = props;
@@ -35,26 +36,70 @@ const NagHistory = (props) => {
         cursor: nextCursor,
         pageSize,
       });
-    console.log(data);
     setItems((prev) => [...prev, ...data.data.nags]);
     setNextCursor(data.data.nextCursor);
     setHasNext(data.data.hasNext);
     setIsLoading(false);
+    console.log(items);
+  };
+
+  const randomIndex = () => {
+    return Math.floor(Math.random() * 6);
   };
 
   return (
-    <MasonryInfiniteGrid
-      align="center"
-      gap={10}
-      onRequestAppend={handleGetNags}
-      loading={isLoading}
-    >
-      {items &&
-        items.map((nag, index) => (
-          <NagItem key={index} isMine={isMine} nag={nag} />
-        ))}
-    </MasonryInfiniteGrid>
+    <>
+      {isLoading ? (
+        <>
+          <LoadingShimmer />
+        </>
+      ) : (
+        <>
+          {items && items.length > 0 ? (
+            <MasonryInfiniteGrid
+              align="center"
+              gap={10}
+              onRequestAppend={handleGetNags}
+              loading={isLoading}
+            >
+              {items &&
+                items.map((nag, index) => (
+                  <NagItem key={index} isMine={isMine} nag={nag} />
+                ))}
+            </MasonryInfiniteGrid>
+          ) : (
+            <StartButtonWrapper>
+              <PersonaImg>
+                <img src={personas[randomIndex()].gifUrl} />
+              </PersonaImg>
+              <Message>아직 잔소리를 보낸 적이 없어요!</Message>
+              <StartButton nagCount={-1}></StartButton>
+            </StartButtonWrapper>
+          )}
+        </>
+      )}
+    </>
   );
 };
+
+const PersonaImg = styled.div`
+  width: fit-content;
+  margin: 0 auto;
+  & > img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+`;
+
+const Message = styled.div`
+  padding-top: 10px;
+  padding-bottom: 20px;
+`;
+
+const StartButtonWrapper = styled.div`
+  margin: 20px auto;
+`;
 
 export default NagHistory;
