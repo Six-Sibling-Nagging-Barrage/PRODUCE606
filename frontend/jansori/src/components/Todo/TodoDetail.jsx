@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import tw, { styled } from 'twin.macro';
+import { styled } from 'twin.macro';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { updateLikeNag, updateNagUnlock } from '../../apis/api/nag';
@@ -10,6 +10,7 @@ import Mark from '../UI/Mark';
 import HashTagItem from '../HashTag/HashTagItem';
 import NagCommentItem from '../../pages/FeedPage/components/NagCommentItem';
 import { personas } from '../../constants/persona';
+import SnackBar from '../UI/SnackBar';
 
 const TodoDetail = (props) => {
   const { todoItemDetail } = props;
@@ -19,8 +20,9 @@ const TodoDetail = (props) => {
   const [snackBarMessage, setSnackBarMessage] = useState('');
 
   const queryClient = useQueryClient();
-  const { data: todoDetailData } = useQuery(['todoDetailItem', todoDetailItem], () =>
-    fetchTodoDetail(todoItemDetail.todoId)
+  const { data: todoDetailData } = useQuery(
+    ['todoDetailItem', todoDetailItem],
+    () => fetchTodoDetail(todoItemDetail.todoId)
   );
 
   const fetchTodoDetail = async (todoId) => {
@@ -33,17 +35,22 @@ const TodoDetail = (props) => {
     onMutate: async (nagId) => {
       await queryClient.cancelQueries(['todoDetailItem']);
       const prevTodoDetail = queryClient.getQueryData(['todoDetailItem']);
-      queryClient.setQueryData(['todoDetailItem', todoDetailItem], (oldData) => {
-        const updatedNag = {
-          ...oldData.nag,
-          isLiked: !oldData.nag.isLiked,
-          likeCount: oldData.nag.isLiked ? oldData.nag.likeCount - 1 : oldData.nag.likeCount + 1,
-        };
-        return {
-          ...oldData,
-          nag: updatedNag,
-        };
-      });
+      queryClient.setQueryData(
+        ['todoDetailItem', todoDetailItem],
+        (oldData) => {
+          const updatedNag = {
+            ...oldData.nag,
+            isLiked: !oldData.nag.isLiked,
+            likeCount: oldData.nag.isLiked
+              ? oldData.nag.likeCount - 1
+              : oldData.nag.likeCount + 1,
+          };
+          return {
+            ...oldData,
+            nag: updatedNag,
+          };
+        }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['todoDetailItem']);
@@ -77,21 +84,29 @@ const TodoDetail = (props) => {
     onMutate: async (nagId) => {
       await queryClient.cancelQueries(['todoDetailItem']);
       const prevTodoDetail = queryClient.getQueryData(['todoDetailItem']);
-      queryClient.setQueryData(['todoDetailItem', todoDetailItem], (oldData) => {
-        const updatedNag = {
-          ...oldData.nag,
-          unlocked: true,
-        };
-        return {
-          ...oldData,
-          nag: updatedNag,
-        };
-      });
+      queryClient.setQueryData(
+        ['todoDetailItem', todoDetailItem],
+        (oldData) => {
+          const updatedNag = {
+            ...oldData.nag,
+            unlocked: true,
+          };
+          return {
+            ...oldData,
+            nag: updatedNag,
+          };
+        }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['todoDetailItem']);
     },
   });
+
+  const handleSnackBarClose = () => {
+    setShowSnackBar(false);
+    setSnackBarMessage('');
+  };
 
   return (
     <TodoItemDetailWrap>
@@ -103,7 +118,9 @@ const TodoDetail = (props) => {
           <DateHeader>{todoDetailData?.todoAt}</DateHeader>
         </Header>
         <TodoWrap>
-          <TodoFinishedWrap>{todoDetailData?.finished ? '✅' : '❌'}</TodoFinishedWrap>
+          <TodoFinishedWrap>
+            {todoDetailData?.finished ? '✅' : '❌'}
+          </TodoFinishedWrap>
           <div>{todoDetailData?.content}</div>
           <HashTagContent>
             {todoDetailData?.tags?.map((tag) => {
@@ -114,14 +131,16 @@ const TodoDetail = (props) => {
         <NagListWrap>
           {todoDetailData && (
             <NagWrap>
-              <NagCommentItem
-                key={todoDetailData.nag.nagId}
-                isMemberNag={true}
-                todoId={todoDetailData.todoId}
-                nag={todoDetailData.nag}
-                toggleLike={updateLikeMutation.mutate}
-                toggleUnlock={updateUnlockMutation.mutate}
-              />
+              {todoDetailData.nag && (
+                <NagCommentItem
+                  key={todoDetailData.nag.nagId}
+                  isMemberNag={true}
+                  todoId={todoDetailData.todoId}
+                  nag={todoDetailData.nag}
+                  toggleLike={updateLikeMutation.mutate}
+                  toggleUnlock={updateUnlockMutation.mutate}
+                />
+              )}
               {todoDetailData?.personas?.map((persona) => {
                 if (!persona.content) return;
                 return (
@@ -144,6 +163,9 @@ const TodoDetail = (props) => {
           )}
         </NagListWrap>
       </TodoItemDetailTodoContainer>
+      {showSnackBar && (
+        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
+      )}
     </TodoItemDetailWrap>
   );
 };
