@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TokenResDto {
-
+public class AuthLoginResDto {
   private String grantType;
 
   private String accessToken;
@@ -32,8 +31,7 @@ public class TokenResDto {
   private String imageUrl;
 
   private Long ticket;
-
-  private Boolean isUnreadNotificationLeft;
+  private boolean isUnreadNotificationLeft;
 
   public void of(Member member, boolean isUnreadNotificationLeft) {
     this.memberId = member.getId();
@@ -43,16 +41,6 @@ public class TokenResDto {
     this.imageUrl = member.getImageUrl();
     this.ticket = member.getTicket();
     this.isUnreadNotificationLeft = isUnreadNotificationLeft;
-  }
-
-  public void from(Member member) {
-    this.memberId = member.getId();
-    this.email = member.getEmail();
-    this.memberRole = member.getMemberRole();
-    this.nickname = member.getNickname();
-    this.imageUrl = member.getImageUrl();
-    this.ticket = member.getTicket();
-    this.isUnreadNotificationLeft = null;
   }
 
 }

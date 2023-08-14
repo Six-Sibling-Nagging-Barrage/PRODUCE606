@@ -1,6 +1,7 @@
 package com.a606.jansori.global.auth.controller;
 
 import com.a606.jansori.global.auth.dto.AuthLoginReqDto;
+import com.a606.jansori.global.auth.dto.AuthLoginResDto;
 import com.a606.jansori.global.auth.dto.AuthSignupReqDto;
 import com.a606.jansori.global.auth.dto.AuthSignupResDto;
 import com.a606.jansori.global.auth.dto.TokenReqDto;
