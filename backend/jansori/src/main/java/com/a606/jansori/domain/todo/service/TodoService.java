@@ -103,12 +103,12 @@ public class TodoService {
     });
 
     // 투두 주인의 알림설정이 수신으로 되어 있을 경우에  알림 이벤트 발생
-    if(isNotificationSettingOn(notificationType1, member)){
+    if (isNotificationSettingOn(notificationType1, member)) {
       publisher.publishEvent(new PostTodoEvent(todo, notificationType1));
     }
 
     // 잔소리 주인의 알림설정이 수신으로 되어 있을 경우에 알림 이벤트 발생
-    if(isNotificationSettingOn(notificationType2, todo.getNag().getMember())){
+    if (isNotificationSettingOn(notificationType2, todo.getNag().getMember())) {
       publisher.publishEvent(new NagGenerateEvent(todo, notificationType2));
     }
 
@@ -165,7 +165,7 @@ public class TodoService {
     }
 
     // 알림 수신 상태이고 투두 미완료 상태에서 완료로 바뀔 때만 알림 이벤트 발생
-    if(isNotificationSettingOn(notificationType, member) && !todo.getFinished()) {
+    if (isNotificationSettingOn(notificationType, member) && !todo.getFinished()) {
       publisher.publishEvent(new TodoAccomplishmentEvent(todo, notificationType));
     }
 
@@ -206,12 +206,12 @@ public class TodoService {
 
   }
 
-  private Boolean isNotificationSettingOn(NotificationType notificationType, Member member){
+  private Boolean isNotificationSettingOn(NotificationType notificationType, Member member) {
 
     NotificationSetting notificationSetting =
         notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member);
 
-    if(notificationSetting == null){
+    if (notificationSetting == null) {
       throw new NotificationSettingNotFoundException();
     }
 
