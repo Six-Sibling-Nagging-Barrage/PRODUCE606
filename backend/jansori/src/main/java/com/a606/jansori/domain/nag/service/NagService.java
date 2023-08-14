@@ -21,6 +21,7 @@ import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.dto.PutNagUnlockResDto;
+import com.a606.jansori.domain.nag.event.NagPublishedTodoEvent;
 import com.a606.jansori.domain.nag.exception.NagInvalidRequestException;
 import com.a606.jansori.domain.nag.event.NagLikeEvent;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
@@ -69,7 +70,6 @@ public class NagService {
   private final SecurityUtil securityUtil;
   private final NotificationTypeRepository notificationTypeRepository;
   private final NotificationSettingRepository notificationSettingRepository;
-
   private final ApplicationEventPublisher publisher;
 
   @Transactional
@@ -91,8 +91,14 @@ public class NagService {
     Nag nag = Nag.ofMemberWithNagContentAndPreview(member, tag, postNagReqDto.getContent(),
         preview);
 
+    Nag savedNag = nagRepository.save(nag);
+
+    if(postNagReqDto.getTagId() >= 0) {
+      publisher.publishEvent(new NagPublishedTodoEvent(savedNag));
+    }
+
     return PostNagResDto.builder()
-        .nagId(nagRepository.save(nag).getId())
+        .nagId(savedNag.getId())
         .ticketCount(member.getTicket())
         .build();
   }
