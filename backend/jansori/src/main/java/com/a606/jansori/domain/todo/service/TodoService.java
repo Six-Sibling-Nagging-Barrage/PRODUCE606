@@ -91,7 +91,18 @@ public class TodoService {
           todoTag.setTodo(todo);
         });
 
-    todo.setNag(nagRandomGenerator.getRandomNagWithTags(member, todo.getTodoTags()));
+    if (!postTodoReqDto.isAllNewTags()) {
+      todo.setNag(nagRandomGenerator.getRandomNagWithTags(member, todo.getTodoTags()));
+
+      // 잔소리 주인의 알림설정이 수신으로 되어 있을 경우에 알림 이벤트 발생
+      if (isNotificationSettingOn(notificationType2, todo.getNag().getMember())) {
+        publisher.publishEvent(new NagGenerateEvent(todo, notificationType2));
+      }
+      // 투두 주인의 알림설정이 수신으로 되어 있을 경우에  알림 이벤트 발생
+      if (isNotificationSettingOn(notificationType1, member)) {
+        publisher.publishEvent(new PostTodoEvent(todo, notificationType1));
+      }
+    }
 
     List<Persona> personas = personaRepository.findAll();
 
@@ -102,16 +113,6 @@ public class TodoService {
 
       todoPersona.setTodo(todo);
     });
-
-    // 투두 주인의 알림설정이 수신으로 되어 있을 경우에  알림 이벤트 발생
-    if (isNotificationSettingOn(notificationType1, member)) {
-      publisher.publishEvent(new PostTodoEvent(todo, notificationType1));
-    }
-
-    // 잔소리 주인의 알림설정이 수신으로 되어 있을 경우에 알림 이벤트 발생
-    if (isNotificationSettingOn(notificationType2, todo.getNag().getMember())) {
-      publisher.publishEvent(new NagGenerateEvent(todo, notificationType2));
-    }
 
     Todo savedTodo = todoRepository.save(todo);
 
