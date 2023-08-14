@@ -132,6 +132,7 @@ const TodoForm = () => {
         <TodoFormInput>
           <HashTag
             editable={true}
+            creatable={true}
             hashTagLimit={3}
             hashTagList={hashTagList}
             setHashTagList={setHashTagList}

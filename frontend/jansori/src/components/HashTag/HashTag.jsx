@@ -6,6 +6,7 @@ import HashTagItem from './HashTagItem';
 const HashTag = (props) => {
   const {
     editable,
+    creatable,
     hashTagLimit,
     setSpecificTag,
     hashTagList,
@@ -32,15 +33,16 @@ const HashTag = (props) => {
       event.preventDefault();
 
       const findTag = autoCompleteList.find(
-        (tag) => tag.tagName === hashTagInput
+        (tag) => tag.tagName === hashTagInput.trim()
       );
       if (findTag) {
         addHashTag(findTag);
         setIsOpen(false);
       } else {
+        if (!creatable) return;
         addHashTag({
           tagId: -1,
-          tagName: hashTagInput,
+          tagName: hashTagInput.trim(),
         });
         setIsOpen(false);
       }
@@ -92,6 +94,7 @@ const HashTag = (props) => {
           addHashTag={addHashTag}
           autoCompleteList={autoCompleteList}
           setAutoCompleteList={setAutoCompleteList}
+          creatable={creatable}
         />
       )}
     </>

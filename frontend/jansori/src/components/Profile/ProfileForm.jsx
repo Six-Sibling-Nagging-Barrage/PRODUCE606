@@ -198,6 +198,7 @@ const ProfileForm = (props) => {
       <Label>해시태그 구독</Label>
       <HashTag
         editable={true}
+        creatable={false}
         hashTagLimit={initial ? 3 : 1000}
         hashTagList={hashTagList}
         setHashTagList={setHashTagList}

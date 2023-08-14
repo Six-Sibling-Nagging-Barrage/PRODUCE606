@@ -134,6 +134,7 @@ const NagForm = () => {
             </NagContent>
             <HashTag
               editable={true}
+              creatable={true}
               hashTagLimit={1}
               setSpecificTag={0}
               hashTagList={hashTagList}

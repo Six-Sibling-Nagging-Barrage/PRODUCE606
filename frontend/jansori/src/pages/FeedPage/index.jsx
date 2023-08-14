@@ -82,6 +82,7 @@ const FeedPage = () => {
               <div>
                 <HashTag
                   editable={true}
+                  creatable={false}
                   hashTagLimit={1}
                   hashTagList={hashTagList}
                   setHashTagList={setHashTagList}
