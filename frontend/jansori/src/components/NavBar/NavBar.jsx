@@ -12,9 +12,6 @@ import { useImageErrorHandler } from '../../hooks/useImageErrorHandler';
 import { isLoginState, profileImgState } from '../../states/user';
 import DropdownProfileMenu from './DropdownProfileMenu';
 import { altImageUrl } from '../../constants/image';
-
-import { isLoginState, profileImgState } from '../../states/user';
-import DropdownProfileMenu from './DropdownProfileMenu';
 import NotificationList from './NotificationList';
 
 const NavBar = () => {
@@ -42,10 +39,6 @@ const NavBar = () => {
     setIsNotificationModalOpen(!isNotificationModalOpen);
   };
 
-  const handleImgError = (e) => {
-    e.target.src = altImageUrl;
-  };
-
   const handleMenuClick = (index) => {
     setIsToggleOpen(false);
     setCurrentMenu(index);
@@ -56,11 +49,11 @@ const NavBar = () => {
       <Nav>
         {/* 로고 들어가는 부분 시작 */}
         <NavWrap>
-          <Logo href="/" onClick={() => handleMenuClick(-1)}>
+          <Logo href='/' onClick={() => handleMenuClick(-1)}>
             <img src={logoImg} />
           </Logo>
           {/* 네비게이션 리스트 부분 시작 */}
-          <NavItems id="navbar-sticky" istoggleopen={istoggleopen}>
+          <NavItems id='navbar-sticky' istoggleopen={istoggleopen}>
             <NavItemsUl>
               {menus.map((menu, index) => {
                 const url =
@@ -95,10 +88,7 @@ const NavBar = () => {
                 <ul>
                   <li>
                     <Avatar onClick={handleProfileClick}>
-                      <img
-                        src={profileImg ? profileImg : altImageUrl}
-                        onError={handleImgError}
-                      />
+                      <img src={profileImg ? profileImg : altImageUrl} onError={handleImgError} />
                     </Avatar>
                   </li>
                   {isProfileModalOpen && (
@@ -141,13 +131,13 @@ const NavBar = () => {
             )}
             {/* 화면 작아졌을 때 햄버거 icon 시작 */}
             <HamburgerButton
-              type="button"
-              aria-controls="navbar-sticky"
+              type='button'
+              aria-controls='navbar-sticky'
               aria-expanded={istoggleopen}
               onClick={handleHamburgerMenuClick}
             >
-              <span className="sr-only">Open</span>
-              <RxHamburgerMenu className="w-5 h-5" aria-hidden="true" />
+              <span className='sr-only'>Open</span>
+              <RxHamburgerMenu className='w-5 h-5' aria-hidden='true' />
             </HamburgerButton>
             {/* 화면 작아졌을 때 햄버거 icon 끝 */}
           </RightButtons>
