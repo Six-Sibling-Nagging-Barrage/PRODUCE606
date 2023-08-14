@@ -1,20 +1,17 @@
 import React from 'react';
-import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import tw, { styled } from 'twin.macro';
-import {
-  isLoginState,
-  profileImgState,
-  memberInfoState,
-} from '../../states/user';
-import { useNavigate } from 'react-router-dom';
+import { isLoginState, memberInfoState } from '../../states/user';
 import { createLogout } from '../../apis/api/member';
+import { useImageErrorHandler } from '../../hooks/useImageErrorHandler';
 import { altImageUrl } from '../../constants/image';
 
 const DropdownProfileMenu = () => {
   const member = useRecoilValue(memberInfoState);
   const setIsLogin = useSetRecoilState(isLoginState);
-
   const accessToken = localStorage.getItem('member_access_token');
+
+  const handleImgError = useImageErrorHandler();
 
   const handleLogOut = async () => {
     // 로그아웃 api 호출
@@ -30,16 +27,15 @@ const DropdownProfileMenu = () => {
     window.location.replace('/');
   };
 
-  const handleImgError = (e) => {
-    e.target.src = altImageUrl;
-  };
-
   return (
     <DropdownProfileMenuContainer>
       <BackgroundContainer />
       <DropdownMenuContent>
         <ItemContainer>
-          <Avatar src={member.imageUrl} onError={handleImgError} />
+          <Avatar
+            src={member.imageUrl ? member.imageUrl : altImageUrl}
+            onError={handleImgError}
+          />
           <MemberName>{member.nickname}</MemberName>
         </ItemContainer>
         <ItemContainer onClick={handleLogOut}>

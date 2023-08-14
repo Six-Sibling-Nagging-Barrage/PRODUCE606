@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import tw, { css, styled } from 'twin.macro';
 import likeIcon from '../../../assets/like_icon.avif';
 import lockIcon from '../../../assets/lock_icon.png';
-import { altImageUrl } from '../../../constants/image';
 import SnackBar from '../../../components/UI/SnackBar';
+import { useImageErrorHandler } from '../../../hooks/useImageErrorHandler';
+import { altImageUrl } from '../../../constants/image';
 
 const NagCommentItem = (props) => {
   const { isMemberNag, todoId, nag, toggleLike, toggleUnlock } = props;
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
+
+  const handleImgError = useImageErrorHandler();
 
   const handleLikeClick = (unlocked) => {
     if (!unlocked) {
@@ -23,10 +26,6 @@ const NagCommentItem = (props) => {
     toggleUnlock({ todoId, nagId: nag.nagId });
   };
 
-  const handleImgError = (e) => {
-    e.target.src = altImageUrl;
-  };
-
   const handleSnackBarClose = () => {
     setShowSnackBar(false);
     setSnackBarMessage('');
@@ -37,7 +36,7 @@ const NagCommentItem = (props) => {
       <Profile>
         <ProfileImg
           isMemberNag={isMemberNag}
-          src={nag.nagMember.imageUrl}
+          src={nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl}
           onError={handleImgError}
         />
         <NickName>{isMemberNag && nag.nagMember.nickname}</NickName>
@@ -57,7 +56,7 @@ const NagCommentItem = (props) => {
               ) : (
                 <LikeImg
                   src={likeIcon}
-                  filter='invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);'
+                  filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
                 />
               )}
               <LikeCount>{nag.likeCount}</LikeCount>
@@ -65,7 +64,9 @@ const NagCommentItem = (props) => {
           </ButtonGroup>
         )}
       </Bubble>
-      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
+      {showSnackBar && (
+        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
+      )}
     </CommentContainer>
   );
 };
@@ -123,7 +124,8 @@ const ButtonItem = styled.button`
 `;
 
 const UnlockImg = styled.img`
-  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%) contrast(83%);
+  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%)
+    contrast(83%);
   width: 40px;
   padding: 8px;
   &:hover {
