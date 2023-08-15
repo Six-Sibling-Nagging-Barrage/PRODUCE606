@@ -16,7 +16,6 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,29 +51,13 @@ public class FcmService {
 
   }
 
+  public void sendWebPushMessage(String targetToken, String title, String body) {
 
-  public void sendMessageTo(String targetToken, String title, String body) {
-
-    String message = makeMessage(targetToken, title, body);
-
-    OkHttpClient client = new OkHttpClient();
-    RequestBody requestBody = RequestBody
-        .create(MediaType.parse("application/json; charset=utf-8"), message);
-
-    Request request = null;
+    String message = makeFcmMessage(targetToken, title, body);
 
     try {
 
-      request = new Request.Builder()
-          .url(API_URL)
-          .post(requestBody)
-          .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
-          .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
-          .build();
-
-      Response response = client.newCall(request).execute();
-
-      log.info(response.body().string());
+      makeFcmWebPushRequest(message);
 
     } catch (IOException e) {
 
@@ -84,7 +67,7 @@ public class FcmService {
 
   }
 
-  private String makeMessage(String targetToken, String title, String body) {
+  private String makeFcmMessage(String targetToken, String title, String body) {
 
     FcmMessage fcmMessage = FcmMessage.builder()
         .message(FcmMessage.Message.builder()
@@ -105,6 +88,23 @@ public class FcmService {
       throw new JsonParseException();
 
     }
+  }
+
+  private void makeFcmWebPushRequest(String message) throws IOException {
+    OkHttpClient client = new OkHttpClient();
+    Request request;
+
+    RequestBody requestBody = RequestBody
+        .create(MediaType.parse("application/json; charset=utf-8"), message);
+
+    request = new Request.Builder()
+        .url(API_URL)
+        .post(requestBody)
+        .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+        .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
+        .build();
+
+    Response response = client.newCall(request).execute();
   }
 
   private String getAccessToken() throws IOException {

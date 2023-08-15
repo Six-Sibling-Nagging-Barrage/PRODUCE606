@@ -34,7 +34,7 @@ public class AuthSignupReqDto {
         .password(passwordEncoder.encode(password))
         .memberRole(MemberRole.GUEST)
         .memberState(MemberStatus.ACTIVE)
-        .ticket(3L)
+        .ticket(5L)
         .build();
   }
 
