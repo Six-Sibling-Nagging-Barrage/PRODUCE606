@@ -13,9 +13,7 @@ const localStorageEffect =
     }
 
     onSet((newValue, _, isReset) => {
-      isReset
-        ? localStorage.removeItem(key)
-        : localStorage.setItem(key, JSON.stringify(newValue));
+      isReset ? localStorage.removeItem(key) : localStorage.setItem(key, JSON.stringify(newValue));
     });
   };
 
@@ -27,8 +25,7 @@ export const isLoginState = atom({
 
 export const profileImgState = atom({
   key: 'profileImgState',
-  default:
-    'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+  default: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
   effects_UNSTABLE: [persistAtom],
 });
 
@@ -83,4 +80,17 @@ export const navBarState = atom({
   key: 'navBarState',
   default: -1,
   effects_UNSTABLE: [persistAtom],
+});
+
+//알림 읽은지 유무
+export const notificationState = atom({
+  key: 'notificationState',
+  default: false,
+});
+
+// fcm REACT_APP_FIREBASE_VAPIDKEY 값 넣어주기
+export const fcmVapIdKeyState = atom({
+  key: 'fcmVapIdKeyState',
+  default: '',
+  effects_UNSTABLE: [localStorageEffect('member_vapid')],
 });
