@@ -25,7 +25,6 @@ const ProfileDetail = (props) => {
     (async () => {
       const profileRes = await getMemberProfile(id);
       setProfile(profileRes?.data);
-      console.log(profileRes?.data);
       const tagRes = await getFollowTagList(id);
       setTags(tagRes?.tags);
     })();
@@ -48,6 +47,36 @@ const ProfileDetail = (props) => {
           />
         </Modal>
       )}
+      {/* {profile && (
+        <ProfileDetailContainer>
+          <LeftProfileDetailContainer>
+            <ProfileImg>
+              <img
+                src={profile.imageUrl ? profile.imageUrl : altImageUrl}
+                onError={handleImgError}
+              />
+            </ProfileImg>
+          </LeftProfileDetailContainer>
+          <rightProfile>
+            <Header>
+              {isMine && (
+                <button onClick={handleEditProfile}>
+                  <img src={editImg} />
+                </button>
+              )}
+            </Header>
+            <Nickname>{profile.nickname}</Nickname>
+            <Bio>{profile.bio}</Bio>
+            <Wrapper>
+              <HashTagContainer>
+                {tags?.map((tag) => {
+                  return <HashTagItem key={tag.tagId} hashTag={tag} />;
+                })}
+              </HashTagContainer>
+            </Wrapper>
+          </rightProfile>
+        </ProfileDetailContainer>
+      )} */}
       {profile && (
         <ProfileDetailContainer>
           <Header>
@@ -58,13 +87,11 @@ const ProfileDetail = (props) => {
             )}
           </Header>
           <ProfileImg>
-            <img
-              src={profile.imageUrl ? profile.imageUrl : altImageUrl}
-              onError={handleImgError}
-            />
+            <img src={profile.imageUrl ? profile.imageUrl : altImageUrl} onError={handleImgError} />
           </ProfileImg>
           <Nickname>{profile.nickname}</Nickname>
           <Bio>{profile.bio}</Bio>
+          <MiddleHr />
           <Wrapper>
             <HashTagContainer>
               {tags?.map((tag) => {
@@ -78,6 +105,50 @@ const ProfileDetail = (props) => {
   );
 };
 
+export default ProfileDetail;
+
+// const ProfileDetailContainer = styled.div`
+//   text-align: center;
+//   width: 60vw;
+//   margin: 10vh auto;
+//   display: grid;
+//   grid-template-columns: 1fr 1.5fr;
+//   grid-gap: 5vh;
+// `;
+
+const ProfileDetailContainer = styled.div`
+  text-align: center;
+  margin: 0 auto;
+`;
+
+// const LeftProfileDetailContainer = styled.div`
+//   height: 100%;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// `;
+
+// const ProfileImg = styled.div`
+//   margin-bottom: 15px;
+//   margin: 0 auto;
+//   width: 70%;
+//   height: 0;
+//   padding-bottom: 70%;
+//   position: relative;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   & > img {
+//     ${tw`rounded-full`}
+//     object-fit: cover;
+//     width: 100%;
+//     height: 100%;
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//   }
+// `;
+
 const ProfileImg = styled.div`
   width: fit-content;
   margin: 0 auto;
@@ -88,11 +159,6 @@ const ProfileImg = styled.div`
     width: 120px;
     height: 120px;
   }
-`;
-
-const ProfileDetailContainer = styled.div`
-  text-align: center;
-  margin: 0 auto;
 `;
 
 const Header = styled.div`
@@ -109,23 +175,50 @@ const Header = styled.div`
   }
 `;
 
+// const Nickname = styled.div`
+//   font-weight: bold;
+//   text-align: left;
+//   font-size: 24px;
+//   margin-bottom: 1vh;
+// `;
+
 const Nickname = styled.div`
   font-weight: bold;
   font-size: 18px;
 `;
 
+// const Bio = styled.div`
+//   text-align: left;
+//   max-width: 90%;
+//   margin-bottom: 5vh;
+//   color: #888888;
+// `;
+
 const Bio = styled.div`
   width: 50%;
   margin: 10px auto;
+  margin-bottom: 5vh;
+`;
+
+const MiddleHr = styled.hr`
+  width: 60%;
+  margin: 5vh auto;
+  background-color: #b197fc;
+  height: 1px;
 `;
 
 const Wrapper = styled.div`
   width: fit-content;
   max-width: 70%;
-  max-height: 90px;
-  margin: 10px auto;
-  padding: 10px;
+  margin: 0 auto;
+  max-height: 15vh;
   border-radius: 10px;
+  overflow: auto;
+  /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none; /* 파이어폭스 */
 `;
 
 const HashTagContainer = styled.div`
@@ -140,5 +233,3 @@ const HashTagContainer = styled.div`
   }
   scrollbar-width: none; /* 파이어폭스 */
 `;
-
-export default ProfileDetail;

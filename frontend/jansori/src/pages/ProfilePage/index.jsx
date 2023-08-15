@@ -7,6 +7,7 @@ import TodoHistory from './components/TodoHistory';
 import { useRecoilValue } from 'recoil';
 import { memberIdState } from '../../states/user';
 import { useLocation } from 'react-router-dom';
+import FeedBackground from '../../components/UI/FeedBackground';
 
 const tabs = ['TODO', '잔소리'];
 
@@ -29,6 +30,7 @@ const ProfilePage = () => {
 
   return (
     <ProfileContainer>
+      <FeedBackground/>
       <ProfileDetail isMine={isMine} id={id} />
       <TabContainer>
         <Tabs>
@@ -78,7 +80,7 @@ const Tabs = styled.div`
 
 const TabContent = styled.div`
   height: fit-content;
-  background-color: #f4efff;
+  background-color: #EDE7F6;
   border-radius: 5px;
   padding: 20px;
 `;
@@ -88,7 +90,7 @@ const Glider = styled.span`
   display: flex;
   height: 40px;
   width: 300px;
-  background-color: #f4efff;
+  background-color: #EDE7F6;
   z-index: 1;
   border-radius: 10px 10px 0 0;
   transition: 0.25s ease-out;
