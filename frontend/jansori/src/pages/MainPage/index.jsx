@@ -14,7 +14,7 @@ const MainPage = () => {
 
   const setNavBar = useSetRecoilState(navBarState);
 
-  // setNavBar(-1);
+  setNavBar(-1);
 
   // startButton의 ref
   const startButtonWrapRef = useRef(null);
