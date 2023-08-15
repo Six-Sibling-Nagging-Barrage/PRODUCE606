@@ -104,13 +104,13 @@ const TodoForm = () => {
   return (
     <TodoFormContainer>
       <MarkWrap>
-        <Mark label={'todo'} />
+        <Mark label={'TODO'} />
       </MarkWrap>
       <TodoFormBox>
         <TodoFormLabel>TO-DO</TodoFormLabel>
         <TodoFormInput>
           <TodoInput
-            placeholder="Todo를 입력해주세요."
+            placeholder='Todo를 입력해주세요.'
             {...register('content', {
               required: 'Todo를 입력해주세요.',
               minLength: {
@@ -161,14 +161,12 @@ const TodoForm = () => {
           )}
         </ErrorMessage>
         <ButtonLocation>
-          <Button onClick={handleSubmit(todoFormSubmit)} normal="true">
+          <Button onClick={handleSubmit(todoFormSubmit)} normal='true'>
             등록
           </Button>
         </ButtonLocation>
       </TodoFormBox>
-      {showSnackBar && (
-        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
-      )}
+      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
     </TodoFormContainer>
   );
 };

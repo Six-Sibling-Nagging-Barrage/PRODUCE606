@@ -7,6 +7,7 @@ import { focusDateState, todoListState } from '../../states/todo';
 import { memberIdState } from '../../states/user';
 import { updateTodoComplete, getTodoListByDate, getTodoListOtherByDate } from '../../apis/api/todo';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import FeedBackground from '../UI/FeedBackground';
 
 const TodoList = (props) => {
   const { id } = props;
@@ -59,9 +60,10 @@ const TodoList = (props) => {
 
   return (
     <TodoContainer>
+      <FeedBackground/>
       <div>
         <TodoListWrap>
-          <Mark label={'todo List'} />
+          <Mark label={'TODO LIST'} />
           <TodoDateWrap>📅 {date}</TodoDateWrap>
         </TodoListWrap>
       </div>

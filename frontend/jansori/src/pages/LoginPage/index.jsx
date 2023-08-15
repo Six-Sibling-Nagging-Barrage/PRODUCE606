@@ -15,6 +15,8 @@ import {
   memberIdState,
   ticketState,
   profileImgState,
+  notificationState,
+  fcmVapIdKeyState,
 } from '../../states/user';
 import { useNavigate } from 'react-router-dom';
 import { validateEmail } from '../../utils/validate';
@@ -36,6 +38,8 @@ const LoginPage = () => {
   const setmemberTokenExp = useSetRecoilState(memberTokenExpState);
   const setTicket = useSetRecoilState(ticketState);
   const setProfileImg = useSetRecoilState(profileImgState);
+  const setNotification = useSetRecoilState(notificationState);
+  const setFcmVapIdKeyState = useSetRecoilState(fcmVapIdKeyState);
 
   const [loginError, setLoginError] = useState(false);
 
@@ -63,7 +67,9 @@ const LoginPage = () => {
       setProfileImg(res.data.imageUrl);
       setMemberId(res.data.memberId);
       setTicket(res.data.ticket);
-      console.log(res.data.memberRole);
+      setNotification(res.data.isUnreadNotificationLeft);
+      setFcmVapIdKeyState(process.env.REACT_APP_FIREBASE_VAPIDKEY);
+      //recoil로 상태 fcm 부분 넣어두기
       if (res.data.memberRole === 'GUEST') {
         navigate('/initialprofile', { state: res.data.accessToken });
       } else navigate('/');
@@ -92,37 +98,29 @@ const LoginPage = () => {
           <InfoContainer>
             <Label>이메일</Label>
             <Input
-              placeholder="이메일을 입력해주세요."
+              placeholder='이메일을 입력해주세요.'
               {...register('email', {
                 required: '이메일을 입력해주세요.',
                 validate: validateEmail,
               })}
               onKeyDown={handleFormKeyDown}
             />
-            {errors.email && (
-              <ErrorMessage>{errors.email?.message}</ErrorMessage>
-            )}
+            {errors.email && <ErrorMessage>{errors.email?.message}</ErrorMessage>}
           </InfoContainer>
           <InfoContainer>
             <Label>비밀번호</Label>
             <Input
-              type="password"
-              placeholder="비밀번호를 입력해주세요."
+              type='password'
+              placeholder='비밀번호를 입력해주세요.'
               {...register('password', {
                 required: '비밀번호를 입력해주세요.',
               })}
               onKeyDown={handleKeyDownSubmit}
             />
           </InfoContainer>
-          {loginError && (
-            <ErrorMessage>아이디 또는 비밀번호를 확인하세요.</ErrorMessage>
-          )}
+          {loginError && <ErrorMessage>아이디 또는 비밀번호를 확인하세요.</ErrorMessage>}
           <Footer>
-            <Button
-              onClick={handleSubmit(loginSubmit)}
-              disabled={isSubmitting}
-              normal
-            >
+            <Button onClick={handleSubmit(loginSubmit)} disabled={isSubmitting} normal>
               완료
             </Button>
           </Footer>

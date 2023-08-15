@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import Background from '../../components/UI/Background';
 import CountBox from './components/CountBox';
 import SpeechBubble from '../../components/UI/SpeechBubble';
 import { Link } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
 import NagRankingList from './components/NagRankingList';
 import { getNagBoxStatistics } from '../../apis/api/nag';
+import FeedBackground from '../../components/UI/FeedBackground';
+// import FeedBackground from '../../components/UI/FeedBackground';
 
 const NagBoxPage = () => {
   const [counts, setCounts] = useState([]);
@@ -37,7 +38,8 @@ const NagBoxPage = () => {
   }, []);
 
   return (
-    <Background>
+    <>
+      <FeedBackground/>
       <CenteredContainer>
         {loading ? (
           <LoadingMessage>Loading...</LoadingMessage>
@@ -47,9 +49,7 @@ const NagBoxPage = () => {
               <CountBox
                 key={index}
                 startSentence={nagSentence.startSentence}
-                count={
-                  counts[Object.keys(counts)[index]] + nagSentence.expression
-                }
+                count={counts[Object.keys(counts)[index]] + nagSentence.expression}
                 endSentence={nagSentence.endSentence}
               />
             ))}
@@ -59,8 +59,8 @@ const NagBoxPage = () => {
 
       {/* 잔소리 버튼 */}
       <SpeechBubbleContainer>
-        <Link to="/nag">
-          <SpeechBubble normal="tre">잔소리 하러 가기</SpeechBubble>
+        <Link to='/nag'>
+          <SpeechBubble normal='tre'>잔소리 하러 가기</SpeechBubble>
         </Link>
       </SpeechBubbleContainer>
 
@@ -69,7 +69,7 @@ const NagBoxPage = () => {
         <NagTitle>현재 잔소리 TOP 5</NagTitle>
         <NagRankingList />
       </NagRannkingContainer>
-    </Background>
+    </>
   );
 };
 

@@ -94,15 +94,9 @@ const Profile = styled.div`
   margin-left: 2vh;
 `;
 const ProfileImg = styled.img`
-  ${(props) =>
-    props.isMemberNag
-      ? css`
-          ${tw`w-7 rounded-full`}
-        `
-      : css`
-          ${tw`w-7 rounded-full`}
-        `}
+  ${tw`w-8 h-8 rounded-full`}
   margin: 0 auto;
+  object-fit: cover;
 `;
 const NickName = styled.div`
   height: fit-content;

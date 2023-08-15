@@ -53,8 +53,6 @@ const TodoPost = (props) => {
           <Link to={`/profile?id=${encodeURIComponent(post.member.memberId)}`}>
             <ProfileImage
               src={post.member.imageUrl ? post.member.imageUrl : altImageUrl}
-              width="48"
-              height="48"
               onError={handleImgError}
             />
           </Link>
@@ -73,13 +71,11 @@ const TodoPost = (props) => {
           )}
         </PostHeader>
         <TodoContent>
-          <div className="finished">{post.finished ? '✅' : '❌'}</div>
-          <div className="todo">{post.content}</div>
+          <div className='finished'>{post.finished ? '✅' : '❌'}</div>
+          <div className='todo'>{post.content}</div>
           <HashTagContainer>
             {post.tags?.map((tag) => {
-              return (
-                <HashTagItem key={tag.tagId} hashTag={tag} editable={false} />
-              );
+              return <HashTagItem key={tag.tagId} hashTag={tag} editable={false} />;
             })}
           </HashTagContainer>
         </TodoContent>
@@ -119,14 +115,19 @@ const PostHeader = styled.header`
 // `;
 
 const ProfileImage = styled.img`
+  object-fit: cover;
+  width: 48px;
+  height: 48px;
   ${tw`max-w-full rounded-full`}
 `;
+
 const WriterName = styled.div`
   text-align: left;
 `;
 
 const CreateDate = styled.div`
   ${tw`text-sm text-slate-400`}
+  text-align:left;
 `;
 
 const TodoContent = styled.div`

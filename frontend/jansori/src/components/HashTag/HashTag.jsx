@@ -71,7 +71,7 @@ const HashTag = (props) => {
 
   return (
     <>
-      <HashTagContainer className="hashtag-container">
+      <HashTagContainer className='hashtag-container'>
         {hashTagList?.map((hashTag, index) => {
           return (
             <HashTagItem
@@ -84,8 +84,8 @@ const HashTag = (props) => {
         })}
         {hashTagCount < hashTagLimit && (
           <HashTagInput
-            type="text"
-            placeholder="해시태그를 검색하세요."
+            type='text'
+            placeholder='해시태그를 검색하세요.'
             onChange={handleHashTagInputChange}
             value={hashTagInput}
             onKeyPress={handleKeyPress}
@@ -94,11 +94,7 @@ const HashTag = (props) => {
           />
         )}
       </HashTagContainer>
-      {lengthError && (
-        <ErrorMessage absolute={absolute}>
-          태그는 2-8자로 입력해주세요.
-        </ErrorMessage>
-      )}
+      {lengthError && <ErrorMessage absolute={absolute}>태그는 2-8자로 입력해주세요.</ErrorMessage>}
       {isOpen && (
         <AutoComplete
           searchValue={hashTagInput}
@@ -127,6 +123,11 @@ const HashTagContainer = styled.div`
   background-color: rgba(255, 255, 255, 1);
   border-radius: 5px;
   overflow: auto;
+  /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none; /* 파이어폭스 */
 `;
 
 const HashTagInput = styled.input`

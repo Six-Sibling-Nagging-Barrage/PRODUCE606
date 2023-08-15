@@ -3,10 +3,7 @@ import tw, { styled } from 'twin.macro';
 import { Link } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { memberIdState, isLoginState, memberInfoState, navBarState } from '../../states/user';
-import {
-  isProfileModalOpenState,
-  isNotificationModalOpenState,
-} from '../../states/navBar';
+import { isProfileModalOpenState, isNotificationModalOpenState } from '../../states/navBar';
 import { createLogout } from '../../apis/api/member';
 import { useImageErrorHandler } from '../../hooks/useImageErrorHandler';
 import { altImageUrl } from '../../constants/image';
@@ -17,9 +14,7 @@ const DropdownProfileMenu = () => {
   const memberId = useRecoilValue(memberIdState);
   const setCurrentMenu = useSetRecoilState(navBarState);
   const setIsProfileModalOpen = useSetRecoilState(isProfileModalOpenState);
-  const setIsNotificationModalOpen = useSetRecoilState(
-    isNotificationModalOpenState
-  );
+  const setIsNotificationModalOpen = useSetRecoilState(isNotificationModalOpenState);
   const accessToken = localStorage.getItem('member_access_token');
 
   const handleImgError = useImageErrorHandler();
@@ -34,6 +29,7 @@ const DropdownProfileMenu = () => {
     localStorage.removeItem('member_refresh_token');
     localStorage.removeItem('member_token_exp');
     localStorage.removeItem('recoil-persist');
+    localStorage.removeItem('member_vapid');
 
     window.location.replace('/');
   };
@@ -100,6 +96,7 @@ const ItemContainer = styled.div`
 const Avatar = styled.img`
   ${tw`w-8 h-8 rounded-full mr-2`}
   display : inline-block;
+  object-fit: cover;
 `;
 
 const MemberName = styled.span`

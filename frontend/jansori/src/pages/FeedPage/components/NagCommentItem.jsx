@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import tw, { css, styled } from 'twin.macro';
 import likeIcon from '../../../assets/like_icon.avif';
 import lockIcon from '../../../assets/lock_icon.png';
@@ -34,11 +35,21 @@ const NagCommentItem = (props) => {
   return (
     <CommentContainer>
       <Profile>
-        <ProfileImg
-          isMemberNag={isMemberNag}
-          src={nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl}
-          onError={handleImgError}
-        />
+        {isMemberNag ? (
+          <Link to={`/profile?id=${encodeURIComponent(nag.nagMember.memberId)}`}>
+            <ProfileImg
+              isMemberNag={isMemberNag}
+              src={nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl}
+              onError={handleImgError}
+            />
+          </Link>
+        ) : (
+          <ProfileImg
+            isMemberNag={isMemberNag}
+            src={nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl}
+            onError={handleImgError}
+          />
+        )}
         <NickName>{isMemberNag && nag.nagMember.nickname}</NickName>
       </Profile>
       <Bubble>
@@ -56,7 +67,7 @@ const NagCommentItem = (props) => {
               ) : (
                 <LikeImg
                   src={likeIcon}
-                  filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
+                  filter='invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);'
                 />
               )}
               <LikeCount>{nag.likeCount}</LikeCount>
@@ -64,9 +75,7 @@ const NagCommentItem = (props) => {
           </ButtonGroup>
         )}
       </Bubble>
-      {showSnackBar && (
-        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
-      )}
+      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
     </CommentContainer>
   );
 };
@@ -100,11 +109,20 @@ const ProfileImg = styled.img`
           ${tw`w-14 h-14 rounded-full`}
         `}
   margin: 0 auto;
+  object-fit: cover;
 `;
 
 const CommentContentWrapper = styled.div`
   position: relative;
-  width: 85%;
+  width: 100%;
+  ${(props) =>
+    props.toggleUnlock
+      ? css`
+          width: 75%;
+        `
+      : css`
+          width: 90%;
+        `}
   line-height: 18px;
   text-align: left;
   top: 50%;
@@ -124,8 +142,7 @@ const ButtonItem = styled.button`
 `;
 
 const UnlockImg = styled.img`
-  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%)
-    contrast(83%);
+  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%) contrast(83%);
   width: 40px;
   padding: 8px;
   &:hover {
