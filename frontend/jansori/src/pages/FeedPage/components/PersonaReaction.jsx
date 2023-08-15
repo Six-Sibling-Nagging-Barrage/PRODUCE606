@@ -6,12 +6,7 @@ import { personas } from '../../../constants/persona';
 import { useImageErrorHandler } from '../../../hooks/useImageErrorHandler';
 
 const PersonaReaction = (props) => {
-  const {
-    personaReaction,
-    setPersonaReaction,
-    currentPostId,
-    setCurrentPostId,
-  } = props;
+  const { personaReaction, setPersonaReaction, currentPostId, setCurrentPostId } = props;
 
   const [personaIndex, setPersonaIndex] = useState(-1);
 
@@ -56,10 +51,7 @@ const PersonaReaction = (props) => {
                   handlePersonaHover(reaction.personaId);
                 }}
                 onClick={() => {
-                  handleClickPersonaReaction(
-                    reaction.personaId,
-                    reaction.todoPersonaId
-                  );
+                  handleClickPersonaReaction(reaction.personaId, reaction.todoPersonaId);
                 }}
               >
                 <PersonaImg
@@ -74,9 +66,7 @@ const PersonaReaction = (props) => {
           })}
         </PersonaCounter>
         {personaIndex === -1 ? (
-          <PersonaBio personaId={-1}>
-            캐릭터를 클릭해 잔소리를 해주세요.
-          </PersonaBio>
+          <PersonaBio personaId={-1}>캐릭터를 클릭해 잔소리를 해주세요.</PersonaBio>
         ) : (
           <PersonaBio personaId={personaIndex}>
             <div>{personas[personaIndex].name}</div>
@@ -117,6 +107,7 @@ const PersonaReactionWrapper = styled.div`
 
 const PersonaReactionContainer = styled.div`
   width: fit-content;
+  width: 400px;
   background-color: white;
   padding: 10px 15px;
   border-radius: 10px;
@@ -162,7 +153,6 @@ const CountBadge = styled.div`
 
 const PersonaBio = styled.div`
   position: relative;
-  width: 380px;
   height: fit-content;
   padding: 15px;
   background-color: rgb(244, 244, 244);
