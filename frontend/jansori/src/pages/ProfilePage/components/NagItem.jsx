@@ -15,7 +15,7 @@ const NagItem = (props) => {
   const handleLikeClick = (unlocked) => {
     if (isMine) return;
     if (!unlocked) {
-      setSnackBarMessage('잔소리 잠금해제를 해야 좋아요를 누를 수 있어요..');
+      setSnackBarMessage('잠금을 해제하면 좋아요를 누를 수 있어요');
       setShowSnackBar(true);
       return;
     }
@@ -51,15 +51,14 @@ const NagItem = (props) => {
           <Counter>
             <div>
               <button onClick={() => handleLikeClick(nag.unlocked)}>
-                {/* {isMine || nag.isLiked ? (
-                <LikeImg src={likeIcon} />
-              ) : (
-                <LikeImg
-                  src={likeIcon}
-                  filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
-                />
-              )} */}
-                <img src={likeIcon} />
+                {isMine || nag.isLiked ? (
+                  <LikeImg src={likeIcon} />
+                ) : (
+                  <LikeImg
+                    src={likeIcon}
+                    filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
+                  />
+                )}
               </button>
               <span>{nag.likeCount}</span>
             </div>
@@ -139,7 +138,6 @@ const UnlockImg = styled.img`
 const LikeImg = styled.img`
   filter: ${(props) => props.filter};
   width: 20px;
-  padding-top: 5px;
 `;
 
 export default NagItem;

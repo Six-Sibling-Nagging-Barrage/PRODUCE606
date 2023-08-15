@@ -193,6 +193,7 @@ const NagHistory = (props) => {
                     key={`${index}_${nagIndex}`}
                     isMine={isMine}
                     nag={nag}
+                    toggleLike={updateLikeMutation.mutate}
                     toggleUnlock={updateUnlockMutation.mutate}
                   />
                 ))
