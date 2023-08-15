@@ -7,12 +7,10 @@ const StartButton = (props) => {
   const { nagCount } = props;
   return (
     <SpeechBubbleContainer>
-      <Link to="/nag">
-        <SpeechBubble normal="true">잔소리 하러 가기</SpeechBubble>
+      <Link to='/nag'>
+        <SpeechBubble normal='true'>잔소리 하러 가기</SpeechBubble>
       </Link>
-      {nagCount !== -1 && (
-        <TotalNagCount>현재 작성된 잔소리 총 {nagCount}개</TotalNagCount>
-      )}
+      {nagCount !== -1 && <TotalNagCount>현재 작성된 잔소리 총 {nagCount}개</TotalNagCount>}
     </SpeechBubbleContainer>
   );
 };
