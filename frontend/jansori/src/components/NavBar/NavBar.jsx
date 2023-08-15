@@ -4,7 +4,13 @@ import tw, { css, styled } from 'twin.macro';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { TbTicket } from 'react-icons/tb';
 import { Link } from 'react-router-dom';
-import { memberIdState, ticketState, navBarState, isLoginState, profileImgState } from '../../states/user';
+import {
+  memberIdState,
+  ticketState,
+  navBarState,
+  isLoginState,
+  profileImgState,
+} from '../../states/user';
 import logoImg from '../../assets/jansori-logo-eating-removebg-preview.png';
 import notificationIcon from '../../assets/notification_icon.webp';
 import { menus, beforeLoginMenus } from '../../constants/nav';
