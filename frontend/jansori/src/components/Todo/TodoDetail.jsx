@@ -38,6 +38,7 @@ const TodoDetail = (props) => {
       queryClient.setQueryData(
         ['todoDetailItem', todoDetailItem],
         (oldData) => {
+          if (!oldData.nag) return oldData;
           const updatedNag = {
             ...oldData.nag,
             isLiked: !oldData.nag.isLiked,
@@ -87,6 +88,7 @@ const TodoDetail = (props) => {
       queryClient.setQueryData(
         ['todoDetailItem', todoDetailItem],
         (oldData) => {
+          if (!oldData.nag) return oldData;
           const updatedNag = {
             ...oldData.nag,
             unlocked: true,

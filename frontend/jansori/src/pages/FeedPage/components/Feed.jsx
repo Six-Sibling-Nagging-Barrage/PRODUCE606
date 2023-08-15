@@ -91,15 +91,16 @@ const Feed = (props) => {
             return {
               ...page,
               feed: page?.feed?.map((post) => {
+                if (!post.nag) return post;
                 if (post.id === postId) {
                   return {
                     ...post,
                     nag: {
                       ...post.nag,
-                      isLiked: !post.nag.isLiked,
-                      likeCount: post.nag.isLiked
-                        ? post.nag.likeCount - 1
-                        : post.nag.likeCount + 1,
+                      isLiked: !post.nag?.isLiked,
+                      likeCount: post.nag?.isLiked
+                        ? post.nag?.likeCount - 1
+                        : post.nag?.likeCount + 1,
                     },
                   };
                 }
@@ -151,6 +152,7 @@ const Feed = (props) => {
             return {
               ...page,
               feed: page?.feed?.map((post) => {
+                if (!post.nag) return post;
                 if (post.id === postId) {
                   return {
                     ...post,
