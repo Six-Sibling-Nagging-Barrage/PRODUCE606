@@ -25,13 +25,4 @@ public class MessageController {
     return EnvelopeResponse.<Void>builder().build();
   }
 
-  @PostMapping("/send")
-  public EnvelopeResponse<Void> pushMessage(@RequestBody PostMessageReqDto postMessageReqDto) {
-
-    fcmService.sendMessageTo(postMessageReqDto.getFcmToken(), postMessageReqDto.getTitle(),
-        postMessageReqDto.getBody());
-
-    return EnvelopeResponse.<Void>builder().build();
-  }
-
 }
