@@ -10,6 +10,7 @@ import {
   navBarState,
   isLoginState,
   profileImgState,
+  notificationState,
 } from '../../states/user';
 import logoImg from '../../assets/jansori-logo-eating-removebg-preview.png';
 import notificationIcon from '../../assets/notification_icon.webp';
@@ -30,6 +31,7 @@ const NavBar = () => {
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useRecoilState(
     isNotificationModalOpenState
   );
+  const [isUnreadNotificationLeft, setIsUnreadNotificationLeft] = useRecoilState(notificationState);
   const [currentMenu, setCurrentMenu] = useRecoilState(navBarState);
 
   const isLogin = useRecoilValue(isLoginState);
@@ -49,6 +51,7 @@ const NavBar = () => {
   };
 
   const handleNotificationClick = () => {
+    setIsUnreadNotificationLeft(false);
     setIsNotificationModalOpen(!isNotificationModalOpen);
     setIsProfileModalOpen(false);
   };
@@ -103,9 +106,11 @@ const NavBar = () => {
                 </TicketWrap>
                 <ul>
                   <li>
-                    <Avatar onClick={handleProfileClick}>
-                      <img src={profileImg ? profileImg : altImageUrl} onError={handleImgError} />
-                    </Avatar>
+                    <Avatar
+                      onClick={handleProfileClick}
+                      src={profileImg ? profileImg : altImageUrl}
+                      onError={handleImgError}
+                    />
                   </li>
                   {isProfileModalOpen && (
                     <li>
@@ -117,6 +122,7 @@ const NavBar = () => {
                   <li>
                     <BellWrap onClick={handleNotificationClick}>
                       <img src={notificationIcon} width='25px' />
+                      {isUnreadNotificationLeft && <Blink />}
                     </BellWrap>
                   </li>
                   {isNotificationModalOpen && (
@@ -288,12 +294,11 @@ const AfterLoginWrap = styled.div`
   ${tw`flex`}
 `;
 
-const Avatar = styled.button`
+const Avatar = styled.img`
   line-height: 50px;
   margin: 0 10px;
-  & > img {
-    ${tw`w-10 h-10 rounded-full `}
-  }
+  object-fit: cover;
+  ${tw`w-10 h-10 rounded-full `}
 `;
 
 const TicketWrap = styled.div`
@@ -321,4 +326,30 @@ const TicketItemLogo = styled.div`
 
 const BellWrap = styled.button`
   margin-top: 7px;
+  position : relative;
+`;
+
+const Blink = styled.span`
+  position: absolute;
+  top: -7px; 
+  right: 0px;
+  color: #fd183a;
+  &:after {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: #fd183a;
+    border-radius: 50%;
+    animation: blink 1s ease-in-out infinite alternate;
+  }
+
+  @keyframes blink {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 `;
