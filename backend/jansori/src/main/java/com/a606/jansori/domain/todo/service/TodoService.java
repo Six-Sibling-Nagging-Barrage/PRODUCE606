@@ -3,6 +3,7 @@ package com.a606.jansori.domain.todo.service;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
+import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.service.NagRandomGenerator;
 import com.a606.jansori.domain.notification.domain.NotificationSetting;
 import com.a606.jansori.domain.notification.domain.NotificationType;
@@ -26,6 +27,7 @@ import com.a606.jansori.domain.todo.dto.GetTodoMonthlyExistenceResDto;
 import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
 import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
 import com.a606.jansori.domain.todo.dto.PostTodoResDto;
+import com.a606.jansori.domain.todo.dto.TodoCacheDto;
 import com.a606.jansori.domain.todo.event.NagGenerateEvent;
 import com.a606.jansori.domain.todo.event.PostTodoEvent;
 import com.a606.jansori.domain.todo.event.TodoAccomplishmentEvent;
@@ -38,6 +40,7 @@ import com.a606.jansori.domain.todo.repository.TodoRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.a606.jansori.global.auth.util.SecurityUtil;
@@ -91,19 +94,6 @@ public class TodoService {
           todoTag.setTodo(todo);
         });
 
-    if (!postTodoReqDto.isAllNewTags()) {
-      todo.setNag(nagRandomGenerator.getRandomNagWithTags(member, todo.getTodoTags()));
-
-      // 잔소리 주인의 알림설정이 수신으로 되어 있을 경우에 알림 이벤트 발생
-      if (isNotificationSettingOn(notificationType2, todo.getNag().getMember())) {
-        publisher.publishEvent(new NagGenerateEvent(todo, notificationType2));
-      }
-      // 투두 주인의 알림설정이 수신으로 되어 있을 경우에  알림 이벤트 발생
-      if (isNotificationSettingOn(notificationType1, member)) {
-        publisher.publishEvent(new PostTodoEvent(todo, notificationType1));
-      }
-    }
-
     List<Persona> personas = personaRepository.findAll();
 
     personas.forEach(persona -> {
@@ -114,10 +104,26 @@ public class TodoService {
       todoPersona.setTodo(todo);
     });
 
+    if (!postTodoReqDto.isAllNewTags()) {
+      Optional<Nag> nag = nagRandomGenerator.getRandomNagWithTags(member, todo.getTodoTags());
+      if (nag.isPresent()) {
+        todo.setNag(nag.get());
+
+        // 잔소리 주인의 알림설정이 수신으로 되어 있을 경우에 알림 이벤트 발생
+        if (isNotificationSettingOn(notificationType2, todo.getNag().getMember())) {
+          publisher.publishEvent(new NagGenerateEvent(todo, notificationType2));
+        }
+        // 투두 주인의 알림설정이 수신으로 되어 있을 경우에  알림 이벤트 발생
+        if (isNotificationSettingOn(notificationType1, member)) {
+          publisher.publishEvent(new PostTodoEvent(todo, notificationType1));
+        }
+      }
+    }
+
     Todo savedTodo = todoRepository.save(todo);
 
     if (postTodoReqDto.isAllNewTags()) {
-      publisher.publishEvent(new TodoWaitingNagEvent(savedTodo));
+      publisher.publishEvent(new TodoWaitingNagEvent(TodoCacheDto.from(savedTodo)));
     }
 
     return PostTodoResDto.from(savedTodo);
