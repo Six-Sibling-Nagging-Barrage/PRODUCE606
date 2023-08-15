@@ -1,7 +1,12 @@
 import React from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
 import tw, { styled } from 'twin.macro';
-import { isLoginState, memberInfoState } from '../../states/user';
+import { Link } from 'react-router-dom';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { memberIdState, isLoginState, memberInfoState, navBarState } from '../../states/user';
+import {
+  isProfileModalOpenState,
+  isNotificationModalOpenState,
+} from '../../states/navBar';
 import { createLogout } from '../../apis/api/member';
 import { useImageErrorHandler } from '../../hooks/useImageErrorHandler';
 import { altImageUrl } from '../../constants/image';
@@ -9,6 +14,12 @@ import { altImageUrl } from '../../constants/image';
 const DropdownProfileMenu = () => {
   const member = useRecoilValue(memberInfoState);
   const setIsLogin = useSetRecoilState(isLoginState);
+  const memberId = useRecoilValue(memberIdState);
+  const setCurrentMenu = useSetRecoilState(navBarState);
+  const setIsProfileModalOpen = useSetRecoilState(isProfileModalOpenState);
+  const setIsNotificationModalOpen = useSetRecoilState(
+    isNotificationModalOpenState
+  );
   const accessToken = localStorage.getItem('member_access_token');
 
   const handleImgError = useImageErrorHandler();
@@ -27,16 +38,27 @@ const DropdownProfileMenu = () => {
     window.location.replace('/');
   };
 
+  const handleProfileClick = (index) => {
+    setIsProfileModalOpen(false);
+    setIsNotificationModalOpen(false);
+    setCurrentMenu(index);
+  };
+
   return (
     <DropdownProfileMenuContainer>
       <BackgroundContainer />
       <DropdownMenuContent>
         <ItemContainer>
-          <Avatar
-            src={member.imageUrl ? member.imageUrl : altImageUrl}
-            onError={handleImgError}
-          />
-          <MemberName>{member.nickname}</MemberName>
+          <Link
+            to={`/profile?id=${encodeURIComponent(memberId)}`}
+            onClick={() => handleProfileClick(2)}
+          >
+            <Avatar
+              src={member.imageUrl ? member.imageUrl : altImageUrl}
+              onError={handleImgError}
+            />
+            <MemberName>{member.nickname}</MemberName>
+          </Link>
         </ItemContainer>
         <ItemContainer onClick={handleLogOut}>
           <Logout>LOGOUT</Logout>
@@ -77,6 +99,7 @@ const ItemContainer = styled.div`
 
 const Avatar = styled.img`
   ${tw`w-8 h-8 rounded-full mr-2`}
+  display : inline-block;
 `;
 
 const MemberName = styled.span`

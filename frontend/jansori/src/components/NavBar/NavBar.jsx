@@ -1,21 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import tw, { css, styled } from 'twin.macro';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { TbTicket } from 'react-icons/tb';
 import { Link } from 'react-router-dom';
-import { memberIdState, ticketState, navBarState } from '../../states/user';
+import {
+  memberIdState,
+  ticketState,
+  navBarState,
+  isLoginState,
+  profileImgState,
+} from '../../states/user';
 import logoImg from '../../assets/jansori-logo-eating-removebg-preview.png';
 import notificationIcon from '../../assets/notification_icon.webp';
 import { menus, beforeLoginMenus } from '../../constants/nav';
 import { useImageErrorHandler } from '../../hooks/useImageErrorHandler';
-import { isLoginState, profileImgState } from '../../states/user';
+import {
+  isHamburgerOpenState,
+  isProfileModalOpenState,
+  isNotificationModalOpenState,
+} from '../../states/navBar';
 import DropdownProfileMenu from './DropdownProfileMenu';
 import { altImageUrl } from '../../constants/image';
+import NotificationList from './NotificationList';
 
 const NavBar = () => {
-  const [istoggleopen, setIsToggleOpen] = useState(false);
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [istoggleopen, setIsToggleOpen] = useRecoilState(isHamburgerOpenState);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useRecoilState(isProfileModalOpenState);
+  const [isNotificationModalOpen, setIsNotificationModalOpen] = useRecoilState(
+    isNotificationModalOpenState
+  );
   const [currentMenu, setCurrentMenu] = useRecoilState(navBarState);
 
   const isLogin = useRecoilValue(isLoginState);
@@ -31,10 +45,18 @@ const NavBar = () => {
 
   const handleProfileClick = () => {
     setIsProfileModalOpen(!isProfileModalOpen);
+    setIsNotificationModalOpen(false);
+  };
+
+  const handleNotificationClick = () => {
+    setIsNotificationModalOpen(!isNotificationModalOpen);
+    setIsProfileModalOpen(false);
   };
 
   const handleMenuClick = (index) => {
     setIsToggleOpen(false);
+    setIsProfileModalOpen(false);
+    setIsNotificationModalOpen(false);
     setCurrentMenu(index);
   };
 
@@ -43,11 +65,11 @@ const NavBar = () => {
       <Nav>
         {/* 로고 들어가는 부분 시작 */}
         <NavWrap>
-          <Logo href="/" onClick={() => handleMenuClick(-1)}>
+          <Logo href='/' onClick={() => handleMenuClick(-1)}>
             <img src={logoImg} />
           </Logo>
           {/* 네비게이션 리스트 부분 시작 */}
-          <NavItems id="navbar-sticky" istoggleopen={istoggleopen}>
+          <NavItems id='navbar-sticky' istoggleopen={istoggleopen ? 'true' : undefined}>
             <NavItemsUl>
               {menus.map((menu, index) => {
                 const url =
@@ -55,7 +77,7 @@ const NavBar = () => {
                     ? `${menu.to}?id=${encodeURIComponent(memberId)}`
                     : menu.to;
                 return (
-                  <li>
+                  <li key={index}>
                     <NavItem
                       to={url}
                       onClick={() => handleMenuClick(index)}
@@ -82,10 +104,7 @@ const NavBar = () => {
                 <ul>
                   <li>
                     <Avatar onClick={handleProfileClick}>
-                      <img
-                        src={profileImg ? profileImg : altImageUrl}
-                        onError={handleImgError}
-                      />
+                      <img src={profileImg ? profileImg : altImageUrl} onError={handleImgError} />
                     </Avatar>
                   </li>
                   {isProfileModalOpen && (
@@ -94,9 +113,18 @@ const NavBar = () => {
                     </li>
                   )}
                 </ul>
-                <button>
-                  <img src={notificationIcon} width="25px" />
-                </button>
+                <ul>
+                  <li>
+                    <BellWrap onClick={handleNotificationClick}>
+                      <img src={notificationIcon} width='25px' />
+                    </BellWrap>
+                  </li>
+                  {isNotificationModalOpen && (
+                    <li>
+                      <NotificationList />
+                    </li>
+                  )}
+                </ul>
               </AfterLoginWrap>
             ) : (
               <>
@@ -119,13 +147,13 @@ const NavBar = () => {
             )}
             {/* 화면 작아졌을 때 햄버거 icon 시작 */}
             <HamburgerButton
-              type="button"
-              aria-controls="navbar-sticky"
+              type='button'
+              aria-controls='navbar-sticky'
               aria-expanded={istoggleopen}
               onClick={handleHamburgerMenuClick}
             >
-              <span className="sr-only">Open</span>
-              <RxHamburgerMenu className="w-5 h-5" aria-hidden="true" />
+              <span className='sr-only'>Open</span>
+              <RxHamburgerMenu className='w-5 h-5' aria-hidden='true' />
             </HamburgerButton>
             {/* 화면 작아졌을 때 햄버거 icon 끝 */}
           </RightButtons>
@@ -289,4 +317,8 @@ const TicketItem = styled.div`
 const TicketItemLogo = styled.div`
   transform: rotate(-30deg);
   margin-right: 10px;
+`;
+
+const BellWrap = styled.button`
+  margin-top: 7px;
 `;

@@ -14,7 +14,7 @@ const MainPage = () => {
 
   const setNavBar = useSetRecoilState(navBarState);
 
-  setNavBar(-1);
+  // setNavBar(-1);
 
   // startButton의 ref
   const startButtonWrapRef = useRef(null);
@@ -31,8 +31,7 @@ const MainPage = () => {
   // 랜덤 잔소리를 가져오면 랜덤한 좌표를 생성하여 상태에 저장
   useEffect(() => {
     if (!randomNags) return;
-    const startButtonWrapRect =
-      startButtonWrapRef.current.getBoundingClientRect();
+    const startButtonWrapRect = startButtonWrapRef.current.getBoundingClientRect();
 
     // 사분면에 랜덤으로 배치
     const getQuadrantPosition = (index) => {
@@ -45,8 +44,7 @@ const MainPage = () => {
 
       // 시작 버튼 y좌표값 위 아래
       const startButtonBottom = startButtonWrapRect.bottom;
-      const startButtonTop =
-        startButtonWrapRect.top - startButtonWrapRect.height;
+      const startButtonTop = startButtonWrapRect.top - startButtonWrapRect.height;
 
       // 중복 체크하는 함수
       const checkPosition = (y) => {
@@ -127,7 +125,6 @@ const MainPage = () => {
 export default MainPage;
 
 const StartButtonWrap = styled.div`
-  z-index: 30;
   width: 100%;
   position: fixed;
   top: 50%;
