@@ -1,6 +1,5 @@
 package com.a606.jansori.dummy;
 
-
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
@@ -21,17 +20,10 @@ public class TagFollowDummy {
   private final List<TagFollow> tagFollows = new ArrayList<>();
 
   public void createTagFollows(List<Tag> tags, List<Member> members) {
-    int start = 0, end = start + tags.size() / 7;
-
     for (Member member : members) {
-      for (int i = start; i < end; i++) {
-        tagFollows.add(TagFollow.builder().tag(tags.get(i)).member(member).build());
+      for (Tag tag : tags) {
+        tagFollows.add(TagFollow.builder().tag(tag).member(member).build());
       }
-      start = end;
-      if (start >= tags.size()) {
-        start = 0;
-      }
-      end = start + tags.size() / 7;
     }
 
     tagFollowRepository.saveAll(tagFollows);

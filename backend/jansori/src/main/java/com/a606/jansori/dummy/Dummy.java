@@ -51,7 +51,7 @@ public class Dummy implements CommandLineRunner {
     List<Nag> nags = nagWithNagTagDummy.createNags(members, tags);
     notificationBoxDummy.createNotificationBox(members);
     notificationSettingDummy.createNotificationSettings(members);
-    List<Todo> todos = todoWithTodoTagDummy.createTodosWithTodoTags(members, tags, nags);
+    List<Todo> todos = todoWithTodoTagDummy.createTodosWithTodoTags(members, tags);
     List<TodoPersona> todoPersonas = todoPersonaDummy.createTodoPersonas(todos);
     personaReactionDummy.createPersonaReactions(members,todoPersonas);
 
