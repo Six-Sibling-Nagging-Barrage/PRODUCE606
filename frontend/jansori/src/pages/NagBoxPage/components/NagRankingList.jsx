@@ -96,11 +96,11 @@ const NagRankingList = () => {
         data?.nags.map((memberNagRanking, index) => {
           const isodd = (index + 1) % 2 !== 0;
           return (
-            <NagRankingItemWrap key={memberNagRanking.nagId} isodd={isodd}>
+            <NagRankingItemWrap key={memberNagRanking.nagId} isodd={isodd ? 'true' : undefined}>
               <NagRankingItem
                 key={memberNagRanking.nagId}
                 nag={memberNagRanking}
-                isodd={isodd}
+                isodd={isodd ? 'true' : undefined}
                 toggleLike={updateLikeMutation.mutate}
                 toggleUnlock={updateUnlockMutation.mutate}
               />
