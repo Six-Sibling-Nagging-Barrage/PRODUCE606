@@ -18,12 +18,6 @@ const Modal = (props) => {
   );
 };
 
-// const modalSettings = () => css`
-//   visibility: ${visible ? 'visible' : 'hidden'};
-//   z-index: 99;
-//   transition: visibility 0.15s ease-out;
-// `;
-
 const Background = styled.div`
   top: 0;
   right: 0;
@@ -31,7 +25,7 @@ const Background = styled.div`
   left: 0;
   position: fixed;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 99;
+  z-index: 30;
 `;
 
 // ${(props) => modalSettings(props.visible)}
@@ -43,7 +37,7 @@ const ModalSection = styled.div`
   transform: translate(-50%, -50%);
   background-color: rgba(255, 255, 255, 0.8);
   padding: 15px 30px;
-  z-index: 99;
+  z-index: 30;
   backdrop-filter: blur(3px);
   border-radius: 5px;
   box-shadow: 0 0 100px rgba(0, 0, 0, 0.3);

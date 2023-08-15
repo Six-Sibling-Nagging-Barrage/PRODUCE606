@@ -26,7 +26,7 @@ const SpeechBubbleContainer = styled.div`
   md:w-3/5
   lg:w-2/5
   mx-auto
-  z-50
+  z-30
 `}
 `;
 

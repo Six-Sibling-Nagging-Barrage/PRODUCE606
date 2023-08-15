@@ -180,7 +180,7 @@ const Background = styled.div`
   left: 0;
   position: fixed;
   background-color: rgba(0, 0, 0, 0.3);
-  z-index: 99;
+  z-index: 30;
 `;
 
 const TodoItemDetailTodoContainer = styled.div`
@@ -195,7 +195,7 @@ const TodoItemDetailTodoContainer = styled.div`
   background-color: #fff;
   box-shadow: 5px 5px 20px #928f8f;
   display: flex;
-  z-index: 99;
+  z-index: 30;
   box-shadow: 0 0 100px rgba(0, 0, 0, 0.3);
   flex-direction: column;
 `;

@@ -33,6 +33,7 @@ const SnackBarContainer = styled.div`
     rounded-lg
     transition-opacity
     duration-300
+    z-50
   `}
   ${(props) =>
     props.show ? tw`opacity-100` : tw`opacity-0 pointer-events-none`}
