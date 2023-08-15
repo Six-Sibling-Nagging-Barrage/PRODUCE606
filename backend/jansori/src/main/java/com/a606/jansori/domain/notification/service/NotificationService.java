@@ -184,6 +184,11 @@ public class NotificationService {
       final TodoAccomplishmentEvent todoAccomplishmentEvent) {
     Todo todo = todoAccomplishmentEvent.getTodo();
     NotificationType notificationType = todoAccomplishmentEvent.getNotificationType();
+
+    if (todo.getNag() == null) {
+      return;
+    }
+
     NotificationBox notificationBox =
         notificationBoxRepository.findByMember(todo.getNag().getMember());
     sb.setLength(0);
