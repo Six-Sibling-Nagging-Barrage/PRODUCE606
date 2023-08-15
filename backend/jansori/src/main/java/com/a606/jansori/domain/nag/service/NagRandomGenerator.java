@@ -11,6 +11,7 @@ import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TodoTag;
 import com.a606.jansori.global.util.RandomUtil;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,16 +56,20 @@ public class NagRandomGenerator {
    * @return Nag
    * @author 신현철
    */
-  public Nag getRandomNagWithTags(Member member, List<TodoTag> todoTags) {
+  public Optional<Nag> getRandomNagWithTags(Member member, List<TodoTag> todoTags) {
 
     List<Tag> tags = todoTags.stream().map(TodoTag::getTag).collect(Collectors.toList());
 
     Long count = nagRepository.countDistinctByNag_MemberNotAndTagIn(member, tags);
 
+    if(count == 0) {
+      return Optional.empty();
+    }
+
     int randomIndex = randomUtil.generate(count);
 
-    return nagRepository.findByNag_MemberNotAndTagIn(member, tags,
-        PageRequest.of(randomIndex, 1)).get(0);
+    return Optional.ofNullable(nagRepository.findByNag_MemberNotAndTagIn(member, tags,
+        PageRequest.of(randomIndex, 1)).get(0));
   }
 
   /**
