@@ -13,13 +13,18 @@ import org.springframework.stereotype.Component;
 @Profile("local")
 public class TagDummy {
 
+  private final DummyProperty dummyProperty;
   private final TagRepository tagRepository;
 
   private final List<Tag> tags = new ArrayList<>();
 
+
   public List<Tag> createTags() {
-    for (int i = 0; i < 20; i++) {
-      tags.add(Tag.builder().name("태그" + i).build());
+
+    List<String> tagDummies = dummyProperty.getTagDummies();
+
+    for (String tagName : tagDummies) {
+      tags.add(Tag.builder().name(tagName).build());
     }
     return tagRepository.saveAll(tags);
   }

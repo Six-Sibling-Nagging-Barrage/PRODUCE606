@@ -15,7 +15,8 @@ import org.springframework.context.annotation.Profile;
 public class DummyProperty {
 
   private final List<TodoDummy> todoDummies;
-  private final List<String> tags;
+  private final List<String> tagDummies;
+  private final List<NagDummy> nagDummies;
   private final List<String> nicknames;
   private final List<String> profiles;
 
@@ -25,5 +26,13 @@ public class DummyProperty {
   public static class TodoDummy{
     private final String content;
     private final List<String> tags;
+  }
+
+  @Getter
+  @RequiredArgsConstructor
+  @ConstructorBinding
+  public static class NagDummy{
+    private final String tag;
+    private final String content;
   }
 }
