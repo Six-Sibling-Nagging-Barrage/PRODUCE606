@@ -2,51 +2,36 @@ import React, { useState, useEffect } from 'react';
 import tw, { styled } from 'twin.macro';
 import { getNotificationCheck } from '../../apis/api/notification';
 import NotificationItem from './NotificationItem';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import InfiniteScroll from '../../pages/FeedPage/components/InfiniteScroll';
 
 const NotificationList = () => {
   const pageSize = 20;
 
-  const [notifications, setNotifications] = useState([]);
-  const [hasNext, setHasNext] = useState(true);
-  const [hasNextCursor, setHasNextCursor] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  let param = { cursor: null, pageSize };
 
-  const fetchNotifications = async (cursor) => {
-    setIsLoading(true);
-    const { data } = await getNotificationCheck(cursor, pageSize);
-    console.log(data);
-    if (data.code === '200') {
-      setNotifications([...notifications, ...data.data.notifications]);
-      setHasNext(data.data.hasNext); //다음 무한 스크롤 값이 있는 경우 설정
-      if (hasNext) setHasNextCursor(data.data.nextCursor);
-    }
-    setIsLoading(false);
-  };
-
-  const fetchNotificationsMore = () => {
-    if (!isLoading && hasNext) {
-      fetchNotifications(notifications[notifications.length - 1].notificationId);
-    }
-  };
-
-  useEffect(() => {
-    fetchNotifications(); 
-  }, []);
-
-  useEffect(() => {
-    const checkScroll = () => {
-      const scrollTop = document.documentElement.scrollTop;
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-
-      if (scrollTop + windowHeight >= documentHeight - 100) {
-        fetchNotificationsMore();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isError, isLoading, refetch } =
+    useInfiniteQuery(
+      ['notifications'],
+      ({ pageParam = param }) => fetchMoreNotifications(pageParam),
+      {
+        getNextPageParam: (lastPage) => {
+          if (!lastPage?.hasNext) return undefined;
+          return { cursor: lastPage.nextCursor, pageSize };
+        },
       }
-    };
+    );
 
-    window.addEventListener('scroll', checkScroll);
-    return () => window.removeEventListener('scroll', checkScroll);
-  }, [notifications, isLoading, hasNext]);
+  useEffect(() => {
+    param = { cursor: null, pageSize };
+    refetch();
+  }, [refetch]);
+
+  const fetchMoreNotifications = async (pageParam) => {
+    const { data } = await getNotificationCheck(pageParam);
+    console.log(data);
+    return data;
+  };
 
   return (
     <NotificationListContainer>
@@ -54,13 +39,27 @@ const NotificationList = () => {
       {/* 알람 리스트 호출하는 부분 */}
       <CenteredContainer>
         <NotificationListWrap>
-          <ul>
-            {notifications.map((notification) => (
-              <li key={notification.notificationId}>{notification.content}</li>
-            ))}
-          </ul>
-          {isLoading && <p>Loading...</p>}
-          {!hasNext && <p>No more notifications.</p>}
+          {isLoading && <div>로딩 중 ....</div>}
+          {isError && <div>알림을 불러오는데 실패했습니다.</div>}
+          {data?.pages?.some((page) => page?.notifications?.length > 0) ? (
+            <ul>
+              {data?.pages?.map((page) =>
+                page?.notifications?.map((notification) => (
+                  <NotificationItem
+                    key={notification.notificationId}
+                    content={notification.content}
+                  />
+                ))
+              )}
+            </ul>
+          ) : (
+            <div>더 이상 알림이 없습니다.</div>
+          )}
+          <InfiniteScroll
+            fetchNextPage={fetchNextPage}
+            hasNextPage={hasNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+          />
         </NotificationListWrap>
       </CenteredContainer>
     </NotificationListContainer>
@@ -71,22 +70,21 @@ export default NotificationList;
 
 const NotificationListContainer = styled.div`
   ${tw`absolute right-1`}
-  height: 80vh;
-  width: 15vw;
+  height: 60vh;
+  width: 20rem;
   margin-top: 2vh;
   border-radius: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 const BackgroundContainer = styled.div`
   ${tw`
-  z-40
   absolute
   w-full
   h-full`}
   border-radius: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  //   background-color: #f4f4fa;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(240, 240, 240, 0.7);
+  z-index: 90;
 `;
 
 const CenteredContainer = styled.div`
@@ -99,10 +97,11 @@ const CenteredContainer = styled.div`
 `;
 
 const NotificationListWrap = styled.div`
-  background-color: red;
+  z-index: 100;
   width: 95%;
   height: 95%;
   overflow-y: scroll;
+  border-radius: 20px;
   /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
   &::-webkit-scrollbar {
     display: none;
