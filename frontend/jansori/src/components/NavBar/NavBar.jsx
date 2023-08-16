@@ -27,11 +27,14 @@ import NotificationList from './NotificationList';
 
 const NavBar = () => {
   const [istoggleopen, setIsToggleOpen] = useRecoilState(isHamburgerOpenState);
-  const [isProfileModalOpen, setIsProfileModalOpen] = useRecoilState(isProfileModalOpenState);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useRecoilState(
+    isProfileModalOpenState
+  );
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useRecoilState(
     isNotificationModalOpenState
   );
-  const [isUnreadNotificationLeft, setIsUnreadNotificationLeft] = useRecoilState(notificationState);
+  const [isUnreadNotificationLeft, setIsUnreadNotificationLeft] =
+    useRecoilState(notificationState);
   const [currentMenu, setCurrentMenu] = useRecoilState(navBarState);
 
   const isLogin = useRecoilValue(isLoginState);
@@ -68,11 +71,14 @@ const NavBar = () => {
       <Nav>
         {/* 로고 들어가는 부분 시작 */}
         <NavWrap>
-          <Logo href='/' onClick={() => handleMenuClick(-1)}>
+          <Logo href="/" onClick={() => handleMenuClick(-1)}>
             <img src={logoImg} />
           </Logo>
           {/* 네비게이션 리스트 부분 시작 */}
-          <NavItems id='navbar-sticky' istoggleopen={istoggleopen ? 'true' : undefined}>
+          <NavItems
+            id="navbar-sticky"
+            istoggleopen={istoggleopen ? 'true' : undefined}
+          >
             <NavItemsUl>
               {menus.map((menu, index) => {
                 const url =
@@ -121,7 +127,7 @@ const NavBar = () => {
                 <ul>
                   <li>
                     <BellWrap onClick={handleNotificationClick}>
-                      <img src={notificationIcon} width='25px' />
+                      <img src={notificationIcon} width="25px" />
                       {isUnreadNotificationLeft && <Blink />}
                     </BellWrap>
                   </li>
@@ -153,13 +159,13 @@ const NavBar = () => {
             )}
             {/* 화면 작아졌을 때 햄버거 icon 시작 */}
             <HamburgerButton
-              type='button'
-              aria-controls='navbar-sticky'
+              type="button"
+              aria-controls="navbar-sticky"
               aria-expanded={istoggleopen}
               onClick={handleHamburgerMenuClick}
             >
-              <span className='sr-only'>Open</span>
-              <RxHamburgerMenu className='w-5 h-5' aria-hidden='true' />
+              <span className="sr-only">Open</span>
+              <RxHamburgerMenu className="w-5 h-5" aria-hidden="true" />
             </HamburgerButton>
             {/* 화면 작아졌을 때 햄버거 icon 끝 */}
           </RightButtons>
@@ -295,6 +301,7 @@ const AfterLoginWrap = styled.div`
 `;
 
 const Avatar = styled.img`
+  cursor: pointer;
   line-height: 50px;
   margin: 0 10px;
   object-fit: cover;
@@ -326,12 +333,12 @@ const TicketItemLogo = styled.div`
 
 const BellWrap = styled.button`
   margin-top: 7px;
-  position : relative;
+  position: relative;
 `;
 
 const Blink = styled.span`
   position: absolute;
-  top: -7px; 
+  top: -7px;
   right: 0px;
   color: #fd183a;
   &:after {

@@ -7,11 +7,12 @@ import { leftPersonas, rightPersonas } from '../../constants/persona';
 const NagPage = () => {
   return (
     <NagPageContainer>
+      <FeedBackground />
       <Left>
         {leftPersonas.map((persona) => {
           return (
             <PersonaContainer>
-              <img src={persona.gifUrl} />
+              <img src={persona.imgUrl} />
             </PersonaContainer>
           );
         })}
@@ -21,7 +22,7 @@ const NagPage = () => {
         {rightPersonas.map((persona) => {
           return (
             <PersonaContainer>
-              <img src={persona.gifUrl} />
+              <img src={persona.imgUrl} />
             </PersonaContainer>
           );
         })}
@@ -46,13 +47,13 @@ const Left = styled.div`
   & div:nth-child(odd) {
     & > img {
       position: absolute;
-      left: 50px;
+      left: 60px;
     }
   }
   & div:nth-child(even) {
     & > img {
       position: absolute;
-      right: 50px;
+      right: 60px;
     }
   }
 `;
@@ -67,13 +68,13 @@ const Right = styled.div`
   & div:nth-child(odd) {
     & > img {
       position: absolute;
-      left: 50px;
+      left: 60px;
     }
   }
   & div:nth-child(even) {
     & > img {
       position: absolute;
-      right: 50px;
+      right: 60px;
     }
   }
 `;

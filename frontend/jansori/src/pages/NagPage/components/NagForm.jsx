@@ -8,6 +8,7 @@ import '@animxyz/core';
 import { XyzTransition } from '@animxyz/react';
 import { createNag } from '../../../apis/api/nag';
 import { useSetRecoilState } from 'recoil';
+import NagItem from '../../ProfilePage/components/NagItem';
 import { ticketState } from '../../../states/user';
 
 const validateNag = (value) => {
@@ -31,6 +32,7 @@ const NagForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [checkSubmitted, setCheckSubmitted] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
+  const [nag, setNag] = useState(null);
 
   const setTicket = useSetRecoilState(ticketState);
 
@@ -51,10 +53,21 @@ const NagForm = () => {
       tagId: hashTagList[0].tagId,
       tagName: hashTagList[0].tagName,
     };
+
+    setNag({
+      content: data.description,
+      likeCount: 0,
+      deliveredCount: 0,
+      tag: {
+        tagId: hashTagList[0].tagId,
+        tagName: hashTagList[0].tagName,
+      },
+    });
+
     const response = await createNag(nag);
     if (response.code === '200') {
       setIsHidden(true);
-      setTimeout(() => setIsHidden(false), 1000);
+      setTimeout(() => setIsSubmitted(true), 1000);
       setTicket(response.data.ticketCount);
       setSnackBarMessage('잔소리를 성공적으로 보냈어요! 티켓 1장 획득!');
       setShowSnackBar(true);
@@ -77,6 +90,11 @@ const NagForm = () => {
     }
   };
 
+  const handleClickOk = () => {
+    setIsSubmitted(false);
+    setIsHidden(false);
+  };
+
   return (
     <div>
       <XyzTransition appear duration="auto" xyz="fade up-100% duration-10">
@@ -89,7 +107,8 @@ const NagForm = () => {
               <>
                 {nagValue === '' ? (
                   <ErrorMessage>
-                    📛 상처를 주는 말 말고 자극 받을 수 있는 말을 적어주세요! 📛
+                    📛 상처 주는 말이 아닌 동기부여가 될 수 있는 잔소리를
+                    적어주세요! 📛
                   </ErrorMessage>
                 ) : checkSubmitted && hashTagList.length === 0 ? (
                   <ErrorMessage>✒️ 해시태그를 입력해야 합니다 ✒️</ErrorMessage>
@@ -139,6 +158,22 @@ const NagForm = () => {
       {showSnackBar && (
         <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
       )}
+      {isSubmitted && nag && (
+        <Preview>
+          <Waiting>
+            👀 . . . 지금 내 잔소리는 TODO를 찾아 떠나는 중 . . . 👀
+          </Waiting>
+          <NagPreview>
+            <NagItem isMine={true} nag={nag} width={'100%'} />
+          </NagPreview>
+          <Message>
+            내가 쓴 잔소리가 다른 사람 TODO에 도착하면 알려드릴게요!
+          </Message>
+          <Button onClick={handleClickOk} normal={true}>
+            잘가 잔소리야..!
+          </Button>
+        </Preview>
+      )}
     </div>
   );
 };
@@ -156,26 +191,37 @@ const NagFormWrap = styled.div`
   @media screen and (max-width: 1024px) {
     width: 50%;
   }
+  background-color: white;
   transform: translate(-50%, -50%);
-  background-color: rgba(255, 255, 255, 0.5);
-  padding: 16px;
+  padding: 50px;
   z-index: 30;
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  box-shadow: 0 0 100px rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
   transition: all 1s ease;
   font-size: 16px;
   ${({ isHidden }) =>
     isHidden &&
     `
-  width: 0;
-  height: 0;
-  padding: 0;
-  margin: 0;
-  opacity: 0;
-  font-size: 0;
+    opacity: 0;
+    visibility: hidden;
   `}
+
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border: 30px solid transparent;
+    border-top-color: #ffffff;
+    border-bottom: 0;
+    border-left: 0;
+    margin-left: -15px;
+    margin-bottom: -28px;
+  }
 `;
+
 const NagFormTitle = styled.div`
   ${tw`text-center font-bold m-6 text-base
   lg:text-2xl
@@ -195,7 +241,50 @@ const NagContent = styled.div`
     border-radius: 5px;
     width: 100%;
     height: 100px;
+    border: 1px solid #e1e1e1;
   }
+`;
+
+const Preview = styled.div`
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  width: 40%;
+  padding: 35px;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.2);
+  @media screen and (max-width: 768px) {
+    width: 70%;
+  }
+  @media screen and (max-width: 1024px) {
+    width: 50%;
+  }
+  background-color: #ede7f6;
+  transform: translate(-50%, -50%);
+  border-radius: 30px;
+`;
+
+const NagPreview = styled.div`
+  margin: 20px auto;
+  width: 60%;
+`;
+
+const Waiting = styled.div`
+  font-size: 18px;
+  height: 35px;
+  font-weight: 600;
+  @keyframes motionAnimation {
+    0% {
+      padding-top: 0px;
+    }
+    100% {
+      padding-top: 10px;
+    }
+  }
+  animation: motionAnimation 1s linear 0s infinite alternate;
+`;
+
+const Message = styled.div`
+  margin-bottom: 15px;
 `;
 
 const ErrorMessage = styled.div`
