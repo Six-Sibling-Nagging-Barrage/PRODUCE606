@@ -1,4 +1,4 @@
-package com.a606.jansori.infra.storage.Service;
+package com.a606.jansori.infra.storage.service;
 
 import com.a606.jansori.infra.storage.dto.DeleteFileReqDto;
 import com.a606.jansori.infra.storage.dto.DeleteFileResDto;
@@ -26,6 +26,9 @@ public class AwsS3Service {
   @Value("${cloud.aws.s3.bucket}")
   private String bucket;
 
+  @Value("${cloud.aws.cdn.url}")
+  private String CdnUrl;
+
   public PostFileUploadResDto uploadImageFileToS3(PostFileUploadReqDto postFileUploadReqDto) {
 
     MultipartFile multipartFile = postFileUploadReqDto.getMultipartFile();
@@ -42,7 +45,7 @@ public class AwsS3Service {
       throw new FileUploadException();
     }
 
-    String imageUrl = getFileUrl(fileName);
+      String imageUrl = CdnUrl + fileName;
 
     return PostFileUploadResDto.builder()
         .imageUrl(imageUrl)

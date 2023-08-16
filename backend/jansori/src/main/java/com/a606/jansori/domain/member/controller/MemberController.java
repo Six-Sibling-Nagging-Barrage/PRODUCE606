@@ -7,7 +7,7 @@ import com.a606.jansori.domain.member.dto.PostMemberInfoReqDto;
 import com.a606.jansori.domain.member.dto.PostMemberInfoResDto;
 import com.a606.jansori.domain.member.service.MemberService;
 import com.a606.jansori.global.common.EnvelopeResponse;
-import com.a606.jansori.infra.storage.Service.AwsS3Service;
+import com.a606.jansori.infra.storage.service.AwsS3Service;
 import com.a606.jansori.infra.storage.dto.PostFileUploadReqDto;
 import com.a606.jansori.infra.storage.dto.PostFileUploadResDto;
 import javax.validation.Valid;

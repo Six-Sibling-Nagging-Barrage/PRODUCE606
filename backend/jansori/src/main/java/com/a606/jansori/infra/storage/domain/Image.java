@@ -1,4 +1,4 @@
-package com.a606.jansori.infra.storage.Domain;
+package com.a606.jansori.infra.storage.domain;
 
 import lombok.Builder;
 import lombok.Getter;
