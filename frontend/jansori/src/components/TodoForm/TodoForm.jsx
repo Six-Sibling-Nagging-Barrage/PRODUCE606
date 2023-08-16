@@ -44,8 +44,10 @@ const TodoForm = () => {
   const [yearMonth, setYearMonth] = useRecoilState(focusYearMonthState);
   const setTodoList = useSetRecoilState(todoListState);
   const setYearMonthTodoList = useSetRecoilState(todoDaysState);
-  const todoInputFormContentValue = useRecoilValue(todoInputFormContent);
-  const todoInputFormHasTagValue = useRecoilValue(todoInputFormHashTag);
+  const [todoInputFormContentValue, setTodoInputFormContentValue] =
+    useRecoilState(todoInputFormContent);
+  const [todoInputFormHasTagValue, setTodoInputFormHasTagValue] =
+    useRecoilState(todoInputFormHashTag);
   const memberId = useRecoilValue(memberIdState);
 
   const [showSnackBar, setShowSnackBar] = useState(false);
@@ -73,6 +75,12 @@ const TodoForm = () => {
     if (response.code === '200') {
       setSnackBarMessage('TODO가 등록되었어요. 파이팅!');
       setShowSnackBar(true);
+      setHashTagList([]);
+      setTodoInputFormHasTagValue([]);
+      setTodoInputFormContentValue('');
+      setContent('');
+      setIsPublic(true);
+      reset();
 
       const newDate = moment(new Date()).format('YYYY-MM-DD');
       setDate(newDate);
@@ -93,9 +101,6 @@ const TodoForm = () => {
         setYearMonthTodoList(todoMonthListResult.data.dates);
       }
     }
-    reset();
-    setHashTagList([]);
-    setIsPublic(true);
   };
 
   const handleContentInputChange = (event) => {
