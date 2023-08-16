@@ -2,12 +2,17 @@ import React from 'react';
 import tw, { styled } from 'twin.macro';
 import { useLocation, useNavigate } from 'react-router-dom'; // 이 부분에서 react-router-dom의 Link 컴포넌트를 가져옴
 import nagIcon from '../../assets/nag_icon.png';
+import { navBarState } from '../../states/user';
+import { useSetRecoilState } from 'recoil';
 
 const FloatingButton = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const setNavBar = useSetRecoilState(navBarState);
+
   const handleFloatingButton = () => {
+    setNavBar(-1);
     if (location.pathname === '/nag') window.location.reload();
     navigate('/nag');
   };

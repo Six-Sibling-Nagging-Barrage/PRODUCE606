@@ -5,7 +5,11 @@ import Mark from '../UI/Mark';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { focusDateState, todoListState } from '../../states/todo';
 import { memberIdState } from '../../states/user';
-import { updateTodoComplete, getTodoListByDate, getTodoListOtherByDate } from '../../apis/api/todo';
+import {
+  updateTodoComplete,
+  getTodoListByDate,
+  getTodoListOtherByDate,
+} from '../../apis/api/todo';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import FeedBackground from '../UI/FeedBackground';
 
@@ -37,30 +41,38 @@ const TodoList = (props) => {
     return data;
   };
 
-  const updateTodoCompleteMutation = useMutation((todoId) => toggleTodoComplete(todoId), {
-    onMutate: async (todoId) => {
-      await queryClient.cancelQueries(['todoList']);
-      const prevTodoList = queryClient.getQueryData(['todoList']);
-      queryClient.setQueryData(['todoList'], (oldData) => {
-        const newData = oldData?.todos.map((todoItem) => {
-          if (todoItem.todoId === todoId) {
-            return {
-              ...todoItem,
-              finished: !todoItem.finished,
-            };
-          }
-          return todoItem;
+  const updateTodoCompleteMutation = useMutation(
+    (todoId) => toggleTodoComplete(todoId),
+    {
+      onMutate: async (todoId) => {
+        await queryClient.cancelQueries(['todoList']);
+        const prevTodoList = queryClient.getQueryData(['todoList']);
+        queryClient.setQueryData(['todoList'], (oldData) => {
+          if (!oldData) return null;
+          return {
+            ...oldData,
+            todos: oldData.todos.map((todoItem) => {
+              if (todoItem.id === todoId) {
+                return {
+                  ...todoItem,
+                  finished: !todoItem.finished,
+                };
+              }
+              return todoItem;
+            }),
+          };
         });
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['todoList']);
-    },
-  });
+        return prevTodoList;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(['todoList']);
+      },
+    }
+  );
 
   return (
     <TodoContainer>
-      <FeedBackground/>
+      <FeedBackground />
       <div>
         <TodoListWrap>
           <Mark label={'TODO LIST'} />
