@@ -21,6 +21,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.BatchSize;
 
 @SuperBuilder
 @AllArgsConstructor
@@ -52,12 +53,15 @@ public class Nag extends BaseTimeEntity {
   @JoinColumn(name = "member_id")
   private Member member;
 
+  @BatchSize(size = 40)
   @OneToMany(mappedBy = "nag", cascade = CascadeType.ALL)
   private Set<Todo> todos = new HashSet<>();
 
+  @BatchSize(size = 40)
   @OneToMany(mappedBy = "nag", cascade = CascadeType.ALL)
   private Set<NagUnlock> nagUnlocks = new HashSet<>();
 
+  @BatchSize(size = 40)
   @OneToMany(mappedBy = "nag", cascade = CascadeType.ALL)
   private Set<NagLike> nagLikes = new HashSet<>();
 
