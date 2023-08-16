@@ -12,12 +12,14 @@ public class BlackListUtil {
 
   private final RedisTemplate<String, Object> blackListTemplate;
 
+  private static final String BLACKLIST_IDENTIFIER = "blacklist:";
+
   public void setBlackList(String key, Object o, long expiration) {
-    blackListTemplate.opsForValue().set(key, o, expiration, TimeUnit.MILLISECONDS);
+    blackListTemplate.opsForValue().set(BLACKLIST_IDENTIFIER + key, o, expiration, TimeUnit.MILLISECONDS);
   }
 
   public boolean isBlackList(String key) {
 
-    return Boolean.TRUE.equals(blackListTemplate.hasKey(key));
+    return Boolean.TRUE.equals(blackListTemplate.hasKey(BLACKLIST_IDENTIFIER + key));
   }
 }
