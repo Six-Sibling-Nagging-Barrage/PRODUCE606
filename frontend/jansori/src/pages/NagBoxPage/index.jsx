@@ -14,8 +14,8 @@ const NagBoxPage = () => {
   const nagSentences = [
     {
       startSentence: '현재 총',
-      expression: ' 개',
-      endSentence: '잔소리가 쌓였어요.',
+      expression: ' 명',
+      endSentence: '이 사용 중이에요.',
     },
     {
       startSentence: '지금까지',
@@ -24,8 +24,8 @@ const NagBoxPage = () => {
     },
     {
       startSentence: '현재 총',
-      expression: ' 명',
-      endSentence: '이 사용 중이에요.',
+      expression: ' 개',
+      endSentence: '잔소리가 쌓였어요.',
     },
   ];
 
@@ -39,7 +39,7 @@ const NagBoxPage = () => {
 
   return (
     <>
-      <FeedBackground/>
+      <FeedBackground />
       <CenteredContainer>
         {loading ? (
           <LoadingMessage>Loading...</LoadingMessage>
@@ -49,21 +49,15 @@ const NagBoxPage = () => {
               <CountBox
                 key={index}
                 startSentence={nagSentence.startSentence}
-                count={counts[Object.keys(counts)[index]] + nagSentence.expression}
+                count={
+                  counts[Object.keys(counts)[index]] + nagSentence.expression
+                }
                 endSentence={nagSentence.endSentence}
               />
             ))}
           </CountBoxContainer>
         )}
       </CenteredContainer>
-
-      {/* 잔소리 버튼 */}
-      <SpeechBubbleContainer>
-        <Link to='/nag'>
-          <SpeechBubble normal='tre'>잔소리 하러 가기</SpeechBubble>
-        </Link>
-      </SpeechBubbleContainer>
-
       {/* 잔소리 랭킹 */}
       <NagRannkingContainer>
         <NagTitle>현재 잔소리 TOP 5</NagTitle>
@@ -81,7 +75,8 @@ const CenteredContainer = styled.div`
   md:w-3/5
   sm:w-4/5
   mx-auto
-  py-20
+  pt-20
+  pb-10
   `}
 `;
 
@@ -89,17 +84,6 @@ const CountBoxContainer = styled.div`
   ${tw`grid 
   grid-cols-3
   gap-4`}
-`;
-
-const SpeechBubbleContainer = styled.div`
-  ${tw`
-  w-2/3
-  sm:w-1/3
-  md:w-3/5
-  lg:w-2/5
-  mx-auto
-  mb-6
-`}
 `;
 
 const NagRannkingContainer = styled.div`
@@ -110,7 +94,7 @@ const NagRannkingContainer = styled.div`
 `;
 
 const NagTitle = styled.p`
-  ${tw`font-bold text-2xl my-10`}
+  ${tw`font-bold text-2xl`}
 `;
 
 const LoadingMessage = styled.p`

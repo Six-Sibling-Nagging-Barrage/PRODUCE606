@@ -30,6 +30,7 @@ const NagForm = () => {
   const [snackBarMessage, setSnackBarMessage] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [checkSubmitted, setCheckSubmitted] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
 
   const setTicket = useSetRecoilState(ticketState);
 
@@ -52,6 +53,8 @@ const NagForm = () => {
     };
     const response = await createNag(nag);
     if (response.code === '200') {
+      setIsHidden(true);
+      setTimeout(() => setIsHidden(false), 1000);
       setTicket(response.data.ticketCount);
       setSnackBarMessage('잔소리를 성공적으로 보냈어요! 티켓 1장 획득!');
       setShowSnackBar(true);
@@ -60,7 +63,6 @@ const NagForm = () => {
       setShowSnackBar(true);
     }
     setCheckSubmitted(false); //원래 상태로 복구
-    setIsSubmitted(true);
     reset();
     setHashTagList([]);
   };
@@ -75,22 +77,10 @@ const NagForm = () => {
     }
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {}, 500);
-    return () => clearTimeout(timer);
-  }, [nagValue]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsSubmitted(false);
-    }, 3000); // 3초 후에 애니메이션 클래스 제거
-    return () => clearTimeout(timer);
-  }, [isSubmitted]);
-
   return (
     <div>
-      <XyzTransition appear duration='auto' xyz='fade up-100% duration-10'>
-        <NagFormWrap xyz={isSubmitted ? 'exit fade out-100% duration-100' : 'fade up-100%'}>
+      <XyzTransition appear duration="auto" xyz="fade up-100% duration-10">
+        <NagFormWrap isHidden={isHidden}>
           <NagFormTitle>잔소리 보내기</NagFormTitle>
           <NagFormContainer>
             {errors?.description ? (
@@ -104,14 +94,16 @@ const NagForm = () => {
                 ) : checkSubmitted && hashTagList.length === 0 ? (
                   <ErrorMessage>✒️ 해시태그를 입력해야 합니다 ✒️</ErrorMessage>
                 ) : (
-                  <ErrorMessage>💦 나쁜 말은 적지 않도록 항상 기억해주세요!! 💦</ErrorMessage>
+                  <ErrorMessage>
+                    💦 나쁜 말은 적지 않도록 항상 기억해주세요!! 💦
+                  </ErrorMessage>
                 )}
               </>
             )}
 
             <NagContent>
               <textarea
-                placeholder='잔소리를 작성해주세요'
+                placeholder="잔소리를 작성해주세요"
                 {...register('description', {
                   required: '❗ 잔소리를 입력해주세요 ❗',
                   minLength: {
@@ -137,14 +129,16 @@ const NagForm = () => {
               setHashTagList={setHashTagList}
             />
             <Footer>
-              <Button onClick={handleSubmit(onSubmit)} normal='true'>
+              <Button onClick={handleSubmit(onSubmit)} normal="true">
                 보내기
               </Button>
             </Footer>
           </NagFormContainer>
         </NagFormWrap>
       </XyzTransition>
-      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
+      {showSnackBar && (
+        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
+      )}
     </div>
   );
 };
@@ -168,7 +162,19 @@ const NagFormWrap = styled.div`
   z-index: 30;
   backdrop-filter: blur(10px);
   border-radius: 20px;
-  box-shadow: 0 0 100px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 100px rgba(0, 0, 0, 0.1);
+  transition: all 1s ease;
+  font-size: 16px;
+  ${({ isHidden }) =>
+    isHidden &&
+    `
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  font-size: 0;
+  `}
 `;
 const NagFormTitle = styled.div`
   ${tw`text-center font-bold m-6 text-base
