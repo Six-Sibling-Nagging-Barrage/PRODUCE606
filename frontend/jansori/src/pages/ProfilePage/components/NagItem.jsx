@@ -7,7 +7,7 @@ import sendIcon from '../../../assets/send_icon.png';
 import SnackBar from '../../../components/UI/SnackBar';
 
 const NagItem = (props) => {
-  const { isMine, nag, toggleLike, toggleUnlock } = props;
+  const { isMine, nag, toggleLike, toggleUnlock, width } = props;
 
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
@@ -34,7 +34,7 @@ const NagItem = (props) => {
   return (
     <>
       {nag && (
-        <Nag>
+        <Nag width={width}>
           <Header>
             <HashTagItem editable={false} hashTag={nag.tag} />
             {!isMine && !nag.unlocked && (
@@ -85,7 +85,7 @@ const Nag = styled.div`
   border-radius: 10px;
   background-color: white;
   padding: 20px;
-  width: 32%;
+  width: ${({ width }) => `${width}`};
   margin-bottom: 10px;
   height: fit-content;
   position: relative;

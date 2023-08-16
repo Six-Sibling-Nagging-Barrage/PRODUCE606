@@ -195,6 +195,7 @@ const NagHistory = (props) => {
                     nag={nag}
                     toggleLike={updateLikeMutation.mutate}
                     toggleUnlock={updateUnlockMutation.mutate}
+                    width={'32%'}
                   />
                 ))
               )}

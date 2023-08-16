@@ -197,12 +197,11 @@ const Nickname = styled.div`
 const Bio = styled.div`
   width: 50%;
   margin: 10px auto;
-  margin-bottom: 5vh;
 `;
 
 const MiddleHr = styled.hr`
   width: 60%;
-  margin: 5vh auto;
+  margin: 3vh auto;
   background-color: #b197fc;
   height: 1px;
 `;

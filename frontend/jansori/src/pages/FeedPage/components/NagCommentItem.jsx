@@ -124,6 +124,8 @@ const CommentContentWrapper = styled.div`
   line-height: 18px;
   text-align: left;
   top: 50%;
+  padding-right: 5px;
+  font-size: 15px;
 `;
 
 const ButtonGroup = styled.div`
