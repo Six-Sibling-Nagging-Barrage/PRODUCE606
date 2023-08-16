@@ -1,6 +1,7 @@
 package com.a606.jansori.global.event;
 
 import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.domain.nag.service.ReadyMadeNagService;
 import com.a606.jansori.domain.notification.domain.NotificationSetting;
 import com.a606.jansori.domain.notification.domain.NotificationType;
 import com.a606.jansori.domain.notification.domain.NotificationTypeName;
@@ -23,15 +24,18 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 @RequiredArgsConstructor
 public class EventHandler {
-  private final FcmTokenRepository fcmTokenRepository;
-  private final FcmService fcmService;
 
   private final NotificationService notificationService;
 
+  private final ReadyMadeNagService readyMadeNagService;
+  private final FcmService fcmService;
+
+  private final FcmTokenRepository fcmTokenRepository;
   private final NotificationSettingRepository notificationSettingRepository;
   private final NotificationTypeRepository notificationTypeRepository;
 
-  @TransactionalEventListener(classes = {NotificationCreateEvent.class}, phase = TransactionPhase.AFTER_COMMIT)
+  @TransactionalEventListener(classes = {
+      NotificationCreateEvent.class}, phase = TransactionPhase.AFTER_COMMIT)
   public void pushNotification(final NotificationCreateEvent notificationCreateEvent) {
 
     Member receiver = notificationCreateEvent.getNotification().getReceiver();
@@ -43,21 +47,6 @@ public class EventHandler {
           targetToken, notificationCreateEvent.getTitle(), notificationCreateEvent.getBody());
     }
   }
-
-  @EventListener(classes = {NagGenerateEvent.class})
-  public void createNotificationByNagGenerate(final NagGenerateEvent nagGenerateEvent) {
-
-    Todo todo = nagGenerateEvent.getTodo();
-
-    Member receiver = todo.getNag().getMember();
-    NotificationType notificationType =
-        notificationTypeRepository.findByTypeName(NotificationTypeName.MY_NAG_DELIVERED);
-
-    if (isNotificationSettingOn(notificationType, receiver)) {
-      notificationService.saveNotification(notificationType, todo.getContent(), receiver);
-    }
-  }
-
 
   @EventListener(classes = {PersonaReactionEvent.class})
   public void createNotificationByWritePersonaNagOnTodo(
@@ -76,15 +65,25 @@ public class EventHandler {
     }
   }
 
-  @EventListener(classes = {PostTodoEvent.class})
-  public void createNotificationByWriteMemberNagOnTodo(final PostTodoEvent postTodoEvent) {
+  @EventListener(classes = {NagDeliveryEvent.class})
+  public void createNotificationByWriteMemberNagOnTodo(final NagDeliveryEvent nagDeliveryEvent) {
 
-    NotificationType notificationType =
+    Todo todo = nagDeliveryEvent.getTodo();
+    Member receiverWhoNagged = todo.getNag().getMember();
+    Member receiverWhoPostedTodo = todo.getNag().getMember();
+
+    NotificationType MY_TODO_GOT_NEW_NAG =
         notificationTypeRepository.findByTypeName(NotificationTypeName.MY_TODO_GOT_NEW_NAG);
 
-    if (isNotificationSettingOn(notificationType, postTodoEvent.getTodo().getMember())) {
-      notificationService.saveNotification(notificationType, postTodoEvent.getTodo(),
-          postTodoEvent.getTodo().getNag().getMember());
+    NotificationType MY_NAG_DELIVERED =
+        notificationTypeRepository.findByTypeName(NotificationTypeName.MY_NAG_DELIVERED);
+
+    if (isNotificationSettingOn(MY_NAG_DELIVERED, receiverWhoNagged)) {
+      notificationService.saveNotification(MY_NAG_DELIVERED, todo.getContent(), receiverWhoNagged);
+    }
+
+    if (isNotificationSettingOn(MY_TODO_GOT_NEW_NAG, nagDeliveryEvent.getTodo().getMember())) {
+      notificationService.saveNotification(MY_TODO_GOT_NEW_NAG, todo, receiverWhoPostedTodo);
     }
   }
 
@@ -109,11 +108,13 @@ public class EventHandler {
     }
   }
 
-
   @TransactionalEventListener(value = NagWithReadyMadeTagEvent.class, phase = TransactionPhase.AFTER_COMMIT)
-  public void handle(NagWithReadyMadeTagEvent event) {
+  public void handleNagWithReadyMadeTagEvent(NagWithReadyMadeTagEvent event) {
+
+    readyMadeNagService.deliverNagToWaitingTodoQueue(event.getNag());
 
   }
+
   private Boolean isNotificationSettingOn(NotificationType notificationType, Member member) {
 
     NotificationSetting notificationSetting =

@@ -27,7 +27,7 @@ import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
 import com.a606.jansori.domain.todo.dto.PostTodoResDto;
 import com.a606.jansori.domain.todo.dto.TodoCacheDto;
 import com.a606.jansori.global.event.NagGenerateEvent;
-import com.a606.jansori.global.event.PostTodoEvent;
+import com.a606.jansori.global.event.NagDeliveryEvent;
 import com.a606.jansori.global.event.TodoAccomplishmentEvent;
 import com.a606.jansori.global.event.TodoWaitingNagEvent;
 import com.a606.jansori.domain.todo.exception.TodoBusinessException;
@@ -112,7 +112,7 @@ public class TodoService {
     Todo savedTodo = todoRepository.save(todo);
 
     publisher.publishEvent(new NagGenerateEvent(savedTodo));
-    publisher.publishEvent(new PostTodoEvent(savedTodo));
+    publisher.publishEvent(new NagDeliveryEvent(savedTodo));
 
     return PostTodoResDto.from(savedTodo);
   }
