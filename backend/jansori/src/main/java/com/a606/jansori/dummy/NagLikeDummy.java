@@ -26,7 +26,7 @@ public class NagLikeDummy {
 
     for (int i = 0 ; i < members.size(); i++) {
 
-      for (int j = 0; j < 20; j++) {
+      for (int j = 0; j < 10; j++) {
         x = x + 53;
         x %= nags.size();
 

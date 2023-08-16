@@ -58,12 +58,12 @@ public class Todo extends BaseTimeEntity {
   @Column
   private String content;
 
-  @BatchSize(size = 1000)
+  @BatchSize(size = 40)
   @OneToMany(mappedBy = "todo", cascade = CascadeType.PERSIST)
   @Builder.Default
   private List<TodoTag> todoTags = new ArrayList<>();
 
-  @BatchSize(size = 1000)
+  @BatchSize(size = 40)
   @OneToMany(mappedBy = "todo", cascade = CascadeType.PERSIST)
   @Builder.Default
   private List<TodoPersona> todoPersonas = new ArrayList<>();
