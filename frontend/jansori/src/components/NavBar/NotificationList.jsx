@@ -47,6 +47,8 @@ const NotificationList = () => {
                 page?.notifications?.map((notification) => (
                   <NotificationItem
                     key={notification.notificationId}
+                    lastReadAt={page.lastReadAt}
+                    createdAt = {notification.createdAt}
                     content={notification.content}
                   />
                 ))

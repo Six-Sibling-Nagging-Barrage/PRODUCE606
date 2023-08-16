@@ -47,36 +47,6 @@ const ProfileDetail = (props) => {
           />
         </Modal>
       )}
-      {/* {profile && (
-        <ProfileDetailContainer>
-          <LeftProfileDetailContainer>
-            <ProfileImg>
-              <img
-                src={profile.imageUrl ? profile.imageUrl : altImageUrl}
-                onError={handleImgError}
-              />
-            </ProfileImg>
-          </LeftProfileDetailContainer>
-          <rightProfile>
-            <Header>
-              {isMine && (
-                <button onClick={handleEditProfile}>
-                  <img src={editImg} />
-                </button>
-              )}
-            </Header>
-            <Nickname>{profile.nickname}</Nickname>
-            <Bio>{profile.bio}</Bio>
-            <Wrapper>
-              <HashTagContainer>
-                {tags?.map((tag) => {
-                  return <HashTagItem key={tag.tagId} hashTag={tag} />;
-                })}
-              </HashTagContainer>
-            </Wrapper>
-          </rightProfile>
-        </ProfileDetailContainer>
-      )} */}
       {profile && (
         <ProfileDetailContainer>
           <Header>
@@ -107,47 +77,10 @@ const ProfileDetail = (props) => {
 
 export default ProfileDetail;
 
-// const ProfileDetailContainer = styled.div`
-//   text-align: center;
-//   width: 60vw;
-//   margin: 10vh auto;
-//   display: grid;
-//   grid-template-columns: 1fr 1.5fr;
-//   grid-gap: 5vh;
-// `;
-
 const ProfileDetailContainer = styled.div`
   text-align: center;
   margin: 0 auto;
 `;
-
-// const LeftProfileDetailContainer = styled.div`
-//   height: 100%;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// `;
-
-// const ProfileImg = styled.div`
-//   margin-bottom: 15px;
-//   margin: 0 auto;
-//   width: 70%;
-//   height: 0;
-//   padding-bottom: 70%;
-//   position: relative;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   & > img {
-//     ${tw`rounded-full`}
-//     object-fit: cover;
-//     width: 100%;
-//     height: 100%;
-//     position: absolute;
-//     top: 0;
-//     left: 0;
-//   }
-// `;
 
 const ProfileImg = styled.div`
   width: fit-content;
@@ -175,24 +108,10 @@ const Header = styled.div`
   }
 `;
 
-// const Nickname = styled.div`
-//   font-weight: bold;
-//   text-align: left;
-//   font-size: 24px;
-//   margin-bottom: 1vh;
-// `;
-
 const Nickname = styled.div`
   font-weight: bold;
   font-size: 18px;
 `;
-
-// const Bio = styled.div`
-//   text-align: left;
-//   max-width: 90%;
-//   margin-bottom: 5vh;
-//   color: #888888;
-// `;
 
 const Bio = styled.div`
   width: 50%;

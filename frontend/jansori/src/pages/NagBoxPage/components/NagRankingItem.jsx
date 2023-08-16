@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import tw, { css, styled } from 'twin.macro';
 import { useRecoilValue } from 'recoil';
 import { memberIdState } from '../../../states/user';
@@ -40,11 +41,13 @@ const NagRankingItem = (props) => {
       <SpeechBubble isodd={isodd}>
         <SpeechBubbleWrap>
           <Profile>
-            <ProfileImg
-              src={nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl}
-              onError={handleImgError}
-            />
-            <NickName>{nag.nagMember.nickname}</NickName>
+            <Link to={`/profile?id=${encodeURIComponent(nag.nagMember.memberId)}`}>
+              <ProfileImg
+                src={nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl}
+                onError={handleImgError}
+              />
+              <NickName>{nag.nagMember.nickname}</NickName>
+            </Link>
           </Profile>
           <CommentContentWrapper>
             {memberId === nag.nagMember.memberId || nag.unlocked ? nag.content : nag.preview}
@@ -89,21 +92,17 @@ const SpeechBubbleWrap = styled.div``;
 
 const Profile = styled.div`
   display: flex;
-  height: fit-content;
-  width: fit-content;
-  margin-left: 2vh;
+  align-items: center;
+  flex-direction: row;
 `;
 const ProfileImg = styled.img`
   ${tw`w-8 h-8 rounded-full`}
-  margin: 0 auto;
   object-fit: cover;
+  display: inline-block;
 `;
 const NickName = styled.div`
-  height: fit-content;
-  width: fit-content;
-  margin-left: 10px;
-  margin-top: 5px;
-  font-size: 12px;
+  ${tw`ml-2 text-sm`}
+  display: inline-block;
 `;
 
 const CommentContentWrapper = styled.div`
