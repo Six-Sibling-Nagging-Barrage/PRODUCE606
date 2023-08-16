@@ -101,6 +101,10 @@ public class TodoFeedService {
       throw new TodoUnauthorizedException();
     }
 
+    if (todo.getNag() == null) {
+      return GetTodoDetailResDto.from(todo, false, false);
+    }
+
     return GetTodoDetailResDto.from(todo,
         nagUnlockRepository.existsByNagAndMember(todo.getNag(), member),
         nagLikeRepository.existsByNagAndMember(todo.getNag(), member));
@@ -115,10 +119,16 @@ public class TodoFeedService {
     }
 
     return todos.stream().map(todo ->
-        TodoFeedDto.from(todo,
-            nagUnlockRepository.existsByNagAndMember(todo.getNag(), member),
-            nagLikeRepository.existsByNagAndMember(todo.getNag(), member)
-        )
+        {
+          if (todo.getNag() == null){
+            return TodoFeedDto.from(todo, false, false);
+          }
+
+          return TodoFeedDto.from(todo,
+              nagUnlockRepository.existsByNagAndMember(todo.getNag(), member),
+              nagLikeRepository.existsByNagAndMember(todo.getNag(), member)
+          );
+        }
     ).collect(Collectors.toList());
 
   }
