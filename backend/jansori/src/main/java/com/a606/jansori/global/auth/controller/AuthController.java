@@ -8,6 +8,7 @@ import com.a606.jansori.global.auth.dto.TokenReqDto;
 import com.a606.jansori.global.auth.dto.TokenResDto;
 import com.a606.jansori.global.auth.service.AuthService;
 import com.a606.jansori.global.common.EnvelopeResponse;
+import com.a606.jansori.infra.redis.util.NagBoxStatisticsUtil;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
   private final AuthService authService;
+  private final NagBoxStatisticsUtil nagBoxStatisticsUtil;
 
   @PostMapping("/signup")
   public EnvelopeResponse<AuthSignupResDto> signup(
       @Valid @RequestBody AuthSignupReqDto authSignupReqDto) {
 
+    nagBoxStatisticsUtil.increaseTotalMemberCount();
     return EnvelopeResponse.<AuthSignupResDto>builder()
         .data(authService.signup(authSignupReqDto))
         .build();
