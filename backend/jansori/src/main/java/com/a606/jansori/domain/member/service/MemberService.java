@@ -19,10 +19,9 @@ import com.a606.jansori.global.auth.util.SecurityUtil;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-@Slf4j
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -55,7 +54,6 @@ public class MemberService {
 
   @Transactional
   public PostMemberInfoResDto updateMemberInfo(PostMemberInfoReqDto postMemberInfoReqDto, String imageName) {
-    log.info("서비스");
 
     Member member = securityUtil.getCurrentMemberByToken();
 
