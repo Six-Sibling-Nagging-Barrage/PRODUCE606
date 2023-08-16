@@ -94,6 +94,7 @@ public class NagService {
         preview);
 
     Nag savedNag = nagRepository.save(nag);
+    nagBoxStatisticsUtil.increaseTotalNagCount();
 
     if (postNagReqDto.getTagId() >= 0) {
       publisher.publishEvent(new NagPublishedTodoEvent(savedNag));
@@ -213,7 +214,7 @@ public class NagService {
     Long totalMemberCount = memberRepository.count();
     Long totalDoneTodoCount = todoRepository.countTodosByFinishedIsTrue();
     Long totalNagsCount = nagRepository.count();
-    
+
     return nagBoxStatisticsUtil.cachingNagBoxStatistics(
         GetNagBoxStatisticsResDto.of(totalMemberCount,
             totalDoneTodoCount,
