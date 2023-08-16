@@ -29,6 +29,10 @@ const NagCommentItem = (props) => {
     toggleLike({ todoId, nagId: nag.nagId });
   };
 
+  const handleClickUnlock = async () => {
+    setIsModalOpen(true);
+  };
+
   const handleUnlockNag = async () => {
     toggleUnlock({ todoId, nagId: nag.nagId });
   };
