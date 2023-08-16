@@ -94,9 +94,11 @@ const ProfileForm = (props) => {
         type: 'application/json',
       })
     );
+
     // 유저 정보 수정 api 호출
     const res = await updateProfile(formData);
     if (res.code === '200') {
+      setProfileImg(res.data.imageUrl);
       setMemberInfo((prev) => {
         return {
           ...prev,
@@ -108,7 +110,6 @@ const ProfileForm = (props) => {
         setMemberRole('USER');
         return navigate('/');
       }
-      setProfileImg(res.data.imageUrl);
       setIsEdited((prev) => !prev);
       setIsEditing(false);
     }
