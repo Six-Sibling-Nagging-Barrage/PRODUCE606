@@ -48,6 +48,7 @@ const TodoDetail = (props) => {
           nag: updatedNag,
         };
       });
+      return prevTodoDetail;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['todoDetailItem']);
@@ -57,7 +58,7 @@ const TodoDetail = (props) => {
   const toggleLike = async (nag) => {
     // 잔소리 좋아요 api 호출
     const data = await updateLikeNag(nag.nagId);
-    return data.data;
+    return data;
   };
 
   const toggleUnlock = async (nag) => {
@@ -92,6 +93,7 @@ const TodoDetail = (props) => {
           nag: updatedNag,
         };
       });
+      return prevTodoDetail;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['todoDetailItem']);
