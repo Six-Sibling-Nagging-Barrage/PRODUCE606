@@ -83,6 +83,7 @@ public class SecurityConfig {
         .antMatchers("/nags/main-page").permitAll()
         .antMatchers("/nags/nag-box/statistics").permitAll()
         .antMatchers("/health/**").permitAll()
+        .antMatchers("/h2-console/**").permitAll()
         .anyRequest().authenticated()
 
         .and()

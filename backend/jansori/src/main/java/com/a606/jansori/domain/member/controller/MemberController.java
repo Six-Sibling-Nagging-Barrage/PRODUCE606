@@ -12,6 +12,7 @@ import com.a606.jansori.infra.storage.dto.PostFileUploadReqDto;
 import com.a606.jansori.infra.storage.dto.PostFileUploadResDto;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
+@Slf4j
 @RestController
 @RequestMapping("/members")
 @RequiredArgsConstructor
@@ -53,6 +54,7 @@ public class MemberController {
   public EnvelopeResponse<PostMemberInfoResDto> updateMemberInfo(
       @RequestPart(value = "imageFile", required = false) MultipartFile multipartFile,
       @RequestPart(value = "memberInfo") @Valid PostMemberInfoReqDto postMemberInfoReqDto) {
+    log.info("multipart: " + String.valueOf(multipartFile));
 
     String imageName = null;
 
@@ -70,6 +72,8 @@ public class MemberController {
       imageName = postFileUploadResDto.getImageUrl();
 
     }
+
+    log.info("컨트롤러");
 
     return EnvelopeResponse.<PostMemberInfoResDto>builder()
         .data(memberService.updateMemberInfo(postMemberInfoReqDto, imageName))

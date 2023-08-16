@@ -20,6 +20,7 @@ import com.a606.jansori.global.auth.exception.InvalidTokenException;
 import com.a606.jansori.global.auth.util.TokenProvider;
 import com.a606.jansori.global.config.property.JwtConfigProperty;
 import com.a606.jansori.global.exception.domain.UnauthorizedException;
+import com.a606.jansori.infra.message.service.FcmService;
 import com.a606.jansori.infra.redis.util.BlackListUtil;
 import com.a606.jansori.infra.redis.util.RefreshTokenUtil;
 import java.time.Clock;
@@ -41,6 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthService {
 
+  private final FcmService fcmService;
   private final MemberRepository memberRepository;
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -136,6 +138,10 @@ public class AuthService {
           .findUnreadNotificationByMember(member).isPresent();
 
       tokenResDto.of(member, isUnreadNotificationLeft);
+
+      if(authLoginReqDto.getToken() != null){
+        fcmService.registerToken(member, authLoginReqDto.getToken());
+      }
 
       return tokenResDto;
 

@@ -120,9 +120,7 @@ public class FcmService {
   }
 
   @Transactional
-  public void registerToken(String fcmTokenFromClient) {
-
-    Member member = securityUtil.getCurrentMemberByToken();
+  public void registerToken(Member member, String fcmTokenFromClient) {
 
     List<FcmToken> tokens = fcmTokenRepository.findAllByMember(member);
 
