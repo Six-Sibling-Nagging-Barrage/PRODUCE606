@@ -2,12 +2,12 @@ importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js')
 importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js');
 
 var firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREABSE_APIKEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTHDOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECTID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGEBUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGINGSENDERID,
-  appId: process.env.REACT_APP_FIREBASE_APPID,
+  apiKey: 'AIzaSyBZ_cNYLGG9mzG5nUrnSsCacq6QuEQo-cY',
+  authDomain: 'jansori-393804.firebaseapp.com',
+  projectId: 'jansori-393804',
+  storageBucket: 'jansori-393804.appspot.com',
+  messagingSenderId: '591770825704',
+  appId: '1:591770825704:web:e3432cf2a2674a0cb32a5d',
 };
 
 const firebaseapp = firebase.initializeApp(firebaseConfig);

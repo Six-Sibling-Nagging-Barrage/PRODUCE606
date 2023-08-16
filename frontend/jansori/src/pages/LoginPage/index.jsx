@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSetRecoilState, useRecoilState } from 'recoil';
 import { useForm } from 'react-hook-form';
 import Background from '../../components/UI/Background';
@@ -16,10 +16,10 @@ import {
   ticketState,
   profileImgState,
   notificationState,
-  fcmVapIdKeyState,
 } from '../../states/user';
 import { useNavigate } from 'react-router-dom';
 import { validateEmail } from '../../utils/validate';
+import { requestPermission } from '../../firebase';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -39,14 +39,15 @@ const LoginPage = () => {
   const setTicket = useSetRecoilState(ticketState);
   const setProfileImg = useSetRecoilState(profileImgState);
   const setNotification = useSetRecoilState(notificationState);
-  const setFcmVapIdKeyState = useSetRecoilState(fcmVapIdKeyState);
 
   const [loginError, setLoginError] = useState(false);
 
+  console.log(localStorage.getItem('fcmToken'));
   const loginSubmit = async (data) => {
     const user = {
       email: data.email,
       password: data.password,
+      token: localStorage.getItem('fcmToken') ? localStorage.getItem('fcmToken') : undefined,
     };
     // 로그인 api 호출
     const res = await createLogin(user);
@@ -68,7 +69,7 @@ const LoginPage = () => {
       setMemberId(res.data.memberId);
       setTicket(res.data.ticket);
       setNotification(res.data.isUnreadNotificationLeft);
-      setFcmVapIdKeyState(process.env.REACT_APP_FIREBASE_VAPIDKEY);
+      // setFcmTokenState(process.env.REACT_APP_FIREBASE_VAPIDKEY);
       //recoil로 상태 fcm 부분 넣어두기
       if (res.data.memberRole === 'GUEST') {
         navigate('/initialprofile', { state: res.data.accessToken });
