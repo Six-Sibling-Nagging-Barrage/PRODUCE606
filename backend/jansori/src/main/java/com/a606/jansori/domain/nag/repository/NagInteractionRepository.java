@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface NagInteractionRepository extends JpaRepository<NagInteraction, Long> {
 
   Optional<NagInteraction> findNagInteractionByNagAndMember(Nag nag, Member member);
+
+  Boolean existsByNagAndMember(Nag nag, Member member);
 }

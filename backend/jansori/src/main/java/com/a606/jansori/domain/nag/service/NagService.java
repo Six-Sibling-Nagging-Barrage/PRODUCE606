@@ -113,7 +113,7 @@ public class NagService {
         .findNagInteractionByNagAndMember(nag, member).orElseThrow(NagLikeBusinessException::new);
 
     nagInteraction.toggleNagLike(nag);
-    
+
     return PostNagLikeResDto.from(nagInteraction.getNagLike());
   }
 
@@ -122,15 +122,14 @@ public class NagService {
     Nag nag = nagRepository.findById(nagId).orElseThrow(NagNotFoundException::new);
     Member member = securityUtil.getCurrentMemberByToken();
 
-    if (nagUnlockRepository.existsByNagAndMember(nag, member)) {
+    if (nagInteractionRepository.existsByNagAndMember(nag, member)) {
       throw new NagUnlockBusinessException();
     } else if (member.getTicket() <= 0) {
       throw new NagUnlockBusinessException();
     }
 
     member.consumeTicketToUnlockNag();
-    nagUnlockRepository.save(NagUnlock.ofUnlockPreviewByNagAndMember(nag, member));
-
+    nagInteractionRepository.save(NagInteraction.ofUnlockPreviewByNagAndMember(nag, member));
     return PutNagUnlockResDto.ofNagUnlockWithTicketCount(nag, member.getTicket());
   }
 

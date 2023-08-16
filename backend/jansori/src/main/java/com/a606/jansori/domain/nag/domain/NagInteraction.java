@@ -50,4 +50,11 @@ public class NagInteraction {
     }
     nagLike = !nagLike;
   }
+
+  public static NagInteraction ofUnlockPreviewByNagAndMember(Nag nag, Member member) {
+    return NagInteraction.builder()
+        .nag(nag)
+        .member(member)
+        .build();
+  }
 }
