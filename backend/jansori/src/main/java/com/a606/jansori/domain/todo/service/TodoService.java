@@ -81,11 +81,6 @@ public class TodoService {
 
     Todo todo = postTodoReqDto.getTodoWith(member);
 
-    NotificationType notificationType1 = notificationTypeRepository
-        .findByTypeName(NotificationTypeName.NAGONMYTODO);
-    NotificationType notificationType2 = notificationTypeRepository
-        .findByTypeName(NotificationTypeName.MYNAGONTODO);
-
     if (postTodoReqDto.getTags().isEmpty() || postTodoReqDto.getTags().size() > 3) {
       throw new TodoBusinessException();
     }
@@ -112,14 +107,8 @@ public class TodoService {
       if (nag.isPresent()) {
         todo.setNag(nag.get());
 
-        // 잔소리 주인의 알림설정이 수신으로 되어 있을 경우에 알림 이벤트 발생
-        if (isNotificationSettingOn(notificationType2, todo.getNag().getMember())) {
-          publisher.publishEvent(new NagGenerateEvent(todo, notificationType2));
-        }
-        // 투두 주인의 알림설정이 수신으로 되어 있을 경우에  알림 이벤트 발생
-        if (isNotificationSettingOn(notificationType1, member)) {
-          publisher.publishEvent(new PostTodoEvent(todo, notificationType1));
-        }
+        publisher.publishEvent(new NagGenerateEvent(todo));
+        publisher.publishEvent(new PostTodoEvent(todo));
       }
     }
 
@@ -181,13 +170,12 @@ public class TodoService {
       throw new TodoUnauthorizedException();
     }
 
-    // 알림 수신 상태이고 투두 미완료 상태에서 완료로 바뀔 때만 알림 이벤트 발생
-    if (isNotificationSettingOn(notificationType, member) && !todo.getFinished()) {
-      publisher.publishEvent(new TodoAccomplishmentEvent(todo, notificationType));
-    }
-
     boolean isNotFinish = !todo.getFinished();
     nagBoxStatisticsUtil.updateTotalDoneTodoCount(isNotFinish);
+
+    if(isNotFinish){
+      publisher.publishEvent(new TodoAccomplishmentEvent(todo));
+    }
 
     return PatchTodoResDto.from(todo.toggleFinished());
   }
@@ -213,28 +201,16 @@ public class TodoService {
       GetTodoMonthlyExistenceReqDto getTodoMonthlyExistenceReqDto) {
 
     Member member = memberRepository.findById(memberId)
-        .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new);
 
     int year = getTodoMonthlyExistenceReqDto.getYearMonth().getYear();
     int month = getTodoMonthlyExistenceReqDto.getYearMonth().getMonthValue();
 
     return new GetTodoMonthlyExistenceResDto(
-        todoRepository.findAllTodoAtByMemberAndMonthAndYear(member, year, month).stream()
-            .map(TodoAt::getTodoAt)
-            .collect(Collectors.toList())
+            todoRepository.findAllTodoAtByMemberAndMonthAndYear(member, year, month).stream()
+                    .map(TodoAt::getTodoAt)
+                    .collect(Collectors.toList())
     );
 
-  }
-
-  private Boolean isNotificationSettingOn(NotificationType notificationType, Member member) {
-
-    NotificationSetting notificationSetting =
-        notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member);
-
-    if (notificationSetting == null) {
-      throw new NotificationSettingNotFoundException();
-    }
-
-    return notificationSetting.getActivated();
   }
 }

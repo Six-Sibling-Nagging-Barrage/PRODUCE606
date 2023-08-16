@@ -1,6 +1,7 @@
 package com.a606.jansori.infra.message.controller;
 
 import com.a606.jansori.global.common.EnvelopeResponse;
+import com.a606.jansori.infra.message.dto.PostFcmTokenReqDto;
 import com.a606.jansori.infra.message.dto.PostMessageReqDto;
 import com.a606.jansori.infra.message.service.FcmService;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +19,10 @@ public class MessageController {
 
   @PostMapping("/token/register")
   private EnvelopeResponse<Void> registerMemberMessagingToken(
-      @RequestBody String fcmTokenFromClient) {
+      @RequestBody PostFcmTokenReqDto postFcmTokenReqDto) {
 
-    fcmService.registerToken(fcmTokenFromClient);
+    fcmService.registerToken(postFcmTokenReqDto.getFcmTokenFromClient());
 
     return EnvelopeResponse.<Void>builder().build();
   }
-
 }

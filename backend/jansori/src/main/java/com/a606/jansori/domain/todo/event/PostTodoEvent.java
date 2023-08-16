@@ -11,5 +11,4 @@ import lombok.Getter;
 public class PostTodoEvent {
 
     private Todo todo;
-    private NotificationType notificationType;
 }
