@@ -20,7 +20,7 @@ export default CountBox;
 const BoxContainer = styled.div`
   ${tw`
     w-full
-    h-40
+    h-24
     relative`}
 `;
 
@@ -37,11 +37,11 @@ const Background = styled.div`
 const BoxContent = styled.div`
   ${tw`
     flex
-    flex-col
     justify-center
     items-center
     h-full
     relative`}
+  flex-direction: row;
 `;
 
 const ValueCount = styled.p`
@@ -50,6 +50,7 @@ const ValueCount = styled.p`
   text-2xl
   m-1
   text-xl
+  px-2
   text-green-500
   lg:text-3xl
   md:text-2xl
