@@ -25,12 +25,13 @@ const ProfilePage = () => {
   const id = parseInt(query.get('id'));
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (id === memberId) setIsMine(true);
   }, [id]);
 
   return (
     <ProfileContainer>
-      <FeedBackground/>
+      <FeedBackground />
       <ProfileDetail isMine={isMine} id={id} />
       <TabContainer>
         <Tabs>
@@ -80,7 +81,7 @@ const Tabs = styled.div`
 
 const TabContent = styled.div`
   height: fit-content;
-  background-color: #EDE7F6;
+  background-color: #ede7f6;
   border-radius: 5px;
   padding: 20px;
 `;
@@ -90,12 +91,14 @@ const Glider = styled.span`
   display: flex;
   height: 40px;
   width: 300px;
-  background-color: #EDE7F6;
+  background-color: #ede7f6;
   z-index: 1;
   border-radius: 10px 10px 0 0;
   transition: 0.25s ease-out;
   ${({ currentTab }) =>
-    currentTab === 0 ? `transform: translateX(-50%);` : `transform: translateX(50%);`}
+    currentTab === 0
+      ? `transform: translateX(-50%);`
+      : `transform: translateX(50%);`}
 `;
 
 export default ProfilePage;
