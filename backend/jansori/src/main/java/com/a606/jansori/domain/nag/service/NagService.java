@@ -69,8 +69,6 @@ public class NagService {
   private final NagRandomGenerator nagRandomGenerator;
   private final PreviewUtil previewUtil;
   private final SecurityUtil securityUtil;
-  private final NotificationTypeRepository notificationTypeRepository;
-  private final NotificationSettingRepository notificationSettingRepository;
   private final ApplicationEventPublisher publisher;
   private final NagBoxStatisticsUtil nagBoxStatisticsUtil;
 

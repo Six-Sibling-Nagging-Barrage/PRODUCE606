@@ -170,10 +170,12 @@ public class TodoService {
       throw new TodoUnauthorizedException();
     }
 
-    publisher.publishEvent(new TodoAccomplishmentEvent(todo));
-
     boolean isNotFinish = !todo.getFinished();
     nagBoxStatisticsUtil.updateTotalDoneTodoCount(isNotFinish);
+
+    if(isNotFinish){
+      publisher.publishEvent(new TodoAccomplishmentEvent(todo));
+    }
 
     return PatchTodoResDto.from(todo.toggleFinished());
   }

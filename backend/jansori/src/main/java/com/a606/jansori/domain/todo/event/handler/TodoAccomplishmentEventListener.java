@@ -29,8 +29,6 @@ public class TodoAccomplishmentEventListener {
 
   private final NotificationSettingRepository notificationSettingRepository;
   private final NotificationTypeRepository notificationTypeRepository;
-  private final FcmTokenRepository fcmTokenRepository;
-  private final FcmService fcmService;
 
   private final String title = "육남매의 잔소리 폭격";
   private final String body = "회원님의 잔소리가 남겨진 사용자의 Todo가 완료되었습니다.";
@@ -54,23 +52,7 @@ public class TodoAccomplishmentEventListener {
             notificationTypeRepository.findByTypeName(NotificationTypeName.TODOACCOMPLISHMENT);
 
     if(isNotificationSettingOn(notificationType, receiver)){
-      notificationService.createAndSaveNotification(notificationType, content, receiver);
-    }
-  }
-
-  @EventListener(classes = {TodoAccomplishmentEvent.class})
-  public void pushNotification(final TodoAccomplishmentEvent todoAccomplishmentEvent) {
-
-    Member receiver = todoAccomplishmentEvent.getTodo().getNag().getMember();
-    List<FcmToken> fcmTokens = fcmTokenRepository.findAllByMember(receiver);
-    NotificationType notificationType =
-            notificationTypeRepository.findByTypeName(NotificationTypeName.TODOACCOMPLISHMENT);
-
-    if(isNotificationSettingOn(notificationType, receiver) && fcmTokens != null){
-      for (FcmToken fcmToken : fcmTokens) {
-        String targetToken = fcmToken.getFcmToken();
-        fcmService.sendWebPushMessage(targetToken, title, body);
-      }
+      notificationService.createAndSaveNotification(notificationType, content, receiver, title, body);
     }
   }
 

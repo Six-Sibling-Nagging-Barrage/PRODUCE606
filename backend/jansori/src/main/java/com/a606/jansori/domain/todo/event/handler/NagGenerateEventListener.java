@@ -28,8 +28,6 @@ public class NagGenerateEventListener {
 
   private final NotificationSettingRepository notificationSettingRepository;
   private final NotificationTypeRepository notificationTypeRepository;
-  private final FcmTokenRepository fcmTokenRepository;
-  private final FcmService fcmService;
 
   private final String title = "육남매의 잔소리 폭격";
   private final String body = "회원님의 잔소리가 다른 사용자의 Todo에 작성되었습니다.";
@@ -47,23 +45,7 @@ public class NagGenerateEventListener {
             notificationTypeRepository.findByTypeName(NotificationTypeName.MYNAGONTODO);
 
     if(isNotificationSettingOn(notificationType, receiver)){
-      notificationService.createAndSaveNotification(notificationType, content, receiver);
-    }
-  }
-
-  @EventListener(classes = {NagGenerateEvent.class})
-  public void pushNotification(final NagGenerateEvent nagGenerateEvent) {
-
-    Member receiver = nagGenerateEvent.getTodo().getNag().getMember();
-    List<FcmToken> fcmTokens = fcmTokenRepository.findAllByMember(receiver);
-    NotificationType notificationType =
-            notificationTypeRepository.findByTypeName(NotificationTypeName.MYNAGONTODO);
-
-    if(isNotificationSettingOn(notificationType, receiver) && fcmTokens != null){
-      for (FcmToken fcmToken : fcmTokens) {
-        String targetToken = fcmToken.getFcmToken();
-        fcmService.sendWebPushMessage(targetToken, title, body);
-      }
+      notificationService.createAndSaveNotification(notificationType, content, receiver, title, body);
     }
   }
 

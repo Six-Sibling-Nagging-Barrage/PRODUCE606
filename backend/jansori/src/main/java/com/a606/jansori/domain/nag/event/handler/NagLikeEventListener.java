@@ -10,10 +10,6 @@ import com.a606.jansori.domain.notification.repository.NotificationTypeRepositor
 import com.a606.jansori.domain.notification.exception.NotificationSettingNotFoundException;
 import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
 import com.a606.jansori.domain.notification.service.NotificationService;
-import com.a606.jansori.infra.message.domain.FcmToken;
-import com.a606.jansori.infra.message.repository.FcmTokenRepository;
-import com.a606.jansori.infra.message.service.FcmService;
-import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
@@ -29,8 +25,6 @@ public class NagLikeEventListener {
 
   private final NotificationSettingRepository notificationSettingRepository;
   private final NotificationTypeRepository notificationTypeRepository;
-  private final FcmTokenRepository fcmTokenRepository;
-  private final FcmService fcmService;
 
   private final String title = "육남매의 잔소리 폭격";
   private final String body = "사람들이 회원님의 잔소리를 좋아합니다.";
@@ -49,23 +43,7 @@ public class NagLikeEventListener {
             notificationTypeRepository.findByTypeName(NotificationTypeName.NAGREACTION);
 
     if(isNotificationSettingOn(notificationType, receiver)){
-      notificationService.createAndSaveNotification(notificationType, content, receiver);
-    }
-  }
-
-  @EventListener(classes = {NagLikeEvent.class})
-  public void pushNotification(final NagLikeEvent nagLikeEvent) {
-
-    Member receiver = nagLikeEvent.getNag().getMember();
-    List<FcmToken> fcmTokens = fcmTokenRepository.findAllByMember(receiver);
-    NotificationType notificationType =
-            notificationTypeRepository.findByTypeName(NotificationTypeName.NAGREACTION);
-
-    if(isNotificationSettingOn(notificationType, receiver) && fcmTokens != null){
-      for (FcmToken fcmToken : fcmTokens) {
-        String targetToken = fcmToken.getFcmToken();
-        fcmService.sendWebPushMessage(targetToken, title, body);
-      }
+      notificationService.createAndSaveNotification(notificationType, content, receiver, title, body);
     }
   }
 
@@ -80,5 +58,4 @@ public class NagLikeEventListener {
 
     return notificationSetting.getActivated();
   }
-
 }

@@ -2,12 +2,14 @@ package com.a606.jansori.domain.notification.service;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.TalkerType;
+import com.a606.jansori.domain.nag.event.NagLikeNotificationCreateEvent;
 import com.a606.jansori.domain.notification.domain.Notification;
 import com.a606.jansori.domain.notification.domain.NotificationBox;
 import com.a606.jansori.domain.notification.domain.NotificationType;
 import com.a606.jansori.domain.notification.dto.NotificationDto;
 import com.a606.jansori.domain.notification.dto.PatchNotificationsReqDto;
 import com.a606.jansori.domain.notification.dto.PatchNotificationsResDto;
+import com.a606.jansori.domain.notification.event.NotificationCreateEvent;
 import com.a606.jansori.domain.notification.repository.NotificationBoxRepository;
 import com.a606.jansori.domain.notification.repository.NotificationRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -28,6 +31,7 @@ public class NotificationService {
 
   private final NotificationRepository notificationRepository;
   private final NotificationBoxRepository notificationBoxRepository;
+  private final ApplicationEventPublisher publisher;
   private final SecurityUtil securityUtil;
   private StringBuilder sb = new StringBuilder();
 
@@ -85,7 +89,7 @@ public class NotificationService {
 
   @Transactional
   public Notification createAndSaveNotification(NotificationType notificationType, String content,
-      Member receiver) {
+      Member receiver, String title, String body) {
 
     NotificationBox notificationBox = notificationBoxRepository.findByMember(receiver);
 
@@ -98,12 +102,14 @@ public class NotificationService {
     notificationRepository.save(notification);
     notificationBox.updateModifiedAt(LocalDateTime.now(clock));
 
+    publisher.publishEvent(new NotificationCreateEvent(notification, title, body));
+
     return notification;
   }
 
   @Transactional
   public Notification createAndSaveNotification(NotificationType notificationType, String content,
-      Long talkerId, TalkerType talkerType, Member receiver) {
+      Long talkerId, TalkerType talkerType, Member receiver, String title, String body) {
 
     NotificationBox notificationBox = notificationBoxRepository.findByMember(receiver);
 
@@ -117,6 +123,8 @@ public class NotificationService {
 
     notificationRepository.save(notification);
     notificationBox.updateModifiedAt(LocalDateTime.now(clock));
+
+    publisher.publishEvent(new NotificationCreateEvent(notification, title, body));
 
     return notification;
   }

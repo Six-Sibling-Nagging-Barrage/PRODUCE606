@@ -31,8 +31,6 @@ public class PostTodoEventListener {
 
   private final NotificationSettingRepository notificationSettingRepository;
   private final NotificationTypeRepository notificationTypeRepository;
-  private final FcmTokenRepository fcmTokenRepository;
-  private final FcmService fcmService;
 
   private final String title = "육남매의 잔소리 폭격";
   private final String body = "회원님의 Todo에 다른 사용자의 잔소리가 달렸습니다.";
@@ -53,23 +51,7 @@ public class PostTodoEventListener {
 
     if(isNotificationSettingOn(notificationType, receiver)){
       notificationService.createAndSaveNotification(notificationType, content,
-              talkerId, TalkerType.MEMBER, receiver);
-    }
-  }
-
-  @EventListener(classes = {PostTodoEvent.class})
-  public void pushNotification(final PostTodoEvent postTodoEvent) {
-
-    Member receiver = postTodoEvent.getTodo().getMember();
-    List<FcmToken> fcmTokens = fcmTokenRepository.findAllByMember(receiver);
-    NotificationType notificationType =
-            notificationTypeRepository.findByTypeName(NotificationTypeName.NAGONMYTODO);
-
-    if(isNotificationSettingOn(notificationType, receiver) && fcmTokens != null){
-      for (FcmToken fcmToken : fcmTokens) {
-        String targetToken = fcmToken.getFcmToken();
-        fcmService.sendWebPushMessage(targetToken, title, body);
-      }
+              talkerId, TalkerType.MEMBER, receiver, title, body);
     }
   }
 
