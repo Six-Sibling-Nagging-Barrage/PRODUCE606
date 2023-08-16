@@ -62,9 +62,6 @@ public class TodoPersonaService {
 
     Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
 
-    NotificationType notificationType = notificationTypeRepository
-        .findByTypeName(NotificationTypeName.NAGONMYTODO);
-
     TodoPersona todoPersona = todoPersonaRepository.findById(todoPersonaId)
         .orElseThrow(TodoPersonaNotFoundException::new);
 
@@ -88,25 +85,9 @@ public class TodoPersonaService {
 
     if (likeCount == 1) {
       todoPersona.setLine(nagRandomGenerator.getRandomLineOfPersona(todoPersona.getPersona()));
-
-      // 캐릭터 잔소리가 달리는 상황에서 todo 주인의 알림설정이 수신 상태일 때 알림 이벤트 발생
-      if(isNotificationSettingOn(notificationType, todo.getMember())){
-        publisher.publishEvent(new PostPersonaReactionEvent(todoPersona, notificationType));
-      }
+      publisher.publishEvent(new PostPersonaReactionEvent(todoPersona));
     }
 
     return PostPersonaReactResDto.from(todoPersona);
-  }
-
-  private Boolean isNotificationSettingOn(NotificationType notificationType, Member member){
-
-    NotificationSetting notificationSetting =
-        notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member);
-
-    if(notificationSetting == null){
-      throw new NotificationSettingNotFoundException();
-    }
-
-    return notificationSetting.getActivated();
   }
 }

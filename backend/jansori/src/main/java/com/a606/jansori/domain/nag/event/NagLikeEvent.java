@@ -12,5 +12,4 @@ public class NagLikeEvent {
 
   private Member member;
   private Nag nag;
-  private NotificationType notificationType;
 }
