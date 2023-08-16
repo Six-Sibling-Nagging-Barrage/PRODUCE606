@@ -5,9 +5,6 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagInteraction;
-import com.a606.jansori.domain.nag.domain.NagLike;
-import com.a606.jansori.domain.nag.domain.NagUnlock;
-import com.a606.jansori.domain.nag.domain.Nags;
 import com.a606.jansori.domain.nag.dto.GetMemberNagsOfReqDto;
 import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
@@ -18,6 +15,7 @@ import com.a606.jansori.domain.nag.dto.GetNagsOfResDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
 import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.NagOfNagBox;
+import com.a606.jansori.domain.nag.dto.NagOfProfile;
 import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
@@ -157,19 +155,17 @@ public class NagService {
     Long cursor = getMemberNagsOfReqDto.getCursor();
     Integer size = getMemberNagsOfReqDto.getSize();
 
-    Slice<Nag> nags = nagRepository
-        .findByNagsWithLockStatusByMemberAndPages(viewer, owner, cursor, PageRequest.of(0, size));
-    List<NagUnlock> nagUnlocks = nagUnlockRepository
-        .findNagUnlocksByNagIsInAndMember(nags.getContent(), viewer);
-    List<NagLike> nagLikes = nagLikeRepository
-        .findNagLikesByNagIsInAndMember(nags.getContent(), viewer);
+    Slice<Nag> nagsOfPaging = nagRepository.findByNagsByMemberAndPages(owner, cursor,
+        PageRequest.of(0, size));
 
-    Nags nagsOfMemberProfile = new Nags(nags.getContent(), nagUnlocks, nagLikes);
+    List<NagInteraction> nagInteractions = nagInteractionRepository
+        .findNagInteractionsByNagIsInAndMember(nagsOfPaging.getContent(), viewer);
 
-    Long nextCursor = nags.hasNext() ? nags.getContent().get(size - 1).getId() : null;
+    Long nextCursor = nagsOfPaging.hasNext()
+        ? nagsOfPaging.getContent().get(size - 1).getId() : null;
 
-    return GetNagsOfOtherResDto
-        .ofOtherNagsList(nagsOfMemberProfile.getNags(), nags.hasNext(), nextCursor);
+    return GetNagsOfOtherResDto.ofOtherNagsList(nagInteractions.stream()
+        .map(NagOfProfile::from).collect(Collectors.toList()), nagsOfPaging.hasNext(), nextCursor);
   }
 
   @Transactional(readOnly = true)
