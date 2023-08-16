@@ -11,6 +11,8 @@ import HashTagItem from '../HashTag/HashTagItem';
 import NagCommentItem from '../../pages/FeedPage/components/NagCommentItem';
 import { personas } from '../../constants/persona';
 import SnackBar from '../UI/SnackBar';
+import todoDone from '../../assets/todo_done.png';
+import todoNotDone from '../../assets/todo_not_done.png';
 
 const TodoDetail = (props) => {
   const { todoItemDetail, onClose } = props;
@@ -20,9 +22,8 @@ const TodoDetail = (props) => {
   const [snackBarMessage, setSnackBarMessage] = useState('');
 
   const queryClient = useQueryClient();
-  const { data: todoDetailData } = useQuery(
-    ['todoDetailItem', todoDetailItem],
-    () => fetchTodoDetail(todoItemDetail.todoId)
+  const { data: todoDetailData } = useQuery(['todoDetailItem', todoDetailItem], () =>
+    fetchTodoDetail(todoItemDetail.todoId)
   );
 
   const fetchTodoDetail = async (todoId) => {
@@ -35,23 +36,18 @@ const TodoDetail = (props) => {
     onMutate: async (nagId) => {
       await queryClient.cancelQueries(['todoDetailItem']);
       const prevTodoDetail = queryClient.getQueryData(['todoDetailItem']);
-      queryClient.setQueryData(
-        ['todoDetailItem', todoDetailItem],
-        (oldData) => {
-          if (!oldData.nag) return oldData;
-          const updatedNag = {
-            ...oldData.nag,
-            isLiked: !oldData.nag.isLiked,
-            likeCount: oldData.nag.isLiked
-              ? oldData.nag.likeCount - 1
-              : oldData.nag.likeCount + 1,
-          };
-          return {
-            ...oldData,
-            nag: updatedNag,
-          };
-        }
-      );
+      queryClient.setQueryData(['todoDetailItem', todoDetailItem], (oldData) => {
+        if (!oldData.nag) return oldData;
+        const updatedNag = {
+          ...oldData.nag,
+          isLiked: !oldData.nag.isLiked,
+          likeCount: oldData.nag.isLiked ? oldData.nag.likeCount - 1 : oldData.nag.likeCount + 1,
+        };
+        return {
+          ...oldData,
+          nag: updatedNag,
+        };
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['todoDetailItem']);
@@ -85,20 +81,17 @@ const TodoDetail = (props) => {
     onMutate: async (nagId) => {
       await queryClient.cancelQueries(['todoDetailItem']);
       const prevTodoDetail = queryClient.getQueryData(['todoDetailItem']);
-      queryClient.setQueryData(
-        ['todoDetailItem', todoDetailItem],
-        (oldData) => {
-          if (!oldData.nag) return oldData;
-          const updatedNag = {
-            ...oldData.nag,
-            unlocked: true,
-          };
-          return {
-            ...oldData,
-            nag: updatedNag,
-          };
-        }
-      );
+      queryClient.setQueryData(['todoDetailItem', todoDetailItem], (oldData) => {
+        if (!oldData.nag) return oldData;
+        const updatedNag = {
+          ...oldData.nag,
+          unlocked: true,
+        };
+        return {
+          ...oldData,
+          nag: updatedNag,
+        };
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['todoDetailItem']);
@@ -122,7 +115,11 @@ const TodoDetail = (props) => {
         </Header>
         <TodoWrap>
           <TodoFinishedWrap>
-            {todoDetailData?.finished ? '✅' : '❌'}
+            {todoDetailData?.finished ? (
+              <TodoToggleButton src={todoDone} />
+            ) : (
+              <TodoToggleButton src={todoNotDone} />
+            )}
           </TodoFinishedWrap>
           <div>{todoDetailData?.content}</div>
           <HashTagContent>
@@ -166,9 +163,7 @@ const TodoDetail = (props) => {
           )}
         </NagListWrap>
       </TodoItemDetailTodoContainer>
-      {showSnackBar && (
-        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
-      )}
+      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
     </>
   );
 };
@@ -240,6 +235,11 @@ const TodoWrap = styled.div`
 
 const TodoFinishedWrap = styled.div`
   margin-bottom: 2vh;
+`;
+
+const TodoToggleButton = styled.img`
+  width: 40px;
+  margin: 0 auto;
 `;
 
 const NagListWrap = styled.div`
