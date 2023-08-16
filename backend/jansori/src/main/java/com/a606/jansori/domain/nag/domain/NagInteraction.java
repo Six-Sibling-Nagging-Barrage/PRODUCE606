@@ -41,4 +41,13 @@ public class NagInteraction {
   @Column
   @Builder.Default
   private Boolean nagUnlock = true;
+
+  public void toggleNagLike(Nag nag) {
+    if (nagLike) {
+      nag.decreaseLikeCount();
+    } else {
+      nag.increaseLikeCount();
+    }
+    nagLike = !nagLike;
+  }
 }
