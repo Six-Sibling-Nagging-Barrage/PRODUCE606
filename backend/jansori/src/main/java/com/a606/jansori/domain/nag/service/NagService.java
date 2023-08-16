@@ -4,7 +4,6 @@ import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
-import com.a606.jansori.domain.nag.domain.NagBox;
 import com.a606.jansori.domain.nag.domain.NagInteraction;
 import com.a606.jansori.domain.nag.domain.NagLike;
 import com.a606.jansori.domain.nag.domain.NagUnlock;
@@ -18,6 +17,7 @@ import com.a606.jansori.domain.nag.dto.GetNagsOfReqDto;
 import com.a606.jansori.domain.nag.dto.GetNagsOfResDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
 import com.a606.jansori.domain.nag.dto.NagDto;
+import com.a606.jansori.domain.nag.dto.NagOfNagBox;
 import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
@@ -187,12 +187,12 @@ public class NagService {
     Member member = securityUtil.getCurrentMemberByToken();
 
     List<Nag> nags = nagRepository.findByNagsOfNagBox(PageRequest.of(0, NAG_BOX_COUNT));
-    List<NagUnlock> nagUnlocks = nagUnlockRepository.findNagUnlocksByNagIsInAndMember(nags, member);
-    List<NagLike> nagLikes = nagLikeRepository.findNagLikesByNagIsInAndMember(nags, member);
+    List<NagInteraction> nagInteractions = nagInteractionRepository
+        .findNagInteractionsByNagIsInAndMember(nags, member);
 
-    NagBox nagBox = new NagBox(nags, nagUnlocks, nagLikes);
-
-    return GetNagsOfNagBoxResDto.fromNagsOfNagBox(nagBox.getNags());
+    return GetNagsOfNagBoxResDto.fromNagInteraction(nagInteractions.stream()
+        .map(NagOfNagBox::from)
+        .collect(Collectors.toList()));
   }
 
   @Transactional(readOnly = true)
