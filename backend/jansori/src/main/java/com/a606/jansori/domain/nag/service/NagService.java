@@ -41,6 +41,7 @@ import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
+import com.a606.jansori.infra.redis.util.NagBoxStatisticsUtil;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -71,15 +72,16 @@ public class NagService {
   private final NotificationTypeRepository notificationTypeRepository;
   private final NotificationSettingRepository notificationSettingRepository;
   private final ApplicationEventPublisher publisher;
+  private final NagBoxStatisticsUtil nagBoxStatisticsUtil;
 
   @Transactional
   public PostNagResDto createNag(PostNagReqDto postNagReqDto) {
     Tag tag = null;
 
-    if(postNagReqDto.getTagId() >= 0) {
+    if (postNagReqDto.getTagId() >= 0) {
       tag = tagRepository.findById(postNagReqDto.getTagId())
           .orElseThrow(TagNotFoundException::new);
-    }else if(postNagReqDto.getTagId() == -1) {
+    } else if (postNagReqDto.getTagId() == -1) {
       tag = Tag.createTag(postNagReqDto.getTagName());
       tagRepository.save(tag);
     }
@@ -92,8 +94,9 @@ public class NagService {
         preview);
 
     Nag savedNag = nagRepository.save(nag);
+    nagBoxStatisticsUtil.increaseTotalNagCount();
 
-    if(postNagReqDto.getTagId() >= 0) {
+    if (postNagReqDto.getTagId() >= 0) {
       publisher.publishEvent(new NagPublishedTodoEvent(savedNag));
     }
 
@@ -204,11 +207,18 @@ public class NagService {
 
   @Transactional(readOnly = true)
   public GetNagBoxStatisticsResDto getNagBoxStatisticsResDto() {
+    if (nagBoxStatisticsUtil.hasNagBoxStatistics()) {
+      return nagBoxStatisticsUtil.getNagBoxStatisticsResDto();
+    }
+
     Long totalMemberCount = memberRepository.count();
     Long totalDoneTodoCount = todoRepository.countTodosByFinishedIsTrue();
     Long totalNagsCount = nagRepository.count();
 
-    return GetNagBoxStatisticsResDto.of(totalMemberCount, totalDoneTodoCount, totalNagsCount);
+    return nagBoxStatisticsUtil.cachingNagBoxStatistics(
+        GetNagBoxStatisticsResDto.of(totalMemberCount,
+            totalDoneTodoCount,
+            totalNagsCount));
   }
 
   private void decreaseNagLike(Nag nag, NagLike nagLike) {
@@ -223,17 +233,17 @@ public class NagService {
     nag.increaseLikeCount();
 
     // 알림설정이 수신 상태일 경우만 알림 이벤트 생성
-    if(isNotificationSettingOn(notificationType, member)) {
+    if (isNotificationSettingOn(notificationType, member)) {
       publisher.publishEvent(new NagLikeEvent(member, nag, notificationType));
     }
   }
 
-  private Boolean isNotificationSettingOn(NotificationType notificationType, Member member){
+  private Boolean isNotificationSettingOn(NotificationType notificationType, Member member) {
 
     NotificationSetting notificationSetting =
         notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member);
 
-    if(notificationSetting == null){
+    if (notificationSetting == null) {
       throw new NotificationSettingNotFoundException();
     }
 

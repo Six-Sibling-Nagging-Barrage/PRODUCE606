@@ -38,6 +38,7 @@ import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
 import com.a606.jansori.domain.todo.repository.TodoAt;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 
+import com.a606.jansori.infra.redis.util.NagBoxStatisticsUtil;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -70,6 +71,8 @@ public class TodoService {
   private final NotificationTypeRepository notificationTypeRepository;
 
   private final ApplicationEventPublisher publisher;
+
+  private final NagBoxStatisticsUtil nagBoxStatisticsUtil;
 
   @Transactional
   public PostTodoResDto postTodo(PostTodoReqDto postTodoReqDto) {
@@ -182,6 +185,9 @@ public class TodoService {
     if (isNotificationSettingOn(notificationType, member) && !todo.getFinished()) {
       publisher.publishEvent(new TodoAccomplishmentEvent(todo, notificationType));
     }
+
+    boolean isNotFinish = !todo.getFinished();
+    nagBoxStatisticsUtil.updateTotalDoneTodoCount(isNotFinish);
 
     return PatchTodoResDto.from(todo.toggleFinished());
   }

@@ -1,13 +1,12 @@
 package com.a606.jansori.domain.nag.controller;
 
 import com.a606.jansori.domain.nag.dto.GetMemberNagsOfReqDto;
-import com.a606.jansori.domain.nag.dto.GetNagsOfOtherResDto;
-import com.a606.jansori.domain.nag.dto.GetNagsOfReqDto;
-import com.a606.jansori.domain.nag.task.NagBoxStatisticsScheduler;
 import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
-import com.a606.jansori.domain.nag.dto.GetNagsOfResDto;
 import com.a606.jansori.domain.nag.dto.GetNagsOfNagBoxResDto;
+import com.a606.jansori.domain.nag.dto.GetNagsOfOtherResDto;
+import com.a606.jansori.domain.nag.dto.GetNagsOfReqDto;
+import com.a606.jansori.domain.nag.dto.GetNagsOfResDto;
 import com.a606.jansori.domain.nag.dto.NagDto;
 import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class NagController {
 
   private final NagService nagService;
-  private final NagBoxStatisticsScheduler nagBoxStatisticsScheduler;
 
   @GetMapping("/my-list")
   public EnvelopeResponse<GetNagsOfResDto> getAllNagsByMine(
@@ -55,9 +53,9 @@ public class NagController {
   }
 
   @GetMapping("/nag-box/statistics")
-  public EnvelopeResponse<GetNagBoxStatisticsResDto> getNagBoxStatisticsByScheduling() {
+  public EnvelopeResponse<GetNagBoxStatisticsResDto> getNagBoxStatistics() {
     return EnvelopeResponse.<GetNagBoxStatisticsResDto>builder()
-        .data(nagBoxStatisticsScheduler.getNagBoxStatisticsResDto())
+        .data(nagService.getNagBoxStatisticsResDto())
         .build();
   }
 
