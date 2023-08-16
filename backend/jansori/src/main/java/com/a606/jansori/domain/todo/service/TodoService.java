@@ -5,6 +5,10 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.service.NagRandomGenerator;
+import com.a606.jansori.domain.notification.domain.NotificationType;
+import com.a606.jansori.domain.notification.domain.NotificationTypeName;
+import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
+import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.domain.persona.domain.Persona;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.domain.persona.repository.PersonaRepository;
@@ -35,7 +39,6 @@ import com.a606.jansori.global.auth.util.SecurityUtil;
 import com.a606.jansori.infra.redis.util.NagBoxStatisticsUtil;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -90,21 +93,26 @@ public class TodoService {
       todoPersona.setTodo(todo);
     });
 
-    if (!postTodoReqDto.isAllNewTags()) {
-      Optional<Nag> nag = nagRandomGenerator.getRandomNagWithTags(member, todo.getTodoTags());
-      if (nag.isPresent()) {
-        todo.setNag(nag.get());
+    Boolean isAllNewTags = postTodoReqDto.isAllNewTags();
 
-        publisher.publishEvent(new NagGenerateEvent(todo));
-        publisher.publishEvent(new PostTodoEvent(todo));
-      }
+    Nag nag = !isAllNewTags ? nagRandomGenerator.getRandomNagWithTags(member, todo.getTodoTags())
+        .orElse(null) : null;
+
+    if (isAllNewTags || nag == null) {
+
+      Todo savedTodo = todoRepository.save(todo);
+
+      publisher.publishEvent(new TodoWaitingNagEvent(TodoCacheDto.from(savedTodo)));
+
+      return PostTodoResDto.from(savedTodo);
     }
+
+    todo.setNag(nag);
 
     Todo savedTodo = todoRepository.save(todo);
 
-    if (postTodoReqDto.isAllNewTags()) {
-      publisher.publishEvent(new TodoWaitingNagEvent(TodoCacheDto.from(savedTodo)));
-    }
+    publisher.publishEvent(new NagGenerateEvent(savedTodo));
+    publisher.publishEvent(new PostTodoEvent(savedTodo));
 
     return PostTodoResDto.from(savedTodo);
   }
@@ -151,6 +159,8 @@ public class TodoService {
 
     Member member = securityUtil.getCurrentMemberByToken();
     Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
+    NotificationType notificationType = notificationTypeRepository
+        .findByTypeName(NotificationTypeName.TODO_WITH_YOUR_NAG_ACCOMPLISHED);
 
     if (todo.getMember() != member) {
       throw new TodoUnauthorizedException();

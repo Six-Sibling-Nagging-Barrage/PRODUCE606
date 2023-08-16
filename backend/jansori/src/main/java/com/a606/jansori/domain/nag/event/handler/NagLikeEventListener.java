@@ -18,32 +18,21 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class NagLikeEventListener {
-
-  private StringBuilder sb = new StringBuilder();
-
   private final NotificationService notificationService;
-
   private final NotificationSettingRepository notificationSettingRepository;
   private final NotificationTypeRepository notificationTypeRepository;
-
-  private final String title = "육남매의 잔소리 폭격";
-  private final String body = "사람들이 회원님의 잔소리를 좋아합니다.";
 
   @EventListener(classes = {NagLikeEvent.class})
   public void createNotificationByNagLike(final NagLikeEvent nagLikeEvent) {
 
-    sb.setLength(0);
-    Member member = nagLikeEvent.getMember();
     Nag nag = nagLikeEvent.getNag();
 
-    String content = sb.append(member.getNickname()).append("님이 ")
-        .append(nag.getMember().getNickname()).append("님의 잔소리를 좋아합니다.").toString();
     Member receiver = nag.getMember();
     NotificationType notificationType =
-            notificationTypeRepository.findByTypeName(NotificationTypeName.NAGREACTION);
+            notificationTypeRepository.findByTypeName(NotificationTypeName.NAG_LIKED);
 
     if(isNotificationSettingOn(notificationType, receiver)){
-      notificationService.createAndSaveNotification(notificationType, content, receiver, title, body);
+      notificationService.saveNotification(notificationType, nag.getContent(), receiver);
     }
   }
 

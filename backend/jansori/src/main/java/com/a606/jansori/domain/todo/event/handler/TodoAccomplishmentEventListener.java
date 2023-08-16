@@ -10,11 +10,6 @@ import com.a606.jansori.domain.notification.repository.NotificationTypeRepositor
 import com.a606.jansori.domain.notification.service.NotificationService;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.event.TodoAccomplishmentEvent;
-import com.a606.jansori.infra.message.domain.FcmToken;
-import com.a606.jansori.infra.message.repository.FcmTokenRepository;
-import com.a606.jansori.infra.message.service.FcmService;
-import java.time.Clock;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -37,29 +32,27 @@ public class TodoAccomplishmentEventListener {
   public void createNotificationByTodoComplete(
       final TodoAccomplishmentEvent todoAccomplishmentEvent) {
 
-    sb.setLength(0);
     Todo todo = todoAccomplishmentEvent.getTodo();
 
     if (todo.getNag() == null) {
       return;
     }
 
-    String content = sb.append(todo.getNag().getMember().getNickname()).append("님의 잔소리가 남겨진 ")
-            .append(todo.getMember().getNickname()).append("님의 Todo \"")
-            .append(todo.getContent()).append("\"가 완료되었습니다.").toString();
     Member receiver = todo.getNag().getMember();
-    NotificationType notificationType =
-            notificationTypeRepository.findByTypeName(NotificationTypeName.TODOACCOMPLISHMENT);
 
-    if(isNotificationSettingOn(notificationType, receiver)){
-      notificationService.createAndSaveNotification(notificationType, content, receiver, title, body);
+    NotificationType notificationType =
+        notificationTypeRepository.findByTypeName(
+            NotificationTypeName.TODO_WITH_YOUR_NAG_ACCOMPLISHED);
+
+    if (isNotificationSettingOn(notificationType, receiver)) {
+      notificationService.saveNotification(notificationType, todo.getContent(), receiver);
     }
   }
 
   private Boolean isNotificationSettingOn(NotificationType notificationType, Member member) {
 
     NotificationSetting notificationSetting =
-            notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member);
+        notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member);
 
     if (notificationSetting == null) {
       throw new NotificationSettingNotFoundException();
