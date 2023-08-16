@@ -61,11 +61,11 @@ const NagCommentItem = (props) => {
         {isMemberNag && (
           <ButtonGroup>
             {!nag.unlocked && (
-              <ButtonItem onClick={() => handleUnlockNag(nag.nagId)}>
+              <button onClick={() => handleUnlockNag(nag.nagId)}>
                 <UnlockImg src={lockIcon} />
-              </ButtonItem>
+              </button>
             )}
-            <ButtonItem onClick={() => handleLikeClick(nag.unlocked)}>
+            <button onClick={() => handleLikeClick(nag.unlocked)}>
               {nag.isLiked ? (
                 <LikeImg src={likeIcon} />
               ) : (
@@ -75,7 +75,7 @@ const NagCommentItem = (props) => {
                 />
               )}
               <LikeCount>{nag.likeCount}</LikeCount>
-            </ButtonItem>
+            </button>
           </ButtonGroup>
         )}
       </Bubble>
@@ -130,10 +130,6 @@ const ButtonGroup = styled.div`
   display: flex;
   right: 8px;
   height: 50px;
-`;
-
-const ButtonItem = styled.button`
-  margin-right: 5px;
 `;
 
 const UnlockImg = styled.img`
