@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class NagPublishedTodoEvent {
+public class NagWithReadyMadeTagEvent {
 
   private Nag nag;
 }

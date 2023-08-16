@@ -20,7 +20,8 @@ import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.dto.PutNagUnlockResDto;
-import com.a606.jansori.domain.nag.event.NagPublishedTodoEvent;
+import com.a606.jansori.domain.nag.event.NagLikeEvent;
+import com.a606.jansori.domain.nag.event.NagWithReadyMadeTagEvent;
 import com.a606.jansori.domain.nag.exception.NagInvalidRequestException;
 import com.a606.jansori.domain.nag.exception.NagLikeBusinessException;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
@@ -84,8 +85,8 @@ public class NagService {
     Nag savedNag = nagRepository.save(nag);
     nagBoxStatisticsUtil.increaseTotalNagCount();
 
-    if (postNagReqDto.getTagId() >= 0) {
-      publisher.publishEvent(new NagPublishedTodoEvent(savedNag));
+    if (postNagReqDto.getTagId() > 0) {
+      publisher.publishEvent(new NagWithReadyMadeTagEvent(savedNag));
     }
 
     return PostNagResDto.builder()

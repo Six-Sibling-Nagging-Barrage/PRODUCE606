@@ -11,13 +11,13 @@ import lombok.Getter;
 @Getter
 public class TodoCacheDto {
 
-  private Long id;
+  private Long todoId;
 
   private List<Long> tagIds;
 
   public static TodoCacheDto from(Todo todo) {
     return TodoCacheDto.builder()
-        .id(todo.getId())
+        .todoId(todo.getId())
         .tagIds(todo.getTodoTags()
             .stream()
             .map(TodoTag::getId)

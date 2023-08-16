@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class NagPublishedTodoEventListener {
+public class NagWithReadyMadeTagEventListener {
 
-  @EventListener(NagPublishedTodoEvent.class)
-  public void handle(NagPublishedTodoEvent event) {
+  @EventListener(NagWithReadyMadeTagEvent.class)
+  public void handle(NagWithReadyMadeTagEvent event) {
 
   }
 }

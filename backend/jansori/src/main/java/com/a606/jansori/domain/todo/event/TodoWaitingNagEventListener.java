@@ -1,5 +1,6 @@
 package com.a606.jansori.domain.todo.event;
 
+import com.a606.jansori.domain.todo.service.WaitingTodoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -8,8 +9,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class TodoWaitingNagEventListener {
 
+  private final WaitingTodoService waitingTodoService;
+
   @EventListener(TodoWaitingNagEvent.class)
-  public void handle(TodoWaitingNagEvent event) {
+  public void handleTodoWaitingNagEvent(TodoWaitingNagEvent event) {
+
+    waitingTodoService.hibernateTodo(event.getTodoCacheDto());
 
   }
 }
