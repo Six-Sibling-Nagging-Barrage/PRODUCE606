@@ -110,14 +110,14 @@ const PersonaImg = styled.img`
 // 페르소나 설명 출력하는 부분
 const PersonaDescriptionContainer = styled.div`
   position: relative;
-  top: -15px;
+  top: -30px;
   width: 70vw;
   height: 30vh;
   margin: 0 auto;
   padding-top: 3vh;
   background-color: #eeeef5;
   border-radius: 20px;
-  box-shadow: 0 0 10px rgba(163, 163, 163, 0.3);
+  // box-shadow: 0 0 10px rgba(163, 163, 163, 0.3);
   overflow-y: scroll;
   /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
   &::-webkit-scrollbar {
