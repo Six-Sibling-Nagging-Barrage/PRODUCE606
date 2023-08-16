@@ -61,6 +61,7 @@ const Feed = (props) => {
   );
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (specificTag === -1) {
       param = { cursor: null, pageSize };
     } else {

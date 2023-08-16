@@ -129,16 +129,15 @@ const FeedContainer = styled.div`
 `;
 
 const Left = styled.div`
-  position: relative;
   width: 32%;
 `;
 
 const Search = styled.div`
   margin: 0 auto;
   display: flex;
-  position: absolute;
-  top: 10px;
-  right: 40px;
+  position: fixed;
+  top: 82px;
+  right: 70%;
 `;
 
 const Follow = styled.div`
