@@ -6,14 +6,17 @@ import Mark from '../UI/Mark';
 import Button from '../UI/Button';
 import Toggle from '../UI/Toggle';
 import HashTag from '../HashTag/HashTag';
-import { createTodo, getTodoListByDate } from '../../apis/api/todo';
-import { useSetRecoilState, useRecoilValue } from 'recoil';
+import { createTodo, getTodoListByDate, getTodoListByDateByMember } from '../../apis/api/todo';
+import { useSetRecoilState, useRecoilValue, useRecoilState } from 'recoil';
 import {
   focusDateState,
   todoListState,
   todoInputFormContent,
   todoInputFormHashTag,
+  focusYearMonthState,
+  todoDaysState,
 } from '../../states/todo';
+import { memberIdState } from '../../states/user';
 import SnackBar from '../../components/UI/SnackBar';
 
 const validateBio = (value) => {
@@ -38,9 +41,12 @@ const TodoForm = () => {
   const [hashTagList, setHashTagList] = useState([]);
   const [isHashTagList, setIsHashTagList] = useState(false);
   const setDate = useSetRecoilState(focusDateState);
+  const [yearMonth, setYearMonth] = useRecoilState(focusYearMonthState);
   const setTodoList = useSetRecoilState(todoListState);
+  const setYearMonthTodoList = useSetRecoilState(todoDaysState);
   const todoInputFormContentValue = useRecoilValue(todoInputFormContent);
   const todoInputFormHasTagValue = useRecoilValue(todoInputFormHashTag);
+  const memberId = useRecoilValue(memberIdState);
 
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
@@ -67,13 +73,24 @@ const TodoForm = () => {
     if (response.code === '200') {
       setSnackBarMessage('TODO가 등록되었어요. 파이팅!');
       setShowSnackBar(true);
-      console.log(response);
+
       const newDate = moment(new Date()).format('YYYY-MM-DD');
       setDate(newDate);
       // 변경에 해당하는 api 호출
-      const result = await getTodoListByDate(newDate);
-      if (result.code === '200') {
-        setTodoList(result.data.todos);
+      const todoListResult = await getTodoListByDate(newDate);
+      if (todoListResult.code === '200') {
+        setTodoList(todoListResult.data.todos);
+      }
+
+      //캘린더 업데이트
+      const newYearMonth = moment(new Date()).format('YYYY-MM');
+      setYearMonth(newYearMonth);
+      const todoMonthListResult = await getTodoListByDateByMember({
+        memberId: memberId,
+        date: yearMonth,
+      });
+      if (todoMonthListResult.code === '200') {
+        setYearMonthTodoList(todoMonthListResult.data.dates);
       }
     }
     reset();
