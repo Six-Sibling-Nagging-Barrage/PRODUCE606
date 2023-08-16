@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import { personas } from '../../../constants/persona';
 import { useImageErrorHandler } from '../../../hooks/useImageErrorHandler';
 import { altImageUrl } from '../../../constants/image';
+import todoDone from '../../../assets/todo_done.png';
+import todoNotDone from '../../../assets/todo_not_done.png';
 
 const TodoPost = (props) => {
   const {
@@ -71,7 +73,13 @@ const TodoPost = (props) => {
           )}
         </PostHeader>
         <TodoContent>
-          <div className='finished'>{post.finished ? '✅' : '❌'}</div>
+          <div className='finished'>
+            {post.finished ? (
+              <TodoToggleButton src={todoDone} />
+            ) : (
+              <TodoToggleButton src={todoNotDone} />
+            )}
+          </div>
           <div className='todo'>{post.content}</div>
           <HashTagContainer>
             {post.tags?.map((tag) => {
@@ -136,6 +144,11 @@ const TodoContent = styled.div`
   & .todo {
     margin: 10px 0;
   }
+`;
+
+const TodoToggleButton = styled.img`
+  width: 40px;
+  margin: 0 auto;
 `;
 
 const HashTagContainer = styled.div`
