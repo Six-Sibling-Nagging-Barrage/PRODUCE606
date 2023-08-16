@@ -87,10 +87,3 @@ export const notificationState = atom({
   key: 'notificationState',
   default: false,
 });
-
-// fcm REACT_APP_FIREBASE_VAPIDKEY 값 넣어주기
-export const fcmVapIdKeyState = atom({
-  key: 'fcmVapIdKeyState',
-  default: '',
-  effects_UNSTABLE: [localStorageEffect('member_vapid')],
-});

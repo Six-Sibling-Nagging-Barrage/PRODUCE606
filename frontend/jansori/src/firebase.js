@@ -20,11 +20,11 @@ function requestPermission() {
 
       const messaging = getMessaging(app);
       getToken(messaging, {
-        // 웹 푸시 인증서
         vapidKey: process.env.REACT_APP_FIREBASE_VAPIDKEY,
       }).then((currentToken) => {
         if (currentToken) {
           console.log('토큰: ' + currentToken);
+          localStorage.setItem('fcmToken', currentToken);
         } else {
           console.log('토큰을 가져오지 못했습니다.');
         }
