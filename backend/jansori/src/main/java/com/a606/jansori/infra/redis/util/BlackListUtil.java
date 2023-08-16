@@ -13,7 +13,6 @@ public class BlackListUtil {
   private final RedisTemplate<String, Object> blackListTemplate;
 
   public void setBlackList(String key, Object o, long expiration) {
-    blackListTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(o.getClass()));
     blackListTemplate.opsForValue().set(key, o, expiration, TimeUnit.MILLISECONDS);
   }
 

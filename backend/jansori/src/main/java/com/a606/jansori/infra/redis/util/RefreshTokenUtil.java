@@ -17,9 +17,6 @@ public class RefreshTokenUtil {
 
   public void save(RefreshToken refreshToken, Long expire) {
 
-    redisTemplate.setValueSerializer(
-        new Jackson2JsonRedisSerializer<>(refreshToken.getRefreshToken().getClass()));
-
     redisTemplate.opsForValue().set(refreshToken.getEmail(), refreshToken.getRefreshToken());
     redisTemplate.expire(refreshToken.getRefreshToken(), expire, TimeUnit.MILLISECONDS);
   }
