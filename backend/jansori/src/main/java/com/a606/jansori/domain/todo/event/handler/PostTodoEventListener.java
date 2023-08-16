@@ -3,7 +3,12 @@ package com.a606.jansori.domain.todo.event.handler;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.TalkerType;
 import com.a606.jansori.domain.nag.domain.Nag;
+import com.a606.jansori.domain.notification.domain.NotificationSetting;
 import com.a606.jansori.domain.notification.domain.NotificationType;
+import com.a606.jansori.domain.notification.domain.NotificationTypeName;
+import com.a606.jansori.domain.notification.exception.NotificationSettingNotFoundException;
+import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
+import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.domain.notification.service.NotificationService;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.event.PostTodoEvent;
@@ -24,10 +29,14 @@ public class PostTodoEventListener {
 
   private final NotificationService notificationService;
 
+  private final NotificationSettingRepository notificationSettingRepository;
+  private final NotificationTypeRepository notificationTypeRepository;
   private final FcmTokenRepository fcmTokenRepository;
   private final FcmService fcmService;
 
-  // 이벤트 발생시 알림을 생성하고 알림함의 최근 알림 도착시간 업데이트
+  private final String title = "육남매의 잔소리 폭격";
+  private final String body = "회원님의 Todo에 다른 사용자의 잔소리가 달렸습니다.";
+
   @EventListener(classes = {PostTodoEvent.class})
   public void createNotificationByWriteMemberNagOnTodo(final PostTodoEvent postTodoEvent) {
 
@@ -35,35 +44,45 @@ public class PostTodoEventListener {
     Todo todo = postTodoEvent.getTodo();
     Nag nag = postTodoEvent.getTodo().getNag();
 
-    NotificationType notificationType = postTodoEvent.getNotificationType();
     String content = sb.append(nag.getMember().getNickname()).append("님이 \"")
         .append(todo.getContent()).append("\"에 잔소리를 남겼습니다.").toString();
     Long talkerId = nag.getMember().getId();
     Member receiver = todo.getMember();
+    NotificationType notificationType =
+            notificationTypeRepository.findByTypeName(NotificationTypeName.NAGONMYTODO);
 
-    notificationService.createAndSaveNotification(notificationType, content,
-        talkerId, TalkerType.MEMBER, receiver);
-
+    if(isNotificationSettingOn(notificationType, receiver)){
+      notificationService.createAndSaveNotification(notificationType, content,
+              talkerId, TalkerType.MEMBER, receiver);
+    }
   }
 
   @EventListener(classes = {PostTodoEvent.class})
   public void pushNotification(final PostTodoEvent postTodoEvent) {
 
     Member receiver = postTodoEvent.getTodo().getMember();
-
     List<FcmToken> fcmTokens = fcmTokenRepository.findAllByMember(receiver);
+    NotificationType notificationType =
+            notificationTypeRepository.findByTypeName(NotificationTypeName.NAGONMYTODO);
 
-    if (fcmTokens == null) {
-      return;
-    }
-
-    for (FcmToken fcmToken : fcmTokens) {
-
-      String targetToken = fcmToken.getFcmToken();
-      String title = "육남매의 잔소리 폭격";
-      String body = "회원님의 Todo에 다른 사용자의 잔소리가 달렸습니다.";
-
-      fcmService.sendWebPushMessage(targetToken, title, body);
+    if(isNotificationSettingOn(notificationType, receiver) && fcmTokens != null){
+      for (FcmToken fcmToken : fcmTokens) {
+        String targetToken = fcmToken.getFcmToken();
+        fcmService.sendWebPushMessage(targetToken, title, body);
+      }
     }
   }
+
+  private Boolean isNotificationSettingOn(NotificationType notificationType, Member member) {
+
+    NotificationSetting notificationSetting =
+            notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member);
+
+    if (notificationSetting == null) {
+      throw new NotificationSettingNotFoundException();
+    }
+
+    return notificationSetting.getActivated();
+  }
+
 }

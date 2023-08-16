@@ -228,25 +228,7 @@ public class NagService {
 
   private void increaseNagLike(Nag nag, Member member) {
     nagLikeRepository.save(NagLike.builder().nag(nag).member(member).build());
-    NotificationType notificationType = notificationTypeRepository
-        .findByTypeName(NotificationTypeName.NAGREACTION);
-    nag.increaseLikeCount();
 
-    // 알림설정이 수신 상태일 경우만 알림 이벤트 생성
-    if (isNotificationSettingOn(notificationType, member)) {
-      publisher.publishEvent(new NagLikeEvent(member, nag, notificationType));
-    }
-  }
-
-  private Boolean isNotificationSettingOn(NotificationType notificationType, Member member) {
-
-    NotificationSetting notificationSetting =
-        notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member);
-
-    if (notificationSetting == null) {
-      throw new NotificationSettingNotFoundException();
-    }
-
-    return notificationSetting.getActivated();
+    publisher.publishEvent(new NagLikeEvent(member, nag));
   }
 }

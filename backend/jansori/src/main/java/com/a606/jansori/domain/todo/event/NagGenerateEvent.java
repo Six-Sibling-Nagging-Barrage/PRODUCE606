@@ -10,5 +10,4 @@ import lombok.Getter;
 public class NagGenerateEvent {
 
   private Todo todo;
-  private NotificationType notificationType;
 }

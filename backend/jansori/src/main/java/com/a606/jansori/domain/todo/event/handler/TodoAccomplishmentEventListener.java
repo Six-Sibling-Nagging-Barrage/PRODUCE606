@@ -1,7 +1,12 @@
 package com.a606.jansori.domain.todo.event.handler;
 
 import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.domain.notification.domain.NotificationSetting;
 import com.a606.jansori.domain.notification.domain.NotificationType;
+import com.a606.jansori.domain.notification.domain.NotificationTypeName;
+import com.a606.jansori.domain.notification.exception.NotificationSettingNotFoundException;
+import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
+import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.domain.notification.service.NotificationService;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.event.TodoAccomplishmentEvent;
@@ -22,8 +27,13 @@ public class TodoAccomplishmentEventListener {
 
   private final NotificationService notificationService;
 
+  private final NotificationSettingRepository notificationSettingRepository;
+  private final NotificationTypeRepository notificationTypeRepository;
   private final FcmTokenRepository fcmTokenRepository;
   private final FcmService fcmService;
+
+  private final String title = "육남매의 잔소리 폭격";
+  private final String body = "회원님의 잔소리가 남겨진 사용자의 Todo가 완료되었습니다.";
 
   @EventListener(classes = {TodoAccomplishmentEvent.class})
   public void createNotificationByTodoComplete(
@@ -36,35 +46,44 @@ public class TodoAccomplishmentEventListener {
       return;
     }
 
-    NotificationType notificationType = todoAccomplishmentEvent.getNotificationType();
     String content = sb.append(todo.getNag().getMember().getNickname()).append("님의 잔소리가 남겨진 ")
-        .append(todo.getMember().getNickname()).append("님의 Todo \"")
-        .append(todo.getContent()).append("\"가 완료되었습니다.").toString();
+            .append(todo.getMember().getNickname()).append("님의 Todo \"")
+            .append(todo.getContent()).append("\"가 완료되었습니다.").toString();
     Member receiver = todo.getNag().getMember();
+    NotificationType notificationType =
+            notificationTypeRepository.findByTypeName(NotificationTypeName.TODOACCOMPLISHMENT);
 
-    notificationService.createAndSaveNotification(notificationType, content, receiver);
-
+    if(isNotificationSettingOn(notificationType, receiver)){
+      notificationService.createAndSaveNotification(notificationType, content, receiver);
+    }
   }
 
   @EventListener(classes = {TodoAccomplishmentEvent.class})
   public void pushNotification(final TodoAccomplishmentEvent todoAccomplishmentEvent) {
 
     Member receiver = todoAccomplishmentEvent.getTodo().getNag().getMember();
-
     List<FcmToken> fcmTokens = fcmTokenRepository.findAllByMember(receiver);
+    NotificationType notificationType =
+            notificationTypeRepository.findByTypeName(NotificationTypeName.TODOACCOMPLISHMENT);
 
-    if (fcmTokens == null) {
-      return;
+    if(isNotificationSettingOn(notificationType, receiver) && fcmTokens != null){
+      for (FcmToken fcmToken : fcmTokens) {
+        String targetToken = fcmToken.getFcmToken();
+        fcmService.sendWebPushMessage(targetToken, title, body);
+      }
+    }
+  }
+
+  private Boolean isNotificationSettingOn(NotificationType notificationType, Member member) {
+
+    NotificationSetting notificationSetting =
+            notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member);
+
+    if (notificationSetting == null) {
+      throw new NotificationSettingNotFoundException();
     }
 
-    for (FcmToken fcmToken : fcmTokens) {
-
-      String targetToken = fcmToken.getFcmToken();
-      String title = "육남매의 잔소리 폭격";
-      String body = "회원님의 잔소리가 남겨진 사용자의 Todo가 완료되었습니다.";
-
-      fcmService.sendWebPushMessage(targetToken, title, body);
-    }
+    return notificationSetting.getActivated();
   }
 
 }

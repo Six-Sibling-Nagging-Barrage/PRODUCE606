@@ -3,12 +3,18 @@ package com.a606.jansori.domain.nag.event.handler;
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.event.NagLikeEvent;
+import com.a606.jansori.domain.notification.domain.NotificationSetting;
 import com.a606.jansori.domain.notification.domain.NotificationType;
+import com.a606.jansori.domain.notification.domain.NotificationTypeName;
+import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
+import com.a606.jansori.domain.notification.exception.NotificationSettingNotFoundException;
+import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
 import com.a606.jansori.domain.notification.service.NotificationService;
 import com.a606.jansori.infra.message.domain.FcmToken;
 import com.a606.jansori.infra.message.repository.FcmTokenRepository;
 import com.a606.jansori.infra.message.service.FcmService;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -21,8 +27,13 @@ public class NagLikeEventListener {
 
   private final NotificationService notificationService;
 
+  private final NotificationSettingRepository notificationSettingRepository;
+  private final NotificationTypeRepository notificationTypeRepository;
   private final FcmTokenRepository fcmTokenRepository;
   private final FcmService fcmService;
+
+  private final String title = "육남매의 잔소리 폭격";
+  private final String body = "사람들이 회원님의 잔소리를 좋아합니다.";
 
   @EventListener(classes = {NagLikeEvent.class})
   public void createNotificationByNagLike(final NagLikeEvent nagLikeEvent) {
@@ -31,33 +42,43 @@ public class NagLikeEventListener {
     Member member = nagLikeEvent.getMember();
     Nag nag = nagLikeEvent.getNag();
 
-    NotificationType notificationType = nagLikeEvent.getNotificationType();
     String content = sb.append(member.getNickname()).append("님이 ")
         .append(nag.getMember().getNickname()).append("님의 잔소리를 좋아합니다.").toString();
     Member receiver = nag.getMember();
+    NotificationType notificationType =
+            notificationTypeRepository.findByTypeName(NotificationTypeName.NAGREACTION);
 
-    notificationService.createAndSaveNotification(notificationType, content, receiver);
+    if(isNotificationSettingOn(notificationType, receiver)){
+      notificationService.createAndSaveNotification(notificationType, content, receiver);
+    }
   }
 
   @EventListener(classes = {NagLikeEvent.class})
   public void pushNotification(final NagLikeEvent nagLikeEvent) {
 
     Member receiver = nagLikeEvent.getNag().getMember();
-
     List<FcmToken> fcmTokens = fcmTokenRepository.findAllByMember(receiver);
+    NotificationType notificationType =
+            notificationTypeRepository.findByTypeName(NotificationTypeName.NAGREACTION);
 
-    if (fcmTokens == null) {
-      return;
+    if(isNotificationSettingOn(notificationType, receiver) && fcmTokens != null){
+      for (FcmToken fcmToken : fcmTokens) {
+        String targetToken = fcmToken.getFcmToken();
+        fcmService.sendWebPushMessage(targetToken, title, body);
+      }
+    }
+  }
+
+  private Boolean isNotificationSettingOn(NotificationType notificationType, Member member) {
+
+    NotificationSetting notificationSetting =
+            notificationSettingRepository.findByNotificationTypeAndMember(notificationType, member);
+
+    if (notificationSetting == null) {
+      throw new NotificationSettingNotFoundException();
     }
 
-    for (FcmToken fcmToken : fcmTokens) {
-
-      String targetToken = fcmToken.getFcmToken();
-      String title = "육남매의 잔소리 폭격";
-      String body = "사람들이 회원님의 잔소리를 좋아합니다.";
-
-      fcmService.sendWebPushMessage(targetToken, title, body);
-    }
+    return notificationSetting.getActivated();
   }
 
 }

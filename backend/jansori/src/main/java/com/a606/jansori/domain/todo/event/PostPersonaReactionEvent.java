@@ -10,5 +10,4 @@ import lombok.Getter;
 public class PostPersonaReactionEvent {
 
   private TodoPersona todoPersona;
-  private NotificationType notificationType;
 }
