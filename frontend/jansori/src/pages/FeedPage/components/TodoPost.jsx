@@ -118,10 +118,6 @@ const PostHeader = styled.header`
   position: relative;
 `;
 
-// const ProfileLink = styled.Link`
-//   relative inline-flex items-center justify-center w-12 h-12 text-white rounded-full
-// `;
-
 const ProfileImage = styled.img`
   object-fit: cover;
   width: 48px;
