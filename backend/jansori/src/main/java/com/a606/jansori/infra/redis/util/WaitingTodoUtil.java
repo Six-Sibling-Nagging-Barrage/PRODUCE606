@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class WaitingTodoUtil {
 
   private final RedisTemplate<String, String> redisTemplate;
-  private static final String WAITING_TODO_IDENTIFIER = "waitingTodoTag:";
+  private static final String WAITING_TODO_IDENTIFIER = "waitingTodo:";
 
   public String findFrontTodoId(Long tagId) {
 

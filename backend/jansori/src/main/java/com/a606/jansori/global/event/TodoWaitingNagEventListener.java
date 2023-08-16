@@ -1,4 +1,4 @@
-package com.a606.jansori.domain.todo.event;
+package com.a606.jansori.global.event;
 
 import com.a606.jansori.domain.todo.service.WaitingTodoService;
 import lombok.RequiredArgsConstructor;

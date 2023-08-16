@@ -20,8 +20,8 @@ import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.dto.PutNagUnlockResDto;
-import com.a606.jansori.domain.nag.event.NagLikeEvent;
-import com.a606.jansori.domain.nag.event.NagWithReadyMadeTagEvent;
+import com.a606.jansori.global.event.NagLikeEvent;
+import com.a606.jansori.global.event.NagWithReadyMadeTagEvent;
 import com.a606.jansori.domain.nag.exception.NagInvalidRequestException;
 import com.a606.jansori.domain.nag.exception.NagLikeBusinessException;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
@@ -65,14 +65,22 @@ public class NagService {
 
   @Transactional
   public PostNagResDto createNag(PostNagReqDto postNagReqDto) {
-    Tag tag = null;
 
-    if (postNagReqDto.getTagId() >= 0) {
+    Tag tag;
+
+    boolean isFirstNagOfReadyMadeTag = false;
+
+    if (postNagReqDto.getTagId() > 0) {
       tag = tagRepository.findById(postNagReqDto.getTagId())
           .orElseThrow(TagNotFoundException::new);
+
+      isFirstNagOfReadyMadeTag = nagRepository.existsByTag(tag);
+
     } else if (postNagReqDto.getTagId() == -1) {
-      tag = Tag.createTag(postNagReqDto.getTagName());
-      tagRepository.save(tag);
+      tag = tagRepository.save(Tag.createTag(postNagReqDto.getTagName()));
+
+    } else {
+      throw new NagInvalidRequestException();
     }
 
     Member member = securityUtil.getCurrentMemberByToken();
@@ -83,8 +91,11 @@ public class NagService {
         preview);
 
     Nag savedNag = nagRepository.save(nag);
-    nagBoxStatisticsUtil.increaseTotalNagCount();
 
+    nagBoxStatisticsUtil.increaseTotalNagCount();
+    if (isFirstNagOfReadyMadeTag) {
+      publisher.publishEvent(new NagWithReadyMadeTagEvent(savedNag));
+    }
     if (postNagReqDto.getTagId() > 0) {
       publisher.publishEvent(new NagWithReadyMadeTagEvent(savedNag));
     }

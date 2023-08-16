@@ -9,7 +9,7 @@ import com.a606.jansori.domain.notification.dto.GetNotificationBoxCheckResDto;
 import com.a606.jansori.domain.notification.dto.NotificationDto;
 import com.a606.jansori.domain.notification.dto.PatchNotificationsReqDto;
 import com.a606.jansori.domain.notification.dto.PatchNotificationsResDto;
-import com.a606.jansori.domain.notification.event.NotificationCreateEvent;
+import com.a606.jansori.global.event.NotificationCreateEvent;
 import com.a606.jansori.domain.notification.repository.NotificationBoxRepository;
 import com.a606.jansori.domain.notification.repository.NotificationRepository;
 import com.a606.jansori.domain.notification.util.MessageUtil;

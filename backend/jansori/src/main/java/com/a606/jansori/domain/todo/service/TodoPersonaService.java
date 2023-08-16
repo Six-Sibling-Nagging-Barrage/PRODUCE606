@@ -14,7 +14,7 @@ import com.a606.jansori.domain.persona.repository.TodoPersonaRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.dto.GetTodoPersonaDetailsResDto;
 import com.a606.jansori.domain.todo.dto.PostPersonaReactResDto;
-import com.a606.jansori.domain.todo.event.PersonaReactionEvent;
+import com.a606.jansori.global.event.PersonaReactionEvent;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
