@@ -113,24 +113,8 @@ const NagCommentItem = (props) => {
           setIsModalOpen={setIsModalOpen}
           handleAccept={handleUnlockNag}
           handleCancel={handleCloseModal}
-        >
-          <CommentContainer>
-            <Profile>
-              <ProfileImg
-                isMemberNag={isMemberNag}
-                src={
-                  nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl
-                }
-                onError={handleImgError}
-              />
-              <NickName>{isMemberNag && nag.nagMember.nickname}</NickName>
-            </Profile>
-            <Bubble>
-              <CommentContentWrapper>{nag.content}</CommentContentWrapper>
-            </Bubble>
-          </CommentContainer>
-          <div>티켓 1장을 사용해 잔소리를 열어볼까요?</div>
-        </AlertModal>
+          nag={nag}
+        />
       )}
     </>
   );

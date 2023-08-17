@@ -5,12 +5,14 @@ import likeIcon from '../../../assets/like_icon.avif';
 import lockIcon from '../../../assets/lock_icon.png';
 import sendIcon from '../../../assets/send_icon.png';
 import SnackBar from '../../../components/UI/SnackBar';
+import AlertModal from '../../../components/UI/AlertModal';
 
 const NagItem = (props) => {
   const { isMine, nag, toggleLike, toggleUnlock, width } = props;
 
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleLikeClick = (unlocked) => {
     if (isMine) return;
@@ -22,8 +24,19 @@ const NagItem = (props) => {
     toggleLike({ nagId: nag.nagId });
   };
 
+  const handleClickUnlock = async () => {
+    setIsModalOpen(true);
+    document.body.style.overflow = 'hidden'; // 스크롤 막기
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    document.body.style.overflow = 'visible'; // 스크롤 활성화
+  };
+
   const handleUnlockNag = async () => {
     toggleUnlock({ nagId: nag.nagId });
+    handleCloseModal();
   };
 
   const handleSnackBarClose = () => {
@@ -38,7 +51,7 @@ const NagItem = (props) => {
           <Header>
             <HashTagItem editable={false} hashTag={nag.tag} />
             {!isMine && !nag.unlocked && (
-              <button onClick={() => handleUnlockNag(nag.nagId)}>
+              <button onClick={handleClickUnlock}>
                 <UnlockImg src={lockIcon} />
               </button>
             )}
@@ -71,6 +84,14 @@ const NagItem = (props) => {
       )}
       {showSnackBar && (
         <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
+      )}
+      {isModalOpen && (
+        <AlertModal
+          setIsModalOpen={setIsModalOpen}
+          handleAccept={handleUnlockNag}
+          handleCancel={handleCloseModal}
+          nag={nag}
+        />
       )}
     </>
   );
