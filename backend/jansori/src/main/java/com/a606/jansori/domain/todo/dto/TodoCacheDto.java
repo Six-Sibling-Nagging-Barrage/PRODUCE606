@@ -1,5 +1,6 @@
 package com.a606.jansori.domain.todo.dto;
 
+import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TodoTag;
 import com.a606.jansori.domain.todo.domain.Todo;
 import java.util.List;
@@ -20,8 +21,9 @@ public class TodoCacheDto {
         .todoId(todo.getId())
         .tagIds(todo.getTodoTags()
             .stream()
-            .map(TodoTag::getId)
+            .map(tt -> tt.getTag().getId())
             .collect(Collectors.toList()))
         .build();
   }
+
 }

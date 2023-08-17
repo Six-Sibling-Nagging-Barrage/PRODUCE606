@@ -57,7 +57,7 @@ public class ReadyMadeNagService {
 
       todo.setNag(nag);
 
-      publisher.publishEvent(new NagDeliveryEvent(todo));
+      publisher.publishEvent(new NagDeliveryEvent(todoRepository.save(todo)));
       break;
 
     }

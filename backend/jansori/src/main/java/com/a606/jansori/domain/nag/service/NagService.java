@@ -68,13 +68,9 @@ public class NagService {
 
     Tag tag;
 
-    boolean isFirstNagOfReadyMadeTag = false;
-
     if (postNagReqDto.getTagId() > 0) {
       tag = tagRepository.findById(postNagReqDto.getTagId())
           .orElseThrow(TagNotFoundException::new);
-
-      isFirstNagOfReadyMadeTag = nagRepository.existsByTag(tag);
 
     } else if (postNagReqDto.getTagId() == -1) {
       tag = tagRepository.save(Tag.createTag(postNagReqDto.getTagName()));
@@ -93,9 +89,7 @@ public class NagService {
     Nag savedNag = nagRepository.save(nag);
 
     nagBoxStatisticsUtil.increaseTotalNagCount();
-    if (isFirstNagOfReadyMadeTag) {
-      publisher.publishEvent(new NagWithReadyMadeTagEvent(savedNag));
-    }
+
     if (postNagReqDto.getTagId() > 0) {
       publisher.publishEvent(new NagWithReadyMadeTagEvent(savedNag));
     }

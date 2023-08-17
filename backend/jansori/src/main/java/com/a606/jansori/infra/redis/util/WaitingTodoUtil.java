@@ -18,6 +18,11 @@ public class WaitingTodoUtil {
     return redisTemplate.opsForList().leftPop(WAITING_TODO_IDENTIFIER + tagId);
   }
 
+  public void pushRear(Long tagId, Long todoId) {
+
+    redisTemplate.opsForList().rightPush(WAITING_TODO_IDENTIFIER + tagId, String.valueOf(todoId));
+  }
+
   public void popFront(Long tagId) {
 
     redisTemplate.opsForList().leftPop(WAITING_TODO_IDENTIFIER + tagId);

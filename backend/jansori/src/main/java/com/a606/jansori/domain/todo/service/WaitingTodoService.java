@@ -1,8 +1,7 @@
 package com.a606.jansori.domain.todo.service;
 
-import com.a606.jansori.domain.todo.domain.WaitingTodo;
 import com.a606.jansori.domain.todo.dto.TodoCacheDto;
-import com.a606.jansori.domain.todo.repository.WaitingTodoRepository;
+import com.a606.jansori.infra.redis.util.WaitingTodoUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -10,14 +9,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class WaitingTodoService {
 
-  private final WaitingTodoRepository waitingTodoRepository;
+  private final WaitingTodoUtil waitingTodoUtil;
 
   public void hibernateTodo(TodoCacheDto todoCacheDto) {
 
-    todoCacheDto.getTagIds().forEach((tagId) -> waitingTodoRepository.save(WaitingTodo.builder()
-        .tagId(String.valueOf(tagId))
-        .todoId(String.valueOf(todoCacheDto.getTodoId()))
-        .build())
+    todoCacheDto.getTagIds().forEach((tagId) -> waitingTodoUtil.pushRear(tagId,
+        todoCacheDto.getTodoId())
     );
+
   }
 }
