@@ -5,6 +5,8 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagInteraction;
+import com.a606.jansori.domain.nag.domain.NagsOfNagBox;
+import com.a606.jansori.domain.nag.domain.NagsOfProfile;
 import com.a606.jansori.domain.nag.dto.GetMemberNagsOfReqDto;
 import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
@@ -14,8 +16,6 @@ import com.a606.jansori.domain.nag.dto.GetNagsOfReqDto;
 import com.a606.jansori.domain.nag.dto.GetNagsOfResDto;
 import com.a606.jansori.domain.nag.dto.NagDetailDto;
 import com.a606.jansori.domain.nag.dto.NagDto;
-import com.a606.jansori.domain.nag.dto.NagOfNagBox;
-import com.a606.jansori.domain.nag.dto.NagOfProfile;
 import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
@@ -155,17 +155,16 @@ public class NagService {
     Long cursor = getMemberNagsOfReqDto.getCursor();
     Integer size = getMemberNagsOfReqDto.getSize();
 
-    Slice<Nag> nagsOfPaging = nagRepository.findByNagsByMemberAndPages(owner, cursor,
+    Slice<Nag> nags = nagRepository.findByNagsByMemberAndPages(owner, cursor,
         PageRequest.of(0, size));
 
     List<NagInteraction> nagInteractions = nagInteractionRepository
-        .findNagInteractionsByNagIsInAndMember(nagsOfPaging.getContent(), viewer);
+        .findNagInteractionsByNagIsInAndMember(nags.getContent(), viewer);
 
-    Long nextCursor = nagsOfPaging.hasNext()
-        ? nagsOfPaging.getContent().get(size - 1).getId() : null;
-
-    return GetNagsOfOtherResDto.ofOtherNagsList(nagInteractions.stream()
-        .map(NagOfProfile::from).collect(Collectors.toList()), nagsOfPaging.hasNext(), nextCursor);
+    Long nextCursor = nags.hasNext() ? nags.getContent().get(size - 1).getId() : null;
+    return GetNagsOfOtherResDto.ofOtherNagsList(
+            new NagsOfProfile(nags.getContent(), nagInteractions).getNagOfProfiles(),
+            nags.hasNext(), nextCursor);
   }
 
   @Transactional(readOnly = true)
@@ -186,9 +185,8 @@ public class NagService {
     List<NagInteraction> nagInteractions = nagInteractionRepository
         .findNagInteractionsByNagIsInAndMember(nags, member);
 
-    return GetNagsOfNagBoxResDto.fromNagInteraction(nagInteractions.stream()
-        .map(NagOfNagBox::from)
-        .collect(Collectors.toList()));
+    return GetNagsOfNagBoxResDto.fromNagInteraction(
+        new NagsOfNagBox(nags, nagInteractions).getNagOfNagBoxes());
   }
 
   @Transactional(readOnly = true)
