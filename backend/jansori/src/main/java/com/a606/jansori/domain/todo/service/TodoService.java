@@ -5,12 +5,6 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.service.NagRandomGenerator;
-import com.a606.jansori.domain.notification.domain.NotificationSetting;
-import com.a606.jansori.domain.notification.domain.NotificationType;
-import com.a606.jansori.domain.notification.domain.NotificationTypeName;
-import com.a606.jansori.domain.notification.exception.NotificationSettingNotFoundException;
-import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
-import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.domain.persona.domain.Persona;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.domain.persona.repository.PersonaRepository;
@@ -37,14 +31,12 @@ import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
 import com.a606.jansori.domain.todo.repository.TodoAt;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
-
+import com.a606.jansori.global.auth.util.SecurityUtil;
 import com.a606.jansori.infra.redis.util.NagBoxStatisticsUtil;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import com.a606.jansori.global.auth.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -65,10 +57,6 @@ public class TodoService {
   private final NagRandomGenerator nagRandomGenerator;
 
   private final SecurityUtil securityUtil;
-
-  private final NotificationSettingRepository notificationSettingRepository;
-
-  private final NotificationTypeRepository notificationTypeRepository;
 
   private final ApplicationEventPublisher publisher;
 
@@ -163,8 +151,6 @@ public class TodoService {
 
     Member member = securityUtil.getCurrentMemberByToken();
     Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
-    NotificationType notificationType = notificationTypeRepository
-        .findByTypeName(NotificationTypeName.TODOACCOMPLISHMENT);
 
     if (todo.getMember() != member) {
       throw new TodoUnauthorizedException();
