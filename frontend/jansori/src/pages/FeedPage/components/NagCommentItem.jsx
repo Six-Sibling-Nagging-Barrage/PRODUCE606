@@ -13,7 +13,15 @@ import AlertModal from '../../../components/UI/AlertModal';
 const NagCommentItem = (props) => {
   const navigate = useNavigate();
   const setNavBar = useSetRecoilState(navBarState);
-  const { isMemberNag, isMine, todoId, nag, toggleLike, toggleUnlock, setIsDetailTodoItem } = props;
+  const {
+    isMemberNag,
+    isMine,
+    todoId,
+    nag,
+    toggleLike,
+    toggleUnlock,
+    setIsDetailTodoItem,
+  } = props;
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -63,13 +71,17 @@ const NagCommentItem = (props) => {
             <ProfileImg
               onClick={handleProfileButton}
               isMemberNag={isMemberNag}
-              src={nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl}
+              src={
+                nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl
+              }
               onError={handleImgError}
             />
           ) : (
             <ProfileImg
               isMemberNag={isMemberNag}
-              src={nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl}
+              src={
+                nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl
+              }
               onError={handleImgError}
             />
           )}
@@ -90,7 +102,7 @@ const NagCommentItem = (props) => {
                 ) : (
                   <LikeImg
                     src={likeIcon}
-                    filter='invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);'
+                    filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
                   />
                 )}
                 <LikeCount>{nag.likeCount}</LikeCount>
@@ -99,7 +111,9 @@ const NagCommentItem = (props) => {
           )}
         </Bubble>
       </CommentContainer>
-      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
+      {showSnackBar && (
+        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
+      )}
       {isModalOpen && (
         <AlertModal
           setIsModalOpen={setIsModalOpen}
@@ -132,6 +146,7 @@ const NickName = styled.div`
 `;
 
 const ProfileImg = styled.img`
+  cursor: pointer;
   ${(props) =>
     props.isMemberNag
       ? css`
@@ -154,7 +169,8 @@ const CommentContentWrapper = styled.div`
 `;
 
 const UnlockImg = styled.img`
-  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%) contrast(83%);
+  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%)
+    contrast(83%);
 `;
 
 const ButtonGroup = styled.div`
