@@ -51,9 +51,9 @@ const ValueCount = styled.p`
   m-1
   text-xl
   px-2
-  text-green-500
   lg:text-3xl
   md:text-2xl
   sm:text-xl
 `}
+  color : #9548c6
 `;
