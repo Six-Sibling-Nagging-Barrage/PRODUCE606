@@ -67,12 +67,12 @@ const NagRankingItem = (props) => {
             </Link>
           </Profile>
           <NagContent>
-            {nag.unlocked
-              ? nag.content
-              : nag.preview}
+            {/* {memberId === nag.nagMember.memberId || nag.unlocked */}
+            {nag.unlocked ? nag.content : nag.preview}
           </NagContent>
         </Nag>
         <ButtonBadge>
+          {/* {memberId === nag.nagMember.memberId || nag.unlocked ? ( */}
           {nag.unlocked ? (
             <LikeButtonItem onClick={handleLikeClick}>
               {nag.isLiked ? (
