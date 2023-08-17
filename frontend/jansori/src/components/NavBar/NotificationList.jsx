@@ -112,8 +112,8 @@ const CenteredContainer = styled.div`
 const NotificationListWrap = styled.div`
   z-index: 100;
   width: 95%;
-  max-height: 100%;
-  padding: 10px 0;
+  height: 100%;
+  padding: 10px 5px;
   overflow-y: scroll;
   border-radius: 10px;
   /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */

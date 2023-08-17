@@ -37,12 +37,11 @@ const NotificationitemWrap = styled.div`
   z-index: 100;
   border-radius: 10px;
   padding: 1vh;
-  border: 2px solid rgba(91, 43, 134, 0.3);
+  // border: 2px solid rgba(91, 43, 134, 0.3);
   // background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 0.5vh;
+  box-shadow: 0 0 6px rgba(91, 43, 134, 0.3);
+  margin-bottom: 1vh;
   position: relative;
-  line-height: 20px;
 `;
 
 const ContentWrap = styled.div`
