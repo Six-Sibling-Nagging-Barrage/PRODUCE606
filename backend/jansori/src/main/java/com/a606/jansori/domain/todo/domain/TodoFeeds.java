@@ -27,10 +27,13 @@ public class TodoFeeds {
   }
 
   private void changeNagUnlockWithLikeStatus(NagInteraction nagInteraction) {
-    todoFeeds.forEach(todoFeed -> {
+    for (TodoFeedDto todoFeed : todoFeeds) {
+      if(todoFeed.getFeedNagDto() == null) {
+        continue;
+      }
       if (todoFeed.getFeedNagDto().getNagId().equals(nagInteraction.getNag().getId())) {
         todoFeed.changeNagLikedAndUnlockStatus(nagInteraction);
       }
-    });
+    }
   }
 }
