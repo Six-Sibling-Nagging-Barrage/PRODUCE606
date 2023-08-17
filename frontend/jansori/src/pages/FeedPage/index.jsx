@@ -16,6 +16,7 @@ const FeedPage = () => {
   const [specificTag, setSpecificTag] = useState(-1);
   const [hashTagList, setHashTagList] = useState([]);
   const [currentPostId, setCurrentPostId] = useState(-1);
+  const [currentPost, setCurrentPost] = useState(null);
   const [personaReaction, setPersonaReaction] = useState([]);
 
   const memberId = useRecoilValue(memberIdState);
@@ -98,6 +99,7 @@ const FeedPage = () => {
           getFeedData={specificTag === -1 ? getFollowingFeed : getSpecificFeed}
           setPersonaReaction={setPersonaReaction}
           setCurrentPostId={setCurrentPostId}
+          setCurrentPost={setCurrentPost}
           currentPostId={currentPostId}
         />
         <Right>
@@ -107,6 +109,7 @@ const FeedPage = () => {
               setPersonaReaction={setPersonaReaction}
               setCurrentPostId={setCurrentPostId}
               currentPostId={currentPostId}
+              currentPost={currentPost}
             />
           )}
         </Right>
@@ -136,7 +139,7 @@ const Search = styled.div`
   margin: 0 auto;
   display: flex;
   position: fixed;
-  top: 82px;
+  top: 72px;
   right: 70%;
 `;
 

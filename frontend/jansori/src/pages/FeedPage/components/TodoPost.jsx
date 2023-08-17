@@ -15,6 +15,7 @@ const TodoPost = (props) => {
     post,
     currentPostId,
     setCurrentPostId,
+    setCurrentPost,
     setPersonaReaction,
     toggleLike,
     toggleUnlock,
@@ -37,6 +38,7 @@ const TodoPost = (props) => {
       return setCurrentPostId(-1);
     }
     setCurrentPostId(post.todoId);
+    setCurrentPost(post);
     getPersonaReaction();
   };
 
@@ -73,17 +75,19 @@ const TodoPost = (props) => {
           )}
         </PostHeader>
         <TodoContent>
-          <div className='finished'>
+          <div className="finished">
             {post.finished ? (
               <TodoToggleButton src={todoDone} />
             ) : (
               <TodoToggleButton src={todoNotDone} />
             )}
           </div>
-          <div className='todo'>{post.content}</div>
+          <div className="todo">{post.content}</div>
           <HashTagContainer>
             {post.tags?.map((tag) => {
-              return <HashTagItem key={tag.tagId} hashTag={tag} editable={false} />;
+              return (
+                <HashTagItem key={tag.tagId} hashTag={tag} editable={false} />
+              );
             })}
           </HashTagContainer>
         </TodoContent>
@@ -107,7 +111,7 @@ const TodoPost = (props) => {
 const PostContainer = styled.div`
   ${tw`p-4 pb-1.5`}
   border-radius: 20px;
-  margin: 10px auto;
+  margin: 0 auto;
   margin-bottom: 15px;
   background-color: white;
   box-shadow: 0 0 10px rgba(163, 163, 163, 0.2);

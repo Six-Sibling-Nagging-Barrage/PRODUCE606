@@ -4,9 +4,18 @@ import NagCommentItem from './NagCommentItem';
 import { createPersonaReaction } from '../../../apis/api/todo';
 import { personas } from '../../../constants/persona';
 import { useImageErrorHandler } from '../../../hooks/useImageErrorHandler';
+import { Link } from 'react-router-dom';
+import HashTagItem from '../../../components/HashTag/HashTagItem';
+import { altImageUrl } from '../../../constants/image';
 
 const PersonaReaction = (props) => {
-  const { personaReaction, setPersonaReaction, currentPostId, setCurrentPostId } = props;
+  const {
+    personaReaction,
+    setPersonaReaction,
+    currentPostId,
+    setCurrentPostId,
+    currentPost,
+  } = props;
 
   const [personaIndex, setPersonaIndex] = useState(-1);
 
@@ -42,57 +51,96 @@ const PersonaReaction = (props) => {
         <CloseBtn onClick={handleClosePersona}>X</CloseBtn>
       </Header>
       <PersonaReactionContainer>
-        <PersonaCounter>
-          {personaReaction.map((reaction) => {
-            return (
-              <PersonaProfile
-                key={reaction.todoPersonaId}
-                onMouseEnter={() => {
-                  handlePersonaHover(reaction.personaId);
-                }}
-                onClick={() => {
-                  handleClickPersonaReaction(reaction.personaId, reaction.todoPersonaId);
-                }}
-              >
-                <PersonaImg
-                  src={personas[reaction.personaId - 1].imgUrl}
-                  onError={handleImgError}
-                />
-                {/* <CountBadge>
+        <PostContainer>
+          <PostHeader>
+            <Link
+              to={`/profile?id=${encodeURIComponent(
+                currentPost.member.memberId
+              )}`}
+            >
+              <ProfileImage
+                src={
+                  currentPost.member.imageUrl
+                    ? currentPost.member.imageUrl
+                    : altImageUrl
+                }
+                onError={handleImgError}
+              />
+            </Link>
+            <div>
+              <WriterName>{currentPost.member.nickname}</WriterName>
+              <CreateDate>{currentPost.todoAt}</CreateDate>
+            </div>
+          </PostHeader>
+          <TodoContent>
+            <div className="todo">{currentPost.content}</div>
+            <HashTagContainer>
+              {currentPost.tags?.map((tag) => {
+                return (
+                  <HashTagItem key={tag.tagId} hashTag={tag} editable={false} />
+                );
+              })}
+            </HashTagContainer>
+          </TodoContent>
+        </PostContainer>
+        <PersonaContainer>
+          <PersonaCounter>
+            {personaReaction.map((reaction) => {
+              return (
+                <PersonaProfile
+                  key={reaction.todoPersonaId}
+                  onMouseEnter={() => {
+                    handlePersonaHover(reaction.personaId);
+                  }}
+                  onClick={() => {
+                    handleClickPersonaReaction(
+                      reaction.personaId,
+                      reaction.todoPersonaId
+                    );
+                  }}
+                >
+                  <PersonaImg
+                    src={personas[reaction.personaId - 1].imgUrl}
+                    onError={handleImgError}
+                  />
+                  {/* <CountBadge>
                   {reaction.likeCount < 100 ? reaction.likeCount : '99+'}
                 </CountBadge> */}
-              </PersonaProfile>
-            );
-          })}
-        </PersonaCounter>
-        {personaIndex === -1 ? (
-          <PersonaBio personaId={-1}>캐릭터를 클릭해 잔소리를 해주세요.</PersonaBio>
-        ) : (
-          <PersonaBio personaId={personaIndex}>
-            <div>{personas[personaIndex].name}</div>
-            <div>{personas[personaIndex].bio}</div>
-          </PersonaBio>
-        )}
-        <div>
-          {personaReaction.map((reaction) => {
-            if (!reaction.content) return;
-            return (
-              <NagCommentItem
-                key={reaction.todoPersonaId}
-                isMemberNag={false}
-                nag={{
-                  nagId: reaction.todoPersonaId,
-                  likeCount: reaction.likeCount,
-                  content: reaction.content,
-                  nagMember: {
-                    nickname: personas[reaction.personaId - 1].name,
-                    imageUrl: personas[reaction.personaId - 1].imgUrl,
-                  },
-                }}
-              />
-            );
-          })}
-        </div>
+                </PersonaProfile>
+              );
+            })}
+          </PersonaCounter>
+          {personaIndex === -1 ? (
+            <PersonaBio personaId={-1}>
+              캐릭터를 클릭해 잔소리를 해주세요.
+            </PersonaBio>
+          ) : (
+            <PersonaBio personaId={personaIndex}>
+              <div>{personas[personaIndex].name}</div>
+              <div>{personas[personaIndex].bio}</div>
+            </PersonaBio>
+          )}
+          <div>
+            {personaReaction.map((reaction) => {
+              if (!reaction.content) return;
+              return (
+                <NagCommentItem
+                  key={reaction.todoPersonaId}
+                  isMemberNag={false}
+                  nag={{
+                    nagId: reaction.todoPersonaId,
+                    likeCount: reaction.likeCount,
+                    content: reaction.content,
+                    nagMember: {
+                      nickname: personas[reaction.personaId - 1].name,
+                      imageUrl: personas[reaction.personaId - 1].imgUrl,
+                    },
+                  }}
+                />
+              );
+            })}
+          </div>
+        </PersonaContainer>
       </PersonaReactionContainer>
     </PersonaReactionWrapper>
   );
@@ -100,13 +148,13 @@ const PersonaReaction = (props) => {
 
 const PersonaReactionWrapper = styled.div`
   position: fixed;
-  top: 85px;
+  top: 72px;
   right: 20px;
   display: flex;
+  max-height: 80vh;
 `;
 
 const PersonaReactionContainer = styled.div`
-  width: fit-content;
   width: 400px;
   background-color: white;
   padding: 10px 15px;
@@ -126,6 +174,16 @@ const CloseBtn = styled.button`
 
 const PersonaImg = styled.img`
   ${tw`w-16 h-16`}
+`;
+
+const PersonaContainer = styled.div`
+  max-height: 400px;
+  overflow: auto;
+  /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none; /* 파이어폭스 */
 `;
 
 const PersonaCounter = styled.div`
@@ -185,6 +243,52 @@ const PersonaBio = styled.div`
     margin-left: -6.5px;
     margin-top: -12px;
   }
+`;
+
+const PostContainer = styled.div`
+  ${tw`p-3 pb-1.5`}
+  border-radius: 20px;
+  margin: 0 auto;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(163, 163, 163, 0.3);
+  font-size: 14px;
+`;
+
+const PostHeader = styled.header`
+  ${tw`flex gap-4`}
+  position: relative;
+`;
+
+const ProfileImage = styled.img`
+  object-fit: cover;
+  width: 35px;
+  height: 35px;
+  ${tw`max-w-full rounded-full`}
+`;
+
+const WriterName = styled.div`
+  text-align: left;
+  font-size: 13px;
+`;
+
+const CreateDate = styled.div`
+  ${tw`text-slate-400`}
+  text-align:left;
+  font-size: 12px;
+`;
+
+const TodoContent = styled.div`
+  text-align: center;
+  margin: 10px;
+  & .todo {
+    margin: 10px 0;
+  }
+`;
+
+const HashTagContainer = styled.div`
+  width: fit-content;
+  margin: 0 auto;
+  display: flex;
 `;
 
 export default PersonaReaction;

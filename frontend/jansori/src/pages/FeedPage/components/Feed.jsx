@@ -19,6 +19,7 @@ const Feed = (props) => {
     getFeedData,
     currentPostId,
     setCurrentPostId,
+    setCurrentPost,
     setPersonaReaction,
   } = props;
 
@@ -72,6 +73,7 @@ const Feed = (props) => {
 
   const fetchMoreTodoPosts = async (pageParam) => {
     const data = await getFeedData(pageParam);
+    console.log(data.data);
     return data?.data;
   };
 
@@ -135,6 +137,7 @@ const Feed = (props) => {
     // 잔소리 초성 해제 api
     const data = await updateNagUnlock(nagId);
     if (data.code === '200') {
+      console.log(data);
       setTicket(data.data.ticketCount);
       setSnackBarMessage('티켓 1개를 소모해 잔소리를 열었어요.');
       setShowSnackBar(true);
@@ -190,6 +193,7 @@ const Feed = (props) => {
                 key={post.todoId}
                 currentPostId={currentPostId}
                 setCurrentPostId={setCurrentPostId}
+                setCurrentPost={setCurrentPost}
                 setPersonaReaction={setPersonaReaction}
                 toggleLike={updateLikeMutation.mutate}
                 toggleUnlock={updateUnlockMutation.mutate}
