@@ -20,8 +20,6 @@ import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.dto.PutNagUnlockResDto;
-import com.a606.jansori.global.event.NagLikeEvent;
-import com.a606.jansori.global.event.NagWithReadyMadeTagEvent;
 import com.a606.jansori.domain.nag.exception.NagInvalidRequestException;
 import com.a606.jansori.domain.nag.exception.NagLikeBusinessException;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
@@ -34,6 +32,7 @@ import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
+import com.a606.jansori.global.event.NagWithReadyMadeTagEvent;
 import com.a606.jansori.infra.redis.util.NagBoxStatisticsUtil;
 import java.util.List;
 import java.util.Objects;
@@ -87,7 +86,7 @@ public class NagService {
         preview);
 
     Nag savedNag = nagRepository.save(nag);
-
+    nagInteractionRepository.save(NagInteraction.ofMyNag(nag, member));
     nagBoxStatisticsUtil.increaseTotalNagCount();
 
     if (postNagReqDto.getTagId() > 0) {

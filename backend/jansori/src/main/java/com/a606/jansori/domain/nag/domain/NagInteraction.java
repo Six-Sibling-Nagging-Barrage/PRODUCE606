@@ -66,4 +66,11 @@ public class NagInteraction {
         .member(member)
         .build();
   }
+
+  public static NagInteraction ofMyNag(Nag nag, Member member) {
+    return NagInteraction.builder()
+        .nag(nag)
+        .member(member)
+        .build();
+  }
 }
