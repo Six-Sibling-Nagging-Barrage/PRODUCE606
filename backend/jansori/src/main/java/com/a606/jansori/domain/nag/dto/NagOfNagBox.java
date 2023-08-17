@@ -23,14 +23,14 @@ public class NagOfNagBox extends NagDto {
 
   public static NagOfNagBox from(Nag nag) {
     return NagOfNagBox.builder()
-        .nagId(nagInteraction.getNag().getId())
-        .content(nagInteraction.getNag().getContent())
-        .createAt(nagInteraction.getNag().getCreatedAt())
-        .preview(nagInteraction.getNag().getPreview())
-        .unlocked(nagInteraction.getNagUnlock())
-        .likeCount(nagInteraction.getNag().getLikeCount())
-        .isLiked(nagInteraction.getNagLike())
-        .nagMember(NagMember.from(nagInteraction.getNag().getMember()))
+        .nagId(nag.getId())
+        .content(nag.getContent())
+        .createAt(nag.getCreatedAt())
+        .preview(nag.getPreview())
+        .unlocked(false)
+        .likeCount(nag.getLikeCount())
+        .isLiked(false)
+        .nagMember(NagMember.from(nag.getMember()))
         .build();
   }
 
