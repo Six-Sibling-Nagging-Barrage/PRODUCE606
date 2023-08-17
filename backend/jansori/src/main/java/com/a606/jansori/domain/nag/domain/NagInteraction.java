@@ -1,6 +1,7 @@
 package com.a606.jansori.domain.nag.domain;
 
 import com.a606.jansori.domain.member.domain.Member;
+import com.a606.jansori.domain.nag.event.NagLikeEvent;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 
 @Builder
 @AllArgsConstructor
@@ -42,10 +44,11 @@ public class NagInteraction {
   @Builder.Default
   private Boolean nagUnlock = true;
 
-  public void toggleNagLike(Nag nag) {
+  public void toggleNagLike(Nag nag, ApplicationEventPublisher publisher) {
     if (nagLike) {
       nag.decreaseLikeCount();
     } else {
+      publisher.publishEvent(new NagLikeEvent(member, nag));
       nag.increaseLikeCount();
     }
     nagLike = !nagLike;

@@ -102,7 +102,7 @@ public class NagService {
     NagInteraction nagInteraction = nagInteractionRepository
         .findNagInteractionByNagAndMember(nag, member).orElseThrow(NagLikeBusinessException::new);
 
-    nagInteraction.toggleNagLike(nag);
+    nagInteraction.toggleNagLike(nag, publisher);
 
     return PostNagLikeResDto.from(nagInteraction.getNagLike());
   }
