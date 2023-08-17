@@ -3,12 +3,7 @@ import tw, { styled } from 'twin.macro';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { getTodoDetail } from '../../apis/api/todo';
 import { memberIdState } from '../../states/user';
-import {
-  useTodoDetailState,
-  todoInputFormContent,
-  todoInputFormHashTag,
-  todoTodoDetailModalState,
-} from '../../states/todo';
+import { useTodoDetailState, todoInputFormContent, todoInputFormHashTag } from '../../states/todo';
 import moment from 'moment';
 // import Modal from '../UI/Modal';
 import HashTagItem from '../HashTag/HashTagItem';
@@ -24,7 +19,7 @@ const TodoItem = (props) => {
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
   const memberId = useRecoilValue(memberIdState);
-  const [isDetailTodoItem, setIsDetailTodoItem] = useRecoilState(todoTodoDetailModalState);
+  const [isDetailTodoItem, setIsDetailTodoItem] = useState(false);
   const [todoItemDetail, setTodoItemDetail] = useRecoilState(useTodoDetailState);
   const setTodoInputFormContent = useSetRecoilState(todoInputFormContent);
   const setTodoInputFormHashTag = useSetRecoilState(todoInputFormHashTag);
@@ -69,7 +64,13 @@ const TodoItem = (props) => {
 
   return (
     <TodoContainer>
-      {isDetailTodoItem && <TodoDetail onClose={handleModalOpen} todoItemDetail={todoItemDetail} />}
+      {isDetailTodoItem && (
+        <TodoDetail
+          onClose={handleModalOpen}
+          todoItemDetail={todoItemDetail}
+          setIsDetailTodoItem={setIsDetailTodoItem}
+        />
+      )}
       <TodoDone>
         <div className='finished' onClick={handleTodoClick}>
           {currentTodo.finished ? (

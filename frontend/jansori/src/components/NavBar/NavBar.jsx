@@ -50,22 +50,22 @@ const NavBar = () => {
   };
 
   const handleProfileClick = () => {
-    setIsProfileModalOpen(!isProfileModalOpen);
     setIsBackgroundOpen(isProfileModalOpen);
+    setIsProfileModalOpen(!isProfileModalOpen);
     setIsNotificationModalOpen(false);
     setIsToggleOpen(false);
   };
 
   const handleNotificationClick = () => {
     setIsUnreadNotificationLeft(false);
-    setIsNotificationModalOpen(!isNotificationModalOpen);
     setIsBackgroundOpen(isNotificationModalOpen);
+    setIsNotificationModalOpen(!isNotificationModalOpen);
     setIsProfileModalOpen(false);
     setIsToggleOpen(false);
   };
 
   const handleMenuClick = (index) => {
-    setIsBackgroundOpen(!isBackgroundOpen);
+    setIsBackgroundOpen(false);
     setIsToggleOpen(false);
     setIsProfileModalOpen(false);
     setIsNotificationModalOpen(false);
@@ -76,12 +76,12 @@ const NavBar = () => {
     setIsToggleOpen(false);
     setIsProfileModalOpen(false);
     setIsNotificationModalOpen(false);
-    setIsBackgroundOpen(false);
+    setIsBackgroundOpen(true);
   };
 
   return (
     <>
-      {isBackgroundOpen && <Background onClick={handleClose} />}
+      {!isBackgroundOpen && <Background onClick={handleClose} />}
       <Nav>
         {/* 로고 들어가는 부분 시작 */}
         <NavWrap>

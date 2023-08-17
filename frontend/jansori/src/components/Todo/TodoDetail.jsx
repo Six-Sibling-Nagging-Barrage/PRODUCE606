@@ -15,7 +15,7 @@ import todoDone from '../../assets/todo_done.png';
 import todoNotDone from '../../assets/todo_not_done.png';
 
 const TodoDetail = (props) => {
-  const { todoItemDetail, onClose } = props;
+  const { todoItemDetail, onClose, setIsDetailTodoItem } = props;
   const todoDetailItem = useRecoilValue(useTodoDetailState);
   const [ticket, setTicket] = useRecoilState(ticketState);
   const [showSnackBar, setShowSnackBar] = useState(false);
@@ -141,6 +141,7 @@ const TodoDetail = (props) => {
                   nag={todoDetailData.nag}
                   toggleLike={updateLikeMutation.mutate}
                   toggleUnlock={updateUnlockMutation.mutate}
+                  setIsDetailTodoItem={setIsDetailTodoItem}
                 />
               )}
               {todoDetailData?.personas?.map((persona) => {
@@ -178,7 +179,7 @@ const Background = styled.div`
   bottom: 0;
   left: 0;
   position: fixed;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(255, 255, 255, 0.3);
   z-index: 30;
 `;
 
