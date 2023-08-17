@@ -1,7 +1,7 @@
 package com.a606.jansori.domain.nag.domain;
 
 import com.a606.jansori.domain.member.domain.Member;
-import com.a606.jansori.domain.nag.event.NagLikeEvent;
+import com.a606.jansori.global.event.NagLikeEvent;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
