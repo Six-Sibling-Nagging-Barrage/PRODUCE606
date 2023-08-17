@@ -161,7 +161,7 @@ const ButtonGroup = styled.div`
 `;
 
 const UnlockButton = styled.button`
-  max-width: 23px;
+  width: 23px;
   margin: 0 8px;
   display: flex;
   align-items: center; /* 수직 중앙 정렬 */
