@@ -9,12 +9,14 @@ import SpeechBubble from '../../../components/UI/SpeechBubble';
 import SnackBar from '../../../components/UI/SnackBar';
 import { useImageErrorHandler } from '../../../hooks/useImageErrorHandler';
 import { altImageUrl } from '../../../constants/image';
+import AlertModal from '../../../components/UI/AlertModal';
 
 const NagRankingItem = (props) => {
   const { nag, isodd, toggleLike, toggleUnlock } = props;
   const memberId = useRecoilValue(memberIdState);
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleImgError = useImageErrorHandler();
 
@@ -27,8 +29,19 @@ const NagRankingItem = (props) => {
     toggleLike({ nagId: nag.nagId });
   };
 
+  const handleClickUnlock = async () => {
+    setIsModalOpen(true);
+    document.body.style.overflow = 'hidden'; // 스크롤 막기
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    document.body.style.overflow = 'visible'; // 스크롤 활성화
+  };
+
   const handleUnlockNag = async () => {
     toggleUnlock({ nagId: nag.nagId });
+    handleCloseModal();
   };
 
   const handleSnackBarClose = () => {
@@ -41,21 +54,27 @@ const NagRankingItem = (props) => {
       <SpeechBubble isodd={isodd}>
         <SpeechBubbleWrap>
           <Profile>
-            <Link to={`/profile?id=${encodeURIComponent(nag.nagMember.memberId)}`}>
+            <Link
+              to={`/profile?id=${encodeURIComponent(nag.nagMember.memberId)}`}
+            >
               <ProfileImg
-                src={nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl}
+                src={
+                  nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl
+                }
                 onError={handleImgError}
               />
               <NickName>{nag.nagMember.nickname}</NickName>
             </Link>
           </Profile>
           <CommentContentWrapper>
-            {memberId === nag.nagMember.memberId || nag.unlocked ? nag.content : nag.preview}
+            {memberId === nag.nagMember.memberId || nag.unlocked
+              ? nag.content
+              : nag.preview}
           </CommentContentWrapper>
           <ButtonGroup>
             {memberId === nag.nagMember.memberId ||
               (!nag.unlocked && (
-                <ButtonItem onClick={() => handleUnlockNag(nag.nagId)}>
+                <ButtonItem onClick={handleClickUnlock}>
                   <UnlockImg src={lockIcon} />
                 </ButtonItem>
               ))}
@@ -65,7 +84,7 @@ const NagRankingItem = (props) => {
               ) : (
                 <LikeImg
                   src={likeIcon}
-                  filter='invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);'
+                  filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
                 />
               )}
               <LikeCount>{nag.likeCount}</LikeCount>
@@ -73,7 +92,17 @@ const NagRankingItem = (props) => {
           </ButtonGroup>
         </SpeechBubbleWrap>
       </SpeechBubble>
-      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
+      {showSnackBar && (
+        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
+      )}
+      {isModalOpen && (
+        <AlertModal
+          setIsModalOpen={setIsModalOpen}
+          handleAccept={handleUnlockNag}
+          handleCancel={handleCloseModal}
+          nag={nag}
+        />
+      )}
     </NagRankingItemContainer>
   );
 };
@@ -131,7 +160,8 @@ const ButtonItem = styled.button`
 `;
 
 const UnlockImg = styled.img`
-  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%) contrast(83%);
+  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%)
+    contrast(83%);
   width: 40px;
   padding: 8px;
   &:hover {
