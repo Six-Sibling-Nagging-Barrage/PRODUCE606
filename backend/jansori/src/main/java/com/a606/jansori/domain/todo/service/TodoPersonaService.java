@@ -2,6 +2,8 @@ package com.a606.jansori.domain.todo.service;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.nag.service.NagRandomGenerator;
+import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
+import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.domain.persona.domain.PersonaReaction;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.domain.persona.exception.ReactionForbiddenException;
@@ -12,7 +14,7 @@ import com.a606.jansori.domain.persona.repository.TodoPersonaRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.domain.todo.dto.GetTodoPersonaDetailsResDto;
 import com.a606.jansori.domain.todo.dto.PostPersonaReactResDto;
-import com.a606.jansori.domain.todo.event.PostPersonaReactionEvent;
+import com.a606.jansori.global.event.PersonaReactionEvent;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
@@ -75,7 +77,7 @@ public class TodoPersonaService {
 
     if (likeCount == 1) {
       todoPersona.setLine(nagRandomGenerator.getRandomLineOfPersona(todoPersona.getPersona()));
-      publisher.publishEvent(new PostPersonaReactionEvent(todoPersona));
+      publisher.publishEvent(new PersonaReactionEvent(todoPersona));
     }
 
     return PostPersonaReactResDto.from(todoPersona);

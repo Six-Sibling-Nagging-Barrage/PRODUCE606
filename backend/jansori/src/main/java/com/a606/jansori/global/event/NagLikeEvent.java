@@ -1,4 +1,4 @@
-package com.a606.jansori.domain.nag.event;
+package com.a606.jansori.global.event;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.nag.domain.Nag;

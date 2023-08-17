@@ -5,6 +5,9 @@ import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.service.NagRandomGenerator;
+import com.a606.jansori.domain.notification.domain.NotificationType;
+import com.a606.jansori.domain.notification.domain.NotificationTypeName;
+import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.domain.persona.domain.Persona;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.domain.persona.repository.PersonaRepository;
@@ -22,22 +25,21 @@ import com.a606.jansori.domain.todo.dto.PatchTodoResDto;
 import com.a606.jansori.domain.todo.dto.PostTodoReqDto;
 import com.a606.jansori.domain.todo.dto.PostTodoResDto;
 import com.a606.jansori.domain.todo.dto.TodoCacheDto;
-import com.a606.jansori.domain.todo.event.NagGenerateEvent;
-import com.a606.jansori.domain.todo.event.PostTodoEvent;
-import com.a606.jansori.domain.todo.event.TodoAccomplishmentEvent;
-import com.a606.jansori.domain.todo.event.TodoWaitingNagEvent;
 import com.a606.jansori.domain.todo.exception.TodoBusinessException;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
 import com.a606.jansori.domain.todo.repository.TodoAt;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
 import com.a606.jansori.global.auth.util.SecurityUtil;
+import com.a606.jansori.global.event.NagDeliveryEvent;
+import com.a606.jansori.global.event.TodoAccomplishmentEvent;
+import com.a606.jansori.global.event.TodoWaitingNagEvent;
 import com.a606.jansori.infra.redis.util.NagBoxStatisticsUtil;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +59,7 @@ public class TodoService {
   private final NagRandomGenerator nagRandomGenerator;
 
   private final SecurityUtil securityUtil;
+  private final NotificationTypeRepository notificationTypeRepository;
 
   private final ApplicationEventPublisher publisher;
 
@@ -90,21 +93,25 @@ public class TodoService {
       todoPersona.setTodo(todo);
     });
 
-    if (!postTodoReqDto.isAllNewTags()) {
-      Optional<Nag> nag = nagRandomGenerator.getRandomNagWithTags(member, todo.getTodoTags());
-      if (nag.isPresent()) {
-        todo.setNag(nag.get());
+    Boolean isAllNewTags = postTodoReqDto.isAllNewTags();
 
-        publisher.publishEvent(new NagGenerateEvent(todo));
-        publisher.publishEvent(new PostTodoEvent(todo));
-      }
+    Nag nag = !isAllNewTags ? nagRandomGenerator.getRandomNagWithTags(member, todo.getTodoTags())
+        .orElse(null) : null;
+
+    if (isAllNewTags || nag == null) {
+
+      Todo savedTodo = todoRepository.save(todo);
+
+      publisher.publishEvent(new TodoWaitingNagEvent(TodoCacheDto.from(savedTodo)));
+
+      return PostTodoResDto.from(savedTodo);
     }
+
+    todo.setNag(nag);
 
     Todo savedTodo = todoRepository.save(todo);
 
-    if (postTodoReqDto.isAllNewTags()) {
-      publisher.publishEvent(new TodoWaitingNagEvent(TodoCacheDto.from(savedTodo)));
-    }
+    publisher.publishEvent(new NagDeliveryEvent(savedTodo));
 
     return PostTodoResDto.from(savedTodo);
   }
@@ -151,6 +158,8 @@ public class TodoService {
 
     Member member = securityUtil.getCurrentMemberByToken();
     Todo todo = todoRepository.findById(todoId).orElseThrow(TodoNotFoundException::new);
+    NotificationType notificationType = notificationTypeRepository
+        .findByTypeName(NotificationTypeName.TODO_WITH_YOUR_NAG_ACCOMPLISHED);
 
     if (todo.getMember() != member) {
       throw new TodoUnauthorizedException();
@@ -159,7 +168,7 @@ public class TodoService {
     boolean isNotFinish = !todo.getFinished();
     nagBoxStatisticsUtil.updateTotalDoneTodoCount(isNotFinish);
 
-    if(isNotFinish){
+    if (isNotFinish) {
       publisher.publishEvent(new TodoAccomplishmentEvent(todo));
     }
 
@@ -187,15 +196,15 @@ public class TodoService {
       GetTodoMonthlyExistenceReqDto getTodoMonthlyExistenceReqDto) {
 
     Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
+        .orElseThrow(MemberNotFoundException::new);
 
     int year = getTodoMonthlyExistenceReqDto.getYearMonth().getYear();
     int month = getTodoMonthlyExistenceReqDto.getYearMonth().getMonthValue();
 
     return new GetTodoMonthlyExistenceResDto(
-            todoRepository.findAllTodoAtByMemberAndMonthAndYear(member, year, month).stream()
-                    .map(TodoAt::getTodoAt)
-                    .collect(Collectors.toList())
+        todoRepository.findAllTodoAtByMemberAndMonthAndYear(member, year, month).stream()
+            .map(TodoAt::getTodoAt)
+            .collect(Collectors.toList())
     );
 
   }
