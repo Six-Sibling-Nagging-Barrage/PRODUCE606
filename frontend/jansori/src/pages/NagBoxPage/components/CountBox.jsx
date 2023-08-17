@@ -32,6 +32,7 @@ const Background = styled.div`
     opacity-50
     absolute`}
   border-radius: 40px;
+  border: 1px solid rgb(91, 43, 134);
 `;
 
 const BoxContent = styled.div`
@@ -55,5 +56,6 @@ const ValueCount = styled.p`
   md:text-2xl
   sm:text-xl
 `}
-  color : #9548c6
+  font-family: 'PyeongChangPeace-Bold';
+  color: #9548c6;
 `;

@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import { isExpired } from '../../utils/decodeJwt';
+import { createLogout } from '../api/member';
 
 // 인증이 필요한 api를 위한 instance
 export const authInstance = axios.create({
@@ -37,7 +38,6 @@ authInstance.interceptors.request.use(
           }
         );
 
-        console.log(data);
         const newAccessToken = data.data.accessToken;
         const newRefreshToken = data.data.refreshToken;
         const newExp = data.data.accessTokenExpiresIn;
@@ -54,9 +54,22 @@ authInstance.interceptors.request.use(
         localStorage.setItem('member_token_exp', newExp);
       } catch (e) {
         authInstance.defaults.headers.common = {};
+        await createLogout({ accessToken });
+        localStorage.removeItem('member_access_token');
+        localStorage.removeItem('member_refresh_token');
+        localStorage.removeItem('member_token_exp');
+        localStorage.removeItem('recoil-persist');
+        localStorage.removeItem('member_vapid');
         throw new AxiosError('토큰이 만료되었습니다.');
       }
     } else {
+      const role = JSON.parse(
+        localStorage.getItem('recoil-persist')
+      ).memberRoleState;
+      if (role === 'GUEST') {
+        return (window.location.href = '/initialprofile');
+      }
+
       request.headers['Authorization'] = `Bearer ${accessToken}`;
       authInstance.defaults.headers.common[
         'Authorization'

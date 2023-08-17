@@ -29,6 +29,7 @@ const NagRannkingContainer = styled.div`
 `;
 
 const NagTitle = styled.p`
+  font-family: 'PyeongChangPeace-Bold';
   ${tw`font-bold text-2xl`}
   margin-bottom: 10px;
 `;
