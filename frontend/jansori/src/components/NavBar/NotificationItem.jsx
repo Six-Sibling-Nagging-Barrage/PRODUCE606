@@ -53,7 +53,7 @@ const ContentWrap = styled.div`
 const Circle = styled.div`
   z-index: 105;
   position: absolute;
-  left: 3%;
+  left: 2%;
   top: 50%;
   transform: translateY(-50%);
   &:after {
@@ -63,7 +63,7 @@ const Circle = styled.div`
     height: 7px;
     background-color: #c870ee;
     border-radius: 50%;
-    animation: blink 1s ease-in-out infinite alternate;
+    // animation: blink 1s ease-in-out infinite alternate;
   }
 
   @keyframes blink {
