@@ -124,4 +124,5 @@ const NagRankingListWrap = styled.div`
   ${tw`
   flex
   flex-col`}
+  margin-bottom: 50px;
 `;
