@@ -151,7 +151,6 @@ const PersonaReactionWrapper = styled.div`
   top: 72px;
   right: 20px;
   display: flex;
-  max-height: 80vh;
 `;
 
 const PersonaReactionContainer = styled.div`
@@ -177,7 +176,7 @@ const PersonaImg = styled.img`
 `;
 
 const PersonaContainer = styled.div`
-  max-height: 400px;
+  max-height: 60vh;
   overflow: auto;
   /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
   &::-webkit-scrollbar {
@@ -247,10 +246,10 @@ const PersonaBio = styled.div`
 
 const PostContainer = styled.div`
   ${tw`p-3 pb-1.5`}
-  border-radius: 20px;
+  border-radius: 10px;
   margin: 0 auto;
   background-color: white;
-  box-shadow: 0 0 10px rgba(163, 163, 163, 0.3);
+  box-shadow: 0 0 5px rgba(163, 163, 163, 0.3);
   font-size: 14px;
 `;
 
