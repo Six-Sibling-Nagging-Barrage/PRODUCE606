@@ -68,7 +68,7 @@ const ModalSection = styled.div`
   position: fixed;
   top: 50%;
   left: 50%;
-  width: 35%;
+  width: 35vw;
   transform: translate(-50%, -50%);
   z-index: 30;
   background-color: white;
