@@ -56,14 +56,12 @@ public class EventHandler {
 
     TodoPersona todoPersona = personaReactionEvent.getTodoPersona();
 
-    Todo todo = todoPersona.getTodo();
-
     Member receiver = todoPersona.getTodo().getMember();
     NotificationType notificationType =
         notificationTypeRepository.findByTypeName(NotificationTypeName.MY_TODO_GOT_NEW_NAG);
 
     if (isNotificationSettingOn(notificationType, receiver)) {
-      notificationService.saveNotification(notificationType, todo, todoPersona.getPersona());
+      notificationService.saveNotification(notificationType, todoPersona);
     }
   }
 
@@ -72,7 +70,6 @@ public class EventHandler {
 
     Todo todo = nagDeliveryEvent.getTodo();
     Member receiverWhoNagged = todo.getNag().getMember();
-    Member receiverWhoPostedTodo = todo.getNag().getMember();
 
     NotificationType MY_TODO_GOT_NEW_NAG =
         notificationTypeRepository.findByTypeName(NotificationTypeName.MY_TODO_GOT_NEW_NAG);
@@ -81,11 +78,25 @@ public class EventHandler {
         notificationTypeRepository.findByTypeName(NotificationTypeName.MY_NAG_DELIVERED);
 
     if (isNotificationSettingOn(MY_NAG_DELIVERED, receiverWhoNagged)) {
-      notificationService.saveNotification(MY_NAG_DELIVERED, todo.getContent(), receiverWhoNagged);
+      notificationService.saveNotification(MY_NAG_DELIVERED, todo, receiverWhoNagged);
     }
 
     if (isNotificationSettingOn(MY_TODO_GOT_NEW_NAG, nagDeliveryEvent.getTodo().getMember())) {
-      notificationService.saveNotification(MY_TODO_GOT_NEW_NAG, todo, receiverWhoPostedTodo);
+      notificationService.saveNotification(MY_TODO_GOT_NEW_NAG, todo);
+    }
+  }
+
+  @EventListener(classes = {NagLikeEvent.class})
+  public void createNotificationByTodoComplete(
+          final NagLikeEvent nagLikeEvent) {
+
+    Member receiver = nagLikeEvent.getNag().getMember();
+
+    NotificationType notificationType =
+            notificationTypeRepository.findByTypeName(NotificationTypeName.NAG_LIKED);
+
+    if (isNotificationSettingOn(notificationType, receiver)) {
+      notificationService.saveNotification(notificationType, nagLikeEvent.getMember(), nagLikeEvent.getNag());
     }
   }
 
@@ -106,7 +117,7 @@ public class EventHandler {
             NotificationTypeName.TODO_WITH_YOUR_NAG_ACCOMPLISHED);
 
     if (isNotificationSettingOn(notificationType, receiver)) {
-      notificationService.saveNotification(notificationType, todo.getContent(), receiver);
+      notificationService.saveNotification(notificationType, todo);
     }
   }
 

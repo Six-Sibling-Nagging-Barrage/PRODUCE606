@@ -1,9 +1,10 @@
 package com.a606.jansori.domain.notification.util;
 
 import com.a606.jansori.domain.notification.domain.NotificationTypeName;
-import java.util.Map;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 @Getter
 @Component
@@ -14,13 +15,15 @@ public class MessageUtil {
   private static final String MY_TODO_GOT_NEW_NAG_BODY = "띵동! 회원님의 할 일에 잔소리가 배달되었어요!";
   private static final String NAG_LIKED_BODY = "사람들이 회원님의 잔소리를 좋아하고있어요!";
   private static final String TODO_WITH_YOUR_NAG_ACCOMPLISHED_BODY = "회원님의 잔소리 덕에 누군가 할 일을 마쳤어요!";
-  private static final String SUBJECT_PREFIX = "당신의 잔소리가 배달된 ";
-  private static final String SUBJECT_SUFFIX_1 = "님이 \"";
+  private static final String SUBJECT_PREFIX_1 = "당신의 잔소리가 배달된 ";
+  private static final String SUBJECT_PREFIX_2 = "당신의 잔소리가 ";
+  private static final String SUBJECT_SUFFIX_1 = "님의 잔소리가 \"";
   private static final String SUBJECT_SUFFIX_2 = "님의 할 일 \"";
   private static final String SUBJECT_SUFFIX_3 = "님의 \"";
-  private static final String OBJECT_SUFFIX_GOT_NAG = "\"에 잔소리가 배달되었어요!";
+  private static final String SUBJECT_SUFFIX_4 = "님이 ";
+  private static final String OBJECT_SUFFIX_GOT_NAG = "\"에 배달되었어요!";
   private static final String OBJECT_SUFFIX_ACCOMPLISHED = "\" Done!";
-  private static final String OBJECT_SUFFIX_NAG_LIKED = "\" 이 잔소리를 좋아해요!";
+  private static final String OBJECT_SUFFIX_NAG_LIKED = "님의 잔소리를 좋아해요!";
 
   private Map<NotificationTypeName, String> notificationBodyHolder =
       Map.ofEntries(
@@ -49,7 +52,7 @@ public class MessageUtil {
           .append(OBJECT_SUFFIX_GOT_NAG);
     } else if (type.equals(NotificationTypeName.TODO_WITH_YOUR_NAG_ACCOMPLISHED)) {
       stringBuilder
-          .append(SUBJECT_PREFIX)
+          .append(SUBJECT_PREFIX_1)
           .append(subject)
           .append(SUBJECT_SUFFIX_2)
           .append(object)
@@ -57,6 +60,7 @@ public class MessageUtil {
 
     } else if (type.equals(NotificationTypeName.MY_NAG_DELIVERED)) {
       stringBuilder
+          .append(SUBJECT_PREFIX_2)
           .append(subject)
           .append(SUBJECT_SUFFIX_3)
           .append(object)
@@ -64,7 +68,7 @@ public class MessageUtil {
     } else {
       stringBuilder
           .append(subject)
-          .append(SUBJECT_SUFFIX_1)
+          .append(SUBJECT_SUFFIX_4)
           .append(object)
           .append(OBJECT_SUFFIX_NAG_LIKED);
     }
