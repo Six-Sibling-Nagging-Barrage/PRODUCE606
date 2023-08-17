@@ -2,6 +2,7 @@ package com.a606.jansori.domain.notification.service;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.TalkerType;
+import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.notification.domain.Notification;
 import com.a606.jansori.domain.notification.domain.NotificationBox;
 import com.a606.jansori.domain.notification.domain.NotificationType;
@@ -9,6 +10,7 @@ import com.a606.jansori.domain.notification.dto.GetNotificationBoxCheckResDto;
 import com.a606.jansori.domain.notification.dto.NotificationDto;
 import com.a606.jansori.domain.notification.dto.PatchNotificationsReqDto;
 import com.a606.jansori.domain.notification.dto.PatchNotificationsResDto;
+import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.global.event.NotificationCreateEvent;
 import com.a606.jansori.domain.notification.repository.NotificationBoxRepository;
 import com.a606.jansori.domain.notification.repository.NotificationRepository;
@@ -92,14 +94,17 @@ public class NotificationService {
   }
 
   @Transactional
-  public Notification saveNotification(NotificationType notificationType, String content,
-      Member receiver) {
+  public Notification saveNotification(NotificationType notificationType, Todo todo) {
 
+    Member receiver = todo.getNag().getMember();
     NotificationBox notificationBox = notificationBoxRepository.findByMember(receiver);
 
     Notification notification = notificationRepository.save(Notification.builder()
         .notificationType(notificationType)
-        .content(content)
+        .content(messageUtil.getNotificationContent(notificationType.getTypeName(),
+                todo.getMember().getNickname(),
+                todo.getContent()
+        ))
         .receiver(receiver)
         .build());
 
@@ -144,20 +149,19 @@ public class NotificationService {
   }
 
   @Transactional
-  public Notification saveNotification(NotificationType notificationType, Todo todo,
-      Persona talker) {
+  public Notification saveNotification(NotificationType notificationType, TodoPersona todoPersona) {
 
-    Member receiver = todo.getMember();
+    Member receiver = todoPersona.getTodo().getMember();
     NotificationBox notificationBox = notificationBoxRepository.findByMember(receiver);
 
     Notification notification = notificationRepository.save(Notification.builder()
         .notificationType(notificationType)
         .content(messageUtil.getNotificationContent(notificationType.getTypeName(),
-            talker.getName(),
-            todo.getContent()
+            todoPersona.getPersona().getName(),
+            todoPersona.getTodo().getContent()
         ))
-        .talkerId(talker.getId())
-        .talkerType(TalkerType.MEMBER)
+        .talkerId(todoPersona.getPersona().getId())
+        .talkerType(TalkerType.PERSONA)
         .receiver(receiver)
         .build());
 
@@ -167,6 +171,33 @@ public class NotificationService {
         new NotificationCreateEvent(notification,
             messageUtil.getMessageTitle(),
             messageUtil.getMessageBody(notificationType.getTypeName()))
+    );
+
+    return notification;
+  }
+
+  @Transactional
+  public Notification saveNotification(NotificationType notificationType, Member liker,
+                                       Nag nag) {
+
+    Member receiver = nag.getMember();
+    NotificationBox notificationBox = notificationBoxRepository.findByMember(receiver);
+
+    Notification notification = notificationRepository.save(Notification.builder()
+            .notificationType(notificationType)
+            .content(messageUtil.getNotificationContent(notificationType.getTypeName(),
+                    liker.getNickname(),
+                    receiver.getNickname()
+            ))
+            .receiver(receiver)
+            .build());
+
+    notificationBox.updateModifiedAt(LocalDateTime.now(clock));
+
+    publisher.publishEvent(
+            new NotificationCreateEvent(notification,
+                    messageUtil.getMessageTitle(),
+                    messageUtil.getMessageBody(notificationType.getTypeName()))
     );
 
     return notification;
