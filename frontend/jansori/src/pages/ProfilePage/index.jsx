@@ -17,6 +17,7 @@ const ProfilePage = () => {
   const memberId = useRecoilValue(memberIdState);
 
   const [isMine, setIsMine] = useState(false);
+  const [currentId, setCurrentId] = useState(null);
 
   const location = useLocation();
   const query = new URLSearchParams(location.search);
@@ -26,7 +27,9 @@ const ProfilePage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setCurrentId(id);
     if (id === memberId) setIsMine(true);
+    else setIsMine(false);
   }, [id]);
 
   return (
@@ -46,13 +49,15 @@ const ProfilePage = () => {
           ))}
           <Glider currentTab={currentTab} />
         </Tabs>
-        <TabContent>
-          {currentTab === 0 ? (
-            <TodoHistory isMine={isMine} id={id}></TodoHistory>
-          ) : (
-            <NagHistory isMine={isMine} id={id}></NagHistory>
-          )}
-        </TabContent>
+        {currentId && (
+          <TabContent>
+            {currentTab === 0 ? (
+              <TodoHistory isMine={isMine} id={currentId}></TodoHistory>
+            ) : (
+              <NagHistory isMine={isMine} id={currentId}></NagHistory>
+            )}
+          </TabContent>
+        )}
       </TabContainer>
     </ProfileContainer>
   );

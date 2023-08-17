@@ -15,6 +15,8 @@ import { ticketState } from '../../../states/user';
 import { updateLikeNag, updateNagUnlock } from '../../../apis/api/nag';
 import { useRecoilState } from 'recoil';
 import SnackBar from '../../../components/UI/SnackBar';
+import { useRecoilValue } from 'recoil';
+import { memberIdState } from '../../../states/user';
 
 const NagHistory = (props) => {
   const { isMine, id } = props;
@@ -22,14 +24,16 @@ const NagHistory = (props) => {
   const queryClient = useQueryClient();
 
   const [ticket, setTicket] = useRecoilState(ticketState);
+  const memberId = useRecoilValue(memberIdState);
 
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
+  const [isFetching, setIsFetching] = useState(false);
 
   const pageSize = 10;
   let param;
 
-  if (isMine) {
+  if (id === memberId) {
     param = { cursor: null, pageSize };
   } else {
     param = { cursor: null, memberId: id, pageSize };
@@ -44,12 +48,12 @@ const NagHistory = (props) => {
     isLoading,
     refetch,
   } = useInfiniteQuery(
-    ['nags'],
+    ['nags', id],
     ({ pageParam = param }) => fetchMoreNags(pageParam),
     {
       getNextPageParam: (lastPage) => {
         if (!lastPage?.hasNext) return null;
-        if (isMine) {
+        if (id === memberId) {
           return { cursor: lastPage.nextCursor, pageSize };
         } else {
           return { memberId: id, cursor: lastPage.nextCursor, pageSize };
@@ -59,12 +63,12 @@ const NagHistory = (props) => {
   );
 
   useEffect(() => {
-    if (isMine) {
+    if (id === memberId) {
       param = { cursor: null, pageSize };
     } else {
       param = { cursor: null, memberId: id, pageSize };
     }
-  }, [isMine]);
+  }, [id]);
 
   const toggleUnlock = async (nagId) => {
     if (ticket < 1) {
@@ -152,10 +156,13 @@ const NagHistory = (props) => {
 
   const fetchMoreNags = async (pageParam) => {
     let data;
+    console.log('불러오는중');
+    setIsFetching(true);
     // 내가 보낸 잔소리 목록 조회 api
-    if (isMine) data = await getMyNagList(pageParam);
+    if (id === memberId) data = await getMyNagList(pageParam);
     // 다른 사람이 보낸 잔소리 목록 조회 api
     else data = await getMemberNagList(pageParam);
+    setIsFetching(false);
     return data?.data;
   };
 
@@ -191,7 +198,7 @@ const NagHistory = (props) => {
                 page.nags.map((nag, nagIndex) => (
                   <NagItem
                     key={`${index}_${nagIndex}`}
-                    isMine={isMine}
+                    isMine={id === memberId}
                     nag={nag}
                     toggleLike={updateLikeMutation.mutate}
                     toggleUnlock={updateUnlockMutation.mutate}
@@ -206,7 +213,7 @@ const NagHistory = (props) => {
                 <img src={personas[randomIndex()].gifUrl} />
               </PersonaImg>
               <Message>아직 잔소리를 보낸 적이 없어요!</Message>
-              {isMine && <StartButton nagCount={-1}></StartButton>}
+              {id === memberId && <StartButton nagCount={-1}></StartButton>}
             </StartButtonWrapper>
           )}
         </>
