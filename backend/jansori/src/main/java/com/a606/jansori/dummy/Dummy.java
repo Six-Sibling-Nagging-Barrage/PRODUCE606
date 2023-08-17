@@ -2,7 +2,6 @@ package com.a606.jansori.dummy;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.nag.domain.Nag;
-import com.a606.jansori.domain.notification.domain.NotificationSetting;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.todo.domain.Todo;
@@ -28,7 +27,6 @@ public class Dummy implements CommandLineRunner {
   private final NagWithNagTagDummy nagWithNagTagDummy;
   private final TagDummy tagDummy;
   private final TagFollowDummy tagFollowDummy;
-  private final NagLikeDummy nagLikeDummy;
   private final TodoWithTodoTagDummy todoWithTodoTagDummy;
   private final TodoPersonaDummy todoPersonaDummy;
   private final PersonaReactionDummy personaReactionDummy;
@@ -55,8 +53,6 @@ public class Dummy implements CommandLineRunner {
     List<TodoPersona> todoPersonas = todoPersonaDummy.createTodoPersonas(todos);
     personaReactionDummy.createPersonaReactions(members,todoPersonas);
 
-
-    nagLikeDummy.createNagLikes(members, nags);
 
     flushAndClear();
 

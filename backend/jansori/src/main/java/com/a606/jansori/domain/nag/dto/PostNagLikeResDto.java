@@ -14,7 +14,7 @@ public class PostNagLikeResDto {
 
   private boolean liked;
 
-  public static PostNagLikeResDto ofStatusAboutMemberLikeNag(boolean liked) {
+  public static PostNagLikeResDto from(boolean liked) {
     return PostNagLikeResDto.builder()
         .liked(liked)
         .build();

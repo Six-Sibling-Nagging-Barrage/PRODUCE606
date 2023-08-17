@@ -1,6 +1,7 @@
 package com.a606.jansori.domain.todo.dto;
 
 import com.a606.jansori.domain.member.dto.FeedMemberDto;
+import com.a606.jansori.domain.nag.domain.NagInteraction;
 import com.a606.jansori.domain.nag.dto.FeedNagDto;
 import com.a606.jansori.domain.todo.domain.Todo;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,5 +30,10 @@ public class TodoFeedDto extends TodoDto{
   public static TodoFeedDto from(Todo todo, Boolean unlocked, Boolean isLiked) {
 
     return new TodoFeedDto(todo, unlocked, isLiked);
+  }
+
+  public void changeNagLikedAndUnlockStatus(NagInteraction nagInteraction) {
+    feedNagDto.changeUnlocked(nagInteraction.getNagUnlock());
+    feedNagDto.changeIsLiked(nagInteraction.getNagLike());
   }
 }

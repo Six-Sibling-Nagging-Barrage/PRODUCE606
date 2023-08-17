@@ -1,6 +1,7 @@
 package com.a606.jansori.domain.nag.dto;
 
 import com.a606.jansori.domain.nag.domain.Nag;
+import com.a606.jansori.domain.nag.domain.NagInteraction;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -20,7 +21,7 @@ public class NagOfNagBox extends NagDto {
   @JsonProperty(value = "nagMember")
   private NagMember nagMember;
 
-  public static NagOfNagBox fromNag(Nag nag) {
+  public static NagOfNagBox from(Nag nag) {
     return NagOfNagBox.builder()
         .nagId(nag.getId())
         .content(nag.getContent())
@@ -33,11 +34,8 @@ public class NagOfNagBox extends NagDto {
         .build();
   }
 
-  public void changeUnlocked() {
-    this.unlocked = !this.unlocked;
-  }
-
-  public void changeIsLikedStatus() {
-    this.isLiked = !this.isLiked;
+  public void changeStatus(NagInteraction nagInteraction) {
+    unlocked = nagInteraction.getNagUnlock();
+    isLiked = nagInteraction.getNagLike();
   }
 }

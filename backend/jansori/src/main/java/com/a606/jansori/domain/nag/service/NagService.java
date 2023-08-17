@@ -4,10 +4,9 @@ import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.exception.MemberNotFoundException;
 import com.a606.jansori.domain.member.repository.MemberRepository;
 import com.a606.jansori.domain.nag.domain.Nag;
-import com.a606.jansori.domain.nag.domain.NagBox;
-import com.a606.jansori.domain.nag.domain.NagLike;
-import com.a606.jansori.domain.nag.domain.NagUnlock;
-import com.a606.jansori.domain.nag.domain.Nags;
+import com.a606.jansori.domain.nag.domain.NagInteraction;
+import com.a606.jansori.domain.nag.domain.NagsOfNagBox;
+import com.a606.jansori.domain.nag.domain.NagsOfProfile;
 import com.a606.jansori.domain.nag.dto.GetMemberNagsOfReqDto;
 import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
 import com.a606.jansori.domain.nag.dto.GetNagOfMainPageResDto;
@@ -21,21 +20,14 @@ import com.a606.jansori.domain.nag.dto.PostNagLikeResDto;
 import com.a606.jansori.domain.nag.dto.PostNagReqDto;
 import com.a606.jansori.domain.nag.dto.PostNagResDto;
 import com.a606.jansori.domain.nag.dto.PutNagUnlockResDto;
-import com.a606.jansori.domain.nag.event.NagLikeEvent;
 import com.a606.jansori.domain.nag.event.NagPublishedTodoEvent;
 import com.a606.jansori.domain.nag.exception.NagInvalidRequestException;
+import com.a606.jansori.domain.nag.exception.NagLikeBusinessException;
 import com.a606.jansori.domain.nag.exception.NagNotFoundException;
 import com.a606.jansori.domain.nag.exception.NagUnlockBusinessException;
-import com.a606.jansori.domain.nag.repository.NagLikeRepository;
+import com.a606.jansori.domain.nag.repository.NagInteractionRepository;
 import com.a606.jansori.domain.nag.repository.NagRepository;
-import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
 import com.a606.jansori.domain.nag.util.PreviewUtil;
-import com.a606.jansori.domain.notification.domain.NotificationSetting;
-import com.a606.jansori.domain.notification.domain.NotificationType;
-import com.a606.jansori.domain.notification.domain.NotificationTypeName;
-import com.a606.jansori.domain.notification.exception.NotificationSettingNotFoundException;
-import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
-import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagRepository;
@@ -44,7 +36,6 @@ import com.a606.jansori.global.auth.util.SecurityUtil;
 import com.a606.jansori.infra.redis.util.NagBoxStatisticsUtil;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,8 +54,7 @@ public class NagService {
   private final NagRepository nagRepository;
   private final TagRepository tagRepository;
   private final MemberRepository memberRepository;
-  private final NagLikeRepository nagLikeRepository;
-  private final NagUnlockRepository nagUnlockRepository;
+  private final NagInteractionRepository nagInteractionRepository;
   private final TodoRepository todoRepository;
   private final NagRandomGenerator nagRandomGenerator;
   private final PreviewUtil previewUtil;
@@ -108,12 +98,13 @@ public class NagService {
   public PostNagLikeResDto toggleNagLike(Long nagId) {
     Nag nag = nagRepository.findById(nagId).orElseThrow(NagNotFoundException::new);
     Member member = securityUtil.getCurrentMemberByToken();
-    Optional<NagLike> nagLike = nagLikeRepository.findNagLikeByNagAndMember(nag, member);
 
-    nagLike.ifPresentOrElse(like -> decreaseNagLike(nag, like),
-        () -> increaseNagLike(nag, member));
+    NagInteraction nagInteraction = nagInteractionRepository
+        .findNagInteractionByNagAndMember(nag, member).orElseThrow(NagLikeBusinessException::new);
 
-    return PostNagLikeResDto.ofStatusAboutMemberLikeNag(nagLike.isEmpty());
+    nagInteraction.toggleNagLike(nag, publisher);
+
+    return PostNagLikeResDto.from(nagInteraction.getNagLike());
   }
 
   @Transactional
@@ -121,15 +112,14 @@ public class NagService {
     Nag nag = nagRepository.findById(nagId).orElseThrow(NagNotFoundException::new);
     Member member = securityUtil.getCurrentMemberByToken();
 
-    if (nagUnlockRepository.existsByNagAndMember(nag, member)) {
+    if (nagInteractionRepository.existsByNagAndMember(nag, member)) {
       throw new NagUnlockBusinessException();
     } else if (member.getTicket() <= 0) {
       throw new NagUnlockBusinessException();
     }
 
     member.consumeTicketToUnlockNag();
-    nagUnlockRepository.save(NagUnlock.ofUnlockPreviewByNagAndMember(nag, member));
-
+    nagInteractionRepository.save(NagInteraction.ofUnlockPreviewByNagAndMember(nag, member));
     return PutNagUnlockResDto.ofNagUnlockWithTicketCount(nag, member.getTicket());
   }
 
@@ -165,19 +155,16 @@ public class NagService {
     Long cursor = getMemberNagsOfReqDto.getCursor();
     Integer size = getMemberNagsOfReqDto.getSize();
 
-    Slice<Nag> nags = nagRepository
-        .findByNagsWithLockStatusByMemberAndPages(viewer, owner, cursor, PageRequest.of(0, size));
-    List<NagUnlock> nagUnlocks = nagUnlockRepository
-        .findNagUnlocksByNagIsInAndMember(nags.getContent(), viewer);
-    List<NagLike> nagLikes = nagLikeRepository
-        .findNagLikesByNagIsInAndMember(nags.getContent(), viewer);
+    Slice<Nag> nags = nagRepository.findByNagsByMemberAndPages(owner, cursor,
+        PageRequest.of(0, size));
 
-    Nags nagsOfMemberProfile = new Nags(nags.getContent(), nagUnlocks, nagLikes);
+    List<NagInteraction> nagInteractions = nagInteractionRepository
+        .findNagInteractionsByNagIsInAndMember(nags.getContent(), viewer);
 
     Long nextCursor = nags.hasNext() ? nags.getContent().get(size - 1).getId() : null;
-
-    return GetNagsOfOtherResDto
-        .ofOtherNagsList(nagsOfMemberProfile.getNags(), nags.hasNext(), nextCursor);
+    return GetNagsOfOtherResDto.ofOtherNagsList(
+            new NagsOfProfile(nags.getContent(), nagInteractions).getNagOfProfiles(),
+            nags.hasNext(), nextCursor);
   }
 
   @Transactional(readOnly = true)
@@ -195,12 +182,11 @@ public class NagService {
     Member member = securityUtil.getCurrentMemberByToken();
 
     List<Nag> nags = nagRepository.findByNagsOfNagBox(PageRequest.of(0, NAG_BOX_COUNT));
-    List<NagUnlock> nagUnlocks = nagUnlockRepository.findNagUnlocksByNagIsInAndMember(nags, member);
-    List<NagLike> nagLikes = nagLikeRepository.findNagLikesByNagIsInAndMember(nags, member);
+    List<NagInteraction> nagInteractions = nagInteractionRepository
+        .findNagInteractionsByNagIsInAndMember(nags, member);
 
-    NagBox nagBox = new NagBox(nags, nagUnlocks, nagLikes);
-
-    return GetNagsOfNagBoxResDto.fromNagsOfNagBox(nagBox.getNags());
+    return GetNagsOfNagBoxResDto.fromNagInteraction(
+        new NagsOfNagBox(nags, nagInteractions).getNagOfNagBoxes());
   }
 
   @Transactional(readOnly = true)
@@ -217,16 +203,5 @@ public class NagService {
         GetNagBoxStatisticsResDto.of(totalMemberCount,
             totalDoneTodoCount,
             totalNagsCount));
-  }
-
-  private void decreaseNagLike(Nag nag, NagLike nagLike) {
-    nagLikeRepository.delete(nagLike);
-    nag.decreaseLikeCount();
-  }
-
-  private void increaseNagLike(Nag nag, Member member) {
-    nagLikeRepository.save(NagLike.builder().nag(nag).member(member).build());
-
-    publisher.publishEvent(new NagLikeEvent(member, nag));
   }
 }
