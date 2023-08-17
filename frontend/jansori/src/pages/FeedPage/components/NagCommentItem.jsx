@@ -20,9 +20,9 @@ const NagCommentItem = (props) => {
 
   const handleImgError = useImageErrorHandler();
 
-  const handleLikeClick = (unlocked) => {
-    if (!unlocked) {
-      setSnackBarMessage('잔소리 잠금해제를 해야 좋아요를 누를 수 있어요..');
+  const handleLikeClick = () => {
+    if (!nag.unlocked) {
+      setSnackBarMessage('잔소리 잠금을 해제하면 좋아요를 누를 수 있어요');
       setShowSnackBar(true);
       return;
     }
@@ -84,7 +84,7 @@ const NagCommentItem = (props) => {
                   <UnlockImg src={lockIcon} />
                 </UnlockButton>
               )}
-              <LikeButton onClick={handleLikeClick}>
+              <LikeButton onClick={() => handleLikeClick(nag.unlocked)}>
                 {nag.isLiked ? (
                   <LikeImg src={likeIcon} />
                 ) : (
