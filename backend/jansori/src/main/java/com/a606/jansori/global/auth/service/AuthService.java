@@ -90,8 +90,8 @@ public class AuthService {
   public void makeNotificationBoxOfNewMember(Member member){
     notificationBoxRepository.save(NotificationBox.builder()
         .member(member)
-        .readAt(LocalDateTime.now(clock))
         .modifiedAt(LocalDateTime.now(clock))
+        .readAt(LocalDateTime.now(clock))
         .build());
   }
 
