@@ -37,17 +37,19 @@ const NotificationitemWrap = styled.div`
   z-index: 100;
   border-radius: 10px;
   padding: 1vh;
-  background-color: white;
+  border: 2px solid rgba(91, 43, 134, 0.3);
+  // background-color: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1vh;
+  margin-bottom: 0.5vh;
   position: relative;
   line-height: 20px;
 `;
 
 const ContentWrap = styled.div`
-  width: 90%;
+  width: 85%;
   margin: 0 auto;
   padding: 5px 0;
+  text-align: left;
 `;
 
 const Circle = styled.div`
