@@ -9,9 +9,12 @@ import com.a606.jansori.domain.notification.dto.GetNotificationBoxCheckResDto;
 import com.a606.jansori.domain.notification.dto.NotificationDto;
 import com.a606.jansori.domain.notification.dto.PatchNotificationsReqDto;
 import com.a606.jansori.domain.notification.dto.PatchNotificationsResDto;
-import com.a606.jansori.domain.notification.event.NotificationCreateEvent;
+import com.a606.jansori.global.event.NotificationCreateEvent;
 import com.a606.jansori.domain.notification.repository.NotificationBoxRepository;
 import com.a606.jansori.domain.notification.repository.NotificationRepository;
+import com.a606.jansori.domain.notification.util.MessageUtil;
+import com.a606.jansori.domain.persona.domain.Persona;
+import com.a606.jansori.domain.todo.domain.Todo;
 import com.a606.jansori.global.auth.util.SecurityUtil;
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -29,12 +32,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class NotificationService {
 
+
   private final NotificationRepository notificationRepository;
   private final NotificationBoxRepository notificationBoxRepository;
   private final ApplicationEventPublisher publisher;
   private final SecurityUtil securityUtil;
-  private StringBuilder sb = new StringBuilder();
 
+  private final MessageUtil messageUtil;
   private final Clock clock;
 
   @Transactional
@@ -88,43 +92,82 @@ public class NotificationService {
   }
 
   @Transactional
-  public Notification createAndSaveNotification(NotificationType notificationType, String content,
-      Member receiver, String title, String body) {
+  public Notification saveNotification(NotificationType notificationType, String content,
+      Member receiver) {
 
     NotificationBox notificationBox = notificationBoxRepository.findByMember(receiver);
 
-    final Notification notification = Notification.builder()
+    Notification notification = notificationRepository.save(Notification.builder()
         .notificationType(notificationType)
         .content(content)
         .receiver(receiver)
-        .build();
+        .build());
 
-    notificationRepository.save(notification);
     notificationBox.updateModifiedAt(LocalDateTime.now(clock));
 
-    publisher.publishEvent(new NotificationCreateEvent(notification, title, body));
+    publisher.publishEvent(
+        new NotificationCreateEvent(notification,
+            messageUtil.getMessageTitle(),
+            messageUtil.getMessageBody(notificationType.getTypeName()))
+    );
 
     return notification;
   }
 
   @Transactional
-  public Notification createAndSaveNotification(NotificationType notificationType, String content,
-      Long talkerId, TalkerType talkerType, Member receiver, String title, String body) {
+  public Notification saveNotification(NotificationType notificationType, Todo todo,
+      Member talker) {
 
+    Member receiver = todo.getMember();
     NotificationBox notificationBox = notificationBoxRepository.findByMember(receiver);
 
-    final Notification notification = Notification.builder()
+    Notification notification = notificationRepository.save(Notification.builder()
         .notificationType(notificationType)
-        .content(content)
-        .talkerId(talkerId)
-        .talkerType(talkerType)
+        .content(messageUtil.getNotificationContent(notificationType.getTypeName(),
+            talker.getNickname(),
+            todo.getContent()
+        ))
+        .talkerId(talker.getId())
+        .talkerType(TalkerType.MEMBER)
         .receiver(receiver)
-        .build();
+        .build());
 
-    notificationRepository.save(notification);
     notificationBox.updateModifiedAt(LocalDateTime.now(clock));
 
-    publisher.publishEvent(new NotificationCreateEvent(notification, title, body));
+    publisher.publishEvent(
+        new NotificationCreateEvent(notification,
+            messageUtil.getMessageTitle(),
+            messageUtil.getMessageBody(notificationType.getTypeName()))
+    );
+
+    return notification;
+  }
+
+  @Transactional
+  public Notification saveNotification(NotificationType notificationType, Todo todo,
+      Persona talker) {
+
+    Member receiver = todo.getMember();
+    NotificationBox notificationBox = notificationBoxRepository.findByMember(receiver);
+
+    Notification notification = notificationRepository.save(Notification.builder()
+        .notificationType(notificationType)
+        .content(messageUtil.getNotificationContent(notificationType.getTypeName(),
+            talker.getName(),
+            todo.getContent()
+        ))
+        .talkerId(talker.getId())
+        .talkerType(TalkerType.MEMBER)
+        .receiver(receiver)
+        .build());
+
+    notificationBox.updateModifiedAt(LocalDateTime.now(clock));
+
+    publisher.publishEvent(
+        new NotificationCreateEvent(notification,
+            messageUtil.getMessageTitle(),
+            messageUtil.getMessageBody(notificationType.getTypeName()))
+    );
 
     return notification;
   }

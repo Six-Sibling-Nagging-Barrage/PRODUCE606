@@ -17,12 +17,11 @@ import com.a606.jansori.global.auth.dto.AuthSignupResDto;
 import com.a606.jansori.global.auth.dto.TokenReqDto;
 import com.a606.jansori.global.auth.dto.TokenResDto;
 import com.a606.jansori.global.auth.exception.InvalidTokenException;
+import com.a606.jansori.global.auth.repository.RefreshTokenRepository;
 import com.a606.jansori.global.auth.util.TokenProvider;
-import com.a606.jansori.global.config.property.JwtConfigProperty;
 import com.a606.jansori.global.exception.domain.UnauthorizedException;
 import com.a606.jansori.infra.message.service.FcmService;
 import com.a606.jansori.infra.redis.util.BlackListUtil;
-import com.a606.jansori.infra.redis.util.RefreshTokenUtil;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -47,16 +46,15 @@ public class AuthService {
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final TokenProvider tokenProvider;
-  private final RefreshTokenUtil refreshTokenUtil;
 
   private final BlackListUtil redisBlackListUtil;
 
-  private final JwtConfigProperty jwtConfigProperty;
+  private final RefreshTokenRepository refreshTokenRepository;
+
   private final NotificationBoxRepository notificationBoxRepository;
   private final NotificationSettingRepository notificationSettingRepository;
   private final NotificationTypeRepository notificationTypeRepository;
   private final Clock clock;
-
 
 
   @Transactional
@@ -72,7 +70,7 @@ public class AuthService {
 
   }
 
-  public Member makeNewMember(AuthSignupReqDto authSignupReqDto){
+  public Member makeNewMember(AuthSignupReqDto authSignupReqDto) {
 
     if (memberRepository.existsByEmail(authSignupReqDto.getEmail())) {
 
@@ -87,7 +85,7 @@ public class AuthService {
     return member;
   }
 
-  public void makeNotificationBoxOfNewMember(Member member){
+  public void makeNotificationBoxOfNewMember(Member member) {
     notificationBoxRepository.save(NotificationBox.builder()
         .member(member)
         .modifiedAt(LocalDateTime.now(clock))
@@ -95,13 +93,13 @@ public class AuthService {
         .build());
   }
 
-  public void makeNotificationSettingOfNewMember(Member member){
+  public void makeNotificationSettingOfNewMember(Member member) {
 
     List<NotificationType> notificationTypes = notificationTypeRepository.findAll();
 
     List<NotificationSetting> settings = new ArrayList<>();
 
-    for (NotificationType notificationType : notificationTypes){
+    for (NotificationType notificationType : notificationTypes) {
       settings.add(NotificationSetting.builder()
           .member(member)
           .notificationType(notificationType)
@@ -129,7 +127,7 @@ public class AuthService {
       RefreshToken refreshToken = new RefreshToken(member.getEmail(),
           tokenProvider.generateRefreshTokenDto());
 
-      refreshTokenUtil.save(refreshToken, jwtConfigProperty.getRefreshTokenExpireTime());
+      refreshTokenRepository.save(refreshToken);
 
       TokenResDto tokenResDto = tokenProvider.generateAccessTokenDto(authentication,
           refreshToken.getRefreshToken());
@@ -161,7 +159,7 @@ public class AuthService {
         tokenReqDto.getAccessToken());
 
     // 로그아웃 된 사용자
-    RefreshToken refreshToken = refreshTokenUtil.findByEmail(authentication.getName())
+    RefreshToken refreshToken = refreshTokenRepository.findById(authentication.getName())
         .orElseThrow(InvalidTokenException::new);
 
     // 토근 유저 정보 불일치
@@ -189,9 +187,10 @@ public class AuthService {
 
     Authentication authentication = tokenProvider.getAuthentication(tokenReqDto.getAccessToken());
 
-    refreshTokenUtil.deleteByEmail(authentication.getName());
+    refreshTokenRepository.deleteById(authentication.getName());
 
-    redisBlackListUtil.setBlackList(tokenReqDto.getAccessToken(), "accessToken", tokenProvider.getExpiration(
-        tokenReqDto.getAccessToken()));
+    redisBlackListUtil.setBlackList(tokenReqDto.getAccessToken(), "accessToken",
+        tokenProvider.getExpiration(
+            tokenReqDto.getAccessToken()));
   }
 }

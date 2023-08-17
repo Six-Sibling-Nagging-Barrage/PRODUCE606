@@ -29,4 +29,6 @@ public interface NagRepository extends JpaRepository<Nag, Long>, NagDynamicQuery
       + "where nm <> :member "
       + "and nt in :tags")
   List<Nag> findByNag_MemberNotAndTagIn(Member member, List<Tag> tags, Pageable pageable);
+
+  boolean existsByTag(Tag tag);
 }
