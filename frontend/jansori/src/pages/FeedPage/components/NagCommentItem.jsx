@@ -13,7 +13,7 @@ import { altImageUrl } from '../../../constants/image';
 const NagCommentItem = (props) => {
   const navigate = useNavigate();
   const setNavBar = useSetRecoilState(navBarState);
-  const { isMemberNag, todoId, nag, toggleLike, toggleUnlock } = props;
+  const { isMemberNag, isMine, todoId, nag, toggleLike, toggleUnlock } = props;
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
   const setTodoDetailModal = useSetRecoilState(todoTodoDetailModalState);
@@ -68,25 +68,27 @@ const NagCommentItem = (props) => {
         {isMemberNag && (
           <ButtonGroup>
             {!nag.unlocked && (
-              <button onClick={() => handleUnlockNag(nag.nagId)}>
+              <UnlockButton onClick={() => handleUnlockNag(nag.nagId)}>
                 <UnlockImg src={lockIcon} />
-              </button>
+              </UnlockButton>
             )}
-            <button onClick={() => handleLikeClick(nag.unlocked)}>
+            <LikeButton onClick={() => handleLikeClick(nag.unlocked)}>
               {nag.isLiked ? (
                 <LikeImg src={likeIcon} />
               ) : (
                 <LikeImg
                   src={likeIcon}
-                  filter='invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);'
+                  filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
                 />
               )}
               <LikeCount>{nag.likeCount}</LikeCount>
-            </button>
+            </LikeButton>
           </ButtonGroup>
         )}
       </Bubble>
-      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
+      {showSnackBar && (
+        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
+      )}
     </CommentContainer>
   );
 };
@@ -125,7 +127,6 @@ const ProfileImg = styled.img`
 
 const CommentContentWrapper = styled.div`
   position: relative;
-  width: 100%;
   line-height: 18px;
   text-align: left;
   top: 50%;
@@ -133,16 +134,9 @@ const CommentContentWrapper = styled.div`
   font-size: 15px;
 `;
 
-const ButtonGroup = styled.div`
-  display: flex;
-  right: 8px;
-  height: 50px;
-`;
-
 const UnlockImg = styled.img`
-  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%) contrast(83%);
-  width: 55px;
-  padding: 8px;
+  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%)
+    contrast(83%);
   &:hover {
     animation: shake 0.2s ease-in-out infinite;
   }
@@ -161,9 +155,24 @@ const UnlockImg = styled.img`
   }
 `;
 
+const ButtonGroup = styled.div`
+  display: flex;
+  width: fit-content;
+`;
+
+const UnlockButton = styled.button`
+  max-width: 23px;
+  margin: 0 8px;
+  display: flex;
+  align-items: center; /* 수직 중앙 정렬 */
+`;
+
+const LikeButton = styled.button`
+  width: 20px;
+`;
+
 const LikeImg = styled.img`
   filter: ${(props) => props.filter};
-  width: 20px;
   padding-top: 5px;
 `;
 
