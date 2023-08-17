@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import tw, { css, styled } from 'twin.macro';
-import { RxHamburgerMenu } from 'react-icons/rx';
-import { TbTicket } from 'react-icons/tb';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import tw, { css, styled } from 'twin.macro';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   memberIdState,
   ticketState,
@@ -12,17 +10,20 @@ import {
   profileImgState,
   notificationState,
 } from '../../states/user';
-import logoImg from '../../assets/jansori-logo-eating-removebg-preview.png';
-import notificationIcon from '../../assets/notification_icon.webp';
-import { menus, beforeLoginMenus } from '../../constants/nav';
-import { useImageErrorHandler } from '../../hooks/useImageErrorHandler';
 import {
   isHamburgerOpenState,
   isProfileModalOpenState,
   isNotificationModalOpenState,
 } from '../../states/navBar';
-import DropdownProfileMenu from './DropdownProfileMenu';
+import { getNotificationUnRead } from '../../apis/api/notification';
+import { RxHamburgerMenu } from 'react-icons/rx';
+import { TbTicket } from 'react-icons/tb';
+import logoImg from '../../assets/jansori-logo-eating-removebg-preview.png';
+import notificationIcon from '../../assets/notification_icon.webp';
+import { menus, beforeLoginMenus } from '../../constants/nav';
 import { altImageUrl } from '../../constants/image';
+import { useImageErrorHandler } from '../../hooks/useImageErrorHandler';
+import DropdownProfileMenu from './DropdownProfileMenu';
 import NotificationList from './NotificationList';
 
 const NavBar = () => {
@@ -34,6 +35,7 @@ const NavBar = () => {
   );
   const [isUnreadNotificationLeft, setIsUnreadNotificationLeft] = useRecoilState(notificationState);
   const [currentMenu, setCurrentMenu] = useRecoilState(navBarState);
+  const setNotification = useSetRecoilState(notificationState);
 
   const isLogin = useRecoilValue(isLoginState);
   const profileImg = useRecoilValue(profileImgState);
@@ -41,6 +43,7 @@ const NavBar = () => {
   const ticket = useRecoilValue(ticketState);
 
   const handleImgError = useImageErrorHandler();
+  const interval = 5 * 60 * 1000;
 
   const handleHamburgerMenuClick = () => {
     setIsToggleOpen(!istoggleopen);
@@ -50,7 +53,7 @@ const NavBar = () => {
   };
 
   const handleProfileClick = () => {
-    setIsBackgroundOpen(isProfileModalOpen);
+    setIsBackgroundOpen(!isProfileModalOpen);
     setIsProfileModalOpen(!isProfileModalOpen);
     setIsNotificationModalOpen(false);
     setIsToggleOpen(false);
@@ -58,7 +61,7 @@ const NavBar = () => {
 
   const handleNotificationClick = () => {
     setIsUnreadNotificationLeft(false);
-    setIsBackgroundOpen(isNotificationModalOpen);
+    setIsBackgroundOpen(!isNotificationModalOpen);
     setIsNotificationModalOpen(!isNotificationModalOpen);
     setIsProfileModalOpen(false);
     setIsToggleOpen(false);
@@ -73,12 +76,30 @@ const NavBar = () => {
   };
 
   const handleClose = () => {
-    console.log('ㅋㅋㅋㅋㅋㅋ');
     setIsToggleOpen(false);
     setIsProfileModalOpen(false);
     setIsNotificationModalOpen(false);
     setIsBackgroundOpen(false);
   };
+
+  useEffect(() => {
+    if (isLogin) {
+      const fetchData = async () => {
+        //API 호출
+        const data = await getNotificationUnRead();
+        if (data?.code === '200') {
+          setNotification(data.data.unreadNotificationLeft);
+        }
+      };
+
+      fetchData();
+
+      const intervalId = setInterval(fetchData, interval);
+      return () => {
+        clearInterval(intervalId);
+      };
+    }
+  }, [isLogin]);
 
   return (
     <>

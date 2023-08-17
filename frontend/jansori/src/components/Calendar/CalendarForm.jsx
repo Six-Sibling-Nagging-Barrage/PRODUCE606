@@ -31,8 +31,6 @@ const CalendarForm = (props) => {
     const newDate = moment(newStartDate.activeStartDate).format('YYYY-MM');
     setMonthYear(moment(newDate).format('YYYY-MM'));
   };
-  console.log('id', id);
-  console.log('memberId', memberId);
 
   // 달 이동할 때 해당하는 api 호출하는 부분
   useEffect(() => {

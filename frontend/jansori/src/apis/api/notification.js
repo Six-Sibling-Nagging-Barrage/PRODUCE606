@@ -11,6 +11,17 @@ export const getNotificationCheck = async ({ cursor, pageSize }) => {
     return data;
   } catch (e) {
     console.log(e);
-    return e.resonse;
+    return e.response;
+  }
+};
+
+//주기적으로 알람이 있는지 없는지
+export const getNotificationUnRead = async () => {
+  try {
+    const { data } = await authInstance.get(`/notifications/unread`);
+    return data;
+  } catch (e) {
+    console.log(e);
+    return e.response;
   }
 };
