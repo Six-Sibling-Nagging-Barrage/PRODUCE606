@@ -8,8 +8,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +23,10 @@ import org.springframework.context.ApplicationEventPublisher;
 @NoArgsConstructor
 @Getter
 @Entity(name = "nag_interaction")
+@Table(indexes = {
+    @Index(name = "idx_unique_nag_member", columnList = "nag_id, member_id", unique = true)
+}
+)
 public class NagInteraction {
 
   @Id
