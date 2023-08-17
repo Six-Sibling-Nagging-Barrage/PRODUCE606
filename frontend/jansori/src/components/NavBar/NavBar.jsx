@@ -73,15 +73,16 @@ const NavBar = () => {
   };
 
   const handleClose = () => {
+    console.log('ㅋㅋㅋㅋㅋㅋ');
     setIsToggleOpen(false);
     setIsProfileModalOpen(false);
     setIsNotificationModalOpen(false);
-    setIsBackgroundOpen(true);
+    setIsBackgroundOpen(false);
   };
 
   return (
     <>
-      {!isBackgroundOpen && <Background onClick={handleClose} />}
+      {isBackgroundOpen && <Background onClick={handleClose} />}
       <Nav>
         {/* 로고 들어가는 부분 시작 */}
         <NavWrap>
