@@ -1,5 +1,6 @@
 package com.a606.jansori.domain.nag.dto;
 
+import com.a606.jansori.domain.nag.domain.Nag;
 import com.a606.jansori.domain.nag.domain.NagInteraction;
 import com.a606.jansori.domain.tag.dto.TagDto;
 import lombok.Getter;
@@ -13,17 +14,22 @@ public class NagOfProfile extends NagDetailDto {
   private Boolean unlocked;
   private Boolean isLiked;
 
-  public static NagOfProfile from(NagInteraction nagInteraction) {
+  public static NagOfProfile from(Nag nag) {
     return NagOfProfile.builder()
-        .nagId(nagInteraction.getNag().getId())
-        .content(nagInteraction.getNag().getContent())
-        .createAt(nagInteraction.getNag().getCreatedAt())
-        .likeCount(nagInteraction.getNag().getLikeCount())
-        .tag(TagDto.from(nagInteraction.getNag().getTag()))
-        .deliveredCount(nagInteraction.getNag().getTodos().size())
-        .preview(nagInteraction.getNag().getPreview())
-        .unlocked(nagInteraction.getNagUnlock())
-        .isLiked(nagInteraction.getNagLike())
+        .nagId(nag.getId())
+        .content(nag.getContent())
+        .createAt(nag.getCreatedAt())
+        .likeCount(nag.getLikeCount())
+        .tag(TagDto.from(nag.getTag()))
+        .deliveredCount(nag.getTodos().size())
+        .preview(nag.getPreview())
+        .unlocked(false)
+        .isLiked(false)
         .build();
+  }
+
+  public void changeStatus(NagInteraction nagInteraction) {
+    unlocked = nagInteraction.getNagUnlock();
+    isLiked = nagInteraction.getNagLike();
   }
 }
