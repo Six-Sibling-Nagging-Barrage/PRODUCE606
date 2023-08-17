@@ -75,9 +75,9 @@ const TodoItem = (props) => {
         </div>
       </TodoDone>
       <TodoContent>
-        <TodoContentContainer>{currentTodo.content}</TodoContentContainer>
+        <TodoContentContainer>{currentTodo?.content}</TodoContentContainer>
         <HashTagContent>
-          {currentTodo.tags?.map((tag) => {
+          {currentTodo?.tags?.map((tag) => {
             return <HashTagItem key={tag.tagId} hashTag={tag} editable={false} />;
           })}
         </HashTagContent>

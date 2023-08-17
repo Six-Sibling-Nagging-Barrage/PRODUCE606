@@ -5,11 +5,7 @@ import Mark from '../UI/Mark';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { focusDateState, todoListState } from '../../states/todo';
 import { memberIdState } from '../../states/user';
-import {
-  updateTodoComplete,
-  getTodoListByDate,
-  getTodoListOtherByDate,
-} from '../../apis/api/todo';
+import { updateTodoComplete, getTodoListByDate, getTodoListOtherByDate } from '../../apis/api/todo';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import FeedBackground from '../UI/FeedBackground';
 
@@ -31,7 +27,7 @@ const TodoList = (props) => {
       // 다른 사람의 투두를 불러오는 부분
       data = await getTodoListOtherByDate(id, date);
     }
-    return data.data;
+    return data?.data;
   };
 
   const { data } = useQuery(['todoList', todoList], () => fetchTodoList(date));
@@ -41,34 +37,31 @@ const TodoList = (props) => {
     return data;
   };
 
-  const updateTodoCompleteMutation = useMutation(
-    (todoId) => toggleTodoComplete(todoId),
-    {
-      onMutate: async (todoId) => {
-        await queryClient.cancelQueries(['todoList']);
-        const prevTodoList = queryClient.getQueryData(['todoList']);
-        queryClient.setQueryData(['todoList'], (oldData) => {
-          if (!oldData) return null;
-          return {
-            ...oldData,
-            todos: oldData.todos.map((todoItem) => {
-              if (todoItem.id === todoId) {
-                return {
-                  ...todoItem,
-                  finished: !todoItem.finished,
-                };
-              }
-              return todoItem;
-            }),
-          };
-        });
-        return prevTodoList;
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries(['todoList']);
-      },
-    }
-  );
+  const updateTodoCompleteMutation = useMutation((todoId) => toggleTodoComplete(todoId), {
+    onMutate: async (todoId) => {
+      await queryClient.cancelQueries(['todoList']);
+      const prevTodoList = queryClient.getQueryData(['todoList']);
+      queryClient.setQueryData(['todoList'], (oldData) => {
+        if (!oldData) return null;
+        return {
+          ...oldData,
+          todos: oldData.todos.map((todoItem) => {
+            if (todoItem.id === todoId) {
+              return {
+                ...todoItem,
+                finished: !todoItem.finished,
+              };
+            }
+            return todoItem;
+          }),
+        };
+      });
+      return prevTodoList;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['todoList']);
+    },
+  });
 
   return (
     <TodoContainer>
