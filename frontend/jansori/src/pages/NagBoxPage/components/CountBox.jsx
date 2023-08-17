@@ -20,7 +20,7 @@ export default CountBox;
 const BoxContainer = styled.div`
   ${tw`
     w-full
-    h-24
+    h-16
     relative`}
 `;
 

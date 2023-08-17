@@ -73,9 +73,9 @@ const CenteredContainer = styled.div`
   md:w-3/5
   sm:w-4/5
   mx-auto
-  mt-24
   mb-6
   `}
+  margin-top : 75px;
 `;
 
 const LoadingMessage = styled.p`
