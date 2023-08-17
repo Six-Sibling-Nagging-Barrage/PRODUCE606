@@ -2,10 +2,10 @@ package com.a606.jansori.domain.notification.service;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.member.domain.TalkerType;
-import com.a606.jansori.domain.nag.event.NagLikeNotificationCreateEvent;
 import com.a606.jansori.domain.notification.domain.Notification;
 import com.a606.jansori.domain.notification.domain.NotificationBox;
 import com.a606.jansori.domain.notification.domain.NotificationType;
+import com.a606.jansori.domain.notification.dto.GetNotificationBoxCheckResDto;
 import com.a606.jansori.domain.notification.dto.NotificationDto;
 import com.a606.jansori.domain.notification.dto.PatchNotificationsReqDto;
 import com.a606.jansori.domain.notification.dto.PatchNotificationsResDto;
@@ -127,6 +127,18 @@ public class NotificationService {
     publisher.publishEvent(new NotificationCreateEvent(notification, title, body));
 
     return notification;
+  }
+
+  public GetNotificationBoxCheckResDto checkNotificationBox(){
+    Member member = securityUtil.getCurrentMemberByToken();
+
+    boolean isUnreadNotificationLeft =
+        notificationBoxRepository.findUnreadNotificationByMember(member).isPresent();
+
+    return GetNotificationBoxCheckResDto.builder()
+        .isUnreadNotificationLeft(isUnreadNotificationLeft)
+        .build();
+
   }
 
 }

@@ -1,7 +1,7 @@
-package com.a606.jansori.infra.storage.Controller;
+package com.a606.jansori.infra.storage.controller;
 
 import com.a606.jansori.global.common.EnvelopeResponse;
-import com.a606.jansori.infra.storage.Service.AwsS3Service;
+import com.a606.jansori.infra.storage.service.AwsS3Service;
 import com.a606.jansori.infra.storage.dto.DeleteFileReqDto;
 import com.a606.jansori.infra.storage.dto.DeleteFileResDto;
 import com.a606.jansori.infra.storage.dto.PostFileUploadReqDto;
