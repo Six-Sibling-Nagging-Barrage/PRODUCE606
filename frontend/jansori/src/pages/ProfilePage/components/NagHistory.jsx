@@ -206,7 +206,7 @@ const NagHistory = (props) => {
                 <img src={personas[randomIndex()].gifUrl} />
               </PersonaImg>
               <Message>아직 잔소리를 보낸 적이 없어요!</Message>
-              <StartButton nagCount={-1}></StartButton>
+              {isMine && <StartButton nagCount={-1}></StartButton>}
             </StartButtonWrapper>
           )}
         </>

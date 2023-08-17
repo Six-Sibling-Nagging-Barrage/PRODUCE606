@@ -67,7 +67,7 @@ const NagForm = () => {
     const response = await createNag(nag);
     if (response.code === '200') {
       setIsHidden(true);
-      setTimeout(() => setIsSubmitted(true), 1000);
+      setTimeout(() => setIsSubmitted(true), 800);
       setTicket(response.data.ticketCount);
       setSnackBarMessage('잔소리를 성공적으로 보냈어요! 티켓 1장 획득!');
       setShowSnackBar(true);
