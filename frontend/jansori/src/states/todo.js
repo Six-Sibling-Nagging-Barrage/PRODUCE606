@@ -53,3 +53,8 @@ export const todoInputFormHashTag = atom({
   key: 'todoInputFormHashTag',
   default: [],
 });
+
+export const todoTodoDetailModalState = atom({
+  key: 'todoTodoDetailModalState',
+  default: false,
+});

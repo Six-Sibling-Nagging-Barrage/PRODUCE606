@@ -29,7 +29,6 @@ const NotificationList = () => {
 
   const fetchMoreNotifications = async (pageParam) => {
     const { data } = await getNotificationCheck(pageParam);
-    console.log(data);
     return data;
   };
 
@@ -48,7 +47,7 @@ const NotificationList = () => {
                   <NotificationItem
                     key={notification.notificationId}
                     lastReadAt={page.lastReadAt}
-                    createdAt = {notification.createdAt}
+                    createdAt={notification.createdAt}
                     content={notification.content}
                   />
                 ))

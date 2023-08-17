@@ -3,7 +3,12 @@ import tw, { styled } from 'twin.macro';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { getTodoDetail } from '../../apis/api/todo';
 import { memberIdState } from '../../states/user';
-import { useTodoDetailState, todoInputFormContent, todoInputFormHashTag } from '../../states/todo';
+import {
+  useTodoDetailState,
+  todoInputFormContent,
+  todoInputFormHashTag,
+  todoTodoDetailModalState,
+} from '../../states/todo';
 import moment from 'moment';
 // import Modal from '../UI/Modal';
 import HashTagItem from '../HashTag/HashTagItem';
@@ -16,10 +21,10 @@ import todoNotDone from '../../assets/todo_not_done.png';
 
 const TodoItem = (props) => {
   const { currentTodo, updateTodoCompleteMutation, id } = props;
-  const [isDetailTodoItem, setIsDetailTodoItem] = useState(false);
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
   const memberId = useRecoilValue(memberIdState);
+  const [isDetailTodoItem, setIsDetailTodoItem] = useRecoilState(todoTodoDetailModalState);
   const [todoItemDetail, setTodoItemDetail] = useRecoilState(useTodoDetailState);
   const setTodoInputFormContent = useSetRecoilState(todoInputFormContent);
   const setTodoInputFormHashTag = useSetRecoilState(todoInputFormHashTag);
@@ -84,9 +89,11 @@ const TodoItem = (props) => {
       </TodoContent>
       <TodoExtendContent>
         {/* input으로 복사 */}
-        <button onClick={handleTodoCopy}>
-          <img src={copyIcon} width='25px' />
-        </button>
+        {memberId === id && (
+          <button onClick={handleTodoCopy}>
+            <img src={copyIcon} width='25px' />
+          </button>
+        )}
       </TodoExtendContent>
       <TodoExtendContent>
         {/* 상세 보기 */}

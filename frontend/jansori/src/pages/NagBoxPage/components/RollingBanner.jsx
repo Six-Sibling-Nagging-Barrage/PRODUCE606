@@ -79,12 +79,6 @@ const CenteredContainer = styled.div`
   `}
 `;
 
-const CountBoxContainer = styled.div`
-  ${tw`grid 
-  grid-cols-3
-  gap-4`}
-`;
-
 const LoadingMessage = styled.p`
   ${tw`text-center text-gray-500 my-6 font-semibold text-4xl`}
 `;
