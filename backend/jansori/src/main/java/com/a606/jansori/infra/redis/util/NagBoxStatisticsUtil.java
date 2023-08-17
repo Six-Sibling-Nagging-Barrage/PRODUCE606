@@ -1,8 +1,9 @@
 package com.a606.jansori.infra.redis.util;
 
+import static java.util.Map.entry;
+
 import com.a606.jansori.domain.nag.dto.GetNagBoxStatisticsResDto;
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
@@ -23,14 +24,10 @@ public class NagBoxStatisticsUtil {
   public GetNagBoxStatisticsResDto cachingNagBoxStatistics(
       GetNagBoxStatisticsResDto getNagBoxStatisticsResDto) {
     HashOperations<String, String, Long> nagBoxStatistics = redisTemplate.opsForHash();
-    Map<String, Long> nagBoxStatisticsMap = new HashMap<>();
-
-    nagBoxStatisticsMap.put(TOTAL_MEMBER_COUNT,
-        getNagBoxStatisticsResDto.getTotalMemberCount());
-    nagBoxStatisticsMap.put(TOTAL_DONE_TODO_COUNT,
-        getNagBoxStatisticsResDto.getTotalDoneTodoCount());
-    nagBoxStatisticsMap.put(TOTAL_NAGS_COUNT,
-        getNagBoxStatisticsResDto.getTotalNagsCount());
+    Map<String, Long> nagBoxStatisticsMap = Map.ofEntries(
+        entry(TOTAL_MEMBER_COUNT, getNagBoxStatisticsResDto.getTotalMemberCount()),
+        entry(TOTAL_DONE_TODO_COUNT, getNagBoxStatisticsResDto.getTotalDoneTodoCount()),
+        entry(TOTAL_NAGS_COUNT, getNagBoxStatisticsResDto.getTotalNagsCount()));
 
     nagBoxStatistics.putAll(KEY, nagBoxStatisticsMap);
 

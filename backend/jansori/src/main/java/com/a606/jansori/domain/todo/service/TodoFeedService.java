@@ -1,14 +1,16 @@
 package com.a606.jansori.domain.todo.service;
 
 import com.a606.jansori.domain.member.domain.Member;
-import com.a606.jansori.domain.nag.repository.NagLikeRepository;
-import com.a606.jansori.domain.nag.repository.NagUnlockRepository;
+import com.a606.jansori.domain.nag.domain.Nag;
+import com.a606.jansori.domain.nag.domain.NagInteraction;
+import com.a606.jansori.domain.nag.repository.NagInteractionRepository;
 import com.a606.jansori.domain.tag.domain.Tag;
 import com.a606.jansori.domain.tag.domain.TagFollow;
 import com.a606.jansori.domain.tag.exception.TagNotFoundException;
 import com.a606.jansori.domain.tag.repository.TagFollowRepository;
 import com.a606.jansori.domain.tag.repository.TagRepository;
 import com.a606.jansori.domain.todo.domain.Todo;
+import com.a606.jansori.domain.todo.domain.TodoFeeds;
 import com.a606.jansori.domain.todo.dto.GetTodoDetailResDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedByFollowingReqDto;
 import com.a606.jansori.domain.todo.dto.GetTodoFeedByTagReqDto;
@@ -17,11 +19,11 @@ import com.a606.jansori.domain.todo.dto.TodoFeedDto;
 import com.a606.jansori.domain.todo.exception.TodoNotFoundException;
 import com.a606.jansori.domain.todo.exception.TodoUnauthorizedException;
 import com.a606.jansori.domain.todo.repository.TodoRepository;
-
 import com.a606.jansori.global.auth.util.SecurityUtil;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -39,9 +41,7 @@ public class TodoFeedService {
 
   private final TagRepository tagRepository;
 
-  private final NagUnlockRepository nagUnlockRepository;
-
-  private final NagLikeRepository nagLikeRepository;
+  private final NagInteractionRepository nagInteractionRepository;
 
   private final SecurityUtil securityUtil;
 
@@ -105,9 +105,13 @@ public class TodoFeedService {
       return GetTodoDetailResDto.from(todo, false, false);
     }
 
-    return GetTodoDetailResDto.from(todo,
-        nagUnlockRepository.existsByNagAndMember(todo.getNag(), member),
-        nagLikeRepository.existsByNagAndMember(todo.getNag(), member));
+    Optional<NagInteraction> nagInteraction = nagInteractionRepository
+        .findNagInteractionByNagAndMember(todo.getNag(), member);
+
+    return nagInteraction.map(interaction -> GetTodoDetailResDto.from(todo,
+        interaction.getNagUnlock(),
+        interaction.getNagLike()))
+        .orElseGet(() -> GetTodoDetailResDto.from(todo, false, false));
   }
 
   private List<TodoFeedDto> convertTodosWithMemberToFeedTodoDto(List<Todo> todos, Member member) {
@@ -117,20 +121,13 @@ public class TodoFeedService {
           TodoFeedDto.from(todo, false, false)
       ).collect(Collectors.toList());
     }
+    List<Nag> nags = todos.stream().map(Todo::getNag).collect(Collectors.toList());
+    List<NagInteraction> nagInteractions = nagInteractionRepository
+        .findNagInteractionsByNagIsInAndMember(nags, member);
 
-    return todos.stream().map(todo ->
-        {
-          if (todo.getNag() == null){
-            return TodoFeedDto.from(todo, false, false);
-          }
+    TodoFeeds todoFeeds = new TodoFeeds(todos, nagInteractions);
 
-          return TodoFeedDto.from(todo,
-              nagUnlockRepository.existsByNagAndMember(todo.getNag(), member),
-              nagLikeRepository.existsByNagAndMember(todo.getNag(), member)
-          );
-        }
-    ).collect(Collectors.toList());
-
+    return todoFeeds.getTodoFeeds();
   }
 
   private GetTodoFeedResDto getFeedResDtoFrom(Integer size, Member member, Slice<Todo> pagedTodos) {

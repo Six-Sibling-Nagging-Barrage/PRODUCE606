@@ -1,6 +1,7 @@
 package com.a606.jansori.domain.nag.dto;
 
 import com.a606.jansori.domain.nag.domain.Nag;
+import com.a606.jansori.domain.nag.domain.NagInteraction;
 import com.a606.jansori.domain.tag.dto.TagDto;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -13,7 +14,7 @@ public class NagOfProfile extends NagDetailDto {
   private Boolean unlocked;
   private Boolean isLiked;
 
-  public static NagOfProfile ofOtherNagsInformation(Nag nag) {
+  public static NagOfProfile from(Nag nag) {
     return NagOfProfile.builder()
         .nagId(nag.getId())
         .content(nag.getContent())
@@ -27,11 +28,8 @@ public class NagOfProfile extends NagDetailDto {
         .build();
   }
 
-  public void changeUnlocked() {
-    this.unlocked = !this.unlocked;
-  }
-
-  public void changeIsLikedStatus() {
-    this.isLiked = !isLiked;
+  public void changeStatus(NagInteraction nagInteraction) {
+    unlocked = nagInteraction.getNagUnlock();
+    isLiked = nagInteraction.getNagLike();
   }
 }

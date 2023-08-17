@@ -57,14 +57,6 @@ public class Nag extends BaseTimeEntity {
   @OneToMany(mappedBy = "nag", cascade = CascadeType.ALL)
   private Set<Todo> todos = new HashSet<>();
 
-  @BatchSize(size = 40)
-  @OneToMany(mappedBy = "nag", cascade = CascadeType.ALL)
-  private Set<NagUnlock> nagUnlocks = new HashSet<>();
-
-  @BatchSize(size = 40)
-  @OneToMany(mappedBy = "nag", cascade = CascadeType.ALL)
-  private Set<NagLike> nagLikes = new HashSet<>();
-
   public static Nag ofMemberWithNagContentAndPreview(Member member, Tag tag,
       String content, String preview) {
     return Nag.builder()
