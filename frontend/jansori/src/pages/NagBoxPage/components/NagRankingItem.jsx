@@ -12,7 +12,7 @@ import { altImageUrl } from '../../../constants/image';
 import AlertModal from '../../../components/UI/AlertModal';
 
 const NagRankingItem = (props) => {
-  const { nag, isodd, toggleLike, toggleUnlock } = props;
+  const { nag, isodd, toggleLike, toggleUnlock, rank } = props;
   const memberId = useRecoilValue(memberIdState);
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
@@ -22,7 +22,7 @@ const NagRankingItem = (props) => {
 
   const handleLikeClick = () => {
     if (memberId !== nag.nagMember.memberId && !nag.unlocked) {
-      setSnackBarMessage('잔소리 잠금해제를 해야 좋아요를 누를 수 있어요!');
+      setSnackBarMessage('잔소리 잠금을 해제하면 좋아요를 누를 수 있어요');
       setShowSnackBar(true);
       return;
     }
@@ -50,9 +50,10 @@ const NagRankingItem = (props) => {
   };
 
   return (
-    <NagRankingItemContainer isodd={isodd}>
-      <SpeechBubble isodd={isodd}>
-        <SpeechBubbleWrap>
+    <>
+      <RankingItem>
+        <Ranking>{rank}</Ranking>
+        <Nag>
           <Profile>
             <Link
               to={`/profile?id=${encodeURIComponent(nag.nagMember.memberId)}`}
@@ -66,32 +67,32 @@ const NagRankingItem = (props) => {
               <NickName>{nag.nagMember.nickname}</NickName>
             </Link>
           </Profile>
-          <CommentContentWrapper>
+          <div>
             {memberId === nag.nagMember.memberId || nag.unlocked
               ? nag.content
               : nag.preview}
-          </CommentContentWrapper>
-          <ButtonGroup>
-            {memberId === nag.nagMember.memberId ||
-              (!nag.unlocked && (
-                <ButtonItem onClick={handleClickUnlock}>
-                  <UnlockImg src={lockIcon} />
-                </ButtonItem>
-              ))}
-            <ButtonItem onClick={() => handleLikeClick(nag.unlocked)}>
-              {nag.isLiked ? (
-                <LikeImg src={likeIcon} />
-              ) : (
-                <LikeImg
-                  src={likeIcon}
-                  filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
-                />
-              )}
-              <LikeCount>{nag.likeCount}</LikeCount>
-            </ButtonItem>
-          </ButtonGroup>
-        </SpeechBubbleWrap>
-      </SpeechBubble>
+          </div>
+        </Nag>
+        <ButtonGroup>
+          {memberId === nag.nagMember.memberId ||
+            (!nag.unlocked && (
+              <ButtonItem onClick={handleClickUnlock}>
+                <UnlockImg src={lockIcon} />
+              </ButtonItem>
+            ))}
+          <ButtonItem onClick={handleLikeClick}>
+            {nag.isLiked ? (
+              <LikeImg src={likeIcon} />
+            ) : (
+              <LikeImg
+                src={likeIcon}
+                filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
+              />
+            )}
+            <LikeCount>{nag.likeCount}</LikeCount>
+          </ButtonItem>
+        </ButtonGroup>
+      </RankingItem>
       {showSnackBar && (
         <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
       )}
@@ -103,32 +104,24 @@ const NagRankingItem = (props) => {
           nag={nag}
         />
       )}
-    </NagRankingItemContainer>
+    </>
   );
 };
 
 export default NagRankingItem;
-
-const NagRankingItemContainer = styled.button`
-  ${tw`
-my-5
-relative
-w-4/5
-`}
-`;
-
-const SpeechBubbleWrap = styled.div``;
 
 const Profile = styled.div`
   display: flex;
   align-items: center;
   flex-direction: row;
 `;
+
 const ProfileImg = styled.img`
   ${tw`w-8 h-8 rounded-full`}
   object-fit: cover;
   display: inline-block;
 `;
+
 const NickName = styled.div`
   ${tw`ml-2 text-sm`}
   display: inline-block;
@@ -151,8 +144,6 @@ const ButtonGroup = styled.div`
   display: flex;
   right: 15px;
   height: 64px;
-  top: 50%;
-  transform: translateY(-50%);
 `;
 
 const ButtonItem = styled.button`
@@ -191,4 +182,21 @@ const LikeImg = styled.img`
 const LikeCount = styled.div`
   margin-top: 2px;
   font-size: 12px;
+`;
+
+const RankingItem = styled.div`
+  display: flex;
+  width: 100%;
+  position: relative;
+`;
+
+const Ranking = styled.div`
+  font-size: 50px;
+  font-weight: 600;
+  margin: 10px;
+`;
+
+const Nag = styled.div`
+  position: relative;
+  width: 100%;
 `;
