@@ -33,7 +33,7 @@ public class TodoFeedDto extends TodoDto{
   }
 
   public void changeNagLikedAndUnlockStatus(NagInteraction nagInteraction) {
-    feedNagDto.changeUnlocked(nagInteraction.getNagUnlock());
+    feedNagDto.changeUnlocked(nagInteraction.getNagUnlock(), nagInteraction.getNag());
     feedNagDto.changeIsLiked(nagInteraction.getNagLike());
   }
 }

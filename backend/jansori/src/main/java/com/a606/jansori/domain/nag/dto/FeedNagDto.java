@@ -41,8 +41,11 @@ public class FeedNagDto {
     return unlocked ? nag.getContent() : nag.getPreview();
   }
 
-  public void changeUnlocked(Boolean unlocked) {
+  public void changeUnlocked(Boolean unlocked, Nag nag) {
     this.unlocked = unlocked;
+    if (this.unlocked) {
+      this.content = nag.getContent();
+    }
   }
 
   public void changeIsLiked(Boolean isLiked) {

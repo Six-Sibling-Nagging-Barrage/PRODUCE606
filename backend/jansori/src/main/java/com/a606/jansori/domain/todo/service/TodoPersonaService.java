@@ -2,12 +2,6 @@ package com.a606.jansori.domain.todo.service;
 
 import com.a606.jansori.domain.member.domain.Member;
 import com.a606.jansori.domain.nag.service.NagRandomGenerator;
-import com.a606.jansori.domain.notification.domain.NotificationSetting;
-import com.a606.jansori.domain.notification.domain.NotificationType;
-import com.a606.jansori.domain.notification.domain.NotificationTypeName;
-import com.a606.jansori.domain.notification.exception.NotificationSettingNotFoundException;
-import com.a606.jansori.domain.notification.repository.NotificationSettingRepository;
-import com.a606.jansori.domain.notification.repository.NotificationTypeRepository;
 import com.a606.jansori.domain.persona.domain.PersonaReaction;
 import com.a606.jansori.domain.persona.domain.TodoPersona;
 import com.a606.jansori.domain.persona.exception.ReactionForbiddenException;
@@ -40,10 +34,6 @@ public class TodoPersonaService {
   private final NagRandomGenerator nagRandomGenerator;
 
   private final SecurityUtil securityUtil;
-
-  private final NotificationTypeRepository notificationTypeRepository;
-
-  private final NotificationSettingRepository notificationSettingRepository;
 
   private final ApplicationEventPublisher publisher;
 
