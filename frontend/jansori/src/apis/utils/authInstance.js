@@ -20,7 +20,6 @@ authInstance.interceptors.request.use(
     if (!accessToken) return;
 
     if (isExpired(exp)) {
-      console.log(new Date(exp));
       console.log('만료됨');
 
       try {

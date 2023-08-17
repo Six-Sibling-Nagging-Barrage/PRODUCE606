@@ -11,10 +11,8 @@ const firebaseConfig = {
 };
 
 function requestPermission() {
-  // console.log('Requesting permission...');
   Notification.requestPermission().then((permission) => {
     if (permission === 'granted') {
-      // console.log('Notification permission granted.');
 
       const app = initializeApp(firebaseConfig);
 
@@ -23,7 +21,6 @@ function requestPermission() {
         vapidKey: process.env.REACT_APP_FIREBASE_VAPIDKEY,
       }).then((currentToken) => {
         if (currentToken) {
-          // console.log('토큰: ' + currentToken);
           localStorage.setItem('fcmToken', currentToken);
         } else {
           console.log('토큰을 가져오지 못했습니다.');

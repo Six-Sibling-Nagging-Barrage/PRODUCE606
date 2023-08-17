@@ -85,7 +85,6 @@ const ProfileForm = (props) => {
 
     const formData = new FormData();
 
-    console.log(newProfileImg);
     if (newProfileImg !== altImageUrl)
       formData.append('imageFile', newProfileImg);
     formData.append(

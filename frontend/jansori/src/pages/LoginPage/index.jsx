@@ -42,7 +42,6 @@ const LoginPage = () => {
 
   const [loginError, setLoginError] = useState(false);
 
-  console.log(localStorage.getItem('fcmToken'));
   const loginSubmit = async (data) => {
     const user = {
       email: data.email,
@@ -53,7 +52,6 @@ const LoginPage = () => {
     const res = await createLogin(user);
     if (res?.code === '200') {
       setLoginError(false);
-      console.log(res.data);
       setMemberToken(res.data.accessToken);
       setMemberRefreshToken(res.data.refreshToken);
       setmemberTokenExp(res.data.accessTokenExpiresIn);

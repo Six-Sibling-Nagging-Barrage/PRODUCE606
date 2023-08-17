@@ -156,7 +156,6 @@ const NagHistory = (props) => {
 
   const fetchMoreNags = async (pageParam) => {
     let data;
-    console.log('불러오는중');
     setIsFetching(true);
     // 내가 보낸 잔소리 목록 조회 api
     if (id === memberId) data = await getMyNagList(pageParam);
