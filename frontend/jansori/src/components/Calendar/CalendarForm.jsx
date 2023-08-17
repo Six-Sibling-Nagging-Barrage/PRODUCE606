@@ -31,6 +31,8 @@ const CalendarForm = (props) => {
     const newDate = moment(newStartDate.activeStartDate).format('YYYY-MM');
     setMonthYear(moment(newDate).format('YYYY-MM'));
   };
+  console.log('id', id);
+  console.log('memberId', memberId);
 
   // 달 이동할 때 해당하는 api 호출하는 부분
   useEffect(() => {
@@ -54,7 +56,7 @@ const CalendarForm = (props) => {
       }
     };
     fetchData();
-  }, [monthYear]);
+  }, [monthYear, id]);
 
   // 원하는 날 클릭할 경우 해당하는 todoList 호출하는 api
   useEffect(() => {
@@ -75,11 +77,15 @@ const CalendarForm = (props) => {
     };
 
     fetchData();
-  }, [focusDate]);
+  }, [focusDate, id]);
 
   useEffect(() => {
     setFocusDate(moment(date).toDate());
   }, [date]);
+
+  useEffect(() => {
+    setFocusDate(moment().format('YYYY-MM-DD'));
+  }, [id]);
 
   return (
     <CalendarCard>
