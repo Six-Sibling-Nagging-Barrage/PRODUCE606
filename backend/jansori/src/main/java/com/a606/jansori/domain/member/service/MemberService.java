@@ -54,7 +54,12 @@ public class MemberService {
 
   @Transactional
   public PostMemberInfoResDto updateMemberInfo(PostMemberInfoReqDto postMemberInfoReqDto, String imageName) {
+
     Member member = securityUtil.getCurrentMemberByToken();
+
+    if(imageName == null){
+      imageName = member.getImageUrl();
+    }
 
     member.update(postMemberInfoReqDto.getNickname(), postMemberInfoReqDto.getBio(),
         imageName, MemberRole.USER);
