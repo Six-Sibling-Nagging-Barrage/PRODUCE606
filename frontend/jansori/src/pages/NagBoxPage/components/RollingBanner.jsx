@@ -40,7 +40,6 @@ const RollingBanner = () => {
     (async () => {
       const data = await getNagBoxStatistics();
       setCounts(data);
-      console.log(counts);
       setLoading(false);
     })();
   }, []);

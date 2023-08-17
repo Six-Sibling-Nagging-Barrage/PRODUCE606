@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import tw, { styled } from 'twin.macro';
 import { getNotificationCheck } from '../../apis/api/notification';
 import NotificationItem from './NotificationItem';
@@ -33,44 +33,55 @@ const NotificationList = () => {
   };
 
   return (
-    <NotificationListContainer>
-      <BackgroundContainer />
-      {/* 알람 리스트 호출하는 부분 */}
-      <CenteredContainer>
-        <NotificationListWrap>
-          {isLoading && <div>로딩 중 ....</div>}
-          {isError && <div>알림을 불러오는데 실패했습니다.</div>}
-          {data?.pages?.some((page) => page?.notifications?.length > 0) ? (
-            <ul>
-              {data?.pages?.map((page) =>
-                page?.notifications?.map((notification) => (
-                  <NotificationItem
-                    key={notification.notificationId}
-                    lastReadAt={page.lastReadAt}
-                    createdAt={notification.createdAt}
-                    content={notification.content}
-                  />
-                ))
-              )}
-            </ul>
-          ) : (
-            <div>더 이상 알림이 없습니다.</div>
-          )}
-          <InfiniteScroll
-            fetchNextPage={fetchNextPage}
-            hasNextPage={hasNextPage}
-            isFetchingNextPage={isFetchingNextPage}
-          />
-        </NotificationListWrap>
-      </CenteredContainer>
-    </NotificationListContainer>
+      <NotificationListContainer>
+        <BackgroundContainer />
+        {/* 알람 리스트 호출하는 부분 */}
+        <CenteredContainer>
+          <NotificationListWrap>
+            {isLoading && <div>로딩 중 ....</div>}
+            {isError && <div>알림을 불러오는데 실패했습니다.</div>}
+            {data?.pages?.some((page) => page?.notifications?.length > 0) ? (
+              <ul>
+                {data?.pages?.map((page) =>
+                  page?.notifications?.map((notification) => (
+                    <NotificationItem
+                      key={notification.notificationId}
+                      lastReadAt={page.lastReadAt}
+                      createdAt={notification.createdAt}
+                      content={notification.content}
+                    />
+                  ))
+                )}
+              </ul>
+            ) : (
+              <div>알림이 없습니다.</div>
+            )}
+            <InfiniteScroll
+              fetchNextPage={fetchNextPage}
+              hasNextPage={hasNextPage}
+              isFetchingNextPage={isFetchingNextPage}
+            />
+          </NotificationListWrap>
+        </CenteredContainer>
+      </NotificationListContainer>
   );
 };
 
 export default NotificationList;
 
+const Background = styled.div`
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 30;
+`;
+
 const NotificationListContainer = styled.div`
   ${tw`absolute right-1`}
+  z-index: 30;
   height: 60vh;
   width: 20rem;
   margin-top: 2vh;

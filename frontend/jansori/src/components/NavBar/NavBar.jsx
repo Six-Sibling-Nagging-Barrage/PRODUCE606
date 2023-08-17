@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import tw, { css, styled } from 'twin.macro';
 import { RxHamburgerMenu } from 'react-icons/rx';
@@ -26,6 +26,7 @@ import { altImageUrl } from '../../constants/image';
 import NotificationList from './NotificationList';
 
 const NavBar = () => {
+  const [isBackgroundOpen, setIsBackgroundOpen] = useState(false);
   const [istoggleopen, setIsToggleOpen] = useRecoilState(isHamburgerOpenState);
   const [isProfileModalOpen, setIsProfileModalOpen] = useRecoilState(isProfileModalOpenState);
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useRecoilState(
@@ -43,12 +44,14 @@ const NavBar = () => {
 
   const handleHamburgerMenuClick = () => {
     setIsToggleOpen(!istoggleopen);
+    setIsBackgroundOpen(istoggleopen);
     setIsProfileModalOpen(false);
-    setIsNotificationModalOpen(false);  
+    setIsNotificationModalOpen(false);
   };
 
   const handleProfileClick = () => {
     setIsProfileModalOpen(!isProfileModalOpen);
+    setIsBackgroundOpen(isProfileModalOpen);
     setIsNotificationModalOpen(false);
     setIsToggleOpen(false);
   };
@@ -56,19 +59,29 @@ const NavBar = () => {
   const handleNotificationClick = () => {
     setIsUnreadNotificationLeft(false);
     setIsNotificationModalOpen(!isNotificationModalOpen);
+    setIsBackgroundOpen(isNotificationModalOpen);
     setIsProfileModalOpen(false);
     setIsToggleOpen(false);
   };
 
   const handleMenuClick = (index) => {
+    setIsBackgroundOpen(!isBackgroundOpen);
     setIsToggleOpen(false);
     setIsProfileModalOpen(false);
     setIsNotificationModalOpen(false);
     setCurrentMenu(index);
   };
 
+  const handleClose = () => {
+    setIsToggleOpen(false);
+    setIsProfileModalOpen(false);
+    setIsNotificationModalOpen(false);
+    setIsBackgroundOpen(false);
+  };
+
   return (
     <>
+      {isBackgroundOpen && <Background onClick={handleClose} />}
       <Nav>
         {/* 로고 들어가는 부분 시작 */}
         <NavWrap>
@@ -177,15 +190,24 @@ const NavBar = () => {
 
 export default NavBar;
 
+const Background = styled.div`
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  z-index: 20;
+`;
+
 const Nav = styled.nav`
   ${tw`
   fixed
   w-full
-  z-20
   top-0
   left-0
   `}
   backdrop-filter:  blur(5px);
+  z-index: 20;
 `;
 
 const NavWrap = styled.div`

@@ -72,6 +72,7 @@ const DropdownProfileMenuContainer = styled.div`
   right-1 
   mt-3 
   w-40`};
+  z-index: 30;
 `;
 
 const BackgroundContainer = styled.div`

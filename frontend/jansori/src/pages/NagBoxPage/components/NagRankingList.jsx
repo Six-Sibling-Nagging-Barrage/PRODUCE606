@@ -31,6 +31,7 @@ const NagRankingList = () => {
       const prevNagRankings = queryClient.getQueryData(['nagRankings']);
       queryClient.setQueryData(['nagRankings'], (oldData) => {
         const newData = oldData?.nags.map((nagRanking) => {
+          console.log(nagRanking.likeCount);
           if (nagRanking.nagId === nagId) {
             return {
               ...nagRanking,
