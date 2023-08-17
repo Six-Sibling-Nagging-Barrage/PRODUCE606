@@ -29,6 +29,7 @@ public class AwsS3Service {
   @Value("${cloud.aws.cdn.url}")
   private String CdnUrl;
 
+
   public PostFileUploadResDto uploadImageFileToS3(PostFileUploadReqDto postFileUploadReqDto) {
 
     MultipartFile multipartFile = postFileUploadReqDto.getMultipartFile();
@@ -45,7 +46,10 @@ public class AwsS3Service {
       throw new FileUploadException();
     }
 
-      String imageUrl = CdnUrl + fileName;
+    StringBuffer stringBuffer = new StringBuffer(CdnUrl);
+    stringBuffer.append(fileName);
+
+    String imageUrl = stringBuffer.toString();
 
     return PostFileUploadResDto.builder()
         .imageUrl(imageUrl)
