@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import tw, { css, styled } from 'twin.macro';
+import { useSetRecoilState } from 'recoil';
+import { navBarState } from '../../../states/user';
+import { todoTodoDetailModalState } from '../../../states/todo';
 import likeIcon from '../../../assets/like_icon.avif';
 import lockIcon from '../../../assets/lock_icon.png';
 import SnackBar from '../../../components/UI/SnackBar';
@@ -8,9 +11,12 @@ import { useImageErrorHandler } from '../../../hooks/useImageErrorHandler';
 import { altImageUrl } from '../../../constants/image';
 
 const NagCommentItem = (props) => {
+  const navigate = useNavigate();
+  const setNavBar = useSetRecoilState(navBarState);
   const { isMemberNag, todoId, nag, toggleLike, toggleUnlock } = props;
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
+  const setTodoDetailModal = useSetRecoilState(todoTodoDetailModalState);
 
   const handleImgError = useImageErrorHandler();
 
@@ -32,21 +38,22 @@ const NagCommentItem = (props) => {
     setSnackBarMessage('');
   };
 
+  const handleProfileButton = () => {
+    setNavBar(2);
+    setTodoDetailModal(false);
+    navigate(`/profile?id=${encodeURIComponent(nag.nagMember.memberId)}`);
+  };
+
   return (
     <CommentContainer>
       <Profile>
         {isMemberNag ? (
-          <Link
-            to={`/profile?id=${encodeURIComponent(nag.nagMember.memberId)}`}
-          >
-            <ProfileImg
-              isMemberNag={isMemberNag}
-              src={
-                nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl
-              }
-              onError={handleImgError}
-            />
-          </Link>
+          <ProfileImg
+            onClick={handleProfileButton}
+            isMemberNag={isMemberNag}
+            src={nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl}
+            onError={handleImgError}
+          />
         ) : (
           <ProfileImg
             isMemberNag={isMemberNag}
@@ -71,7 +78,7 @@ const NagCommentItem = (props) => {
               ) : (
                 <LikeImg
                   src={likeIcon}
-                  filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
+                  filter='invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);'
                 />
               )}
               <LikeCount>{nag.likeCount}</LikeCount>
@@ -79,9 +86,7 @@ const NagCommentItem = (props) => {
           </ButtonGroup>
         )}
       </Bubble>
-      {showSnackBar && (
-        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
-      )}
+      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
     </CommentContainer>
   );
 };
@@ -135,8 +140,7 @@ const ButtonGroup = styled.div`
 `;
 
 const UnlockImg = styled.img`
-  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%)
-    contrast(83%);
+  filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%) contrast(83%);
   width: 55px;
   padding: 8px;
   &:hover {
