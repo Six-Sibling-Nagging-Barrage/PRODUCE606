@@ -9,6 +9,7 @@ import lockIcon from '../../../assets/lock_icon.png';
 import SnackBar from '../../../components/UI/SnackBar';
 import { useImageErrorHandler } from '../../../hooks/useImageErrorHandler';
 import { altImageUrl } from '../../../constants/image';
+import AlertModal from '../../../components/UI/AlertModal';
 
 const NagCommentItem = (props) => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const NagCommentItem = (props) => {
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
   const setTodoDetailModal = useSetRecoilState(todoTodoDetailModalState);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleImgError = useImageErrorHandler();
 
@@ -31,10 +33,17 @@ const NagCommentItem = (props) => {
 
   const handleClickUnlock = async () => {
     setIsModalOpen(true);
+    document.body.style.overflow = 'hidden'; // 스크롤 막기
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    document.body.style.overflow = 'visible'; // 스크롤 활성화
   };
 
   const handleUnlockNag = async () => {
     toggleUnlock({ todoId, nagId: nag.nagId });
+    handleCloseModal();
   };
 
   const handleSnackBarClose = () => {
@@ -49,51 +58,81 @@ const NagCommentItem = (props) => {
   };
 
   return (
-    <CommentContainer>
-      <Profile>
-        {isMemberNag ? (
-          <ProfileImg
-            onClick={handleProfileButton}
-            isMemberNag={isMemberNag}
-            src={nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl}
-            onError={handleImgError}
-          />
-        ) : (
-          <ProfileImg
-            isMemberNag={isMemberNag}
-            src={nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl}
-            onError={handleImgError}
-          />
-        )}
-        <NickName>{isMemberNag && nag.nagMember.nickname}</NickName>
-      </Profile>
-      <Bubble>
-        <CommentContentWrapper>{nag.content}</CommentContentWrapper>
-        {isMemberNag && (
-          <ButtonGroup>
-            {!nag.unlocked && (
-              <UnlockButton onClick={() => handleUnlockNag(nag.nagId)}>
-                <UnlockImg src={lockIcon} />
-              </UnlockButton>
-            )}
-            <LikeButton onClick={() => handleLikeClick(nag.unlocked)}>
-              {nag.isLiked ? (
-                <LikeImg src={likeIcon} />
-              ) : (
-                <LikeImg
-                  src={likeIcon}
-                  filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
-                />
+    <>
+      <CommentContainer>
+        <Profile>
+          {isMemberNag ? (
+            <ProfileImg
+              onClick={handleProfileButton}
+              isMemberNag={isMemberNag}
+              src={
+                nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl
+              }
+              onError={handleImgError}
+            />
+          ) : (
+            <ProfileImg
+              isMemberNag={isMemberNag}
+              src={
+                nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl
+              }
+              onError={handleImgError}
+            />
+          )}
+          <NickName>{isMemberNag && nag.nagMember.nickname}</NickName>
+        </Profile>
+        <Bubble>
+          <CommentContentWrapper>{nag.content}</CommentContentWrapper>
+          {isMemberNag && (
+            <ButtonGroup>
+              {!nag.unlocked && (
+                <UnlockButton onClick={handleClickUnlock}>
+                  <UnlockImg src={lockIcon} />
+                </UnlockButton>
               )}
-              <LikeCount>{nag.likeCount}</LikeCount>
-            </LikeButton>
-          </ButtonGroup>
-        )}
-      </Bubble>
+              <LikeButton onClick={handleLikeClick}>
+                {nag.isLiked ? (
+                  <LikeImg src={likeIcon} />
+                ) : (
+                  <LikeImg
+                    src={likeIcon}
+                    filter="invert(99%) sepia(29%) saturate(0%) hue-rotate(229deg) brightness(112%) contrast(86%);"
+                  />
+                )}
+                <LikeCount>{nag.likeCount}</LikeCount>
+              </LikeButton>
+            </ButtonGroup>
+          )}
+        </Bubble>
+      </CommentContainer>
       {showSnackBar && (
         <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
       )}
-    </CommentContainer>
+      {isModalOpen && (
+        <AlertModal
+          setIsModalOpen={setIsModalOpen}
+          handleAccept={handleUnlockNag}
+          handleCancel={handleCloseModal}
+        >
+          <CommentContainer>
+            <Profile>
+              <ProfileImg
+                isMemberNag={isMemberNag}
+                src={
+                  nag.nagMember.imageUrl ? nag.nagMember.imageUrl : altImageUrl
+                }
+                onError={handleImgError}
+              />
+              <NickName>{isMemberNag && nag.nagMember.nickname}</NickName>
+            </Profile>
+            <Bubble>
+              <CommentContentWrapper>{nag.content}</CommentContentWrapper>
+            </Bubble>
+          </CommentContainer>
+          <div>티켓 1장을 사용해 잔소리를 열어볼까요?</div>
+        </AlertModal>
+      )}
+    </>
   );
 };
 
@@ -141,6 +180,18 @@ const CommentContentWrapper = styled.div`
 const UnlockImg = styled.img`
   filter: invert(61%) sepia(0%) saturate(0%) hue-rotate(163deg) brightness(91%)
     contrast(83%);
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  width: fit-content;
+`;
+
+const UnlockButton = styled.button`
+  width: 23px;
+  margin: 0 8px;
+  display: flex;
+  align-items: center; /* 수직 중앙 정렬 */
   &:hover {
     animation: shake 0.2s ease-in-out infinite;
   }
@@ -157,18 +208,6 @@ const UnlockImg = styled.img`
       transform: translateX(3px) rotate(5deg);
     }
   }
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  width: fit-content;
-`;
-
-const UnlockButton = styled.button`
-  width: 23px;
-  margin: 0 8px;
-  display: flex;
-  align-items: center; /* 수직 중앙 정렬 */
 `;
 
 const LikeButton = styled.button`
