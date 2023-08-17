@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import { useRecoilState } from 'recoil';
 import NagRankingItem from './NagRankingItem';
-import { getNagRanking, updateLikeNag, updateNagUnlock } from '../../../apis/api/nag';
+import {
+  getNagRanking,
+  updateLikeNag,
+  updateNagUnlock,
+} from '../../../apis/api/nag';
 import { ticketState } from '../../../states/user';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import SnackBar from '../../../components/UI/SnackBar';
@@ -36,7 +40,9 @@ const NagRankingList = () => {
             return {
               ...nagRanking,
               isLiked: !nagRanking.isLiked,
-              likeCount: nagRanking.isLiked ? nagRanking.likeCount - 1 : nagRanking.likeCount + 1,
+              likeCount: nagRanking.isLiked
+                ? nagRanking.likeCount - 1
+                : nagRanking.likeCount + 1,
             };
           }
           return nagRanking;
@@ -95,20 +101,19 @@ const NagRankingList = () => {
     <NagRankingListWrap>
       {Array.isArray(data?.nags) &&
         data?.nags.map((memberNagRanking, index) => {
-          const isodd = (index + 1) % 2 !== 0;
           return (
-            <NagRankingItemWrap key={memberNagRanking.nagId} isodd={isodd ? 'true' : undefined}>
-              <NagRankingItem
-                key={memberNagRanking.nagId}
-                nag={memberNagRanking}
-                isodd={isodd ? 'true' : undefined}
-                toggleLike={updateLikeMutation.mutate}
-                toggleUnlock={updateUnlockMutation.mutate}
-              />
-            </NagRankingItemWrap>
+            <NagRankingItem
+              key={memberNagRanking.nagId}
+              rank={index + 1}
+              nag={memberNagRanking}
+              toggleLike={updateLikeMutation.mutate}
+              toggleUnlock={updateUnlockMutation.mutate}
+            />
           );
         })}
-      {showSnackBar && <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />}
+      {showSnackBar && (
+        <SnackBar message={snackBarMessage} onClose={handleSnackBarClose} />
+      )}
     </NagRankingListWrap>
   );
 };
@@ -120,9 +125,3 @@ const NagRankingListWrap = styled.div`
   flex
   flex-col`}
 `;
-
-const NagRankingItemWrap = styled.div(
-  ({ isodd }) => [isodd ? tw`mr-auto` : tw`ml-auto`],
-  tw`w-full md:w-3/5
-  my-2`
-);

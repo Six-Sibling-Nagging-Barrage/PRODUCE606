@@ -84,6 +84,7 @@ const TabContent = styled.div`
   background-color: #ede7f6;
   border-radius: 5px;
   padding: 20px;
+  min-height: 250px;
 `;
 
 const Glider = styled.span`

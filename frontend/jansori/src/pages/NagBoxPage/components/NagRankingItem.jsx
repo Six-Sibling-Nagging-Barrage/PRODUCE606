@@ -67,11 +67,11 @@ const NagRankingItem = (props) => {
               <NickName>{nag.nagMember.nickname}</NickName>
             </Link>
           </Profile>
-          <div>
+          <NagContent>
             {memberId === nag.nagMember.memberId || nag.unlocked
               ? nag.content
               : nag.preview}
-          </div>
+          </NagContent>
         </Nag>
         <ButtonGroup>
           {memberId === nag.nagMember.memberId ||
@@ -111,9 +111,7 @@ const NagRankingItem = (props) => {
 export default NagRankingItem;
 
 const Profile = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: row;
+  margin-bottom: 10px;
 `;
 
 const ProfileImg = styled.img`
@@ -127,23 +125,10 @@ const NickName = styled.div`
   display: inline-block;
 `;
 
-const CommentContentWrapper = styled.div`
-  position: relative;
-  width: 70%;
-  text-align: left;
-  top: 50%;
-  margin-top: 1vh;
-  margin-left: 2vh;
-  font-size: 20px;
-  overflow-wrap: break-word;
-  font-weight: semi-bold;
-`;
-
 const ButtonGroup = styled.div`
-  position: absolute;
   display: flex;
-  right: 15px;
   height: 64px;
+  width: 10%;
 `;
 
 const ButtonItem = styled.button`
@@ -188,15 +173,30 @@ const RankingItem = styled.div`
   display: flex;
   width: 100%;
   position: relative;
+  padding: 10px;
+  align-items: center;
 `;
 
 const Ranking = styled.div`
   font-size: 50px;
   font-weight: 600;
-  margin: 10px;
+  margin-right: 15px;
+  width: 5%;
+  text-align: left;
 `;
 
 const Nag = styled.div`
+  text-align: left;
   position: relative;
-  width: 100%;
+  width: 85%;
+  background-color: white;
+  padding: 15px 20px;
+  border-radius: 30px;
+  margin-right: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+`;
+
+const NagContent = styled.div`
+  padding-right: 30px;
+  font-size: 18px;
 `;

@@ -16,30 +16,30 @@ import PrivateRoute from './pages/PrivateRoute';
 
 function App() {
   return (
-    <div className='App'>
+    <div className="App">
       <NavBar />
       <Routes>
-        <Route path='/' element={<MainPage />} />
+        <Route path="/" element={<MainPage />} />
         <Route
-          path='/feed'
+          path="/feed"
           element={
             <PrivateRoute>
               <FeedPage />
             </PrivateRoute>
           }
         />
-        <Route path='/signup' element={<SignUpPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
         <Route
-          path='/initialprofile'
+          path="/initialprofile"
           element={
             <PrivateRoute>
               <InitialProfilePage />
             </PrivateRoute>
           }
         />
-        <Route path='/login' element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route
-          path='/nagbox'
+          path="/nagranking"
           element={
             <PrivateRoute>
               <NagBoxPage />
@@ -47,7 +47,7 @@ function App() {
           }
         />
         <Route
-          path='/nag'
+          path="/nag"
           element={
             <PrivateRoute>
               <NagPage />
@@ -55,14 +55,14 @@ function App() {
           }
         />
         <Route
-          path='/profile'
+          path="/profile"
           element={
             <PrivateRoute>
               <ProfilePage />
             </PrivateRoute>
           }
         />
-        <Route path='/characterinfo' element={<CharacterInfoPage />} />
+        <Route path="/characterinfo" element={<CharacterInfoPage />} />
       </Routes>
       <FloatingButton />
     </div>

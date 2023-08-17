@@ -12,7 +12,7 @@ const NagBoxPage = () => {
       <RollingBanner />
       {/* 잔소리 랭킹 */}
       <NagRannkingContainer>
-        <NagTitle>현재 잔소리 TOP 5</NagTitle>
+        <NagTitle>🏆 현재 잔소리 TOP 5 🏆</NagTitle>
         <NagRankingList />
       </NagRannkingContainer>
     </>
@@ -30,4 +30,5 @@ const NagRannkingContainer = styled.div`
 
 const NagTitle = styled.p`
   ${tw`font-bold text-2xl`}
+  margin-bottom: 10px;
 `;

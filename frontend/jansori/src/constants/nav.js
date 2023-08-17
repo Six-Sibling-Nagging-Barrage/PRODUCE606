@@ -13,7 +13,7 @@ export const menus = [
   },
   {
     name: '명예의전당',
-    to: '/nagbox',
+    to: '/nagranking',
   },
 ];
 
