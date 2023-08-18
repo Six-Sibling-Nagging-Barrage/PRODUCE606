@@ -64,13 +64,6 @@ authInstance.interceptors.request.use(
         throw new AxiosError('토큰이 만료되었습니다.');
       }
     } else {
-      const role = JSON.parse(
-        localStorage.getItem('recoil-persist')
-      ).memberRoleState;
-      if (role === 'GUEST') {
-        return (window.location.href = '/initialprofile');
-      }
-
       request.headers['Authorization'] = `Bearer ${accessToken}`;
       authInstance.defaults.headers.common[
         'Authorization'
