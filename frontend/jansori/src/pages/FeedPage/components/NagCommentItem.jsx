@@ -9,9 +9,12 @@ import SnackBar from '../../../components/UI/SnackBar';
 import { useImageErrorHandler } from '../../../hooks/useImageErrorHandler';
 import { altImageUrl } from '../../../constants/image';
 import AlertModal from '../../../components/UI/AlertModal';
+import { memberIdState } from '../../../states/user';
+import { useRecoilValue } from 'recoil';
 
 const NagCommentItem = (props) => {
   const navigate = useNavigate();
+  const memberId = useRecoilValue(memberIdState);
   const setNavBar = useSetRecoilState(navBarState);
   const {
     isMemberNag,
@@ -91,7 +94,7 @@ const NagCommentItem = (props) => {
           <CommentContentWrapper>{nag.content}</CommentContentWrapper>
           {isMemberNag && (
             <ButtonGroup>
-              {!nag.unlocked && (
+              {memberId !== nag.nagMember.memberId && !nag.unlocked && (
                 <UnlockButton onClick={handleClickUnlock}>
                   <UnlockImg src={lockIcon} />
                 </UnlockButton>
