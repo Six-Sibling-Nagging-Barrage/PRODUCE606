@@ -53,12 +53,12 @@ authInstance.interceptors.request.use(
         localStorage.setItem('member_token_exp', newExp);
       } catch (e) {
         authInstance.defaults.headers.common = {};
-        await createLogout({ accessToken });
-        localStorage.removeItem('member_access_token');
-        localStorage.removeItem('member_refresh_token');
-        localStorage.removeItem('member_token_exp');
-        localStorage.removeItem('recoil-persist');
-        localStorage.removeItem('member_vapid');
+        // await createLogout({ accessToken });
+        // localStorage.removeItem('member_access_token');
+        // localStorage.removeItem('member_refresh_token');
+        // localStorage.removeItem('member_token_exp');
+        // localStorage.removeItem('recoil-persist');
+        // localStorage.removeItem('member_vapid');
         throw new AxiosError('토큰이 만료되었습니다.');
       }
     } else {
