@@ -26,6 +26,15 @@ const ProfilePage = () => {
   const id = parseInt(query.get('id'));
 
   useEffect(() => {
+    const role = JSON.parse(
+      localStorage.getItem('recoil-persist')
+    ).memberRoleState;
+    if (role === 'GUEST') {
+      window.location.href = '/initialprofile';
+    }
+  }, []);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
     setCurrentId(id);
     if (id === memberId) setIsMine(true);

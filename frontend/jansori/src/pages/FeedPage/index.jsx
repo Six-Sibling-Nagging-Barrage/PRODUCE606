@@ -31,6 +31,13 @@ const FeedPage = () => {
       const data = await getFollowTagList(memberId);
       setFollowingTags(data.tags);
     })();
+
+    const role = JSON.parse(
+      localStorage.getItem('recoil-persist')
+    ).memberRoleState;
+    if (role === 'GUEST') {
+      window.location.href = '/initialprofile';
+    }
   }, []);
 
   useEffect(() => {
