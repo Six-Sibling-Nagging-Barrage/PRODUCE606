@@ -3,7 +3,7 @@
     <img width="200px;" src="./docs/main.jpeg" alt="로고"/>
   </a>
 </p>
-<h1 align="middle"><a href="https://sokdaksokdak.com/">JANSORI</a></h1>
+<h1 align="middle"><a href="https://github.com/Six-Sibling-Nagging-Barrage/PRODUCE606">JANSORI</a></h1>
 <p align="middle">6남매의 잔소리 폭격 당해보지 않을래?</p>
 <p align="middle">
 </p>
