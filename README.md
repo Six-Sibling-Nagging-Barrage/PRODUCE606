@@ -10,7 +10,7 @@
 
 ## 💬 서비스 소개
 
-`6남매의 잔소리`는 ToDo 성향을 띠고 있는 SNS 서비스이자 누군가에게 잔소리를 하고 나의 Todo에도 잔소리를 들을 수 있는 웹 서비스입니다
+`6남매의 잔소리`는 TODO를 달성하기 어려워 하는 사람들을 위해 잔소리를 해주는 동기 부여 SNS 서비스입니다!
 
 ## 🙌🏻 멤버
 
@@ -31,7 +31,7 @@
 
 ### 🧷 프론트엔드
 
-<img src="https://img.shields.io/badge/Javascript-F7DF1E?style=flat&logo=javascript&logoColor=white"/> <img src="https://img.shields.io/badge/Node.js-339933?style=flat&logo=node.js&logoColor=white"/> <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=white"/> <img src="https://img.shields.io/badge/tailwind css-06B6D4?style=flat&logo=tailwindcss&logoColor=white"/> <img src="https://img.shields.io/badge/Recoil-3578E5?style=flat&logo=Recoil&logoColor=white"/> <img src="https://img.shields.io/badge/styled components-DB7093?style=flat&logo=styledcomponents&logoColor=white"/> <img src="https://img.shields.io/badge/Axios-5A29E4?style=flat&logo=axios&logoColor=white"/>
+<img src="https://img.shields.io/badge/Javascript-F7DF1E?style=flat&logo=javascript&logoColor=white"/> <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=white"/> <img src="https://img.shields.io/badge/Recoil-3578E5?style=flat&logo=Recoil&logoColor=white"/> <img src="https://img.shields.io/badge/tailwind css-06B6D4?style=flat&logo=tailwindcss&logoColor=white"/> <img src="https://img.shields.io/badge/styled components-DB7093?style=flat&logo=styledcomponents&logoColor=white"/> <img src="https://img.shields.io/badge/Axios-5A29E4?style=flat&logo=axios&logoColor=white"/>
 
 **Language |** Javascript
 
@@ -81,46 +81,30 @@
 
 ---
 
-### 🦊 6남매의 잔소리 폭격은 개발자들의 성격을 담은 캐릭터들이 존재합니다!
+### 🦊 6남매의 잔소리 폭격에는 개발자들의 성격을 담은 캐릭터가 있어요!
 
-어떤 성격을 가지고 있는지 궁금하시죠?
 `캐릭터 소개를 하나씩 읽어보며 알아가는 재미를 느껴보세요!`
 <br>
 
-<details>
-<summary>캐릭터 알아보기</summary>
-<div markdown="1">
 <img src="./docs/character.gif"/>
-</div>
-</details>
 
 <br>
 <br>
 
-### 🐼 Main Feed! 오늘은 어떤 Todo들이 있는지 볼까요?
+### 🐼 Main Feed! 오늘은 어떤 TODO가 있는지 볼까요?
 
-Todo 들을 무한 스크롤로 볼 수 있으며 태그들을 `검색하고 구독할 수 있습니다!`
+`피드에서 사람들의 TODO를 볼 수 있으며 태그를 검색하고 구독할 수 있습니다!`
 
-<details>
-<summary>메인 피드 알아보기</summary>
-<div markdown="1">
 <img src="./docs/main_feed.gif"/>
-</div>
-</details>
 
 <br>
 <br>
 
-### 🐻 Todo에 달린 잔소리는 초성으로 존재합니다!
+### 🐻 TODO에 달린 잔소리는 티켓이 있어야 볼 수 있어요!
 
-`티켓을 소모하여 잔소리를 확인해보고 잔소리를 다시 보내서 티켓을 얻을 수 있습니다!`
+`누군가에게 잔소리를 날리면 티켓을 얻을 수 있어요!`
 
-<details>
-<summary>초성 열고 티켓 얻는법 알아보기</summary>
-<div markdown="1">
 <img src="./docs/nags.gif"/>
-</div>
-</details>
 
 <br>
 <br>
@@ -129,26 +113,14 @@ Todo 들을 무한 스크롤로 볼 수 있으며 태그들을 `검색하고 구
 
 `오늘 할일을 태그와 함께 작성하고 도착한 잔소리를 확인해보세요!`
 
-<details>
-<summary>Todo 작성 알아보기</summary>
-<div markdown="1">
 <img src="./docs/todo.gif"/>
-</div>
-</details>
 
 <br>
 <br>
 
 ### 🐸 누가 잔소리를 잘할까? 명예의 잔소리들을 보고 도전해봅시다!
 
-`오늘 할일을 태그와 함께 작성하고 도착한 잔소리를 확인해보세요!`
-
-<details>
-<summary>명예의 전당 알아보기</summary>
-<div markdown="1">
 <img src="./docs/ranking.gif"/>
-</div>
-</details>
 
 <br>
 <br>
